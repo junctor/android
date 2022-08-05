@@ -66,20 +66,28 @@
                         android:layout_width="match_parent"
                         android:layout_height="8dp" />
 
-                    <com.advice.schedule.views.WellView
-                        android:id="@+id/title_container"
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="20dp">
+                        android:padding="16dp">
 
-                        <TextView
-                            android:id="@+id/speaker_title"
-                            style="@style/TextAppearance.AppCompat.Body2"
+                        <com.advice.schedule.views.WellView
+                            android:id="@+id/title_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            tools:text="Expert Hacker" />
+                            android:layout_margin="4dp">
 
-                    </com.advice.schedule.views.WellView>
+                            <TextView
+                                android:id="@+id/speaker_title"
+                                style="@style/TextAppearance.AppCompat.Body2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:text="Expert Hacker" />
+
+                        </com.advice.schedule.views.WellView>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
                         android:id="@+id/description"
@@ -93,6 +101,7 @@
 
             </FrameLayout>
 
+
             <TextView
                 android:id="@+id/events_header"
                 style="@style/Header"
@@ -103,21 +112,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/body" />
 
-            <com.advice.schedule.views.WellView
-                android:id="@+id/events_container"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/schedule"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/events_header">
-
-                <LinearLayout
-                    android:id="@+id/events"
-                    style="@style/Section"
-                    android:padding="0dp" />
-
-            </com.advice.schedule.views.WellView>
+                android:layout_marginTop="26dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/events_header"
+                tools:itemCount="3"
+                tools:listitem="@layout/row_event" />
 
             <com.advice.schedule.views.SkullView
                 style="@style/Footer"
@@ -125,7 +128,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/events_container"
+                app:layout_constraintTop_toBottomOf="@id/schedule"
                 app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

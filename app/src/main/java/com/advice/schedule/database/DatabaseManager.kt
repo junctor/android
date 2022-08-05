@@ -536,7 +536,11 @@ class DatabaseManager(
             .addSnapshotListener { snapshot, exception ->
                 if (snapshot != null && exception == null) {
                     val speaker = snapshot.toObjectOrNull(FirebaseSpeakerWithEvents::class.java)
-                    val events = speaker?.events?.mapNotNull { it.toEvent(tags) }
+                    val events = speaker?.events?.mapNotNull {
+                        it.conference = code
+                        it.toEvent(tags)
+                    } ?: emptyList()
+
                     mutableLiveData.postValue(events)
                 } else {
                     mutableLiveData.postValue(emptyList())

@@ -10,7 +10,7 @@ data class FirebaseEvent(
     @PropertyName("id")
     val id: Long = -1,
     @PropertyName("conference")
-    val conference: String = "",
+    var conference: String = "",
     @PropertyName("title")
     val title: String = "",
     @PropertyName("android_description")

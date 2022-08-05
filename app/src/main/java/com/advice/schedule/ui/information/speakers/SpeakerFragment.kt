@@ -6,12 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
 import com.advice.schedule.models.local.Speaker
-import com.advice.schedule.ui.activities.MainActivity
-import com.advice.schedule.views.EventView
+import com.advice.schedule.ui.schedule.list.ScheduleAdapter
+import com.advice.timehop.StickyRecyclerHeadersDecoration
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentSpeakersBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -23,6 +24,9 @@ class SpeakerFragment : Fragment() {
 
     private val viewModel by sharedViewModel<SpeakersViewModel>()
 
+    private val adapter = ScheduleAdapter()
+    private val decoration = StickyRecyclerHeadersDecoration(adapter)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSpeakersBinding.inflate(inflater, container, false)
         return binding.root
@@ -30,6 +34,9 @@ class SpeakerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
 
         binding.toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
@@ -54,15 +61,12 @@ class SpeakerFragment : Fragment() {
             }
         }
 
+        binding.schedule.adapter = adapter
+        binding.schedule.addItemDecoration(decoration)
+
         viewModel.getSpeakerEvents(speaker).observe(viewLifecycleOwner) { list ->
             binding.eventsHeader.isVisible = list.isNotEmpty()
-            list.forEach {
-                binding.events.addView(EventView(requireContext(), it, EventView.DISPLAY_MODE_MIN))
-            }
-        }
-
-        binding.eventsContainer.setOnClickListener {
-            (requireActivity() as MainActivity).showSchedule(speaker)
+            adapter.setSchedule(list)
         }
     }
 

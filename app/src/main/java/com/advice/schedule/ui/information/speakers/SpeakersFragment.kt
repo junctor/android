@@ -37,6 +37,12 @@ class SpeakersFragment : Fragment() {
         searchView.onQueryTextChanged {
             viewModel.setSearchQuery(it)
         }
+
+        searchView.setOnQueryTextFocusChangeListener { _, isFocused ->
+            if (!isFocused && searchView.query.isNullOrBlank()) {
+                searchItem.collapseActionView()
+            }
+        }
     }
 
     override fun onCreateView(
