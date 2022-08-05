@@ -2,10 +2,7 @@ package com.advice.schedule.ui.events
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -39,6 +36,8 @@ class EventFragment : Fragment() {
     private val speakersAdapter = EventDetailsAdapter()
     private val linksAdapter = EventDetailsAdapter()
 
+    private lateinit var event: Event
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,18 +47,13 @@ class EventFragment : Fragment() {
         return binding.root
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.clear()
-        super.onPrepareOptionsMenu(menu)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val event = arguments?.getParcelable<Event>(EXTRA_EVENT) ?: error("id must not be null")
+        event = arguments?.getParcelable(EXTRA_EVENT) ?: error("event must not be null")
 
         showEvent(event)
 
@@ -75,9 +69,21 @@ class EventFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        if (event.isBookmarked) {
+            inflater.inflate(R.menu.event_bookmarked, menu)
+        } else {
+            inflater.inflate(R.menu.event_unbookmarked, menu)
+        }
     }
 
     private fun showEvent(event: Event) {
+        this.event = event
         analytics.log("Viewing event: ${event.title}")
 
         val body = event.description
