@@ -1,8 +1,6 @@
 package com.advice.schedule.ui.schedule
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.advice.schedule.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
@@ -19,11 +17,16 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
 
     private val database: DatabaseManager by inject()
 
+    private val source: LiveData<List<Event>>
+
     private val events = MediatorLiveData<Response<List<Event>>>()
     private val types = MediatorLiveData<Response<List<FirebaseTagType>>>()
+    private val searchQuery = MutableLiveData<String?>()
 
     init {
-        events.addSource(database.conference) {
+        source = Transformations.switchMap(database.conference) {
+            val result = MutableLiveData<List<Event>>()
+
             var isFirst = true
 
             if (it == null) {
@@ -37,12 +40,27 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
                     if (isFirst) {
                         isFirst = false
                         events.addSource(database.getSchedule()) {
-                            events.value = Response.Success(it)
+                            result.value = it
                         }
                     }
                 }
             }
+
+            return@switchMap result
         }
+
+        events.addSource(source) { list ->
+            events.value = getList(list, searchQuery.value)
+        }
+
+        events.addSource(searchQuery) { query ->
+            events.value = getList(source.value ?: emptyList(), query)
+        }
+    }
+
+    private fun getList(list: List<Event>, query: String?): Response.Success<List<Event>> {
+        val data = list.filter { query == null || (it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)) }
+        return Response.Success(data)
     }
 
     fun getSchedule(location: Location): LiveData<Response<List<Event>>> {
@@ -129,5 +147,9 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
         }
 
         return bookmark && event.types.any { t -> filter.find { it.id == t.id }?.isSelected == true }
+    }
+
+    fun setSearchQuery(query: String?) {
+        searchQuery.value = query
     }
 }

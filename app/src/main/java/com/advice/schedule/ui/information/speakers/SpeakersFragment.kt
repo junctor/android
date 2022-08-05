@@ -2,6 +2,7 @@ package com.advice.schedule.ui.information.speakers
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,7 @@ class SpeakersFragment : Fragment() {
     private val adapter = ListAdapter()
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         inflater.inflate(R.menu.menu, menu)
 
         val searchItem = menu.findItem(R.id.action_search)
@@ -49,7 +51,8 @@ class SpeakersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
 
         binding.toolbar.title = getString(R.string.speakers)
         binding.toolbar.setNavigationOnClickListener {

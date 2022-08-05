@@ -2,6 +2,7 @@ package com.advice.schedule.ui.information.faq
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ class FAQFragment : Fragment() {
     private lateinit var adapter: FAQAdapter
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         inflater.inflate(R.menu.menu, menu)
 
         val searchItem = menu.findItem(R.id.action_search)
@@ -50,6 +52,14 @@ class FAQFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        binding.toolbar.title = getString(R.string.faq)
+        binding.toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         adapter = FAQAdapter {
             viewModel.toggle(it)
         }
@@ -63,13 +73,6 @@ class FAQFragment : Fragment() {
                 }
             }
         })
-
-        (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
-
-        binding.toolbar.title = getString(R.string.faq)
-        binding.toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
-        }
 
         viewModel.getFAQ().observe(viewLifecycleOwner) {
             onResource(it)

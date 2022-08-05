@@ -1,10 +1,9 @@
 package com.advice.schedule.ui.schedule
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -12,12 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.advice.schedule.Response
+import com.advice.schedule.hideKeyboard
 import com.advice.schedule.models.Day
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.models.local.Type
+import com.advice.schedule.onQueryTextChanged
 import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.schedule.list.ScheduleAdapter
@@ -42,12 +43,26 @@ class ScheduleFragment : Fragment(), KoinComponent {
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var searchView: SearchView
+
     private val adapter = ScheduleAdapter()
     private val decoration = StickyRecyclerHeadersDecoration(adapter)
 
     private var shouldScroll = true
 
     private var forceTimeZone = storage.forceTimeZone
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        searchView = searchItem.actionView as SearchView
+
+        searchView.onQueryTextChanged {
+            viewModel.setSearchQuery(it)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +76,9 @@ class ScheduleFragment : Fragment(), KoinComponent {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+
         val type = arguments?.getParcelable<FirebaseTag>(EXTRA_TYPE)
         val location = arguments?.getParcelable<Location>(EXTRA_LOCATION)
         val speaker = arguments?.getParcelable<Speaker>(EXTRA_SPEAKER)
@@ -73,15 +91,6 @@ class ScheduleFragment : Fragment(), KoinComponent {
                 requireContext(),
                 R.drawable.ic_baseline_arrow_back_ios_new_24
             )
-        }
-
-        binding.toolbar.inflateMenu(R.menu.schedule)
-        binding.toolbar.setOnMenuItemClickListener {
-            if (it?.itemId == R.id.search) {
-                (context as MainActivity).showSearch()
-                return@setOnMenuItemClickListener true
-            }
-            false
         }
 
         shouldScroll = true
@@ -118,6 +127,13 @@ class ScheduleFragment : Fragment(), KoinComponent {
                     )
                 }
             }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    requireActivity().hideKeyboard()
+                }
+            }
         })
 
         binding.daySelector.addOnDaySelectedListener(object :
@@ -126,7 +142,6 @@ class ScheduleFragment : Fragment(), KoinComponent {
                 scrollToDate(day)
             }
         })
-
 
         val liveData = when {
             type != null -> {
@@ -171,6 +186,8 @@ class ScheduleFragment : Fragment(), KoinComponent {
                 }
             }
         }
+
+        setHasOptionsMenu(true)
     }
 
     fun invalidate() {
