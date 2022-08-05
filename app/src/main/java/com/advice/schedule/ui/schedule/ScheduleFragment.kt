@@ -17,7 +17,6 @@ import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
-import com.advice.schedule.models.local.Type
 import com.advice.schedule.onQueryTextChanged
 import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.activities.MainActivity
@@ -28,7 +27,6 @@ import com.advice.timehop.StickyRecyclerHeadersDecoration
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentScheduleBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.util.*
@@ -61,6 +59,12 @@ class ScheduleFragment : Fragment(), KoinComponent {
 
         searchView.onQueryTextChanged {
             viewModel.setSearchQuery(it)
+        }
+
+        searchView.setOnQueryTextFocusChangeListener { _, isFocused ->
+            if (!isFocused && searchView.query.isNullOrBlank()) {
+                searchItem.collapseActionView()
+            }
         }
     }
 
