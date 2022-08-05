@@ -16,6 +16,7 @@ import com.shortstack.hackertracker.BuildConfig
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import timber.log.Timber
 
 class App : Application() {
 
@@ -38,6 +39,10 @@ class App : Application() {
         startKoin {
             androidContext(this@App)
             modules(appModule)
+        }
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
         }
 
         FirebaseApp.initializeApp(this)
