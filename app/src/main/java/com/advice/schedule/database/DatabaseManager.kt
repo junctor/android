@@ -238,7 +238,7 @@ class DatabaseManager(
 
     private fun mergeTags(tags: List<FirebaseTagType>, bookmarks: List<FirebaseBookmark>): List<FirebaseTagType> {
         // Setting the Bookmark flag from the network response
-        FirebaseTag.bookmark.isSelected = bookmarks.find { FirebaseTag.bookmark.id.toString() == it.id}?.value ?: false
+        FirebaseTag.bookmark.isSelected = bookmarks.find { FirebaseTag.bookmark.id.toString() == it.id }?.value ?: false
 
         tags.forEach { type ->
             type.tags.forEach { tag ->
@@ -531,14 +531,13 @@ class DatabaseManager(
 
         firestore.collection(CONFERENCES)
             .document(code)
-            .collection(EVENTS)
+            .collection(SPEAKERS)
+            .document(speaker.id.toString())
             .addSnapshotListener { snapshot, exception ->
                 if (snapshot != null && exception == null) {
-                    val events = snapshot.toObjectsOrEmpty(FirebaseEvent::class.java)
-                    val filtered =
-                        events.filter { it.speakers.firstOrNull { it.id == speaker.id } != null }
-                            .mapNotNull { it.toEvent(tags) }
-                    mutableLiveData.postValue(filtered)
+                    val speaker = snapshot.toObjectOrNull(FirebaseSpeakerWithEvents::class.java)
+                    val events = speaker?.events?.mapNotNull { it.toEvent(tags) }
+                    mutableLiveData.postValue(events)
                 } else {
                     mutableLiveData.postValue(emptyList())
                 }

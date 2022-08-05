@@ -9,15 +9,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
-import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.Speaker
-import com.advice.schedule.ui.HackerTrackerViewModel
 import com.advice.schedule.ui.activities.MainActivity
-import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.views.EventView
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentSpeakersBinding
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SpeakerFragment : Fragment() {
@@ -25,16 +21,9 @@ class SpeakerFragment : Fragment() {
     private var _binding: FragmentSpeakersBinding? = null
     private val binding get() = _binding!!
 
-    private val database: DatabaseManager by inject()
-    private val analytics: Analytics by inject()
+    private val viewModel by sharedViewModel<SpeakersViewModel>()
 
-    private val viewModel by sharedViewModel<HackerTrackerViewModel>()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSpeakersBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,20 +31,13 @@ class SpeakerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val speaker =
-            arguments?.getParcelable(EXTRA_SPEAKER) as? Speaker ?: error("speaker must not be null")
-
         binding.toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        binding.eventsContainer.setOnClickListener {
-            (requireActivity() as MainActivity).showSchedule(speaker)
-        }
+        val speaker = arguments?.getParcelable(EXTRA_SPEAKER) as? Speaker ?: error("speaker must not be null")
 
-        showSpeaker(speaker)
-
-        viewModel.speakers.observe(viewLifecycleOwner) {
+        viewModel.getSpeaker(speaker).observe(viewLifecycleOwner) {
             when (it) {
                 Response.Init -> {
 
@@ -64,23 +46,24 @@ class SpeakerFragment : Fragment() {
 
                 }
                 is Response.Success -> {
-                    val target = it.data.find { it.id == speaker.id }
-                    if (target != null) {
-                        showSpeaker(target)
-                    }
+                    showSpeaker(it.data)
                 }
-                is Response.Error -> {}
+                is Response.Error -> {
+
+                }
             }
         }
 
-        database.getEventsForSpeaker(speaker).observe(viewLifecycleOwner) { list ->
+        viewModel.getSpeakerEvents(speaker).observe(viewLifecycleOwner) { list ->
             binding.eventsHeader.isVisible = list.isNotEmpty()
             list.forEach {
                 binding.events.addView(EventView(requireContext(), it, EventView.DISPLAY_MODE_MIN))
             }
         }
-        analytics.log("Viewing speaker ${speaker.name}")
-        analytics.onSpeakerEvent(Analytics.SPEAKER_VIEW, speaker)
+
+        binding.eventsContainer.setOnClickListener {
+            (requireActivity() as MainActivity).showSchedule(speaker)
+        }
     }
 
     private fun showSpeaker(speaker: Speaker) = with(binding) {
@@ -95,7 +78,7 @@ class SpeakerFragment : Fragment() {
             toolbar.inflateMenu(R.menu.speaker_twitter)
             toolbar.setOnMenuItemClickListener {
                 openTwitter(speaker.twitter)
-                analytics.onSpeakerEvent(Analytics.SPEAKER_TWITTER, speaker)
+                viewModel.onOpenTwitter(speaker)
                 true
             }
         }
