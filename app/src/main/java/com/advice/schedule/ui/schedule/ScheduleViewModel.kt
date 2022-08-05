@@ -10,6 +10,7 @@ import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
+import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -50,11 +51,15 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
         }
 
         events.addSource(source) { list ->
-            events.value = getList(list, searchQuery.value)
+            viewModelScope.launch {
+                events.value = getList(list, searchQuery.value)
+            }
         }
 
         events.addSource(searchQuery) { query ->
-            events.value = getList(source.value ?: emptyList(), query)
+            viewModelScope.launch {
+                events.value = getList(source.value ?: emptyList(), query)
+            }
         }
     }
 
