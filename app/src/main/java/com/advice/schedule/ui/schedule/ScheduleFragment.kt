@@ -191,6 +191,8 @@ class ScheduleFragment : Fragment(), KoinComponent {
             }
         }
 
+        updateFABState()
+
         setHasOptionsMenu(true)
     }
 
@@ -200,11 +202,7 @@ class ScheduleFragment : Fragment(), KoinComponent {
             return
         }
 
-        if (storage.fabShown) {
-            binding.filter.show()
-        } else {
-            binding.filter.hide()
-        }
+        updateFABState()
 
         if (forceTimeZone == storage.forceTimeZone) {
             return
@@ -213,6 +211,14 @@ class ScheduleFragment : Fragment(), KoinComponent {
 
         adapter.refresh()
         decoration.invalidateHeaders()
+    }
+
+    private fun updateFABState() {
+        if (storage.fabShown) {
+            binding.filter.show()
+        } else {
+            binding.filter.hide()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
