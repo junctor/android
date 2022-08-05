@@ -237,6 +237,9 @@ class DatabaseManager(
     }
 
     private fun mergeTags(tags: List<FirebaseTagType>, bookmarks: List<FirebaseBookmark>): List<FirebaseTagType> {
+        // Setting the Bookmark flag from the network response
+        FirebaseTag.bookmark.isSelected = bookmarks.find { FirebaseTag.bookmark.id.toString() == it.id}?.value ?: false
+
         tags.forEach { type ->
             type.tags.forEach { tag ->
                 tag.isSelected =

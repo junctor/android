@@ -297,6 +297,9 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
     }
 
     fun clearFilters() {
+        FirebaseTag.bookmark.isSelected = false
+        database.updateTypeIsSelected(FirebaseTag.bookmark)
+
         val types = tags.value?.dObj as? List<FirebaseTagType> ?: emptyList()
         types.forEach {
             it.tags.forEach {

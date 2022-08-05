@@ -57,7 +57,7 @@ class FilterFragment : Fragment() {
                 is Response.Success -> {
                     val tags = it.data
                     setTypes(tags)
-                    val hasFilters = it.data.flatMap { it.tags }.any { it.isSelected }
+                    val hasFilters = FirebaseTag.bookmark.isSelected || it.data.flatMap { it.tags }.any { it.isSelected }
                     binding.action.isVisible = hasFilters
                 }
             }
