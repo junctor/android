@@ -29,7 +29,9 @@ import com.shortstack.hackertracker.databinding.FragmentScheduleBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import timber.log.Timber
 import java.util.*
+import kotlin.math.abs
 
 
 class ScheduleFragment : Fragment(), KoinComponent {
@@ -259,8 +261,25 @@ class ScheduleFragment : Fragment(), KoinComponent {
     }
 
     private fun scrollToDate(date: Date) {
+        val layoutManager = binding.list.layoutManager as LinearLayoutManager
+
+        val current = layoutManager.findFirstVisibleItemPosition()
         val index = adapter.getDatePosition(date)
-        if (index != -1) {
+        if (index == -1) {
+            Timber.e("Could not find Date within the list: $date")
+            return
+        }
+
+        if (abs(current - index) > QUICK_SCROLL_MIN_DISTANCE) {
+            val target = if (index > current) {
+                index - QUICK_SCROLL_NEARBY_DISTANCE
+            } else {
+                index + QUICK_SCROLL_NEARBY_DISTANCE
+            }
+            layoutManager.scrollToPositionWithOffset(target, 0)
+        }
+
+        binding.list.postDelayed({
             val scroller = object : LinearSmoothScroller(context) {
 
                 override fun getVerticalSnapPreference(): Int {
@@ -268,8 +287,8 @@ class ScheduleFragment : Fragment(), KoinComponent {
                 }
             }
             scroller.targetPosition = index
-            binding.list.layoutManager?.startSmoothScroll(scroller)
-        }
+            layoutManager.startSmoothScroll(scroller)
+        }, QUICK_SCROLL_SMOOTH_DELAY)
     }
 
     private fun showProgress() {
@@ -294,6 +313,10 @@ class ScheduleFragment : Fragment(), KoinComponent {
         private const val EXTRA_TYPE = "type"
         private const val EXTRA_LOCATION = "location"
         private const val EXTRA_SPEAKER = "speaker"
+
+        private const val QUICK_SCROLL_MIN_DISTANCE = 50
+        private const val QUICK_SCROLL_NEARBY_DISTANCE = 30
+        private const val QUICK_SCROLL_SMOOTH_DELAY = 20L
 
         fun newInstance(): ScheduleFragment {
             return ScheduleFragment()
