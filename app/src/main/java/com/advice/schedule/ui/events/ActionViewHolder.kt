@@ -16,6 +16,7 @@ class ActionViewHolder(private val binding: ItemEventLinkBinding) :
         binding.action.setImageResource(action.res)
         binding.actionText.text = action.label
         binding.root.setOnClickListener {
+            // todo: add dialog to confirm open URL
             try {
                 val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(action.url))
                 binding.root.context.startActivity(intent)
