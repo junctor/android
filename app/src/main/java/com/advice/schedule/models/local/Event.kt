@@ -3,10 +3,8 @@ package com.advice.schedule.models.local
 import android.content.Context
 import android.os.Parcelable
 import com.advice.schedule.models.firebase.FirebaseTag
-import com.advice.schedule.utilities.MyClock
 import com.advice.schedule.utilities.TimeUtil
 import com.advice.schedule.utilities.getDateMidnight
-import com.advice.schedule.utilities.now
 import com.google.firebase.Timestamp
 import com.shortstack.hackertracker.R
 import kotlinx.android.parcel.Parcelize

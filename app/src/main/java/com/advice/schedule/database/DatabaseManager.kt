@@ -10,9 +10,8 @@ import com.advice.schedule.*
 import com.advice.schedule.models.firebase.*
 import com.advice.schedule.models.local.*
 import com.advice.schedule.network.task.ReminderWorker
-import com.advice.schedule.utilities.MyClock
+import com.advice.schedule.utilities.Time
 import com.advice.schedule.utilities.Storage
-import com.advice.schedule.utilities.now
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -418,7 +417,7 @@ class DatabaseManager(
         val tag = "reminder_" + event.id
 
         if (event.isBookmarked) {
-            val delay = event.start.toDate().time - MyClock().now().time - (1000 * 20 * 60)
+            val delay = event.start.toDate().time - Time.now().time - (1000 * 20 * 60)
 
             if (delay > 0) {
                 val data = workDataOf(

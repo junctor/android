@@ -117,7 +117,7 @@ class Storage(context: Context, private val gson: Gson) {
             }
 
             val calendar = Calendar.getInstance()
-            calendar.time = MyClock().now()
+            calendar.time = Time.now()
 
             val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
             if (dayOfYear < 219)

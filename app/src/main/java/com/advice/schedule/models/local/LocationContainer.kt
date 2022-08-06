@@ -1,8 +1,7 @@
 package com.advice.schedule.models.local
 
 import android.os.Parcelable
-import com.advice.schedule.utilities.MyClock
-import com.advice.schedule.utilities.now
+import com.advice.schedule.utilities.Time
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,7 +20,7 @@ data class LocationContainer(
     var status: LocationStatus = LocationStatus.Closed
 
     fun getCurrentStatus(): LocationStatus {
-        val now = MyClock().now()
+        val now = Time.now()
 
         val status = schedule.firstOrNull {
             val begin = parse(it.begin)

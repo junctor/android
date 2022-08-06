@@ -2,8 +2,7 @@ package com.advice.schedule.models.local
 
 import android.os.Parcelable
 import com.advice.schedule.models.firebase.FirebaseMap
-import com.advice.schedule.utilities.MyClock
-import com.advice.schedule.utilities.now
+import com.advice.schedule.utilities.Time
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
@@ -24,5 +23,5 @@ data class Conference(
 ) : Parcelable {
 
     val hasFinished: Boolean
-        get() = MyClock().now().after(endDate)
+        get() = Time.now().after(endDate)
 }

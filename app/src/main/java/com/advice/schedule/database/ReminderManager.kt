@@ -6,8 +6,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.network.task.ReminderWorker
-import com.advice.schedule.utilities.MyClock
-import com.advice.schedule.utilities.now
+import com.advice.schedule.utilities.Time
 import java.util.concurrent.TimeUnit
 
 class ReminderManager(
@@ -26,7 +25,7 @@ class ReminderManager(
 
     fun setReminder(event: Event) {
         val start = event.start
-        val now = MyClock().now()
+        val now = Time.now()
 
         val delay = start.toDate().time - now.time - TWENTY_MINUTES_BEFORE
 

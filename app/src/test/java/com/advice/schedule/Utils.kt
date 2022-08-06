@@ -1,8 +1,7 @@
 package com.advice.schedule
 
-import com.advice.schedule.utilities.MyClock
+import com.advice.schedule.utilities.Time
 import com.google.firebase.Timestamp
-import com.advice.schedule.utilities.now
 import io.mockk.every
 import io.mockk.mockkStatic
 import java.text.SimpleDateFormat
@@ -11,7 +10,7 @@ import java.util.*
 fun setCurrentClock(date: String) {
     mockkStatic("com.advice.schedule.utilities.MyClockKt")
     every {
-        MyClock().now()
+        Time.now()
     } returns parse(date)
 }
 

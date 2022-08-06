@@ -17,8 +17,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.transition.Fade
 import com.advice.schedule.models.firebase.*
 import com.advice.schedule.models.local.*
-import com.advice.schedule.utilities.MyClock
-import com.advice.schedule.utilities.now
+import com.advice.schedule.utilities.Time
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
@@ -53,7 +52,7 @@ fun Date.getDateDifference(date: Date, timeUnit: TimeUnit): Long {
 
 
 fun Calendar.now(): Calendar {
-    this.time = MyClock().now()
+    this.time = Time.now()
     return this
 }
 

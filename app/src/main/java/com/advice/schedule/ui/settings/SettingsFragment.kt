@@ -12,9 +12,8 @@ import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.Conference
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.themes.ThemesManager
-import com.advice.schedule.utilities.MyClock
+import com.advice.schedule.utilities.Time
 import com.advice.schedule.utilities.Storage
-import com.advice.schedule.utilities.now
 import com.shortstack.hackertracker.BuildConfig
 import com.shortstack.hackertracker.R
 import org.koin.android.ext.android.inject
@@ -67,7 +66,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             })
 
             val calendar = Calendar.getInstance()
-            calendar.time = MyClock().now()
+            calendar.time = Time.now()
 
             val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
             if (dayOfYear >= 219 && storage.getPreference(Storage.EASTER_EGGS_ENABLED_KEY, false)) {
