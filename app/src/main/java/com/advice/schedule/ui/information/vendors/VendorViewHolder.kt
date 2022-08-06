@@ -1,7 +1,5 @@
 package com.advice.schedule.ui.information.vendors
 
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,7 @@ import com.shortstack.hackertracker.databinding.RowVendorBinding
 class VendorViewHolder(private val binding: RowVendorBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun render(vendor: Vendor) {
+    fun render(vendor: Vendor, onClickListener: (Vendor) -> Unit) {
         binding.title.text = vendor.name
         binding.description.text = vendor.summary
 
@@ -23,8 +21,7 @@ class VendorViewHolder(private val binding: RowVendorBinding) :
         }
 
         binding.link.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(vendor.link))
-            binding.root.context.startActivity(intent)
+            onClickListener(vendor)
         }
     }
 

@@ -11,10 +11,9 @@ import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.RowSpeakerBinding
 
-class SpeakerViewHolder(private val binding: RowSpeakerBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+class SpeakerViewHolder(private val binding: RowSpeakerBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun render(speaker: Speaker) = with(binding) {
+    fun render(speaker: Speaker, onClickListener: (Speaker) -> Unit) = with(binding) {
         val context = root.context
 
         speakerName.text = speaker.name
@@ -38,7 +37,7 @@ class SpeakerViewHolder(private val binding: RowSpeakerBinding) :
         category.setBackgroundColor(color)
 
         root.setOnClickListener {
-            (context as? MainActivity)?.showSpeaker(speaker)
+            onClickListener(speaker)
         }
     }
 

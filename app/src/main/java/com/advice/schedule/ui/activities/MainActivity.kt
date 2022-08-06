@@ -1,7 +1,6 @@
 package com.advice.schedule.ui.activities
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -20,11 +19,9 @@ import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.events.EventFragment
 import com.advice.schedule.ui.information.InformationFragment
 import com.advice.schedule.ui.information.categories.CategoryFragment
-import com.advice.schedule.ui.information.locations.LocationsFragment
 import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
 import com.advice.schedule.ui.schedule.ScheduleFragment
-import com.advice.schedule.ui.search.SearchFragment
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.github.stkent.amplify.tracking.Amplify
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
@@ -133,7 +130,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
             map[id] = when (id) {
                 R.id.nav_map -> MapsFragment.newInstance()
                 R.id.nav_settings -> SettingsFragment.newInstance()
-                R.id.search -> SearchFragment.newInstance()
                 else -> InformationFragment.newInstance()
             }
         }
@@ -147,10 +143,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     fun showSpeaker(speaker: Speaker?) {
         speaker ?: return
         setAboveFragment(SpeakerFragment.newInstance(speaker))
-    }
-
-    fun showSearch() {
-        setAboveFragment(SearchFragment.newInstance())
     }
 
     fun showCategoryType(type: Type) {

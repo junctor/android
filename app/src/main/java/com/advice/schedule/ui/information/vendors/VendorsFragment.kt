@@ -1,5 +1,7 @@
 package com.advice.schedule.ui.information.vendors
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +10,6 @@ import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
 import com.advice.schedule.models.local.Vendor
 import com.advice.schedule.ui.HackerTrackerViewModel
-import com.advice.schedule.ui.ListAdapter
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -20,7 +21,7 @@ class VendorsFragment : Fragment() {
     private var _binding: FragmentRecyclerviewBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = ListAdapter()
+    private lateinit var adapter: VendorsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +34,11 @@ class VendorsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter = VendorsAdapter {
+            val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(it.link))
+            binding.root.context.startActivity(intent)
+        }
 
         binding.list.adapter = adapter
         binding.toolbar.title = getString(R.string.partners_vendors)
@@ -53,17 +59,17 @@ class VendorsFragment : Fragment() {
             }
             is Response.Loading -> {
                 setProgressIndicator(active = true)
-                adapter.clearAndNotify()
+                adapter.submitList(emptyList())
                 hideViews()
             }
             is Response.Success -> {
                 setProgressIndicator(active = false)
-                adapter.clearAndNotify()
 
                 if (resource.data.isNotEmpty()) {
-                    adapter.addAllAndNotify(resource.data)
+                    adapter.submitList(resource.data)
                     hideViews()
                 } else {
+                    adapter.submitList(emptyList())
                     showEmptyView()
                 }
             }

@@ -13,6 +13,7 @@ import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.setStatus
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.information.locations.toContainer
+import com.advice.schedule.ui.information.speakers.SpeakersAdapter
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.TimeUtil
@@ -33,7 +34,7 @@ class EventFragment : Fragment() {
 
     private val viewModel by sharedViewModel<ScheduleViewModel>()
 
-    private val speakersAdapter = EventDetailsAdapter()
+    private lateinit var speakersAdapter: SpeakersAdapter
     private val linksAdapter = EventDetailsAdapter()
 
     private lateinit var event: Event
@@ -54,6 +55,10 @@ class EventFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
 
         event = arguments?.getParcelable(EXTRA_EVENT) ?: error("event must not be null")
+
+        speakersAdapter = SpeakersAdapter {
+            (requireActivity() as MainActivity).showSpeaker(it)
+        }
 
         showEvent(event)
 
@@ -93,7 +98,7 @@ class EventFragment : Fragment() {
 
         binding.speakersHeader.isVisible = event.speakers.isNotEmpty()
         binding.speakersContainers.isVisible = event.speakers.isNotEmpty()
-        speakersAdapter.setElements(emptyList(), event.speakers)
+        speakersAdapter.submitList(event.speakers)
         binding.linksContainers.isVisible = event.urls.isNotEmpty()
         linksAdapter.setElements(event.urls.sortedBy { it.label.length }, emptyList())
 

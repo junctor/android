@@ -223,13 +223,6 @@ class ScheduleFragment : Fragment(), KoinComponent {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.search -> (context as MainActivity).showSearch()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun scrollToCurrentPosition(data: ArrayList<Any>) {
         val manager = binding.list.layoutManager ?: return
         val first = data.filterIsInstance<Event>().firstOrNull { !it.hasStarted } ?: return

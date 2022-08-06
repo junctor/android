@@ -10,11 +10,11 @@ import com.advice.schedule.Response
 import com.advice.schedule.hideKeyboard
 import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.onQueryTextChanged
-import com.advice.schedule.ui.ListAdapter
 import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class SpeakersFragment : Fragment() {
 
@@ -25,7 +25,7 @@ class SpeakersFragment : Fragment() {
 
     private lateinit var searchView: SearchView
 
-    private val adapter = ListAdapter()
+    private lateinit var adapter: SpeakersAdapter
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
@@ -60,6 +60,10 @@ class SpeakersFragment : Fragment() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        adapter = SpeakersAdapter {
+            (requireActivity() as MainActivity).showSpeaker(it)
+        }
+
         binding.toolbar.title = getString(R.string.speakers)
         binding.toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
@@ -83,6 +87,7 @@ class SpeakersFragment : Fragment() {
     }
 
     private fun onResponse(response: Response<List<Speaker>>) {
+        Timber.e("onResponse: $response")
         when (response) {
             is Response.Init -> {
                 setProgressIndicator(active = false)
@@ -90,17 +95,17 @@ class SpeakersFragment : Fragment() {
             }
             is Response.Loading -> {
                 setProgressIndicator(active = true)
-                adapter.clearAndNotify()
+                adapter.submitList(emptyList())
                 hideViews()
             }
             is Response.Success -> {
                 setProgressIndicator(active = false)
-                adapter.clearAndNotify()
 
                 if (response.data.isNotEmpty()) {
-                    adapter.addAllAndNotify(response.data)
+                    adapter.submitList(response.data)
                     hideViews()
                 } else {
+                    adapter.submitList(emptyList())
                     showEmptyView()
                 }
             }

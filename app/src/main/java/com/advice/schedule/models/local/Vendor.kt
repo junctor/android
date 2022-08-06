@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Vendor(
-        private val id: Int,
+        val id: Int,
         val name: String,
         private val description: String?,
         val link: String?,

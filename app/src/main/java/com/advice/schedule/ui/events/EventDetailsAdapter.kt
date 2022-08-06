@@ -12,7 +12,6 @@ class EventDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ACTION = 1
-        private const val TYPE_SPEAKER = 2
     }
 
     private val collection = ArrayList<Any>()
@@ -21,7 +20,6 @@ class EventDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (collection[position]) {
             is String -> TYPE_HEADER
             is Action -> TYPE_ACTION
-            is Speaker -> TYPE_SPEAKER
             else -> error("Unknown view type: ${collection[position].javaClass.simpleName}")
         }
     }
@@ -30,7 +28,6 @@ class EventDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             TYPE_HEADER -> HeaderViewHolder.inflate(parent)
             TYPE_ACTION -> ActionViewHolder.inflate(parent)
-            TYPE_SPEAKER -> SpeakerViewHolder.inflate(parent)
             else -> error("Unknown view type: $viewType")
         }
     }
@@ -41,7 +38,6 @@ class EventDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (holder) {
             is HeaderViewHolder -> holder.render(collection[position] as String)
             is ActionViewHolder -> holder.render(collection[position] as Action)
-            is SpeakerViewHolder -> holder.render(collection[position] as Speaker)
         }
     }
 

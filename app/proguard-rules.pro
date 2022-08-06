@@ -40,7 +40,6 @@
 -keep class com.advice.schedule.ui.maps.MapsFragment { *; }
 -keep class com.advice.schedule.ui.information.faq.FAQFragment { *; }
 -keep class com.advice.schedule.ui.information.vendors.VendorsFragment { *; }
--keep class com.advice.schedule.ui.search.SearchFragment { *; }
 -keep class com.advice.schedule.ui.settings.SettingsFragment { *; }
 
 # AndroidPdfViewer
