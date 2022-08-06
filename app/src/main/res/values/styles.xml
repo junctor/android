@@ -97,11 +97,12 @@
     <style name="Label" parent="TextAppearance.AppCompat.Body2">
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">5dp</item>
+        <item name="android:textColorLink">@color/link_colour</item>
     </style>
 
     <style name="Body" parent="TextAppearance.AppCompat.Body1">
-        <!--<item name="android:textColor">@android:color/white_90</item>-->
         <item name="android:alpha">0.90</item>
+        <item name="android:textColorLink">@color/link_colour</item>
     </style>
 
     <style name="Paragraph" parent="Body">
@@ -220,7 +221,7 @@
         <item name="android:autoLink">all</item>
         <item name="android:lineSpacingExtra">3dp</item>
         <item name="android:alpha">0.70</item>
-        <item name="android:textColorLink">@color/blue_dark</item>
+        <item name="android:textColorLink">@color/link_colour</item>
         <item name="android:textSize">13sp</item>
     </style>
 

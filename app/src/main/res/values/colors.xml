@@ -22,6 +22,7 @@
     <color name="blue_light">#50d7e8</color>
 
     <color name="bubble">#653fff</color>
+    <color name="link_colour">@color/blue_dark</color>
 
 
     <color name="background_pressed">#e0e0e0</color>
