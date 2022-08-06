@@ -87,7 +87,6 @@ class SpeakersFragment : Fragment() {
     }
 
     private fun onResponse(response: Response<List<Speaker>>) {
-        Timber.e("onResponse: $response")
         when (response) {
             is Response.Init -> {
                 setProgressIndicator(active = false)
