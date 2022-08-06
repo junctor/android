@@ -2,12 +2,12 @@ package com.advice.schedule.ui.events
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.advice.schedule.models.local.Action
 import com.shortstack.hackertracker.databinding.ItemEventLinkBinding
+import timber.log.Timber
 
 class ActionViewHolder(private val binding: ItemEventLinkBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -21,7 +21,7 @@ class ActionViewHolder(private val binding: ItemEventLinkBinding) :
                 val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(action.url))
                 binding.root.context.startActivity(intent)
             } catch (ex: Exception) {
-                Log.e("ActionViewHolder", "Could not open URL: ${action.url}")
+                Timber.e("Could not open URL: ${action.url}")
             }
         }
     }

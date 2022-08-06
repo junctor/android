@@ -1,6 +1,5 @@
 package com.advice.schedule.database
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.work.OneTimeWorkRequestBuilder
@@ -10,8 +9,8 @@ import com.advice.schedule.*
 import com.advice.schedule.models.firebase.*
 import com.advice.schedule.models.local.*
 import com.advice.schedule.network.task.ReminderWorker
-import com.advice.schedule.utilities.Time
 import com.advice.schedule.utilities.Storage
+import com.advice.schedule.utilities.Time
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -24,6 +23,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
 import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -485,7 +485,7 @@ class DatabaseManager(
         val id = user?.uid
 
         if (conference == null || token == null || id == null) {
-            Log.e("TAG", "Null, cannot update token.")
+            Timber.e("Null, cannot update token.")
             return
         }
 

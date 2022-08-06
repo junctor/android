@@ -3,7 +3,6 @@ package com.advice.schedule
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -21,6 +20,7 @@ import com.advice.schedule.utilities.Time
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -113,7 +113,7 @@ fun FirebaseConference.toConference(): Conference? {
             timezone
         )
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to Conference: " + ex.message)
+        Timber.e("Could not map data to Conference: ${ex.message}")
         null
     }
 }
@@ -137,7 +137,7 @@ fun FirebaseType.toType(): Type? {
             actions
         )
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to Location: " + ex.message)
+        Timber.e("Could not map data to Location: ${ex.message}")
         null
     }
 }
@@ -153,7 +153,7 @@ fun FirebaseLocation.toLocation(): Location? {
             default_status, hier_depth, hier_extent_left, hier_extent_right, parent_id, peer_sort_order, schedule
         )
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to Location: " + ex.message)
+        Timber.e("Could not map data to Location: ${ex.message}")
         null
     }
 }
@@ -182,7 +182,7 @@ fun FirebaseEvent.toEvent(tags: List<FirebaseTagType>): Event? {
             links
         )
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to Event: " + ex.message)
+        Timber.e("Could not map data to Event: ${ex.message}")
         return null
     }
 }
@@ -205,7 +205,7 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? {
             title
         )
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to Speaker: " + ex.message)
+        Timber.e("Could not map data to Speaker: ${ex.message}")
         null
     }
 }
@@ -220,7 +220,7 @@ fun FirebaseVendor.toVendor(): Vendor? {
             partner
         )
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to Vendor: " + ex.message)
+        Timber.e("Could not map data to Vendor: ${ex.message}")
         null
     }
 }
@@ -233,7 +233,7 @@ fun FirebaseArticle.toArticle(): Article? {
             text
         )
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to Article: " + ex.message)
+        Timber.e("Could not map data to Article: ${ex.message}")
         null
     }
 }
@@ -242,7 +242,7 @@ fun FirebaseFAQ.toFAQ(isExpanded: Boolean = false): Pair<FAQQuestion, FAQAnswer>
     return try {
         FAQQuestion(id, question, isExpanded) to FAQAnswer(id, answer, isExpanded)
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to FAQ: " + ex.message)
+        Timber.e("Could not map data to FAQ: ${ex.message}")
         null
     }
 }
@@ -266,7 +266,7 @@ fun <T> QuerySnapshot.toObjectsOrEmpty(@NonNull clazz: Class<T>): List<T> {
     return try {
         toObjects(clazz)
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to objects: " + ex.message)
+        Timber.e("Could not map data to objects: ${ex.message}")
         return emptyList()
     }
 }
@@ -275,7 +275,7 @@ fun <T> DocumentSnapshot.toObjectOrNull(@NonNull clazz: Class<T>): T? {
     return try {
         toObject(clazz)
     } catch (ex: Exception) {
-        Log.e("Extensions", "Could not map data to objects: " + ex.message)
+        Timber.e("Could not map data to objects: ${ex.message}")
         return null
     }
 }
