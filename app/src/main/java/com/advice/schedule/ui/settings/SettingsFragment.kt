@@ -105,7 +105,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val versionTextView = view.findViewById<TextView>(R.id.version)
         versionTextView.text =
-            getString(R.string.version, BuildConfig.VERSION_NAME)
+            getString(R.string.version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
 
         var index = 0
         versionTextView.setOnClickListener {

@@ -95,7 +95,7 @@
 
 
     <!-- Settings -->
-    <string name="version">Version %1$s</string>
+    <string name="version">Version %1$s (%2$s)</string>
     <string name="choose_theme">Choose Theme</string>
     <string name="setting_change_theme">Change Theme</string>
     <string name="setting_change_conference">Change Conference</string>
