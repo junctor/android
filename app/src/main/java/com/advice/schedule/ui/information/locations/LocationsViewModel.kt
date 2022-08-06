@@ -117,3 +117,8 @@ fun Location.toContainer(hasChildren: Boolean = false): LocationContainer {
     return LocationContainer(id, name, shortName, default_status, hier_depth, schedule ?: emptyList())
         .hasChildren(hasChildren)
 }
+
+// todo: refactor LocationsViewModel to store the raw Locations instead of recreating this item when clicked.
+fun LocationContainer.toLocation(): Location {
+    return Location(id, title, shortTitle, null, "", defaultStatus, depth,  - 1, -1, -1, -1, null)
+}

@@ -37,10 +37,10 @@ class LocationsFragment : Fragment() {
         }
 
         val adapter = LocationsAdapter { location ->
-            if(location.hasChildren) {
+            if (location.hasChildren) {
                 viewModel.toggle(location)
             } else {
-                (requireActivity() as MainActivity).showSchedule(location)
+                (requireActivity() as MainActivity).showSchedule(location.toLocation())
             }
         }
 
@@ -87,7 +87,7 @@ class LocationsFragment : Fragment() {
 
     private fun showEmptyView() {
         binding.emptyView.visibility = View.VISIBLE
-        binding.emptyView.showError("Speakers not found")
+        binding.emptyView.showError("Locations not found")
     }
 
     private fun showErrorView(message: String?) {
