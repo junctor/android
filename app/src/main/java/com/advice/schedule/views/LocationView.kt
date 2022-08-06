@@ -16,15 +16,18 @@ class LocationView(context: Context, attrs: AttributeSet?) : ConstraintLayout(co
 
     private val binding = LocationViewBinding.inflate(LayoutInflater.from(context), this, true)
 
-    fun setLocation(location: LocationContainer, useShortLabel: Boolean = false, onClickListener: ((LocationContainer) -> Unit)? = null) {
+    fun setLocation(location: LocationContainer, useShortLabel: Boolean = false) {
         binding.title.text = if (useShortLabel) {
             location.shortTitle ?: location.title
         } else {
             location.title
         }
 
-        binding.spacer.layoutParams.width = location.depth * 16.toPx
-        binding.spacer.requestLayout()
+        val margin = location.depth * 16.toPx
+
+        val layoutParams = binding.status.layoutParams as LayoutParams
+        layoutParams.marginStart = margin
+        binding.status.layoutParams = layoutParams
 
         val drawable = ContextCompat.getDrawable(context, R.drawable.chip_background)?.mutate()
 
@@ -37,11 +40,5 @@ class LocationView(context: Context, attrs: AttributeSet?) : ConstraintLayout(co
 
         drawable?.setTint(color)
         binding.status.background = drawable
-
-        if (onClickListener != null) {
-            binding.root.setOnClickListener {
-                onClickListener.invoke(location)
-            }
-        }
     }
 }

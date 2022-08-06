@@ -12,6 +12,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import timber.log.Timber
 
 class LocationsViewModel : ViewModel(), KoinComponent {
 
@@ -29,7 +30,7 @@ class LocationsViewModel : ViewModel(), KoinComponent {
                 locations.addSource(database.getLocations(it)) {
                     val list = it.sortedWith(compareBy({ it.hier_extent_left }, { it.hier_extent_right }))
                     // need to populate the list first
-                    _locations = list.map { it.toContainer() }
+                    _locations = list.map { element -> element.toContainer(list.any { it.parent_id == element.id }) }
                     // then update the status
                     locations.value = Response.Success(updateLocations())
                 }
@@ -38,8 +39,8 @@ class LocationsViewModel : ViewModel(), KoinComponent {
 
         viewModelScope.launch {
             while (isActive) {
+                Timber.d(("Updating location list"))
                 delay(LOCATION_UPDATE_DELAY)
-
                 val data = updateLocations()
                 _locations = data
                 locations.value = Response.Success(data)
@@ -50,8 +51,9 @@ class LocationsViewModel : ViewModel(), KoinComponent {
     private fun updateLocations(): List<LocationContainer> {
         val list = _locations
 
-        for (location in list) {
+        return list.map { location ->
             val children = location.getChildren()
+
             val status = if (children.isEmpty()) {
                 location.getCurrentStatus()
             } else {
@@ -69,7 +71,6 @@ class LocationsViewModel : ViewModel(), KoinComponent {
             }
             location.setStatus(status)
         }
-        return list
     }
 
     fun toggle(location: LocationContainer) {
@@ -112,6 +113,7 @@ class LocationsViewModel : ViewModel(), KoinComponent {
     }
 }
 
-fun Location.toContainer(): LocationContainer {
-    return LocationContainer(name, shortName, default_status, hier_depth, schedule ?: emptyList())
+fun Location.toContainer(hasChildren: Boolean = false): LocationContainer {
+    return LocationContainer(id, name, shortName, default_status, hier_depth, schedule ?: emptyList())
+        .hasChildren(hasChildren)
 }

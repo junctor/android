@@ -15,7 +15,7 @@ data class FirebaseLocation(
     val hier_depth: Int = -1,
     val hier_extent_left: Int = -1,
     val hier_extent_right: Int = -1,
-    val parent_id: Int = -1,
+    val parent_id: Long = -1,
     val peer_sort_order: Int = -1,
     val schedule: List<LocationSchedule>? = null,
     val short_name: String? = null,

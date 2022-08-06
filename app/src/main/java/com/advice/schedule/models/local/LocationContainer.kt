@@ -8,13 +8,15 @@ import java.util.*
 
 @Parcelize
 data class LocationContainer(
+    val id: Long,
     val title: String,
     val shortTitle: String?,
     val defaultStatus: String?,
     val depth: Int,
     val schedule: List<LocationSchedule>,
     val isChildrenExpanded: Boolean = true,
-    val isExpanded: Boolean = true
+    val isExpanded: Boolean = true,
+    val hasChildren: Boolean = false
 ) : Parcelable {
 
     var status: LocationStatus = LocationStatus.Closed
@@ -45,7 +47,7 @@ data class LocationContainer(
 
     override fun equals(other: Any?): Boolean {
         if (other is LocationContainer) {
-            return title == other.title
+            return this.id == other.id
         }
         return super.equals(other)
     }
@@ -65,6 +67,9 @@ fun LocationContainer.isChildrenExpanded(isExpanded: Boolean): LocationContainer
     }
 }
 
-fun LocationContainer.setStatus(status: LocationStatus) {
+fun LocationContainer.hasChildren(hasChildren: Boolean) = copy(hasChildren = hasChildren)
+
+fun LocationContainer.setStatus(status: LocationStatus): LocationContainer {
     this.status = status
+    return this
 }
