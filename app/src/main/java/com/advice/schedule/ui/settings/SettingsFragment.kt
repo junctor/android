@@ -1,30 +1,26 @@
 package com.advice.schedule.ui.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.Conference
-import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.themes.ThemesManager
-import com.advice.schedule.utilities.Time
 import com.advice.schedule.utilities.Storage
 import com.shortstack.hackertracker.BuildConfig
 import com.shortstack.hackertracker.R
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val database: DatabaseManager by inject()
-    private val storage: Storage by inject()
-    private val themes: ThemesManager by inject()
+    private val viewModel by viewModel<SettingsViewModel>()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val context = preferenceManager.context
@@ -38,12 +34,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 summaryOff = getString(R.string.setting_time_zone_summary_off)
                 key = Storage.FORCE_TIME_ZONE_KEY
             })
-
-//            // Back Button
-//            addPreference(SwitchPreference(context).apply {
-//                title = getString(R.string.setting_back_button_drawer)
-//                key = Storage.NAV_DRAWER_ON_BACK_KEY
-//            })
 
             // Showing filter button
             addPreference(SwitchPreference(context).apply {
@@ -65,19 +55,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 key = Storage.USER_ANALYTICS_KEY
             })
 
-            val calendar = Calendar.getInstance()
-            calendar.time = Time.now()
-
-            val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
-            if (dayOfYear >= 219 && storage.getPreference(Storage.EASTER_EGGS_ENABLED_KEY, false)) {
+            if (viewModel.hasReboot().value == true) {
                 // Safe Mode
                 addPreference(Preference(context).apply {
                     title = getString(R.string.settings_reboot)
                     summary = getString(R.string.settings_safe_mode_summary)
-                    key = SAFE_MODE_KEY
+                    key = SettingsFragment.SAFE_MODE_KEY
                     setOnPreferenceClickListener {
-                        storage.theme = ThemesManager.Theme.SafeMode
-                        storage.setPreference(Storage.SAFE_MODE_ENABLED, true)
+                        viewModel.setTheme(ThemesManager.Theme.SafeMode)
                         requireActivity().recreate()
                         true
                     }
@@ -96,7 +81,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             requireActivity().onBackPressed()
         }
 
-        database.conference.observe(viewLifecycleOwner) {
+        viewModel.getConference().observe(viewLifecycleOwner) {
             if (it != null) {
                 updateConference(it)
                 updateTimezonePreference(it)
@@ -107,11 +92,31 @@ class SettingsFragment : PreferenceFragmentCompat() {
         versionTextView.text =
             getString(R.string.version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
 
-        var index = 0
         versionTextView.setOnClickListener {
-            if (index++ == 10) {
-                storage.setPreference(Storage.DEVELOPER_THEME_UNLOCKED, true)
+            viewModel.onVersionClick()
+        }
+
+        view.findViewById<View>(R.id.twitter_card).setOnClickListener {
+            openDeveloperTwitter(isFollow = false)
+        }
+
+        view.findViewById<TextView>(R.id.twitter_action).setOnClickListener {
+            openDeveloperTwitter(isFollow = true)
+        }
+    }
+
+    private fun openDeveloperTwitter(isFollow: Boolean = false) {
+        try {
+            val url = if (isFollow) {
+                "https://twitter.com/intent/user?screen_name=_advice_dog"
+            } else {
+                "https://twitter.com/_advice_dog"
             }
+            val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(url))
+            context?.startActivity(intent)
+            viewModel.onDeveloperTwitterClick(isFollow)
+        } catch (ex: Exception) {
+            // do nothing
         }
     }
 
@@ -123,49 +128,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun updateTimezonePreference(conference: Conference) {
         val preference =
             preferenceScreen.findPreference<SwitchPreference>(Storage.FORCE_TIME_ZONE_KEY)
-        preference?.title = getString(R.string.setting_time_zone,
+        preference?.title = getString(
+            R.string.setting_time_zone,
             conference.timezone.uppercase(Locale.getDefault())
         )
     }
 
-
-    private fun showChangeConferenceDialog() {
-        val context = context ?: return
-
-        val conferences = database.conferences.value ?: emptyList()
-        val selected = conferences.indexOf(database.conference.value)
-
-        val items = conferences.map { it.name }.toTypedArray()
-
-        AlertDialog.Builder(context, R.style.MyAlertDialogStyle)
-            .setTitle(getString(R.string.choose_conference))
-            .setSingleChoiceItems(items, selected) { dialog, which ->
-                database.changeConference(conferences[which].id)
-                dialog.dismiss()
-            }.show()
-    }
-
-    private fun showChangeThemeDialog() {
-        val context = context ?: return
-
-        val list = themes.getThemes()
-        val selected = list.indexOf(storage.theme)
-
-        val items = list.map { it.label }.toTypedArray()
-
-        AlertDialog.Builder(context, R.style.MyAlertDialogStyle)
-            .setTitle(getString(R.string.choose_theme))
-            .setSingleChoiceItems(items, selected) { dialog, which ->
-                storage.theme = list[which]
-                dialog.dismiss()
-                (context as MainActivity).recreate()
-            }.show()
-    }
-
     companion object {
         fun newInstance() = SettingsFragment()
-
-        private const val CHANGE_THEME_KEY = "change_theme"
         private const val CHANGE_CONFERENCE_KEY = "change_conference"
         private const val SAFE_MODE_KEY = "safe_mode"
     }

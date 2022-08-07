@@ -13,6 +13,7 @@ import com.advice.schedule.ui.information.faq.FAQViewModel
 import com.advice.schedule.ui.information.locations.LocationsViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
+import com.advice.schedule.ui.settings.SettingsViewModel
 import com.advice.schedule.ui.themes.ThemesManager
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.NotificationHelper
@@ -45,5 +46,6 @@ val appModule = module {
     viewModel { SpeakersViewModel() }
     viewModel { LocationsViewModel() }
     viewModel { FAQViewModel() }
+    viewModel { SettingsViewModel() }
 
 }

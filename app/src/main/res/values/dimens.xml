@@ -50,5 +50,7 @@
     <dimen name="background_corner_radius">8dp</dimen>
     <dimen name="tag_dot_size">10dp</dimen>
 
+    <dimen name="twitter_badge_icon_size">42dp</dimen>
+
 
 </resources>

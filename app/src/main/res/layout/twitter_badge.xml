@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="32dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="16dp"
+        android:text="@string/twitter_built_by" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/twitter_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/well_background_rounded"
+        android:backgroundTint="#0e0e0e"
+        android:foreground="@drawable/rounded_selectable_background_white">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/twitter_icon"
+            android:layout_width="@dimen/twitter_badge_icon_size"
+            android:layout_height="@dimen/twitter_badge_icon_size"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/doggo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/twitter_name"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/twitter_name"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/twitter_action"
+            app:layout_constraintStart_toEndOf="@+id/twitter_icon"
+            app:layout_constraintTop_toTopOf="@+id/twitter_icon" />
+
+        <TextView
+            android:id="@+id/twitter_handle"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:alpha="0.80"
+            android:text="@string/twitter_handle"
+            app:layout_constraintEnd_toStartOf="@+id/twitter_action"
+            app:layout_constraintStart_toEndOf="@+id/twitter_icon"
+            app:layout_constraintTop_toBottomOf="@+id/twitter_name" />
+
+        <TextView
+            android:id="@+id/twitter_bio"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/twitter_bio"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/twitter_handle" />
+
+        <TextView
+            android:id="@+id/twitter_action"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/twitter_follow_background_rounded"
+            android:backgroundTint="@color/white"
+            android:foreground="?selectableItemBackground"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:text="@string/twitter_action"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/twitter_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/twitter_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
+

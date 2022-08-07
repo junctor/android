@@ -40,6 +40,8 @@
                 tools:targetApi="n" />
             <!-- targetApi just to appease the IDE; the id is defined by the support lib. -->
 
+            <include layout="@layout/twitter_badge"/>
+
             <TextView
                 android:id="@+id/version"
                 android:layout_width="match_parent"
