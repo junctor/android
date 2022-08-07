@@ -3,8 +3,10 @@ package com.advice.schedule.models.local
 import android.content.Context
 import android.os.Parcelable
 import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.schedule.utilities.Time
 import com.advice.schedule.utilities.TimeUtil
 import com.advice.schedule.utilities.getDateMidnight
+import com.advice.schedule.utilities.toTimestamp
 import com.google.firebase.Timestamp
 import com.shortstack.hackertracker.R
 import kotlinx.android.parcel.Parcelize
@@ -35,11 +37,11 @@ data class Event(
 
     val hasFinished: Boolean
         get() {
-            return end.compareTo(Timestamp.now()) == 1
+            return end.compareTo(Time.now().toTimestamp()) == 1
         }
 
     val hasStarted: Boolean
-        get() =  start.compareTo(Timestamp.now()) == -1
+        get() =  start.compareTo(Time.now().toTimestamp()) == -1
 
     val date: Date
         get() {

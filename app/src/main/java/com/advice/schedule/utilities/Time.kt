@@ -1,13 +1,15 @@
 package com.advice.schedule.utilities
 
+import com.google.firebase.Timestamp
+import com.shortstack.hackertracker.BuildConfig
 import java.text.SimpleDateFormat
 import java.util.*
 
 object Time {
     fun now(): Date {
-//    if (BuildConfig.DEBUG) {
-//        return parse("2022-08-13T01:00:00.000-0000")
-//    }
+        if (BuildConfig.DEBUG) {
+//            return parse("2022-08-13T01:00:00.000-0000")
+        }
         return Date()
     }
 }
@@ -39,3 +41,5 @@ fun getDateMidnight(date: Date, zone: String? = null): Date {
     }
     return apply.time
 }
+
+fun Date.toTimestamp() = Timestamp(this)
