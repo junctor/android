@@ -19,7 +19,7 @@ class ReminderManager(
         private const val TAG = "reminder_"
     }
 
-    suspend fun getEvent(conference: String, id: Int): Event? {
+    suspend fun getEvent(conference: String, id: Long): Event? {
         return databaseManager.getEventById(conference, id)
     }
 

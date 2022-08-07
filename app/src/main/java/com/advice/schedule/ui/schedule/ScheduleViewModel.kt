@@ -13,6 +13,7 @@ import com.advice.schedule.models.local.Speaker
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import timber.log.Timber
 
 class ScheduleViewModel : ViewModel(), KoinComponent {
 
@@ -64,7 +65,11 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     }
 
     private fun getList(list: List<Event>, query: String?): Response.Success<List<Event>> {
-        val data = list.filter { query == null || (it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)) }
+        val data = list.filter {
+            query == null || (it.title.contains(query, ignoreCase = true)
+                    || it.description.contains(query, ignoreCase = true)
+                    || (query.toLongOrNull() != null && query.toLong() == it.id))
+        }
         return Response.Success(data)
     }
 
@@ -156,5 +161,14 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
 
     fun setSearchQuery(query: String?) {
         searchQuery.value = query
+    }
+
+    suspend fun getEventById(target: Long): Event? {
+        val value = database.conference.value
+        if (value == null) {
+            Timber.e("Could not get Conference from database")
+            return null
+        }
+        return database.getEventById(value.code, target)
     }
 }

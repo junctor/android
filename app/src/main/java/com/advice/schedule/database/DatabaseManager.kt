@@ -402,7 +402,8 @@ class DatabaseManager(
         return mutableLiveData
     }
 
-    suspend fun getEventById(conference: String, id: Int): Event? {
+    suspend fun getEventById(conference: String, id: Long): Event? {
+        Timber.d("Looking for event in conference: $conference, id: $id")
         val snapshot = firestore.collection(CONFERENCES)
             .document(conference)
             .collection(EVENTS)

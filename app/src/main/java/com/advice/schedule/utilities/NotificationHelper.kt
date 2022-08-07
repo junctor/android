@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -17,6 +18,7 @@ import com.advice.schedule.models.local.Event
 import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import org.koin.core.KoinComponent
+import timber.log.Timber
 
 class NotificationHelper(private val context: Context) : KoinComponent {
 
@@ -74,21 +76,19 @@ class NotificationHelper(private val context: Context) : KoinComponent {
             val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val color = ContextCompat.getColor(context, R.color.colorPrimary)
 
-
             val builder = NotificationCompat.Builder(context, CHANNEL_UPDATES)
             builder.setSound(soundUri)
             builder.setVibrate(longArrayOf(0, 250, 500, 250))
             builder.setLights(Color.MAGENTA, 3000, 1000)
 
             builder.setSmallIcon(R.drawable.skull)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder.color = color
-            }
+            builder.color = color
             builder.setAutoCancel(true)
 
             return builder
         }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     private fun setItemPendingIntent(builder: NotificationCompat.Builder, item: Event? = null) {
         val intent = Intent(context, MainActivity::class.java)
 
@@ -98,8 +98,7 @@ class NotificationHelper(private val context: Context) : KoinComponent {
             intent.putExtras(bundle)
         }
 
-        val pendingIntent =
-            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
         builder.setContentIntent(pendingIntent)
     }

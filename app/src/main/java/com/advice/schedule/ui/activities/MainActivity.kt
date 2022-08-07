@@ -1,5 +1,6 @@
 package com.advice.schedule.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -7,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.advice.schedule.get
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
@@ -19,22 +21,27 @@ import com.advice.schedule.ui.information.InformationFragment
 import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
 import com.advice.schedule.ui.schedule.ScheduleFragment
+import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
 import com.github.stkent.amplify.tracking.Amplify
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
-import com.orhanobut.logger.Logger
 import com.shortstack.hackertracker.BuildConfig
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     FragmentManager.OnBackStackChangedListener, KoinComponent {
 
     private val analytics by inject<Analytics>()
+
+    private val viewModel by viewModel<ScheduleViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -62,22 +69,29 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
         supportFragmentManager.addOnBackStackChangedListener(this)
     }
 
-    // todo: reimplement deep linking via push notifications
-//    override fun onNewIntent(intent: Intent?) {
-//        super.onNewIntent(intent)
-//        val target = intent?.getLongExtra("target", -1L)
-//        if (target != null && target != -1L) {
-//            showEvent(target)
-//        }
-//    }
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val target = intent?.getLongExtra("target", -1L)
+        Timber.d("target: $target")
+        if (target != null && target != -1L) {
+            lifecycleScope.launch {
+                val event = viewModel.getEventById(target)
+                if (event != null) {
+                    showEvent(event)
+                } else {
+                    Timber.e("Could not find event by id: $target")
+                }
+            }
+        }
+    }
 
     override fun onStart() {
         super.onStart()
         auth.signInAnonymously().addOnCompleteListener(this) {
             if (it.isSuccessful) {
-                Logger.d("Successfully signed in. ${it.result}")
+                Timber.d("Successfully signed in. ${it.result}")
             } else {
-                Logger.e("Could not sign in.")
+                Timber.e("Could not sign in.")
             }
         }
     }

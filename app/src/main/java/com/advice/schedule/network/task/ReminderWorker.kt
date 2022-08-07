@@ -7,6 +7,7 @@ import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.utilities.NotificationHelper
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import timber.log.Timber
 
 class ReminderWorker(
     context: Context,
@@ -20,19 +21,19 @@ class ReminderWorker(
     override suspend fun doWork(): Result {
         val conference = inputData.getString(INPUT_CONFERENCE)
         if (conference == null) {
-            // todo: log the error
+            Timber.e("Could not fetch the current conference.")
             return Result.failure()
         }
 
-        val id = inputData.getInt(INPUT_ID, -1)
-        if (id == -1) {
-            // todo: log the error
+        val id = inputData.getLong(INPUT_ID, -1)
+        if (id == -1L) {
+            Timber.e("Could not get the target id from the inputData.")
             return Result.failure()
         }
 
         val event = database.getEventById(conference, id)
         if (event == null) {
-            // todo: log the error
+            Timber.e("Could not find the target event.")
             return Result.failure()
         }
         notifications.notifyStartingSoon(event)
