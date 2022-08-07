@@ -19,7 +19,6 @@ import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.onQueryTextChanged
 import com.advice.schedule.ui.PanelsFragment
-import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.schedule.list.ScheduleAdapter
 import com.advice.schedule.utilities.Storage
 import com.advice.schedule.views.DaySelectorView
@@ -111,7 +110,9 @@ class ScheduleFragment : Fragment(), KoinComponent {
         }
 
         binding.filter.setOnClickListener {
-            (parentFragment as PanelsFragment).openEndPanel()
+            if (parentFragment != null) {
+                (parentFragment as PanelsFragment).openEndPanel()
+            }
         }
 
         binding.list.addItemDecoration(decoration)
