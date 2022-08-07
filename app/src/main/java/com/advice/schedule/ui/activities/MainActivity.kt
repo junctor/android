@@ -1,6 +1,5 @@
 package com.advice.schedule.ui.activities
 
-
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -21,6 +20,7 @@ import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
 import com.advice.schedule.ui.schedule.ScheduleFragment
 import com.advice.schedule.ui.settings.SettingsFragment
+import com.advice.schedule.utilities.Analytics
 import com.github.stkent.amplify.tracking.Amplify
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
@@ -29,10 +29,12 @@ import com.shortstack.hackertracker.BuildConfig
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.ActivityMainBinding
 import org.koin.core.KoinComponent
-
+import org.koin.core.inject
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     FragmentManager.OnBackStackChangedListener, KoinComponent {
+
+    private val analytics by inject<Analytics>()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -78,15 +80,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
                 Logger.e("Could not sign in.")
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.search -> {
-                setMainFragment(item.itemId, addToBackStack = true)
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -136,35 +129,43 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
 
     fun showEvent(event: Event) {
         setAboveFragment(EventFragment.newInstance(event))
+        analytics.setScreen(Analytics.SCREEN_EVENT)
     }
 
     fun showSpeaker(speaker: Speaker?) {
         speaker ?: return
         setAboveFragment(SpeakerFragment.newInstance(speaker))
+        analytics.setScreen(Analytics.SCREEN_SPEAKER)
     }
 
     fun showInformation() {
         setAboveFragment(InformationFragment.newInstance())
+        analytics.setScreen(Analytics.SCREEN_INFORMATION)
     }
 
     fun showMap() {
         setAboveFragment(MapsFragment.newInstance())
+        analytics.setScreen(Analytics.SCREEN_MAPS)
     }
 
     fun showSettings() {
         setAboveFragment(SettingsFragment.newInstance())
+        analytics.setScreen(Analytics.SCREEN_SETTINGS)
     }
 
     fun showSchedule(location: Location) {
         setAboveFragment(ScheduleFragment.newInstance(location), hasAnimation = false)
+        analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 
     fun showSchedule(type: FirebaseTag) {
         setAboveFragment(ScheduleFragment.newInstance(type), hasAnimation = false)
+        analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 
     fun showSchedule(speaker: Speaker) {
         setAboveFragment(ScheduleFragment.newInstance(speaker), hasAnimation = false)
+        analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 
     private fun setMainFragment(id: Int, title: String? = null, addToBackStack: Boolean) {

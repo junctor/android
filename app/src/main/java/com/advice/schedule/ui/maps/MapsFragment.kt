@@ -1,19 +1,16 @@
 package com.advice.schedule.ui.maps
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.lifecycle.ViewModelProvider
 import com.advice.schedule.Response
 import com.advice.schedule.models.firebase.FirebaseConferenceMap
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.ui.HackerTrackerViewModel
-import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.utilities.Analytics
 import com.shortstack.hackertracker.databinding.FragmentMapsBinding
 import org.koin.android.ext.android.inject
@@ -77,7 +74,7 @@ class MapsFragment : Fragment() {
             }
         }
 
-        analytics.logCustom(Analytics.CustomEvent(Analytics.MAP_VIEW))
+        analytics.setScreen(Analytics.SCREEN_MAPS)
     }
 
     private fun showSelectedMap(maps: List<FirebaseConferenceMap>) {

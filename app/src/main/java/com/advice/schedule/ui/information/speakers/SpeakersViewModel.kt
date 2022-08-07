@@ -58,7 +58,7 @@ class SpeakersViewModel : ViewModel(), KoinComponent {
 
     fun getSpeaker(speaker: Speaker): LiveData<Response<Speaker>> {
         analytics.log("Viewing speaker ${speaker.name}")
-        analytics.onSpeakerEvent(Analytics.SPEAKER_VIEW, speaker)
+        analytics.onSpeakerView(speaker)
 
         val result = MediatorLiveData<Response<Speaker>>()
         result.value = Response.Success(speaker)
@@ -87,7 +87,7 @@ class SpeakersViewModel : ViewModel(), KoinComponent {
     }
 
     fun onOpenTwitter(speaker: Speaker) {
-        analytics.onSpeakerEvent(Analytics.SPEAKER_TWITTER, speaker)
+        analytics.onSpeakerEvent(speaker)
     }
 
     fun getSpeakers(): LiveData<Response<List<Speaker>>> = speakers

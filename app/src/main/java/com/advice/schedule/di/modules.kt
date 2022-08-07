@@ -35,7 +35,7 @@ val appModule = module {
 
     single { FirebaseCrashlytics.getInstance() }
 
-    single { Analytics(get(), get()) }
+    single { Analytics(get()) }
     single { WorkManager.getInstance() }
     single { ReminderManager(get(), get()) }
 

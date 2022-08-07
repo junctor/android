@@ -41,18 +41,14 @@ class App : Application() {
             modules(appModule)
         }
 
+        FirebaseApp.initializeApp(this)
+
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
 
-        FirebaseApp.initializeApp(this)
-
-        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
-
         initLogger()
         initFeedback()
-
     }
 
     private fun initFeedback() {

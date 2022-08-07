@@ -10,12 +10,17 @@ import androidx.fragment.app.Fragment
 import com.advice.schedule.get
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.schedule.ScheduleFragment
+import com.advice.schedule.utilities.Analytics
 import com.discord.panels.OverlappingPanelsLayout
 import com.discord.panels.PanelState
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.PanelsFragmentBinding
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class PanelsFragment : Fragment() {
+class PanelsFragment : Fragment(), KoinComponent {
+
+    private val analytics by inject<Analytics>()
 
     private var _binding: PanelsFragmentBinding? = null
     private val binding get() = _binding!!
@@ -77,8 +82,10 @@ class PanelsFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
-        binding.overlappingPanels.registerStartPanelStateListeners(object :
-            OverlappingPanelsLayout.PanelStateListener {
+        binding.overlappingPanels.registerStartPanelStateListeners(object : OverlappingPanelsLayout.PanelStateListener {
+
+            private var previousScreen: String? = null
+
             override fun onPanelStateChange(panelState: PanelState) {
                 when (panelState) {
                     PanelState.Opening,
@@ -92,8 +99,21 @@ class PanelsFragment : Fragment() {
                     OverlappingPanelsLayout.Panel.CENTER,
                     OverlappingPanelsLayout.Panel.END -> true
                 }
+
+                val screen = when (binding.overlappingPanels.getSelectedPanel()) {
+                    OverlappingPanelsLayout.Panel.START -> Analytics.SCREEN_HOME
+                    OverlappingPanelsLayout.Panel.CENTER -> Analytics.SCREEN_SCHEDULE
+                    OverlappingPanelsLayout.Panel.END -> Analytics.SCREEN_FILTERS
+                }
+                if (screen != previousScreen) {
+                    previousScreen = screen
+                    analytics.setScreen(screen)
+                }
             }
         })
+
+        // to ensure the default screen is tracked
+        analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 
     private fun showInformation() {

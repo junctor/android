@@ -32,7 +32,7 @@ class SpeakerView(context: Context, speaker: Speaker) : LinearLayout(context) {
             ContextCompat.getColor(context, id)
         } else {
             val colours = context.resources.getStringArray(R.array.colors)
-            Color.parseColor(colours[speaker.id % colours.size])
+            Color.parseColor(colours[speaker.id.toInt() % colours.size])
         }
 
         binding.category.setBackgroundColor(color)

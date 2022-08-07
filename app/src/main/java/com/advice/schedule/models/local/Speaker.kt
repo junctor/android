@@ -6,7 +6,7 @@ import kotlin.math.absoluteValue
 
 @Parcelize
 data class Speaker(
-        val id: Int,
+        val id: Long,
         val name: String,
         val description: String,
         val link: String,

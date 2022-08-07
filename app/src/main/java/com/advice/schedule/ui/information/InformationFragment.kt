@@ -15,6 +15,7 @@ import com.advice.schedule.ui.information.info.WiFiFragment
 import com.advice.schedule.ui.information.locations.LocationsFragment
 import com.advice.schedule.ui.information.speakers.SpeakersFragment
 import com.advice.schedule.ui.information.vendors.VendorsFragment
+import com.advice.schedule.utilities.Analytics
 import com.shortstack.hackertracker.databinding.FragmentInformationBinding
 import org.koin.android.ext.android.inject
 
@@ -23,7 +24,8 @@ class InformationFragment : Fragment() {
     private var _binding: FragmentInformationBinding? = null
     private val binding get() = _binding!!
 
-    private val database: DatabaseManager by inject()
+    private val database by inject<DatabaseManager>()
+    private val analytics by inject<Analytics>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,30 +53,37 @@ class InformationFragment : Fragment() {
 
         binding.wifi.setOnClickListener {
             (requireActivity() as MainActivity).setAboveFragment(WiFiFragment.newInstance(), hasAnimation = false)
+            analytics.setScreen(Analytics.SCREEN_WIFI)
         }
 
         binding.codeOfConduct.setOnClickListener {
             (requireActivity() as MainActivity).setAboveFragment(CodeOfConductFragment.newInstance(), hasAnimation = false)
+            analytics.setScreen(Analytics.SCREEN_CODE_OF_CONDUCT)
         }
 
         binding.support.setOnClickListener {
             (requireActivity() as MainActivity).setAboveFragment(SupportFragment.newInstance(), hasAnimation = false)
+            analytics.setScreen(Analytics.SCREEN_HELP_AND_SUPPORT)
         }
 
         binding.locations.setOnClickListener {
             (requireActivity() as MainActivity).setAboveFragment(LocationsFragment.newInstance(), hasAnimation = false)
+            analytics.setScreen(Analytics.SCREEN_LOCATIONS)
         }
 
         binding.faq.setOnClickListener {
             (requireActivity() as MainActivity).setAboveFragment(FAQFragment.newInstance(), hasAnimation = false)
+            analytics.setScreen(Analytics.SCREEN_FAQ)
         }
 
         binding.vendors.setOnClickListener {
             (requireActivity() as MainActivity).setAboveFragment(VendorsFragment.newInstance(), hasAnimation = false)
+            analytics.setScreen(Analytics.SCREEN_VENDORS_AND_PARTNERS)
         }
 
         binding.speakers.setOnClickListener {
             (requireActivity() as MainActivity).setAboveFragment(SpeakersFragment.newInstance(), hasAnimation = false)
+            analytics.setScreen(Analytics.SCREEN_SPEAKERS)
         }
     }
 

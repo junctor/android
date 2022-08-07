@@ -12,12 +12,14 @@ import com.advice.schedule.models.firebase.FirebaseConferenceMap
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.schedule.models.local.*
+import com.advice.schedule.utilities.Analytics
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class HackerTrackerViewModel : ViewModel(), KoinComponent {
 
     private val database: DatabaseManager by inject()
+    private val analytics by inject<Analytics>()
 
     val conferences = database.conferences
 
@@ -312,6 +314,7 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
     }
 
     fun changeConference(conference: Conference) {
+        //analytics.
         database.conference.value = null
         database.changeConference(conference.id)
     }

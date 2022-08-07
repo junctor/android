@@ -150,9 +150,7 @@ class EventView : FrameLayout, KoinComponent {
             reminder.cancel(event)
         }
 
-        val action =
-            if (event.isBookmarked) Analytics.EVENT_BOOKMARK else Analytics.EVENT_UNBOOKMARK
-        analytics.onEventAction(action, event)
+        analytics.onEventBookmark(event)
 
         updateBookmark(event)
     }

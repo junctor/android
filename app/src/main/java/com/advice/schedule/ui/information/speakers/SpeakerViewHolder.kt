@@ -31,7 +31,7 @@ class SpeakerViewHolder(private val binding: RowSpeakerBinding) : RecyclerView.V
             ContextCompat.getColor(context, id)
         } else {
             val colours = context.resources.getStringArray(R.array.colors)
-            Color.parseColor(colours[speaker.id % colours.size])
+            Color.parseColor(colours[speaker.id.toInt() % colours.size])
         }
 
         category.setBackgroundColor(color)

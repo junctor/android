@@ -45,10 +45,7 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     }
 
     fun onDeveloperTwitterClick(isFollow: Boolean) {
-        val event = Analytics.CustomEvent("developer twitter").apply {
-            putCustomAttribute("isFollow", isFollow.toString())
-        }
-        analytics.logCustom(event)
+        analytics.onDeveloperEvent(isFollow)
     }
 
     fun getConference(): LiveData<Conference> = conference

@@ -1,79 +1,96 @@
 package com.advice.schedule.utilities
 
-
-import android.content.Context
-import android.os.Bundle
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Speaker
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
+import timber.log.Timber
 
-class Analytics(context: Context, private val storage: Storage) {
+class Analytics(private val storage: Storage) {
 
     companion object {
-        const val EVENT_VIEW = "Event - View"
-        const val EVENT_OPEN_URL = "Event - Open URL"
-        const val EVENT_BOOKMARK = "Event - Bookmark"
-        const val EVENT_UNBOOKMARK = "Event - Unbookmark"
-        const val EVENT_SHARE = "Event - Share"
+        const val SCREEN_HOME = "Home"
+        const val SCREEN_SCHEDULE = "Schedule"
+        const val SCREEN_FILTERS = "Filters"
 
-        const val SPEAKER_VIEW = "Speaker - View"
-        const val SPEAKER_TWITTER = "Speaker - Open URL"
+        const val SCREEN_EVENT = "Event"
+        const val SCREEN_SPEAKER = "Speaker"
 
-        const val FAQ_VIEW = "FAQ - View"
+        const val SCREEN_MAPS = "Maps"
 
-        const val MAP_VIEW = "Map - View"
+        const val SCREEN_INFORMATION = "Information"
+        const val SCREEN_WIFI = "WiFi"
+        const val SCREEN_CODE_OF_CONDUCT = "Code of Conduct"
+        const val SCREEN_HELP_AND_SUPPORT = "Help & Support"
+        const val SCREEN_FAQ = "FAQ"
+        const val SCREEN_LOCATIONS = "Locations"
+        const val SCREEN_SPEAKERS = "Speakers"
+        const val SCREEN_VENDORS_AND_PARTNERS = "Vendors & Partners"
 
-        const val SETTINGS_ANALYTICS = "Settings - Analytics"
-        const val SETTINGS_NOTIFICATIONS = "Settings - Notifications"
-        const val SETTINGS_EXPIRED_EVENTS = "Settings - Expired Events"
+        const val SCREEN_SETTINGS = "Settings"
     }
 
-    private val analytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
+    private val analytics: FirebaseAnalytics = Firebase.analytics
 
-    fun onEventAction(action: String, event: Event) {
-        val event = CustomEvent(action).apply {
-            putCustomAttribute("Title", event.title)
+    fun onEventView(event: Event) = log {
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT) {
+            param(FirebaseAnalytics.Param.ITEM_ID, event.id)
+            param(FirebaseAnalytics.Param.ITEM_NAME, event.title)
+            param(FirebaseAnalytics.Param.CONTENT_TYPE, "event")
         }
-
-        logCustom(event)
     }
 
-    fun onSpeakerEvent(action: String, speaker: Speaker) {
-        val event = CustomEvent(action).apply {
-            putCustomAttribute("Name", speaker.name)
+    fun onEventBookmark(event: Event) = log {
+        analytics.logEvent("event_bookmark") {
+            param(FirebaseAnalytics.Param.ITEM_ID, event.id)
+            param(FirebaseAnalytics.Param.ITEM_NAME, event.title)
+            param(FirebaseAnalytics.Param.CONTENT_TYPE, "event")
+            param("is_bookmarked", event.isBookmarked.toString())
         }
-
-        logCustom(event)
     }
 
-    fun onSettingsChanged(setting: String, enabled: Boolean) {
-        val event = CustomEvent(setting).apply {
-            putCustomAttribute("Enabled", enabled.toString())
+    fun onSpeakerView(speaker: Speaker) = log {
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT) {
+            param(FirebaseAnalytics.Param.ITEM_ID, speaker.id)
+            param(FirebaseAnalytics.Param.ITEM_NAME, speaker.name)
+            param(FirebaseAnalytics.Param.CONTENT_TYPE, "speaker")
         }
-
-        logCustom(event)
     }
 
-    fun logCustom(event: CustomEvent) {
-        // Bypass to track if they're turning analytics off
-        if (!storage.allowAnalytics && !event.toString().contains(SETTINGS_ANALYTICS)) {
-            return
+    fun onSpeakerEvent(speaker: Speaker) = log {
+        analytics.logEvent("speaker_twitter") {
+            param(FirebaseAnalytics.Param.ITEM_ID, speaker.id)
+            param(FirebaseAnalytics.Param.ITEM_NAME, speaker.name)
+            param(FirebaseAnalytics.Param.CONTENT_TYPE, "speaker")
         }
+    }
 
-        analytics.logEvent(event.event, event.extras)
+    fun onDeveloperEvent(isFollow: Boolean) = log {
+        analytics.logEvent("developer_twitter") {
+            param(FirebaseAnalytics.Param.CONTENT_TYPE, "developer")
+            param("is_follow", isFollow.toString())
+        }
+    }
+
+    fun setScreen(screen: String) = log {
+        Timber.d("Current Screen: $screen")
+        analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+            param(FirebaseAnalytics.Param.SCREEN_NAME, screen)
+        }
     }
 
     fun log(message: String) {
-        //Crashlytics.getInstance().core.log(message)
+        //todo: Crashlytics.getInstance().core.log(message)
     }
 
-
-    @Deprecated("Replace with Firebase default solution.")
-    class CustomEvent(val event: String, val extras: Bundle = Bundle()) {
-
-        fun putCustomAttribute(key: String, value: String) {
-            extras.putString(key, value)
+    fun log(block: () -> Unit) {
+        // Bypass to track if they're turning analytics off
+        if (!storage.allowAnalytics/* && !event.toString().contains(SETTINGS_ANALYTICS)*/) {
+            Timber.d("User has disabled analytics, not tracking this event.")
+            return
         }
+        block()
     }
-
 }

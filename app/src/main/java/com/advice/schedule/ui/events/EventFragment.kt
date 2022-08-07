@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
@@ -124,7 +123,7 @@ class EventFragment : Fragment() {
         displayBookmark(event)
 
 
-        analytics.onEventAction(Analytics.EVENT_VIEW, event)
+        analytics.onEventView(event)
     }
 
     private fun onBookmarkClick(event: Event) {
@@ -137,9 +136,7 @@ class EventFragment : Fragment() {
             reminder.cancel(event)
         }
 
-        val action =
-            if (event.isBookmarked) Analytics.EVENT_BOOKMARK else Analytics.EVENT_UNBOOKMARK
-        analytics.onEventAction(action, event)
+        analytics.onEventBookmark(event)
 
         binding.toolbar.invalidate()
     }
