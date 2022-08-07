@@ -17,11 +17,14 @@ import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.utilities.Analytics
 import com.shortstack.hackertracker.databinding.FragmentMapsBinding
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MapsFragment : Fragment() {
 
     private var _binding: FragmentMapsBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel by sharedViewModel<HackerTrackerViewModel>()
 
     private val analytics: Analytics by inject()
     private var isFirstLoad: Boolean = true
@@ -47,8 +50,7 @@ class MapsFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        val mapsViewModel = ViewModelProvider(context as MainActivity)[HackerTrackerViewModel::class.java]
-        mapsViewModel.maps.observe(viewLifecycleOwner) {
+        viewModel.maps.observe(viewLifecycleOwner) {
             if (it is Response.Success) {
                 val maps = it.data
                 when (maps.size) {
