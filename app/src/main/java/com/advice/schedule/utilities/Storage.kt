@@ -22,6 +22,7 @@ class Storage(context: Context, private val gson: Gson) {
         const val USER_ANALYTICS_KEY = "user_analytics"
 
         const val TUTORIAL_FILTERS = "tutorial_filters"
+        const val TUTORIAL_EVENT_LOCATIONS = "tutorial_event_locations"
     }
 
     private val preferences: SharedPreferences =
@@ -61,6 +62,12 @@ class Storage(context: Context, private val gson: Gson) {
         get() = preferences.getBoolean(TUTORIAL_FILTERS, true)
         set(value) {
             preferences.edit().putBoolean(TUTORIAL_FILTERS, value).apply()
+        }
+
+    var tutorialEventLocations: Boolean
+        get() = preferences.getBoolean(TUTORIAL_EVENT_LOCATIONS, true)
+        set(value) {
+            preferences.edit().putBoolean(TUTORIAL_EVENT_LOCATIONS, value).apply()
         }
 
     var preferredConference: Int

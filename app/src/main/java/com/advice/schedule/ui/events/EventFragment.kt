@@ -18,6 +18,7 @@ import com.advice.schedule.ui.information.locations.toContainer
 import com.advice.schedule.ui.information.speakers.SpeakersAdapter
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.utilities.Analytics
+import com.advice.schedule.utilities.Storage
 import com.advice.schedule.utilities.TimeUtil
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentEventBinding
@@ -33,6 +34,7 @@ class EventFragment : Fragment() {
     private val analytics by inject<Analytics>()
     private val database by inject<DatabaseManager>()
     private val reminder by inject<ReminderManager>()
+    private val storage by inject<Storage>()
 
     private val viewModel by sharedViewModel<ScheduleViewModel>()
 
@@ -71,6 +73,11 @@ class EventFragment : Fragment() {
                     showEvent(target)
                 }
             }
+        }
+
+        binding.hint.isVisible = storage.tutorialEventLocations
+        binding.hint.setOnCloseListener {
+            storage.tutorialEventLocations = false
         }
 
         binding.toolbar.setNavigationOnClickListener {
