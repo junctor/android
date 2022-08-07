@@ -185,6 +185,14 @@ class EventFragment : Fragment() {
         val types = event.types.take(3)
         val views = listOf(binding.type1, binding.type2, binding.type3)
 
+        // handling conferences without types
+        if (types.isEmpty()) {
+            views.forEach {
+                it.isVisible = false
+            }
+            return
+        }
+
         for (i in 0 until 3) {
             if (i < types.size) {
                 views[i].isVisible = true
