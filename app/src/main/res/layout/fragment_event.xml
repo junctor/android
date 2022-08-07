@@ -61,7 +61,7 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
+                    android:layout_margin="16dp"
                     app:alignContent="flex_start"
                     app:alignItems="flex_start"
                     app:flexWrap="wrap">
@@ -70,22 +70,18 @@
                         android:id="@+id/type_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:eventView_showDot="true"
-                        app:eventView_spacer="true"
                         tools:text="Event" />
 
                     <com.advice.schedule.views.EventTypeView
                         android:id="@+id/type_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:eventView_spacer="true"
                         tools:text="Event" />
 
                     <com.advice.schedule.views.EventTypeView
                         android:id="@+id/type_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:eventView_spacer="true"
                         tools:text="Event" />
 
                 </com.google.android.flexbox.FlexboxLayout>
