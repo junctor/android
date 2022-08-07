@@ -6,7 +6,7 @@
 
     <color name="background">#22222a</color>
     <!--  todo: change to #0e0e0e  -->
-    <color name="well_background">#121212</color>
+    <color name="well_background">#0e0e0e</color>
     <color name="status_bar_color">#000000</color>
     <color name="navigation_color">#22222a</color>
 

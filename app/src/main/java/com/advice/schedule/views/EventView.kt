@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.ReminderManager
 import com.advice.schedule.models.local.Event
@@ -91,28 +92,33 @@ class EventView : FrameLayout, KoinComponent {
     }
 
     private fun renderCategoryColour(event: Event) {
-        val type = event.types.firstOrNull() ?: return
+        val types = event.types.take(3)
+        val views = listOf(binding.type1, binding.type2, binding.type3)
 
-        binding.type1.render(type)
-//        if (event.types.size > 1) {
-//            binding.type2.render(event.types.last())
-//            binding.type2.visibility = View.VISIBLE
-//        } else {
-//            binding.type2.visibility = View.GONE
-//        }
+        for (i in 0 until 3) {
+            // showing the side bar colour
+            if (i == 0) {
+                val value = TypedValue()
+                context.theme.resolveAttribute(R.attr.category_tint, value, true)
+                val id = value.resourceId
 
-        val value = TypedValue()
-        context.theme.resolveAttribute(R.attr.category_tint, value, true)
-        val id = value.resourceId
+                val color = if (id > 0) {
+                    ContextCompat.getColor(context, id)
+                } else {
+                    Color.parseColor(types[i].color)
+                }
+                binding.category.setBackgroundColor(color)
+            }
 
-        val color = if (id > 0) {
-            ContextCompat.getColor(context, id)
-        } else {
-            Color.parseColor(type.color)
+            // rendering each type
+            if (i < types.size) {
+                views[i].isVisible = true
+                views[i].render(types[i])
+            } else {
+                views[i].isVisible = false
+            }
         }
-        binding.category.setBackgroundColor(color)
     }
-
 
     private fun updateBookmark(event: Event) {
         val isBookmarked = event.isBookmarked

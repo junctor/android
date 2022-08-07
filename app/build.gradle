@@ -77,6 +77,8 @@ dependencies {
     implementation "com.hendraanggrian.material:collapsingtoolbarlayout-subtitle:1.1.0"
     implementation 'com.github.Advice-Dog:timehop:master-SNAPSHOT'
     implementation 'com.github.discord:OverlappingPanels:0.1.5'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
 
     // Utils
     implementation 'com.orhanobut:logger:1.15'

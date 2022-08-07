@@ -1,9 +1,12 @@
 package com.advice.schedule.ui.events
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
@@ -180,21 +183,16 @@ class EventFragment : Fragment() {
 
 
     private fun displayTypes(event: Event) {
-        val type = event.types.first()
-        binding.type1.render(type)
-        binding.type1.visibility = View.VISIBLE
+        val types = event.types.take(3)
+        val views = listOf(binding.type1, binding.type2, binding.type3)
 
-//        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.chip_background)?.mutate()
-//
-//        drawable?.setTint(Color.parseColor(type.color))
-//
-//        binding.typeContainer.background = drawable
-
-        if (event.types.size > 1) {
-            binding.type2.render(event.types.last())
-            binding.type2.visibility = View.VISIBLE
-        } else {
-            binding.type2.visibility = View.GONE
+        for (i in 0 until 3) {
+            if (i < types.size) {
+                views[i].isVisible = true
+                views[i].render(types[i])
+            } else {
+                views[i].isVisible = false
+            }
         }
     }
 

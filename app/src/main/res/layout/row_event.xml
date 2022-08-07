@@ -46,13 +46,16 @@
         tools:text="Track 1" />
 
 
-    <LinearLayout
+    <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/types_container"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:orientation="horizontal"
+        app:alignContent="stretch"
+        app:alignItems="stretch"
+        app:flexWrap="wrap"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/star_bar"
         app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/location">
 
@@ -64,11 +67,14 @@
         <com.advice.schedule.views.EventTypeView
             android:id="@+id/type_2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:visibility="gone" />
+            android:layout_height="wrap_content" />
 
-    </LinearLayout>
+        <com.advice.schedule.views.EventTypeView
+            android:id="@+id/type_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.flexbox.FlexboxLayout>
 
 
     <ImageView
