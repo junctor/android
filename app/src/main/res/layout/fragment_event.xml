@@ -58,43 +58,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp" />
 
-                <com.advice.schedule.views.WellView
-                    android:id="@+id/type_container"
+                <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp">
+                    android:layout_margin="4dp"
+                    app:alignContent="flex_start"
+                    app:alignItems="flex_start"
+                    app:flexWrap="wrap">
 
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="match_parent"
+                    <com.advice.schedule.views.EventTypeView
+                        android:id="@+id/type_1"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:alignContent="flex_start"
-                        app:alignItems="flex_start"
-                        app:flexWrap="wrap">
+                        app:eventView_showDot="true"
+                        app:eventView_spacer="true"
+                        tools:text="Event" />
 
-                        <com.advice.schedule.views.EventTypeView
-                            android:id="@+id/type_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:eventView_showDot="true"
-                            app:eventView_spacer="true"
-                            tools:text="Event" />
+                    <com.advice.schedule.views.EventTypeView
+                        android:id="@+id/type_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:eventView_spacer="true"
+                        tools:text="Event" />
 
-                        <com.advice.schedule.views.EventTypeView
-                            android:id="@+id/type_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:eventView_spacer="true"
-                            tools:text="Event" />
+                    <com.advice.schedule.views.EventTypeView
+                        android:id="@+id/type_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:eventView_spacer="true"
+                        tools:text="Event" />
 
-                        <com.advice.schedule.views.EventTypeView
-                            android:id="@+id/type_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:eventView_spacer="true"
-                            tools:text="Event" />
-
-                    </com.google.android.flexbox.FlexboxLayout>
-                </com.advice.schedule.views.WellView>
+                </com.google.android.flexbox.FlexboxLayout>
 
                 <com.advice.schedule.views.WellView
                     android:layout_width="match_parent"
@@ -116,6 +110,25 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         tools:text="August 6th, 9:30am - 10:30am" />
+
+                </com.advice.schedule.views.WellView>
+
+                <com.advice.schedule.views.WellView
+                    android:id="@+id/hint"
+                    style="@style/Tip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        style="@style/Tip.Header" />
+
+                    <TextView
+                        style="@style/Tip.Body"
+                        android:text="Tap the location to show all events at this location"
+                        app:layout_constraintStart_toEndOf="@+id/textView2" />
+
 
                 </com.advice.schedule.views.WellView>
 
@@ -156,9 +169,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/head">
 
-                <include
-                    layout="@layout/empty_text"
-                    tools:visibility="gone" />
+                <TextView
+                    android:id="@+id/empty"
+                    style="@style/EmptyText"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/description"

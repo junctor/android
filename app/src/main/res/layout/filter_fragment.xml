@@ -50,15 +50,18 @@
 
                 <com.advice.schedule.views.WellView
                     android:id="@+id/hint"
-                    style="@style/WellViewStyle"
+                    style="@style/Tip"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:wellView_hasDismiss="true">
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Tip: Long press a category to show only those events" />
+                        android:id="@+id/textView2"
+                        style="@style/Tip.Header" />
+
+                    <TextView
+                        style="@style/Tip.Body"
+                        android:text="Long press a category to show only those events"
+                        app:layout_constraintStart_toEndOf="@+id/textView2" />
 
 
                 </com.advice.schedule.views.WellView>

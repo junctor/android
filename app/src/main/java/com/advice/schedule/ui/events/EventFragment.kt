@@ -1,12 +1,9 @@
 package com.advice.schedule.ui.events
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
@@ -106,10 +103,10 @@ class EventFragment : Fragment() {
         linksAdapter.setElements(event.urls.sortedBy { it.label.length }, emptyList())
 
         if (body.isNotBlank()) {
-            // todo: binding.empty.visibility = View.GONE
+            binding.empty.visibility = View.GONE
             binding.description.text = body
         } else {
-            // todo: binding.empty.visibility = View.VISIBLE
+            binding.empty.visibility = View.VISIBLE
         }
 
         binding.toolbar.setOnMenuItemClickListener {
@@ -158,10 +155,6 @@ class EventFragment : Fragment() {
         }
         binding.location.setLocation(location, useShortLabel = false)
 
-        binding.typeContainer.setOnClickListener {
-            (requireActivity() as MainActivity).showSchedule(event.types.first())
-        }
-
         binding.locationContainer.setOnClickListener {
             (requireActivity() as MainActivity).showSchedule(event.location)
         }
@@ -190,6 +183,9 @@ class EventFragment : Fragment() {
             if (i < types.size) {
                 views[i].isVisible = true
                 views[i].render(types[i])
+                views[i].setOnClickListener {
+                    (requireActivity() as MainActivity).showSchedule(types[i])
+                }
             } else {
                 views[i].isVisible = false
             }

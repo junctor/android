@@ -87,7 +87,9 @@ class SpeakerFragment : Fragment() {
             }
         }
 
-        description.isVisible = speaker.description.isNotBlank()
+        val hasDescription = speaker.description.isNotBlank()
+        empty.isVisible = !hasDescription
+        description.isVisible = hasDescription
         description.text = speaker.description
     }
 

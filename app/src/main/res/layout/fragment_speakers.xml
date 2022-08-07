@@ -41,10 +41,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <include
-                    layout="@layout/empty_text"
-                    tools:visibility="gone" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -66,28 +62,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="8dp" />
 
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
+                    <com.advice.schedule.views.WellView
+                        android:id="@+id/title_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp">
+                        android:layout_margin="20dp">
 
-                        <com.advice.schedule.views.WellView
-                            android:id="@+id/title_container"
+                        <TextView
+                            android:id="@+id/speaker_title"
+                            style="@style/TextAppearance.AppCompat.Body2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="4dp">
+                            tools:text="Expert Hacker" />
 
-                            <TextView
-                                android:id="@+id/speaker_title"
-                                style="@style/TextAppearance.AppCompat.Body2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                tools:text="Expert Hacker" />
+                    </com.advice.schedule.views.WellView>
 
-                        </com.advice.schedule.views.WellView>
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <TextView
+                        android:id="@+id/empty"
+                        style="@style/EmptyText"
+                        tools:visibility="gone" />
 
                     <TextView
                         android:id="@+id/description"
@@ -98,9 +91,7 @@
 
                 </LinearLayout>
 
-
             </FrameLayout>
-
 
             <TextView
                 android:id="@+id/events_header"

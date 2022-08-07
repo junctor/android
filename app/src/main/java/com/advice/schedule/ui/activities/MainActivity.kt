@@ -13,12 +13,10 @@ import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
-import com.advice.schedule.models.local.Type
 import com.advice.schedule.replaceFragment
 import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.events.EventFragment
 import com.advice.schedule.ui.information.InformationFragment
-import com.advice.schedule.ui.information.categories.CategoryFragment
 import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
 import com.advice.schedule.ui.schedule.ScheduleFragment
@@ -143,10 +141,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     fun showSpeaker(speaker: Speaker?) {
         speaker ?: return
         setAboveFragment(SpeakerFragment.newInstance(speaker))
-    }
-
-    fun showCategoryType(type: Type) {
-        setAboveFragment(CategoryFragment.newInstance(type))
     }
 
     fun showInformation() {
