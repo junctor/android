@@ -1,13 +1,13 @@
 package com.advice.schedule.views
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import com.advice.schedule.getTintedDrawable
 import com.advice.schedule.models.local.LocationContainer
-import com.advice.schedule.models.local.LocationStatus
+import com.advice.schedule.models.local.toColour
 import com.advice.schedule.toPx
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.LocationViewBinding
@@ -16,7 +16,7 @@ class LocationView(context: Context, attrs: AttributeSet?) : ConstraintLayout(co
 
     private val binding = LocationViewBinding.inflate(LayoutInflater.from(context), this, true)
 
-    fun setLocation(location: LocationContainer, useShortLabel: Boolean = false) {
+    fun setLocation(location: LocationContainer, useShortLabel: Boolean = false, showDot: Boolean = true) {
         binding.title.text = if (useShortLabel) {
             location.shortTitle ?: location.title
         } else {
@@ -29,16 +29,10 @@ class LocationView(context: Context, attrs: AttributeSet?) : ConstraintLayout(co
         layoutParams.marginStart = margin
         binding.status.layoutParams = layoutParams
 
-        val drawable = ContextCompat.getDrawable(context, R.drawable.chip_background)?.mutate()
-
-        val color = when (location.status) {
-            LocationStatus.Open -> Color.GREEN
-            LocationStatus.Closed -> Color.RED
-            LocationStatus.Mixed -> Color.YELLOW
-            LocationStatus.Unknown -> Color.GRAY
+        binding.status.isVisible = showDot
+        if (showDot) {
+            val drawable = context.getTintedDrawable(R.drawable.chip_background, location.status.toColour())
+            binding.status.background = drawable
         }
-
-        drawable?.setTint(color)
-        binding.status.background = drawable
     }
 }

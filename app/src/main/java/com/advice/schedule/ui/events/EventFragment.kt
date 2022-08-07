@@ -4,13 +4,16 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.ReminderManager
+import com.advice.schedule.getTintedDrawable
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.setStatus
+import com.advice.schedule.models.local.toColour
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.information.locations.toContainer
 import com.advice.schedule.ui.information.speakers.SpeakersAdapter
@@ -153,7 +156,10 @@ class EventFragment : Fragment() {
         val location = event.location.toContainer().apply {
             setStatus(getCurrentStatus())
         }
-        binding.location.setLocation(location, useShortLabel = false)
+        binding.location.setLocation(location, useShortLabel = false, showDot = false)
+
+        val drawable = requireContext().getTintedDrawable(R.drawable.ic_map_white_24dp, location.status.toColour())
+        binding.locationIcon.setImageDrawable(drawable)
 
         binding.locationContainer.setOnClickListener {
             (requireActivity() as MainActivity).showSchedule(event.location)

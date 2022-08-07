@@ -1,5 +1,6 @@
 package com.advice.schedule.models.local
 
+import android.graphics.Color
 import android.os.Parcelable
 import com.advice.schedule.utilities.Time
 import kotlinx.android.parcel.Parcelize
@@ -72,4 +73,11 @@ fun LocationContainer.hasChildren(hasChildren: Boolean) = copy(hasChildren = has
 fun LocationContainer.setStatus(status: LocationStatus): LocationContainer {
     this.status = status
     return this
+}
+
+fun LocationStatus.toColour(): Int = when (this) {
+    LocationStatus.Open -> Color.GREEN
+    LocationStatus.Closed -> Color.RED
+    LocationStatus.Mixed -> Color.YELLOW
+    LocationStatus.Unknown -> Color.GRAY
 }

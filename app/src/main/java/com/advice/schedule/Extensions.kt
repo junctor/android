@@ -3,12 +3,14 @@ package com.advice.schedule
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -20,6 +22,7 @@ import com.advice.schedule.utilities.Time
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
+import com.shortstack.hackertracker.R
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -299,3 +302,9 @@ val Number.toPx
         this.toFloat(),
         Resources.getSystem().displayMetrics
     ).toInt()
+
+fun Context.getTintedDrawable(resource: Int, tint: Int): Drawable? {
+    return ContextCompat.getDrawable(this, resource)?.mutate()?.apply {
+        setTint(tint)
+    }
+}

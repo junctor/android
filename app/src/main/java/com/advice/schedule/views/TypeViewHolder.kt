@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.advice.schedule.getTintedDrawable
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Type
 import com.advice.schedule.ui.activities.MainActivity
@@ -31,10 +32,8 @@ class TypeViewHolder(private val binding: ItemTypeBinding) : RecyclerView.ViewHo
 
             text.text = type.label
 
-            dot.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.chip_background_small)?.mutate()?.apply { setTint(color) })
-            full.setImageDrawable(
-                ContextCompat.getDrawable(context, R.drawable.chip_background_rounded)?.mutate()?.apply { setTint(color) })
-
+            dot.setImageDrawable(context.getTintedDrawable(R.drawable.chip_background_small, color))
+            full.setImageDrawable(context.getTintedDrawable(R.drawable.chip_background_rounded, color))
 
             val isDark = type.isSelected && type.color.isLightColor()
 

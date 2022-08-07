@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.advice.schedule.getTintedDrawable
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Type
 import com.advice.schedule.ui.activities.MainActivity
@@ -56,9 +57,7 @@ class EventTypeView(context: Context, attrs: AttributeSet) : LinearLayout(contex
             }
         }
 
-        val drawable = ContextCompat.getDrawable(context, R.drawable.chip_background)?.mutate()
-
-        drawable?.setTint(color)
+        val drawable = context.getTintedDrawable(R.drawable.chip_background, color)
         binding.eventTypeDot.background = drawable
     }
 }
