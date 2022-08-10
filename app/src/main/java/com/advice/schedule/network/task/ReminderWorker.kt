@@ -36,6 +36,12 @@ class ReminderWorker(
             Timber.e("Could not find the target event.")
             return Result.failure()
         }
+
+        // Event has already happened, skip this notification
+        if(event.hasStarted || event.hasFinished) {
+            return Result.success()
+        }
+
         notifications.notifyStartingSoon(event)
 
         return Result.success()
