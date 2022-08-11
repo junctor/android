@@ -165,7 +165,7 @@ class ScheduleAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     }
 
     fun refresh() {
-        val elements = collection.toList()
+        val elements = getFormattedElements(collection.filterIsInstance<Event>())
         setElements(elements, forceRefresh = true)
     }
 

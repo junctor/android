@@ -3,10 +3,7 @@ package com.advice.schedule.models.local
 import android.content.Context
 import android.os.Parcelable
 import com.advice.schedule.models.firebase.FirebaseTag
-import com.advice.schedule.utilities.Time
-import com.advice.schedule.utilities.TimeUtil
-import com.advice.schedule.utilities.getDateMidnight
-import com.advice.schedule.utilities.toTimestamp
+import com.advice.schedule.utilities.*
 import com.google.firebase.Timestamp
 import com.shortstack.hackertracker.R
 import kotlinx.android.parcel.Parcelize
@@ -61,12 +58,14 @@ data class Event(
         }
 
     fun getFullTimeStamp(context: Context): String {
-        val date = TimeUtil.getDateStamp(start.toDate())
+        val localizedDate = getLocalizedDate(start.toDate())
+
+        val date = TimeUtil.getDateStamp(localizedDate)
 
         val time = if (android.text.format.DateFormat.is24HourFormat(context)) {
-            SimpleDateFormat("HH:mm").format(start.toDate())
+            SimpleDateFormat("HH:mm").format(localizedDate)
         } else {
-            SimpleDateFormat("h:mm aa").format(start.toDate())
+            SimpleDateFormat("h:mm aa").format(localizedDate)
         }
 
         return String.format(context.getString(R.string.timestamp_start), date, time)
