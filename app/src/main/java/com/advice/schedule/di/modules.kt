@@ -12,6 +12,7 @@ import com.advice.schedule.ui.HackerTrackerViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
 import com.advice.schedule.ui.information.locations.LocationsViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
+import com.advice.schedule.ui.information.vendors.VendorsViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
 import com.advice.schedule.ui.themes.ThemesManager
@@ -45,6 +46,7 @@ val appModule = module {
     viewModel { ScheduleViewModel() }
     viewModel { SpeakersViewModel() }
     viewModel { LocationsViewModel() }
+    viewModel { VendorsViewModel() }
     viewModel { FAQViewModel() }
     viewModel { SettingsViewModel() }
 

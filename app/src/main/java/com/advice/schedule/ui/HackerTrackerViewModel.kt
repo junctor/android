@@ -19,7 +19,6 @@ import org.koin.core.inject
 class HackerTrackerViewModel : ViewModel(), KoinComponent {
 
     private val database: DatabaseManager by inject()
-    private val analytics by inject<Analytics>()
 
     val conferences = database.conferences
 
@@ -32,16 +31,11 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
     val speakers: LiveData<Response<List<Speaker>>>
 
     val articles: LiveData<Resource<List<Article>>>
-    val vendors: LiveData<Response<List<Vendor>>>
 
     val maps: LiveData<Response<List<FirebaseConferenceMap>>>
 
     // Home
     val home: LiveData<Resource<List<Any>>>
-
-    // Search
-    private val query = MediatorLiveData<String>()
-    val search: LiveData<List<Any>>
 
     init {
         conference = Transformations.switchMap(database.conference) {
@@ -158,20 +152,6 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
             return@switchMap result
         }
 
-        vendors = Transformations.switchMap(database.conference) {
-            val result = MediatorLiveData<Response<List<Vendor>>>()
-
-            if (it == null) {
-                result.value = Response.Init
-            } else {
-                result.value = Response.Loading
-                result.addSource(database.getVendors(it)) {
-                    result.value = Response.Success(it)
-                }
-            }
-
-            return@switchMap result
-        }
 
         maps = Transformations.switchMap(database.conference) {
             val result = MediatorLiveData<Response<List<FirebaseConferenceMap>>>()
@@ -186,30 +166,6 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
             }
 
             return@switchMap result
-        }
-
-        search = Transformations.switchMap(query) { text ->
-            val results = MediatorLiveData<List<Any>>()
-
-            results.addSource(events) {
-                val locations = locations.value?.data ?: emptyList()
-                val speakers = speakers.value?.dObj as? List<Speaker> ?: emptyList()
-                setValue(results, text, it?.data ?: emptyList(), locations, speakers)
-            }
-
-            results.addSource(locations) {
-                val events = events.value?.data ?: emptyList()
-                val speakers = speakers.value?.dObj as? List<Speaker> ?: emptyList<Speaker>()
-                setValue(results, text, events, it?.data ?: emptyList(), speakers)
-            }
-
-            results.addSource(speakers) {
-                val events = events.value?.data ?: emptyList()
-                val locations = locations.value?.data as? List<Location> ?: emptyList()
-                setValue(results, text, events, locations, it?.dObj as? List<Speaker> ?: emptyList())
-            }
-
-            return@switchMap results
         }
 
         home = Transformations.switchMap(database.conference) { id ->
@@ -244,53 +200,6 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
         } else {
             result.value = Resource.success(articles + "Bookmarks" + bookmarks)
         }
-    }
-
-    private fun setValue(
-        results: MediatorLiveData<List<Any>>,
-        query: String,
-        events: List<Event>,
-        locations: List<Location>,
-        speakers: List<Speaker>
-    ) {
-        if (query.isBlank()) {
-            results.value = emptyList()
-            return
-        }
-
-        val list = ArrayList<Any>()
-
-        val speakers = speakers.filter {
-            it.name.contains(query, true) || it.description.contains(
-                query,
-                true
-            )
-        }
-        if (speakers.isNotEmpty()) {
-            list.add("Speakers")
-            list.addAll(speakers)
-        }
-
-        val locations = locations.filter { it.name.contains(query, true) }
-        locations.forEach { location ->
-            list.add(location)
-            // TODO: Should we add the filtered events, or all events for this location?
-            list.addAll(events.filter { it.location.name == location.name }.sortedBy { it.start })
-        }
-
-        val events =
-            events.filter { it.title.contains(query, true) || it.description.contains(query, true) }
-        if (events.isNotEmpty()) {
-            list.add("Events")
-            list.addAll(events)
-        }
-
-        results.value = list
-    }
-
-
-    fun onQueryTextChange(text: String?) {
-        query.value = text
     }
 
     fun toggleFilter(type: FirebaseTag) {

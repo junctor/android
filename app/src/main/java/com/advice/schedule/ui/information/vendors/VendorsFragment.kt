@@ -16,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class VendorsFragment : Fragment() {
 
-    private val viewModel by sharedViewModel<HackerTrackerViewModel>()
+    private val viewModel by sharedViewModel<VendorsViewModel>()
 
     private var _binding: FragmentRecyclerviewBinding? = null
     private val binding get() = _binding!!
@@ -46,7 +46,7 @@ class VendorsFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        viewModel.vendors.observe(viewLifecycleOwner) {
+        viewModel.getVendors().observe(viewLifecycleOwner) {
             onResource(it)
         }
     }
