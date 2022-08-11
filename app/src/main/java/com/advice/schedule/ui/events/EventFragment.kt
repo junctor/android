@@ -150,6 +150,7 @@ class EventFragment : Fragment() {
     private fun onShareClick(event: Event) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TITLE, event.title)
             putExtra(Intent.EXTRA_TEXT, "https://info.defcon.org/events/${event.id}/")
             type = "text/plain"
         }
