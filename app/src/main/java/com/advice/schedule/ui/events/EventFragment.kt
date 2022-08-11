@@ -1,6 +1,7 @@
 package com.advice.schedule.ui.events
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +11,9 @@ import com.advice.schedule.Response
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.ReminderManager
 import com.advice.schedule.getTintedDrawable
-import com.advice.schedule.models.local.*
+import com.advice.schedule.models.local.Event
+import com.advice.schedule.models.local.LocationContainer
+import com.advice.schedule.models.local.toColour
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.information.locations.LocationsViewModel
 import com.advice.schedule.ui.information.locations.toContainer
@@ -95,6 +98,8 @@ class EventFragment : Fragment() {
         } else {
             inflater.inflate(R.menu.event_unbookmarked, menu)
         }
+        // Only showing the share for DEFCON30
+        menu.getItem(1).isVisible = database.conference.value?.code == "DEFCON30"
     }
 
     private fun showEvent(event: Event) {
@@ -119,8 +124,16 @@ class EventFragment : Fragment() {
             binding.empty.visibility = View.VISIBLE
         }
 
-        binding.toolbar.setOnMenuItemClickListener {
-            onBookmarkClick(event)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_bookmark -> {
+                    onBookmarkClick(event)
+                }
+                R.id.action_share -> {
+                    onShareClick(event)
+                }
+            }
+
             true
         }
 
@@ -132,6 +145,17 @@ class EventFragment : Fragment() {
 
 
         analytics.onEventView(event)
+    }
+
+    private fun onShareClick(event: Event) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "https://info.defcon.org/events/${event.id}/")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
     private fun onBookmarkClick(event: Event) {
