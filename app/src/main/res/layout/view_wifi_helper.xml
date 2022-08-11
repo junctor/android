@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Card_Container">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <TextView
-        style="@style/Card_Title"
-        android:text="@string/wifi_title"
-        android:visibility="gone" />
+    <LinearLayout style="@style/Card_Container">
 
-    <TextView
-        android:id="@+id/content"
-        style="@style/Paragraph"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/wifi_content" />
+        <TextView
+            style="@style/Card_Title"
+            android:text="@string/wifi_title"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/save"
-        style="@style/Card_Action"
-        android:text="@string/wifi_action" />
+        <TextView
+            android:id="@+id/content"
+            style="@style/Paragraph"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/wifi_content" />
+        <TextView
+            android:id="@+id/steps"
+            style="@style/Paragraph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wifi_steps" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/save"
+            android:visibility="gone"
+            style="@style/Card_Action"
+            android:text="@string/wifi_action" />
 
+    </LinearLayout>
+</ScrollView>
