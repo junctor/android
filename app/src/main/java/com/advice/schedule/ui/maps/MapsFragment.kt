@@ -64,7 +64,7 @@ class MapsFragment : Fragment() {
                         binding.emptyView.visibility = View.GONE
                     }
                 }
-                val adapter = PagerAdapter(requireActivity().supportFragmentManager, maps)
+                val adapter = PagerAdapter(childFragmentManager, maps)
                 binding.pager.adapter = adapter
 
                 if (isFirstLoad) {
