@@ -9,6 +9,7 @@ import android.net.wifi.WifiEnterpriseConfig
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,9 @@ class WiFiHelperView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     private val binding = ViewWifiHelperBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
-        binding.save.visibility = View.VISIBLE
+        binding.steps.text = Html.fromHtml(context.getString(R.string.wifi_steps))
+        // todo: readd when the logic is working
+//        binding.save.visibility = View.VISIBLE
         binding.save.setOnClickListener {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
