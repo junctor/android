@@ -9,7 +9,7 @@ import kotlin.collections.ArrayList
 
 @Parcelize
 data class Conference(
-        val id: Int,
+        val id: Long,
         val name: String,
         val description: String,
         val conduct: String?,

@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.ReminderManager
 import com.advice.schedule.ui.HackerTrackerViewModel
+import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
 import com.advice.schedule.ui.information.locations.LocationsViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
@@ -41,6 +42,7 @@ val appModule = module {
     single { ReminderManager(get(), get()) }
 
 
+    viewModel { HomeViewModel() }
     viewModel { HackerTrackerViewModel() }
     viewModel { PreferenceViewModel() }
     viewModel { ScheduleViewModel() }

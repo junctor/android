@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.advice.schedule.ui.HackerTrackerViewModel
+import com.advice.schedule.models.local.Conference
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentHomeBinding
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class HomeFragment : Fragment() {
 
-    private val viewModel by sharedViewModel<HackerTrackerViewModel>()
+    private val viewModel by viewModel<HomeViewModel>()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -38,30 +38,31 @@ class HomeFragment : Fragment() {
         binding.list.adapter = adapter
         binding.list.layoutManager = LinearLayoutManager(context)
 
-        viewModel.home.observe(viewLifecycleOwner) {
-            if (it.data != null) {
-                adapter.setElements(it.data)
+        viewModel.getHomeState().observe(viewLifecycleOwner) { state ->
+            when (state) {
+                HomeState.Loading -> {
+                    binding.loadingProgress.visibility = View.VISIBLE
+                }
+
+                is HomeState.Loaded -> {
+                    binding.loadingProgress.visibility = View.GONE
+                    binding.title.text = state.conference.name
+                    startCountdownTimer(state.conference.startDate)
+                    adapter.setElements(state.article)
+
+                    binding.header.setOnClickListener {
+                        showConferenceChooseDialog(state.conference, state.conferences)
+                    }
+                }
+                is HomeState.Error -> {
+                    binding.loadingProgress.visibility = View.GONE
+                }
             }
         }
-
-        viewModel.conference.observe(viewLifecycleOwner) {
-            if (it.data != null) {
-                binding.title.text = it.data.name
-                startCountdownTimer(it.data.startDate)
-            }
-        }
-
-        binding.header.setOnClickListener {
-            showConferenceChooseDialog()
-        }
-
-        binding.loadingProgress.visibility = View.GONE
     }
 
-    private fun showConferenceChooseDialog() {
-        val conferences = viewModel.conferences.value ?: emptyList()
-        val element = viewModel.conference.value?.data ?: return
-        val selected = conferences.indexOf(element)
+    private fun showConferenceChooseDialog(conference: Conference, conferences: List<Conference>) {
+        val selected = conferences.indexOf(conference)
 
         val items = conferences.map { it.name }.toTypedArray()
 

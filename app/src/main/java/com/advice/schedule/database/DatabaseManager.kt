@@ -48,8 +48,8 @@ class DatabaseManager(
         private const val LOCATIONS = "locations"
         private const val ARTICLES = "articles"
 
-        fun getNextConference(preferred: Int, conferences: List<Conference>): Conference? {
-            if (preferred != -1) {
+        fun getNextConference(preferred: Long, conferences: List<Conference>): Conference? {
+            if (preferred != -1L) {
                 val pref = conferences.find { it.id == preferred && !it.hasFinished }
                 if (pref != null) return pref
             }
@@ -132,7 +132,7 @@ class DatabaseManager(
             })
     }
 
-    fun changeConference(id: Int) {
+    fun changeConference(id: Long) {
         preferences.preferredConference = id
 
         val current = conference.value

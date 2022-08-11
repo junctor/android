@@ -1,5 +1,6 @@
 package com.advice.schedule.utilities
 
+import com.advice.schedule.models.local.Conference
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Speaker
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -71,6 +72,13 @@ class Analytics(private val storage: Storage) {
         analytics.logEvent("developer_twitter") {
             param(FirebaseAnalytics.Param.CONTENT_TYPE, "developer")
             param("is_follow", isFollow.toString())
+    }
+
+    fun onConferenceChangeEvent(conference: Conference) {
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT) {
+            param(FirebaseAnalytics.Param.ITEM_ID, conference.id)
+            param(FirebaseAnalytics.Param.ITEM_NAME, conference.name)
+            param(FirebaseAnalytics.Param.CONTENT_TYPE, "conference")
         }
     }
 

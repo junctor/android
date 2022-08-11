@@ -70,10 +70,10 @@ class Storage(context: Context, private val gson: Gson) {
             preferences.edit().putBoolean(TUTORIAL_EVENT_LOCATIONS, value).apply()
         }
 
-    var preferredConference: Int
-        get() = preferences.getInt(USER_CONFERENCE, -1)
+    var preferredConference: Long
+        get() = preferences.getLong(USER_CONFERENCE, -1)
         set(value) {
-            preferences.edit().putInt(USER_CONFERENCE, value).apply()
+            preferences.edit().putLong(USER_CONFERENCE, value).apply()
         }
 
     var theme: ThemesManager.Theme?

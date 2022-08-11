@@ -23,19 +23,10 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
     val conferences = database.conferences
 
     val conference: LiveData<Resource<Conference>>
-    val events: LiveData<Resource<List<Event>>>
     val bookmarks: LiveData<Resource<List<Event>>>
     val tags: LiveData<Response<List<FirebaseTagType>>>
-    val types: LiveData<Resource<List<Type>>>
-    val locations: LiveData<Resource<List<Location>>>
-    val speakers: LiveData<Response<List<Speaker>>>
-
-    val articles: LiveData<Resource<List<Article>>>
 
     val maps: LiveData<Response<List<FirebaseConferenceMap>>>
-
-    // Home
-    val home: LiveData<Resource<List<Any>>>
 
     init {
         conference = Transformations.switchMap(database.conference) {
@@ -64,48 +55,6 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
             return@switchMap result
         }
 
-        types = Transformations.switchMap(database.conference) {
-            val result = MediatorLiveData<Resource<List<Type>>>()
-
-            if (it == null) {
-                result.value = Resource.init()
-            } else {
-                result.value = Resource.loading(null)
-                result.addSource(database.getTypes(it)) {
-                    result.value = Resource.success(it)
-                }
-            }
-            return@switchMap result
-        }
-
-        locations = Transformations.switchMap(database.conference) {
-            val result = MediatorLiveData<Resource<List<Location>>>()
-
-            if (it == null) {
-                result.value = Resource.init()
-            } else {
-                result.value = Resource.loading(null)
-                result.addSource(database.getLocations(it)) {
-                    result.value = Resource.success(it)
-                }
-            }
-            return@switchMap result
-        }
-
-        events = Transformations.switchMap(database.conference) {
-            val result = MediatorLiveData<Resource<List<Event>>>()
-
-            if (it == null) {
-                result.value = Resource.init()
-            } else {
-                result.value = Resource.loading(null)
-                result.addSource(database.getSchedule()) {
-                    result.value = Resource.success(it)
-                }
-            }
-            return@switchMap result
-        }
-
         bookmarks = Transformations.switchMap(database.conference) {
             val result = MediatorLiveData<Resource<List<Event>>>()
 
@@ -122,35 +71,6 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
             return@switchMap result
         }
 
-        speakers = Transformations.switchMap(database.conference) {
-            val result = MediatorLiveData<Response<List<Speaker>>>()
-
-            if (it == null) {
-                result.value = Response.Init
-            } else {
-                result.value = Response.Loading
-                result.addSource(database.getSpeakers(it)) {
-                    result.value = Response.Success(it)
-                }
-            }
-
-            return@switchMap result
-        }
-
-        articles = Transformations.switchMap(database.conference) {
-            val result = MediatorLiveData<Resource<List<Article>>>()
-
-            if (it == null) {
-                result.value = Resource.init()
-            } else {
-                result.value = Resource.loading(null)
-                result.addSource(database.getArticles(it)) {
-                    result.value = Resource.success(it)
-                }
-            }
-
-            return@switchMap result
-        }
 
 
         maps = Transformations.switchMap(database.conference) {
@@ -166,39 +86,6 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
             }
 
             return@switchMap result
-        }
-
-        home = Transformations.switchMap(database.conference) { id ->
-            val result = MediatorLiveData<Resource<List<Any>>>()
-
-            if (id == null) {
-                result.value = Resource.init(null)
-                return@switchMap result
-            }
-
-            result.value = Resource.loading(null)
-
-            result.addSource(articles) {
-                val articles = it.data?.take(4) ?: emptyList()
-                val bookmarks =
-                    bookmarks.value?.data?.filter { !it.hasFinished }?.take(3) ?: emptyList()
-                setHome(result, articles, bookmarks)
-            }
-
-            return@switchMap result
-        }
-
-    }
-
-    private fun setHome(
-        result: MediatorLiveData<Resource<List<Any>>>,
-        articles: List<Article>,
-        bookmarks: List<Event>
-    ) {
-        if (bookmarks.isEmpty()) {
-            result.value = Resource.success(articles)
-        } else {
-            result.value = Resource.success(articles + "Bookmarks" + bookmarks)
         }
     }
 
@@ -220,11 +107,5 @@ class HackerTrackerViewModel : ViewModel(), KoinComponent {
                 }
             }
         }
-    }
-
-    fun changeConference(conference: Conference) {
-        //analytics.
-        database.conference.value = null
-        database.changeConference(conference.id)
     }
 }
