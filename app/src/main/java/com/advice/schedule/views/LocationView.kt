@@ -5,13 +5,17 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import com.advice.schedule.App
 import com.advice.schedule.getTintedDrawable
 import com.advice.schedule.models.local.LocationContainer
 import com.advice.schedule.models.local.LocationStatus
 import com.advice.schedule.models.local.toColour
 import com.advice.schedule.toPx
+import com.advice.schedule.utilities.Time
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.LocationViewBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class LocationView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
 
@@ -36,38 +40,72 @@ class LocationView(context: Context, attrs: AttributeSet?) : ConstraintLayout(co
             binding.status.background = drawable
         }
 
-        if(location.schedule.isNotEmpty()) {
-            binding.time.isVisible = true
-            binding.time.text = "todo: get the current "
-        } else {
-            binding.time.isVisible = false
-        }
-
-        when(location.status) {
-
+        when (location.status) {
             LocationStatus.Mixed -> {
                 // check if has it's own schedule?
+                binding.time.isVisible = false
             }
             LocationStatus.Open -> {
+                val now = Time.now()
                 val timeZone = location.schedule.firstOrNull {
-                    // todo: we're in this scheule
-                    true
-                 }
-                // todo: format the timezone "Open - 3:00am - 8:50 pm"
-                binding.time.text = "Open: " + timeZone
+                    val begin = parse(it.begin)
+                    val end = parse(it.end)
+                    begin != null && end != null && begin.before(now) && end.after(now)
+                }
+                binding.time.isVisible = timeZone != null
+                if (timeZone != null) {
+                    val end = getTimeStamp(context, parse(timeZone.end))
+                    binding.time.text = "Open until " + end
+                }
             }
             LocationStatus.Closed -> {
+                val now = Time.now()
                 val timeZone = location.schedule.firstOrNull {
-                    // todo: find the first next avaiable time band
+                    val begin = parse(it.begin)
+                    val end = parse(it.end)
+                    begin != null && end != null && begin.after(now)
                     true
                 }
-                binding.time.text = "Closed: $timeZone"
+                binding.time.isVisible = timeZone != null
+                if (timeZone != null) {
+                    val start = getTimeStamp(context, parse(timeZone.begin))
+                    binding.time.text = "Opens at $start"
+                }
             }
 
             LocationStatus.Unknown -> {
                 binding.time.isVisible = false
             }
         }
+    }
 
+    private fun getTimeStamp(context: Context, date: Date?): String {
+        // No start time, return TBA.
+        if (date == null)
+            return context.getString(R.string.tba)
+
+
+        val s = if (android.text.format.DateFormat.is24HourFormat(context)) {
+            "MMMM d, HH:mm"
+        } else {
+            "MMMM d, h:mm aa"
+        }
+
+        val formatter = SimpleDateFormat(s)
+
+        if (App.instance.storage.forceTimeZone) {
+            val timezone = App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"
+            formatter.timeZone = TimeZone.getTimeZone(timezone)
+        }
+
+        return formatter.format(date)
+    }
+
+    private fun parse(date: String): Date? {
+        return try {
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date)
+        } catch (ex: Exception) {
+            null
+        }
     }
 }

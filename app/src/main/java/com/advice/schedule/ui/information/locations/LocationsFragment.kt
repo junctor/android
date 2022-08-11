@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
+import com.advice.schedule.models.local.LocationContainer
 import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
@@ -41,7 +42,7 @@ class LocationsFragment : Fragment() {
             if (location.hasChildren) {
                 viewModel.toggle(location)
             } else {
-                (requireActivity() as MainActivity).showSchedule(location.toLocation())
+                openScheduleBottomSheet(location)
             }
         }
 
@@ -74,6 +75,15 @@ class LocationsFragment : Fragment() {
                     showErrorView(response.exception.message)
                 }
             }
+        }
+    }
+
+    private fun openScheduleBottomSheet(location: LocationContainer) {
+        val schedule = viewModel.updatedSchedule(location.toLocation())
+        schedule.observe(viewLifecycleOwner) {
+            schedule.removeObservers(viewLifecycleOwner)
+            val fragment = LocationsBottomSheet.newInstance(it)
+            fragment.show(childFragmentManager, "location")
         }
     }
 
