@@ -72,6 +72,7 @@ class Analytics(private val storage: Storage) {
         analytics.logEvent("developer_twitter") {
             param(FirebaseAnalytics.Param.CONTENT_TYPE, "developer")
             param("is_follow", isFollow.toString())
+        }
     }
 
     fun onConferenceChangeEvent(conference: Conference) {
