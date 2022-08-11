@@ -10,10 +10,9 @@ import com.advice.schedule.Response
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.ReminderManager
 import com.advice.schedule.getTintedDrawable
-import com.advice.schedule.models.local.Event
-import com.advice.schedule.models.local.setStatus
-import com.advice.schedule.models.local.toColour
+import com.advice.schedule.models.local.*
 import com.advice.schedule.ui.activities.MainActivity
+import com.advice.schedule.ui.information.locations.LocationsViewModel
 import com.advice.schedule.ui.information.locations.toContainer
 import com.advice.schedule.ui.information.speakers.SpeakersAdapter
 import com.advice.schedule.ui.schedule.ScheduleViewModel
@@ -38,6 +37,7 @@ class EventFragment : Fragment() {
     private val storage by inject<Storage>()
 
     private val viewModel by sharedViewModel<ScheduleViewModel>()
+    private val locationsViewModel by sharedViewModel<LocationsViewModel>()
 
     private lateinit var speakersAdapter: SpeakersAdapter
     private val linksAdapter = EventDetailsAdapter()
@@ -158,19 +158,25 @@ class EventFragment : Fragment() {
     private fun displayDescription(event: Event) {
         binding.title.text = event.title
         binding.date.text = getFullTimeStamp(requireContext(), event).replace("\n", " ")
-        val location = event.location.toContainer().apply {
-            setStatus(getCurrentStatus())
-        }
-        binding.location.setLocation(location, useShortLabel = false, showDot = false)
 
-        val drawable = requireContext().getTintedDrawable(R.drawable.ic_map_white_24dp, location.status.toColour())
-        binding.locationIcon.setImageDrawable(drawable)
+        updateLocationStatus(event.location.toContainer())
+
+        // fetching the updated location status
+        locationsViewModel.updatedSchedule(event.location).observe(viewLifecycleOwner) { location ->
+            updateLocationStatus(location)
+        }
 
         binding.locationContainer.setOnClickListener {
             (requireActivity() as MainActivity).showSchedule(event.location)
         }
     }
 
+    private fun updateLocationStatus(location: LocationContainer) {
+        binding.location.setLocation(location, useShortLabel = false, showDot = false)
+
+        val drawable = requireContext().getTintedDrawable(R.drawable.ic_map_white_24dp, location.status.toColour())
+        binding.locationIcon.setImageDrawable(drawable)
+    }
 
     private fun getFullTimeStamp(context: Context, event: Event): String {
         val (begin, end) = getTimeStamp(context, event)

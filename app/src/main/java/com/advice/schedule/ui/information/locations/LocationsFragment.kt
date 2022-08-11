@@ -9,11 +9,12 @@ import com.advice.schedule.Response
 import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LocationsFragment : Fragment() {
 
-    private val viewModel by viewModel<LocationsViewModel>()
+    private val viewModel by sharedViewModel<LocationsViewModel>()
 
     private var _binding: FragmentRecyclerviewBinding? = null
     private val binding get() = _binding!!

@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.schedule.Response
+import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.*
 import kotlinx.coroutines.delay
@@ -108,6 +109,19 @@ class LocationsViewModel : ViewModel(), KoinComponent {
 
     fun getLocations(): LiveData<Response<List<LocationContainer>>> = locations
 
+    fun updatedSchedule(location: Location): LiveData<LocationContainer> {
+        val result = MediatorLiveData<LocationContainer>()
+
+        result.addSource(locations) {
+            val element = (it.dObj as? List<LocationContainer>)?.find { it.id == location.id }
+            if (element != null) {
+                result.value = element
+            }
+        }
+        
+        return result
+    }
+
     companion object {
         private const val LOCATION_UPDATE_DELAY = 30_000L
     }
@@ -120,5 +134,5 @@ fun Location.toContainer(hasChildren: Boolean = false): LocationContainer {
 
 // todo: refactor LocationsViewModel to store the raw Locations instead of recreating this item when clicked.
 fun LocationContainer.toLocation(): Location {
-    return Location(id, title, shortTitle, null, "", defaultStatus, depth,  - 1, -1, -1, -1, null)
+    return Location(id, title, shortTitle, null, "", defaultStatus, depth, -1, -1, -1, -1, null)
 }
