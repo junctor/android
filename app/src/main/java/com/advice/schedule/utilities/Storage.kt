@@ -11,7 +11,7 @@ class Storage(context: Context, private val gson: Gson) {
 
     companion object {
         private const val USER_THEME = "user_theme"
-        private const val USER_CONFERENCE = "user_conference"
+        private const val PREFERRED_CONFERENCE = "preferred_conference"
 
         const val EASTER_EGGS_ENABLED_KEY = "easter_eggs_enabled"
         const val SAFE_MODE_ENABLED = "safe_mode_enabled"
@@ -71,9 +71,9 @@ class Storage(context: Context, private val gson: Gson) {
         }
 
     var preferredConference: Long
-        get() = preferences.getLong(USER_CONFERENCE, -1)
+        get() = preferences.getLong(PREFERRED_CONFERENCE, -1L)
         set(value) {
-            preferences.edit().putLong(USER_CONFERENCE, value).apply()
+            preferences.edit().putLong(PREFERRED_CONFERENCE, value).apply()
         }
 
     var theme: ThemesManager.Theme?
