@@ -168,7 +168,7 @@
     <string name="twitter_built_by">Android client built with ♥ by <b>advice</b></string>
     <string name="twitter_name">advice</string>
     <string name="twitter_handle">\@_advice_dog</string>
-    <string name="twitter_bio">android dev &amp; def con goon. available for new opportunities. <b>#hackertracker#</b></string>
+    <string name="twitter_bio">android dev &amp; def con goon. available for new opportunities. <b>#hackertracker</b></string>
     <string name="twitter_action">Follow</string>
 
 </resources>
