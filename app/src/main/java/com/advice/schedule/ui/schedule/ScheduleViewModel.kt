@@ -164,11 +164,16 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     }
 
     suspend fun getEventById(target: Long): Event? {
-        val value = database.conference.value
-        if (value == null) {
-            Timber.e("Could not get Conference from database")
-            return null
+        return try {
+            val value = database.conference.value
+            if (value == null) {
+                Timber.e("Could not get Conference from database")
+                return null
+            }
+            database.getEventById(value.code, target)
+        } catch (ex: Exception) {
+            Timber.e(ex, "Could not find event by id: $target")
+            null
         }
-        return database.getEventById(value.code, target)
     }
 }

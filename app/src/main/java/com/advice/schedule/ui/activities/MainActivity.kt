@@ -71,9 +71,17 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val target = intent?.getLongExtra("target", -1L)
+        val target = when {
+            intent == null -> null
+            intent.hasExtra("target") -> intent.getLongExtra("target", -1L)
+            intent.data != null -> {
+                intent.data.toString().substringAfter("events/").take(5).toLongOrNull()
+            }
+            else -> null
+        }
+
         Timber.d("target: $target")
-        if (target != null && target != -1L) {
+        if (target != null) {
             lifecycleScope.launch {
                 val event = viewModel.getEventById(target)
                 if (event != null) {
