@@ -25,7 +25,6 @@ import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.io.File
-import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -78,7 +77,7 @@ class DatabaseManager(
     val conference = MutableLiveData<Conference>()
     val conferences = MutableLiveData<List<Conference>>()
 
-    var user: FirebaseUser? = null
+    private var user: FirebaseUser? = null
 
     private var tags = listOf<FirebaseTagType>()
 
@@ -129,7 +128,7 @@ class DatabaseManager(
                 // Get new Instance ID token
                 val token = task.result?.token
                 Logger.d("Obtained token: $token")
-                updateFirebaseMessagingToken(token)
+                updateFirebaseMessagingToken(conference, token)
             })
     }
 
@@ -483,16 +482,11 @@ class DatabaseManager(
         }
     }
 
-    private fun updateFirebaseMessagingToken(token: String?) {
-        updateUserProfileAttribute(mapOf("token" to token))
-    }
-
-    fun updateUserProfileAttribute(map: Map<String, String?>) {
-        val conference = conference.value
+    private fun updateFirebaseMessagingToken(conference: Conference?, token: String?) {
         val id = user?.uid
 
-        if (conference == null || id == null) {
-            Timber.e("Cannot update user profile attribute.")
+        if (conference == null || token == null || id == null) {
+            Timber.e("Null, cannot update token.")
             return
         }
 
@@ -501,8 +495,14 @@ class DatabaseManager(
             .collection(USERS)
             .document(id)
 
-        document.update(map)
+
+        document.set(mapOf("token" to token))
     }
+
+    fun clear() {
+
+    }
+
 
     fun getSpeakers(conference: Conference): LiveData<List<Speaker>> {
         val mutableLiveData = MutableLiveData<List<Speaker>>()
@@ -591,21 +591,5 @@ class DatabaseManager(
         return mutableLiveData
     }
 
-    suspend fun getUser(): com.advice.schedule.models.firebase.FirebaseUser? {
-        val id = user?.uid ?: return null
 
-        try {
-            val snapshot = firestore
-                .document("/conferences/DEFCON30/users/$id")
-                .get()
-                .await()
-
-            val user = snapshot.toObjectOrNull(com.advice.schedule.models.firebase.FirebaseUser::class.java)
-            preferences.user = user
-            return user
-        } catch (ex: Exception) {
-            Timber.e(ex, "Could not fetch the user")
-            return null
-        }
-    }
 }

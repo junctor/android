@@ -49,7 +49,6 @@ class HomeFragment : Fragment() {
                     binding.title.text = state.conference.name
                     startCountdownTimer(state.conference.startDate)
                     adapter.setElements(state.article)
-                    binding.skull.setUser(state.user)
 
                     binding.header.setOnClickListener {
                         showConferenceChooseDialog(state.conference, state.conferences)
@@ -94,11 +93,6 @@ class HomeFragment : Fragment() {
             }
         }
         timer?.start()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.onResume()
     }
 
     companion object {
