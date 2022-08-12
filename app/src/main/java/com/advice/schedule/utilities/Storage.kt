@@ -3,13 +3,16 @@ package com.advice.schedule.utilities
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.google.gson.Gson
+import com.advice.schedule.models.firebase.FirebaseUser
+import com.advice.schedule.ui.HackerTrackerViewModel
 import com.advice.schedule.ui.themes.ThemesManager
+import com.google.gson.Gson
 import java.util.*
 
 class Storage(context: Context, private val gson: Gson) {
 
     companion object {
+        private const val USER_PROFILE = "user_profile"
         private const val USER_THEME = "user_theme"
         private const val PREFERRED_CONFERENCE = "preferred_conference"
 
@@ -83,6 +86,12 @@ class Storage(context: Context, private val gson: Gson) {
         )
         set(value) {
             preferences.edit().putString(USER_THEME, gson.toJson(value)).apply()
+        }
+
+    var user: FirebaseUser?
+        get() = gson.fromJson(preferences.getString(USER_PROFILE, ""), FirebaseUser::class.java)
+        set(value) {
+            preferences.edit().putString(USER_PROFILE, gson.toJson(value)).apply()
         }
 
     fun setPreference(key: String, isChecked: Boolean) {

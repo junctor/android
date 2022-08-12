@@ -1,10 +1,14 @@
 package com.advice.schedule.ui.settings
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -94,6 +98,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         versionTextView.setOnClickListener {
             viewModel.onVersionClick()
+        }
+
+        viewModel.shouldDisplayUsername().observe(viewLifecycleOwner) { id ->
+            if (id != null) {
+                versionTextView.text = id
+                versionTextView.setOnLongClickListener {
+                    val clipboard = context?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
+                    val clip = ClipData.newPlainText("user", id)
+                    clipboard?.setPrimaryClip(clip)
+                    Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show()
+                    true
+                }
+            }
         }
 
         view.findViewById<View>(R.id.twitter_card).setOnClickListener {

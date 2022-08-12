@@ -16,12 +16,14 @@ import java.util.*
 class SettingsViewModel : ViewModel(), KoinComponent {
 
     private val database by inject<DatabaseManager>()
-    private val storage  by inject<Storage>()
+    private val storage by inject<Storage>()
     private val analytics by inject<Analytics>()
 
     private val conference = database.conference
     private val hasReboot = MutableLiveData<Boolean>()
     private var clickCounter = 0
+
+    private val userId = MutableLiveData<String?>()
 
     init {
         val calendar = Calendar.getInstance()
@@ -30,6 +32,10 @@ class SettingsViewModel : ViewModel(), KoinComponent {
         val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
         if (dayOfYear >= 219 && storage.getPreference(Storage.EASTER_EGGS_ENABLED_KEY, false)) {
             hasReboot.value = true
+        }
+
+        if (storage.getPreference(Storage.DEVELOPER_THEME_UNLOCKED, false)) {
+            userId.value = database.user?.uid
         }
     }
 
@@ -41,6 +47,8 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     fun onVersionClick() {
         if (clickCounter++ == 10) {
             storage.setPreference(Storage.DEVELOPER_THEME_UNLOCKED, true)
+            database.updateUserProfileAttribute(mapOf("rank" to "noob"))
+            userId.value = database.user?.uid
         }
     }
 
@@ -52,4 +60,5 @@ class SettingsViewModel : ViewModel(), KoinComponent {
 
     fun hasReboot(): LiveData<Boolean> = hasReboot
 
+    fun shouldDisplayUsername(): LiveData<String?> = userId
 }
