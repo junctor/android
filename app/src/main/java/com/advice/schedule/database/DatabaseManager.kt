@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
 
 class DatabaseManager(
     private val preferences: Storage,
-    private val firebaseCrashlytics: FirebaseCrashlytics
+    //private val firebaseCrashlytics: FirebaseCrashlytics
 ) {
 
     companion object {
@@ -158,8 +158,8 @@ class DatabaseManager(
         var events = listOf<Event>()
         var bookmarks = listOf<FirebaseBookmark>()
 
-        firebaseCrashlytics.log("fetching schedule")
-        firebaseCrashlytics.setCustomKey("code", code)
+//        firebaseCrashlytics.log("fetching schedule")
+//        firebaseCrashlytics.setCustomKey("code", code)
 
         firestore.collection(CONFERENCES)
             .document(code)

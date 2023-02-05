@@ -1,32 +1,19 @@
 package com.advice.schedule.ui.events
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
-import androidx.core.view.isVisible
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.feature_ui.EventScreenView
-import com.advice.schedule.Response
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.ReminderManager
-import com.advice.schedule.getTintedDrawable
 import com.advice.schedule.models.local.Event
-import com.advice.schedule.models.local.LocationContainer
-import com.advice.schedule.models.local.toColour
-import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.information.locations.LocationsViewModel
-import com.advice.schedule.ui.information.locations.toContainer
-import com.advice.schedule.ui.information.speakers.SpeakersAdapter
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.Storage
-import com.advice.schedule.utilities.TimeUtil
-import com.advice.schedule.utilities.getLocalizedDate
-import com.shortstack.hackertracker.R
-import com.shortstack.hackertracker.databinding.FragmentEventBinding
+import com.advice.ui.EventScreenView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -41,9 +28,6 @@ class EventFragment : Fragment() {
     private val viewModel by sharedViewModel<ScheduleViewModel>()
     private val locationsViewModel by sharedViewModel<LocationsViewModel>()
 
-    private lateinit var speakersAdapter: SpeakersAdapter
-    private val linksAdapter = EventDetailsAdapter()
-
     private lateinit var event: Event
 
     override fun onCreateView(
@@ -54,6 +38,7 @@ class EventFragment : Fragment() {
         event = arguments?.getParcelable(EXTRA_EVENT) ?: error("event must not be null")
 
         return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 EventScreenView()
             }

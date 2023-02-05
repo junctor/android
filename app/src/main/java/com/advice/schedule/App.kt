@@ -36,12 +36,14 @@ class App : Application() {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
+        FirebaseApp.initializeApp(this)
+
+
         startKoin {
             androidContext(this@App)
             modules(appModule)
         }
 
-        FirebaseApp.initializeApp(this)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

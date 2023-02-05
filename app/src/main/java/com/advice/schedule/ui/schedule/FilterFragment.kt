@@ -60,10 +60,9 @@ class FilterFragment : Fragment() {
                     val hasFilters = FirebaseTag.bookmark.isSelected || it.data.flatMap { it.tags }.any { it.isSelected }
                     binding.action.isVisible = hasFilters
                 }
-
-                is Response.Error -> TODO()
-                Response.Init -> TODO()
-                Response.Loading -> TODO()
+                else -> {
+                    // no op
+                }
             }
         }
 

@@ -150,7 +150,11 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     }
 
     fun showEvent(event: Event) {
-        setAboveFragment(EventFragment.newInstance(event))
+        //setAboveFragment(EventFragment.newInstance(event))
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container_above, EventFragment.newInstance(event))
+            .addToBackStack(null)
+            .commit()
         analytics.setScreen(Analytics.SCREEN_EVENT)
     }
 
