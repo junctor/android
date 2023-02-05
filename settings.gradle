@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Schedule"
 include ':app'
+include ':feature-ui'

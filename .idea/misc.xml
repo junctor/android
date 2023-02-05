@@ -4,33 +4,58 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker-New/app/src/main/res/menu/schedule.xml" value="0.15052083333333333" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/drawable-v21/rounded_selectable_background_white.xml" value="0.3645" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/drawable/ic_close_white_24dp.xml" value="0.392" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/drawable/ic_share_white_24dp.xml" value="0.2095" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/drawable/rounded_selectable_background_white.xml" value="0.3645" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/drawable/twitter_follow_background_rounded.xml" value="0.391" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/drawable/well_background_rounded.xml" value="0.392" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/activity_main.xml" value="0.3921875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/app_bar_main.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/bottom_sheet_generic.xml" value="0.20208333333333334" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/countdown_view.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/empty_text.xml" value="0.2671875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/filter_fragment.xml" value="0.4" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_category.xml" value="0.20208333333333334" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_code_of_conduct.xml" value="0.225" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_event.xml" value="0.48455598455598453" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_home.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_information.xml" value="0.3921875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_map.xml" value="0.3921875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_maps.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_recyclerview.xml" value="0.38425925925925924" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_schedule.xml" value="0.2574074074074074" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_search.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_settings.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_speakers.xml" value="0.38425925925925924" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/fragment_support_hotline.xml" value="0.1" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/header_home.xml" value="0.13958333333333334" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/item_event_link.xml" value="0.41770833333333335" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/item_type_header.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/location_row.xml" value="0.3861538461538462" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/location_view.xml" value="0.3921875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/navigation_view.xml" value="0.3921875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/panels_fragment.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/row_event.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/row_faq.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/row_faq_answer.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/row_faq_question.xml" value="0.264" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/row_header.xml" value="0.3138888888888889" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/row_vendor.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/twitter_badge.xml" value="0.3921875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/view_day_selector.xml" value="0.3138888888888889" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/view_empty.xml" value="0.3861538461538462" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/view_event_type.xml" value="0.2657407407407407" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/layout/view_well.xml" value="0.3921875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/menu/activity_main_drawer.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/menu/menu.xml" value="0.3921875" />
+        <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/menu/search_menu.xml" value="0.3921875" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3395" />
         <entry key="..\:/Users/disen/Documents/GitHub/HackerTracker/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3395" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_19" project-jdk-name="19" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
