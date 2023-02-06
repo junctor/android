@@ -27,13 +27,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.schedule.models.local.Event
 
 @Composable
-fun EventRowView() {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-        .background(Color.White)
-        .fillMaxWidth()
-        .height(IntrinsicSize.Min)) {
+fun EventRowView(title: String, location: String, category: String, modifier: Modifier = Modifier) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically, modifier = modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+    ) {
         // Category
         Box(
             modifier = Modifier
@@ -45,11 +47,15 @@ fun EventRowView() {
         )
 
         Spacer(modifier = Modifier.width(85.dp))
-        Column(Modifier.weight(1f).padding(vertical = 8.dp)) {
-            Text("Compelled Decryption", style = MaterialTheme.typography.bodyMedium)
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(vertical = 8.dp)
+        ) {
+            Text(title, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(4.dp))
-            Text("Track 1", style = MaterialTheme.typography.bodyMedium)
-            CategoryView("Event Category")
+            Text(location, style = MaterialTheme.typography.bodyMedium)
+            CategoryView(category)
         }
         Icon(Icons.Default.Star, contentDescription = null,
             Modifier
@@ -79,6 +85,6 @@ fun CategoryView(label: String) {
 @Composable
 fun EventRowViewPreview() {
     MaterialTheme {
-        EventRowView()
+        EventRowView(title = "Compelled Decryption", location = "Track 1", category = "Talk")
     }
 }

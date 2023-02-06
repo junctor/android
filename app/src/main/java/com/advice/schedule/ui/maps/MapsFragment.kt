@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.advice.core.firebase.FirebaseConferenceMap
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.ui.HackerTrackerViewModel
 import com.advice.schedule.utilities.Analytics

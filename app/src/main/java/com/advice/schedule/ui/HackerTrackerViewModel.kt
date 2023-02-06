@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.advice.core.firebase.FirebaseConferenceMap
 import com.advice.schedule.Resource
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.firebase.FirebaseTag

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.*

@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.ui.schedule.list.ScheduleAdapter
 import com.advice.timehop.StickyRecyclerHeadersDecoration

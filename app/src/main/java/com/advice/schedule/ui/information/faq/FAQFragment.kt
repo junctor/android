@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.hideKeyboard
 import com.advice.schedule.models.local.FAQAnswer
 import com.advice.schedule.models.local.FAQQuestion

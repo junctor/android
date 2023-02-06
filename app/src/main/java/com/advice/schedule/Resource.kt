@@ -1,5 +1,7 @@
 package com.advice.schedule
 
+import com.advice.core.utils.Response
+
 data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
 
     companion object {
@@ -19,19 +21,6 @@ enum class Status {
     LOADING,
     NOT_INITIALIZED
 }
-
-sealed class Response<out T : Any> {
-
-    object Init : Response<Nothing>()
-
-    object Loading : Response<Nothing>()
-
-    data class Success<T : Any>(val data: T) : Response<T>()
-
-    data class Error(val exception: Exception) : Response<Nothing>()
-
-}
-
 val Response<*>.dObj: Any?
     get() {
         if (this is Response.Success) {

@@ -1,7 +1,7 @@
 package com.advice.schedule.ui.information.faq
 
 import androidx.lifecycle.*
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.firebase.FirebaseFAQ

@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.models.local.Vendor
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding

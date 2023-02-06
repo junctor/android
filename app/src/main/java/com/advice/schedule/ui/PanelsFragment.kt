@@ -165,8 +165,7 @@ class PanelsFragment : Fragment(), KoinComponent {
     }
 
     fun invalidate() {
-        val schedule = childFragmentManager.fragments.get(ScheduleFragment::class.java)
-        schedule.invalidate()
+
     }
 
     companion object {

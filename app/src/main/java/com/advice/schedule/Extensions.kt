@@ -129,13 +129,13 @@ fun FirebaseType.toType(): Type? {
     return try {
         val actions = ArrayList<Action>()
         discord_url?.let {
-            if (it?.isNotBlank() == true) {
+            if (it.isNotBlank()) {
                 actions.add(Action(Action.getLabel(it), it))
             }
         }
 
         subforum_url?.let {
-            if (it?.isNotBlank() == true) {
+            if (it.isNotBlank()) {
                 actions.add(Action(Action.getLabel(it), it))
             }
         }

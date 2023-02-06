@@ -1,7 +1,7 @@
 package com.advice.schedule.ui.information.speakers
 
 import androidx.lifecycle.*
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Speaker

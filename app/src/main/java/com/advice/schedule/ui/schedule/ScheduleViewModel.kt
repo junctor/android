@@ -1,7 +1,7 @@
 package com.advice.schedule.ui.schedule
 
 import androidx.lifecycle.*
-import com.advice.schedule.Response
+import com.advice.core.utils.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.firebase.FirebaseTag
@@ -110,7 +110,7 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
         return result
     }
 
-    fun getSchedule(): LiveData<Response<List<Event>>> {
+    fun getSchedule(): LiveData<com.advice.core.utils.Response<List<Event>>> {
         val result = MediatorLiveData<Response<List<Event>>>()
 
         result.addSource(events) {
