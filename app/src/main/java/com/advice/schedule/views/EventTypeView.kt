@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.advice.schedule.getTintedDrawable
 import com.advice.schedule.models.firebase.FirebaseTag
-import com.advice.schedule.models.local.Type
 import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.ViewEventTypeBinding

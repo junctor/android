@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.advice.schedule.database.DatabaseManager
-import com.advice.schedule.models.local.Conference
+import com.advice.core.local.Conference
 import com.advice.schedule.ui.themes.ThemesManager
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.Storage

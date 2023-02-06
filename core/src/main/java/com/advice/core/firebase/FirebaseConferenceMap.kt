@@ -1,4 +1,4 @@
-package com.advice.schedule.models.firebase
+package com.advice.core.firebase
 
 import java.io.File
 

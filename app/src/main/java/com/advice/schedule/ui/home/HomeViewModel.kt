@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.Article
-import com.advice.schedule.models.local.Conference
+import com.advice.core.local.Conference
 import com.advice.schedule.utilities.Analytics
 import org.koin.core.KoinComponent
 import org.koin.core.inject

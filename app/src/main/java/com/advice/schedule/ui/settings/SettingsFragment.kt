@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import com.advice.schedule.models.local.Conference
+import com.advice.core.local.Conference
 import com.advice.schedule.ui.themes.ThemesManager
 import com.advice.schedule.utilities.Storage
 import com.shortstack.hackertracker.BuildConfig

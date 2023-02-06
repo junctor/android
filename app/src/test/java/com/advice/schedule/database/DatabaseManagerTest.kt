@@ -2,7 +2,7 @@ package com.advice.schedule.database
 
 import com.advice.schedule.fromString
 import com.advice.schedule.models.firebase.FirebaseConference
-import com.advice.schedule.models.local.Conference
+import com.advice.core.local.Conference
 import com.advice.schedule.setCurrentClock
 import com.advice.schedule.toConference
 import org.junit.Assert.*

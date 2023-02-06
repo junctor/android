@@ -40,7 +40,7 @@ class EventFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                EventScreenView()
+                EventScreenView(event)
             }
         }
     }

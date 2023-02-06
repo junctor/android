@@ -1,8 +1,8 @@
-package com.advice.schedule.models.local
+package com.advice.core.local
 
 import android.os.Parcelable
+import com.advice.core.utils.Time
 import com.advice.schedule.models.firebase.FirebaseMap
-import com.advice.schedule.utilities.Time
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList

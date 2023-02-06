@@ -11,7 +11,6 @@ import com.advice.schedule.hideKeyboard
 import com.advice.schedule.models.local.FAQAnswer
 import com.advice.schedule.models.local.FAQQuestion
 import com.advice.schedule.onQueryTextChanged
-import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

@@ -5,14 +5,11 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.shortstack.hackertracker.R
 import com.advice.schedule.getTintedDrawable
 import com.advice.schedule.models.firebase.FirebaseTag
-import com.advice.schedule.models.local.Type
 import com.advice.schedule.ui.activities.MainActivity
-import com.google.android.material.color.MaterialColors
-import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.ItemTypeBinding
 
 class TypeViewHolder(private val binding: ItemTypeBinding) : RecyclerView.ViewHolder(binding.root) {

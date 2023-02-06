@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.advice.schedule.models.local.Speaker
-import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.RowSpeakerBinding
 

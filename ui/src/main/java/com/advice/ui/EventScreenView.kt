@@ -16,9 +16,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,39 +29,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.schedule.models.local.Event
+import com.advice.ui.views.ActionView
+import com.advice.ui.views.CategoryView
+import com.advice.ui.views.SpeakerView
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventScreenView() {
-    Box(Modifier.background(Color.White)) {
-        EventScreenContent()
+fun EventScreenView(event: Event) {
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(event.title) }) }) { contentPadding ->
+        EventScreenContent(event, modifier = Modifier.padding(contentPadding))
     }
 }
 
-// mock data
-val actions = listOf("Discord.com", "Discord.com")
-val speakers = listOf("John McAfee")
-
 @Composable
-fun EventScreenContent() {
-    Column(Modifier.padding(16.dp)) {
-        HeaderSection()
+fun EventScreenContent(event: Event, modifier: Modifier = Modifier) {
+    Column(modifier.padding(16.dp)) {
+        HeaderSection(event.title, event.types, event.date.toString(), event.location.name)
         Text(
-            "The Bug Hunter's Methodology is an ongoing yearly installment on the newest tools and tech. for bug hunters and red teamers.",
+            event.description,
             modifier = Modifier.padding(vertical = 16.dp)
         )
         Card {
             LazyColumn {
-                items(actions) {
-                    com.advice.ui.views.ActionView()
+                items(event.urls) { action ->
+                    ActionView(action.label)
                 }
             }
         }
-        if (speakers.isNotEmpty()) {
+        if (event.speakers.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             Text("Speakers", style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             LazyColumn {
-                items(speakers) {
-                    com.advice.ui.views.SpeakerView(it)
+                items(event.speakers) { speaker ->
+                    SpeakerView(speaker.name, speaker.title)
                 }
             }
         }
@@ -67,16 +73,16 @@ fun EventScreenContent() {
 }
 
 @Composable
-fun HeaderSection() {
+fun HeaderSection(title: String, categories: List<FirebaseTag>, date: String, location: String) {
     Column {
-        Text("Arcade Party", style = MaterialTheme.typography.displayLarge)
+        Text(title, style = MaterialTheme.typography.displayLarge)
         Spacer(Modifier.height(8.dp))
         Row(Modifier.padding(16.dp)) {
-            com.advice.ui.views.CategoryView()
+            CategoryView(categories.first().label)
         }
-        DetailsCard("August 16th, 9:30am - 10:30am")
+        DetailsCard(date)
         DetailsCard("Tap the location to show all events from this location", isDismissible = true)
-        DetailsCard("Caesars Forum - Forum 104-105")
+        DetailsCard(location)
     }
 }
 
@@ -107,6 +113,6 @@ private fun DetailsCard(text: String, isDismissible: Boolean = false) {
 @Composable
 fun EventScreenPreview() {
     MaterialTheme {
-        EventScreenContent()
+        //EventScreenContent(Event(id = -1, conference = "DEFCON30", title = "Arcade Party", _description = "", start = Timestamp.now()))
     }
 }

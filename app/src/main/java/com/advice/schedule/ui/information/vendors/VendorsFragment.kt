@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
 import com.advice.schedule.models.local.Vendor
-import com.advice.schedule.ui.HackerTrackerViewModel
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

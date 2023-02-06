@@ -14,7 +14,6 @@ import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class SpeakersFragment : Fragment() {
 

@@ -16,13 +16,17 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.transition.Fade
+import com.advice.core.firebase.FirebaseAction
+import com.advice.core.firebase.FirebaseArticle
+import com.advice.core.firebase.FirebaseConference
+import com.advice.core.firebase.FirebaseEvent
 import com.advice.schedule.models.firebase.*
 import com.advice.schedule.models.local.*
 import com.advice.schedule.utilities.Time
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
-import com.shortstack.hackertracker.R
+import com.advice.core.local.Conference
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -124,11 +128,16 @@ fun FirebaseConference.toConference(): Conference? {
 fun FirebaseType.toType(): Type? {
     return try {
         val actions = ArrayList<Action>()
-        if (discord_url?.isNotBlank() == true) {
-            actions.add(Action(Action.getLabel(discord_url), discord_url))
+        discord_url?.let {
+            if (it?.isNotBlank() == true) {
+                actions.add(Action(Action.getLabel(it), it))
+            }
         }
-        if (subforum_url?.isNotBlank() == true) {
-            actions.add(Action(Action.getLabel(subforum_url), subforum_url))
+
+        subforum_url?.let {
+            if (it?.isNotBlank() == true) {
+                actions.add(Action(Action.getLabel(it), it))
+            }
         }
 
         Type(

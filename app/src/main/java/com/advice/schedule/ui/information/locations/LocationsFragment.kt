@@ -7,11 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.advice.schedule.Response
 import com.advice.schedule.models.local.LocationContainer
-import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LocationsFragment : Fragment() {
 

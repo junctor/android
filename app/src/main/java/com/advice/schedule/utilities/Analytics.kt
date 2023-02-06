@@ -1,6 +1,6 @@
 package com.advice.schedule.utilities
 
-import com.advice.schedule.models.local.Conference
+import com.advice.core.local.Conference
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Speaker
 import com.google.firebase.analytics.FirebaseAnalytics

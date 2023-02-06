@@ -49,7 +49,7 @@ fun EventRowView() {
             Text("Compelled Decryption", style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text("Track 1", style = MaterialTheme.typography.bodyMedium)
-            CategoryView()
+            CategoryView("Event Category")
         }
         Icon(Icons.Default.Star, contentDescription = null,
             Modifier
@@ -62,7 +62,7 @@ fun EventRowView() {
 }
 
 @Composable
-fun CategoryView() {
+fun CategoryView(label: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier
@@ -71,7 +71,7 @@ fun CategoryView() {
                 .background(Color.Red)
         )
         Spacer(Modifier.width(8.dp))
-        Text("Event Category", style = MaterialTheme.typography.bodySmall)
+        Text(label, style = MaterialTheme.typography.bodySmall)
     }
 }
 

@@ -18,7 +18,6 @@ import com.advice.schedule.models.local.Event
 import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import org.koin.core.KoinComponent
-import timber.log.Timber
 
 class NotificationHelper(private val context: Context) : KoinComponent {
 

@@ -3,9 +3,12 @@ package com.advice.schedule.models.local
 import android.content.Context
 import android.os.Parcelable
 import com.advice.schedule.models.firebase.FirebaseTag
-import com.advice.schedule.utilities.*
 import com.google.firebase.Timestamp
-import com.shortstack.hackertracker.R
+import com.advice.core.utils.Time
+import com.advice.core.utils.TimeUtil
+import com.advice.core.utils.getDateMidnight
+import com.advice.core.utils.getLocalizedDate
+import com.advice.core.utils.toTimestamp
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
 import java.util.*
@@ -68,7 +71,7 @@ data class Event(
             SimpleDateFormat("h:mm aa").format(localizedDate)
         }
 
-        return String.format(context.getString(R.string.timestamp_start), date, time)
+        return "TODO"//String.format(context.getString(R.string.timestamp_start), date, time)
     }
 
     val description: String

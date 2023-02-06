@@ -2,7 +2,7 @@ package com.advice.schedule.models.local
 
 import android.graphics.Color
 import android.os.Parcelable
-import com.advice.schedule.utilities.Time
+import com.advice.core.utils.Time
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
 import java.util.*

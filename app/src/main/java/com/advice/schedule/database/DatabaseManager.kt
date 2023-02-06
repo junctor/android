@@ -5,6 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.advice.core.firebase.FirebaseArticle
+import com.advice.core.firebase.FirebaseBookmark
+import com.advice.core.firebase.FirebaseConference
+import com.advice.core.firebase.FirebaseConferenceMap
+import com.advice.core.firebase.FirebaseEvent
 import com.advice.schedule.*
 import com.advice.schedule.models.firebase.*
 import com.advice.schedule.models.local.*
@@ -14,13 +19,13 @@ import com.advice.schedule.utilities.Time
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.Query
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import com.advice.core.local.Conference
 import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber

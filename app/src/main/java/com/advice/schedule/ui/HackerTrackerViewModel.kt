@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.advice.core.firebase.FirebaseConferenceMap
 import com.advice.schedule.Resource
 import com.advice.schedule.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
-import com.advice.schedule.models.firebase.FirebaseConferenceMap
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.schedule.models.local.*
-import com.advice.schedule.utilities.Analytics
+import com.advice.core.local.Conference
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 

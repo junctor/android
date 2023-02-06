@@ -1,7 +1,6 @@
 package com.advice.schedule.models.local
 
 import android.os.Parcelable
-import com.shortstack.hackertracker.R
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -18,27 +17,28 @@ class Action(val label: String, val url: String) : Parcelable {
     }
 
     private fun getResource(url: String): Int {
-        if (url.contains("discord.com") || url.contains("discordapp.com"))
-            return R.drawable.ic_discord_logo_white
-        if (url.contains("twitter.com"))
-            return R.drawable.ic_twitter
-
-        if (url.contains("forum.defcon.org"))
-            return R.drawable.ic_baseline_forum_24
-
-        if (url.contains("twitch.tv"))
-            return R.drawable.ic_glitch_white_rgb
-
-        if (url.contains("youtube.com"))
-            return R.drawable.youtube_social_icon_red
-
-        if (url.contains("soundcloud.com"))
-            return R.drawable.soundcloud
-
-        if (url.contains("facebook.com"))
-            return R.drawable.logo_facebook
-
-        return R.drawable.browser
+//        if (url.contains("discord.com") || url.contains("discordapp.com"))
+//            return R.drawable.ic_discord_logo_white
+//        if (url.contains("twitter.com"))
+//            return R.drawable.ic_twitter
+//
+//        if (url.contains("forum.defcon.org"))
+//            return R.drawable.ic_baseline_forum_24
+//
+//        if (url.contains("twitch.tv"))
+//            return R.drawable.ic_glitch_white_rgb
+//
+//        if (url.contains("youtube.com"))
+//            return R.drawable.youtube_social_icon_red
+//
+//        if (url.contains("soundcloud.com"))
+//            return R.drawable.soundcloud
+//
+//        if (url.contains("facebook.com"))
+//            return R.drawable.logo_facebook
+//
+//        return R.drawable.browser
+        return -1
     }
 
     companion object {

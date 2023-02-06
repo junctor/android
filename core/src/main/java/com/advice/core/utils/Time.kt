@@ -1,8 +1,7 @@
-package com.advice.schedule.utilities
+package com.advice.core.utils
 
-import com.advice.schedule.App
 import com.google.firebase.Timestamp
-import com.shortstack.hackertracker.BuildConfig
+import com.shortstack.core.BuildConfig
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,12 +21,13 @@ private fun parse(date: String): Date {
 
 
 fun getDateMidnight(date: Date): Date {
-    val calendar = if (App.instance.storage.forceTimeZone) {
-        // using the conferences default zone
-        Calendar.getInstance(TimeZone.getTimeZone(App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"))
-    } else {
+    val calendar =
+//        if (App.instance.storage.forceTimeZone) {
+//        // using the conferences default zone
+//        Calendar.getInstance(TimeZone.getTimeZone(App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"))
+//    } else {
         Calendar.getInstance()
-    }
+//    }
 
     val apply = calendar.apply {
         time = date
@@ -41,12 +41,13 @@ fun getDateMidnight(date: Date): Date {
 }
 
 fun getLocalizedDate(date: Date): Date {
-    val calendar = if (App.instance.storage.forceTimeZone) {
-        // using the conferences default zone
-        Calendar.getInstance(TimeZone.getTimeZone(App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"))
-    } else {
+    val calendar =
+//        if (App.instance.storage.forceTimeZone) {
+//        // using the conferences default zone
+//        Calendar.getInstance(TimeZone.getTimeZone(App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"))
+//    } else {
         Calendar.getInstance()
-    }
+//    }
 
 
     val apply = calendar.apply {

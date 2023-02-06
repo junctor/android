@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ActionView() {
+fun ActionView(text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -29,7 +29,7 @@ fun ActionView() {
             }) {
         Icon(Icons.Default.Star, null)
         Spacer(Modifier.width(4.dp))
-        Text("Discord.com", Modifier.fillMaxWidth())
+        Text(text, Modifier.fillMaxWidth())
     }
 }
 
@@ -37,6 +37,6 @@ fun ActionView() {
 @Composable
 fun ActionViewPreview() {
     MaterialTheme {
-        ActionView()
+        ActionView("Discord.com")
     }
 }
