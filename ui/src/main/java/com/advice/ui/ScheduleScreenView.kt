@@ -13,6 +13,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,7 +37,9 @@ fun ScheduleScreenView(state: Response<List<Event>>?, onEventClick: (Event) -> U
                     Text("Schedule")
                 },
                 navigationIcon = {
-                    Icon(Icons.Default.Menu, null)
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(Icons.Default.Menu, null)
+                    }
                 }
             )
         },
@@ -110,7 +113,7 @@ fun ScheduleScreenContent(events: List<Event>, onEventClick: (Event) -> Unit, mo
         DaySelectorView(days = listOf("May 31", "June 1", "June 2", "June 3"))
         LazyColumn {
             items(events) {
-                EventRowView(it.title, it.location.name, it.types.first().label, modifier = Modifier.clickable {
+                EventRowView(it.title, it.location.name, it.types, modifier = Modifier.clickable {
                     onEventClick(it)
                 })
             }

@@ -27,10 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.schedule.models.local.Event
+import com.advice.schedule.models.firebase.FirebaseTag
 
 @Composable
-fun EventRowView(title: String, location: String, category: String, modifier: Modifier = Modifier) {
+fun EventRowView(title: String, location: String, tags: List<FirebaseTag>, modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier
             .fillMaxWidth()
@@ -43,7 +43,7 @@ fun EventRowView(title: String, location: String, category: String, modifier: Mo
                 .padding(vertical = 4.dp)
                 .fillMaxHeight()
                 .clip(RectangleShape)
-                .background(Color.Red)
+                .background(Color(android.graphics.Color.parseColor(tags.first().color)))
         )
 
         Spacer(modifier = Modifier.width(85.dp))
@@ -55,7 +55,11 @@ fun EventRowView(title: String, location: String, category: String, modifier: Mo
             Text(title, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(location, style = MaterialTheme.typography.bodyMedium)
-            CategoryView(category)
+            Row {
+                for (tag in tags) {
+                    CategoryView(tag)
+                }
+            }
         }
         Icon(Icons.Default.Star, contentDescription = null,
             Modifier
@@ -68,16 +72,16 @@ fun EventRowView(title: String, location: String, category: String, modifier: Mo
 }
 
 @Composable
-fun CategoryView(label: String) {
+fun CategoryView(tag: FirebaseTag) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier
                 .size(8.dp)
                 .clip(CircleShape)
-                .background(Color.Red)
+                .background(Color(android.graphics.Color.parseColor(tag.color)))
         )
         Spacer(Modifier.width(8.dp))
-        Text(label, style = MaterialTheme.typography.bodySmall)
+        Text(tag.label, style = MaterialTheme.typography.bodySmall)
     }
 }
 
@@ -85,6 +89,8 @@ fun CategoryView(label: String) {
 @Composable
 fun EventRowViewPreview() {
     MaterialTheme {
-        EventRowView(title = "Compelled Decryption", location = "Track 1", category = "Talk")
+        EventRowView(title = "Compelled Decryption", location = "Track 1", tags = listOf(FirebaseTag(label = "Talk", color_background = "#FF61EEAA")))
     }
 }
+
+fun Color.fromHex(color: String) = Color(android.graphics.Color.parseColor("#$color"))

@@ -1,6 +1,8 @@
 package com.advice.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,8 +11,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,11 +23,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.core.ui.HomeState
+
 
 private val articles = listOf("Welcome to DEFCON 28")
 
@@ -30,21 +41,59 @@ val roundedCornerShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenView() {
+fun HomeScreenView(state: HomeState?) {
     Scaffold(topBar = { TopAppBar(title = { Text("Home") }) }, modifier = Modifier.clip(roundedCornerShape)) { contentPadding ->
-        HomeScreenContent(modifier = Modifier.padding(contentPadding))
+        HomeScreenContent(state, modifier = Modifier.padding(contentPadding))
     }
 }
 
 @Composable
-fun HomeScreenContent(modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        ConferenceView()
-        CountdownView()
-        LazyColumn {
-            items(articles) {
-                ArticleView(text = it)
+fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        when (state) {
+            is HomeState.Error -> {}
+            is HomeState.Loaded -> {
+                ConferenceSelector(state)
+
+                ConferenceView(state.conference.name)
+                // todo: CountdownView(state.conference.)
+                LazyColumn {
+                    items(state.article) {
+                        ArticleView(text = it.text)
+                    }
+                }
             }
+
+            HomeState.Loading -> {}
+            null -> {}
+        }
+
+    }
+}
+
+@Composable
+fun ConferenceSelector(state: HomeState.Loaded) {
+    var expanded by rememberSaveable {
+        mutableStateOf(value = false)
+    }
+
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .clickable {
+                expanded = !expanded
+            }, verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(state.conference.name)
+        Icon(Icons.Default.ArrowDropDown, null)
+    }
+    DropdownMenu(expanded = expanded, onDismissRequest = {
+        expanded = false
+    }) {
+        for (conference in state.conferences) {
+            DropdownMenuItem(text = { Text(conference.name) }, onClick = {
+                expanded = false
+            })
         }
     }
 }
@@ -53,12 +102,12 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
 @Composable
 fun HomeScreenViewPreview() {
     MaterialTheme {
-        HomeScreenView()
+//        HomeScreenView(HomeState.Loaded(listOf("")))
     }
 }
 
 @Composable
-fun ConferenceView() {
+fun ConferenceView(name: String) {
     Card(
         modifier = Modifier
             .aspectRatio(1f)
@@ -71,7 +120,7 @@ fun ConferenceView() {
                 .fillMaxWidth()
         ) {
             Icon(Icons.Default.Star, contentDescription = null, modifier = Modifier.size(48.dp))
-            Text("DEFCON 28")
+            Text(name)
         }
     }
 }
@@ -107,7 +156,7 @@ fun ArticleView(text: String) {
 @Composable
 fun ConferenceViewPreview() {
     MaterialTheme {
-        ConferenceView()
+        ConferenceView("DEFCON")
     }
 }
 
@@ -124,5 +173,13 @@ fun CountdownViewPreview() {
 fun ArticleViewPreview() {
     MaterialTheme {
         ArticleView("Welcome to DEFCON 28!")
+    }
+}
+
+@Preview
+@Composable
+fun ConferenceSelectorPreview() {
+    MaterialTheme {
+        //ConferenceSelector(state = )
     }
 }

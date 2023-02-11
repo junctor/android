@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.Article
 import com.advice.core.local.Conference
+import com.advice.core.ui.HomeState
 import com.advice.schedule.utilities.Analytics
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -62,10 +63,4 @@ class HomeViewModel : ViewModel(), KoinComponent {
     }
 
     fun getHomeState(): LiveData<HomeState> = state
-}
-
-sealed class HomeState {
-    object Loading : HomeState()
-    data class Loaded(val conferences: List<Conference>, val conference: Conference, val article: List<Article>) : HomeState()
-    data class Error(val ex: Exception) : HomeState()
 }

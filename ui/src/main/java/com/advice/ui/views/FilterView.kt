@@ -19,25 +19,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.schedule.models.firebase.FirebaseTag
 
 @Composable
-fun FilterView() {
+fun FilterView(tag: FirebaseTag) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
         .fillMaxWidth()
         .clickable {
             // todo:
         }
-        .padding(8.dp)) {
+        .padding(16.dp)) {
         Box(
             modifier = Modifier
                 .size(12.dp)
                 .clip(CircleShape)
-                .background(Color.Red)
+                .background(Color(android.graphics.Color.parseColor(tag.color)))
         )
 
         Spacer(Modifier.width(12.dp))
 
-        Text("Hardware Hacking Village")
+        Text(tag.label)
     }
 }
 
@@ -45,6 +46,6 @@ fun FilterView() {
 @Composable
 fun FilterViewPreview() {
     MaterialTheme {
-        FilterView()
+        FilterView(FirebaseTag(label = "Talk", color_background = "#123123"))
     }
 }
