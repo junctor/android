@@ -33,7 +33,7 @@ class ScheduleFragment : Fragment(), KoinComponent {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.getSchedule().observeAsState().value
+                val state = viewModel.getState().observeAsState().value
                 ScheduleScreenView(state) {
                     openEventDetails(it)
                 }

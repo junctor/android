@@ -34,7 +34,7 @@ class SpeakersFragment : Fragment() {
         searchView = searchItem.actionView as SearchView
 
         searchView.onQueryTextChanged {
-            viewModel.setSearchQuery(it)
+//            viewModel.setSearchQuery(it)
         }
 
         searchView.setOnQueryTextFocusChangeListener { _, isFocused ->
@@ -78,8 +78,10 @@ class SpeakersFragment : Fragment() {
             }
         })
 
-        viewModel.getSpeakers().observe(viewLifecycleOwner) { response ->
-            onResponse(response)
+        viewModel.speakers.observe(viewLifecycleOwner) { response ->
+            //onResponse(response)
+            adapter.submitList(response)
+            hideViews()
         }
 
         setHasOptionsMenu(true)

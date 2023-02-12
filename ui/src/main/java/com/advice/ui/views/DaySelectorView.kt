@@ -42,15 +42,16 @@ fun DaySelectorView(days: List<String>) {
 
 
     Box(Modifier.height(IntrinsicSize.Min)) {
-        Box(
-            modifier = Modifier
-                .width(startPosition.width.dp)
-                .padding(vertical = 4.dp)
-                .offset(startPosition.start.dp, 0.dp)
-                .clip(CircleShape)
-                .fillMaxHeight()
-                .background(Color.Red)
-        )
+        // todo:
+//        Box(
+//            modifier = Modifier
+//                .width(startPosition.width.dp)
+//                .padding(vertical = 4.dp)
+//                .offset(startPosition.start.dp, 0.dp)
+//                .clip(CircleShape)
+//                .fillMaxHeight()
+//                .background(Color.Red)
+//        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()

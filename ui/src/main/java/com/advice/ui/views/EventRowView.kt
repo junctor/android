@@ -36,15 +36,17 @@ fun EventRowView(title: String, location: String, tags: List<FirebaseTag>, modif
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
     ) {
-        // Category
-        Box(
-            modifier = Modifier
-                .width(4.dp)
-                .padding(vertical = 4.dp)
-                .fillMaxHeight()
-                .clip(RectangleShape)
-                .background(Color(android.graphics.Color.parseColor(tags.first().color)))
-        )
+        if (tags.isNotEmpty()) {
+            // Category
+            Box(
+                modifier = Modifier
+                    .width(4.dp)
+                    .padding(vertical = 4.dp)
+                    .fillMaxHeight()
+                    .clip(RectangleShape)
+                    .background(Color(android.graphics.Color.parseColor(tags.first().color)))
+            )
+        }
 
         Spacer(modifier = Modifier.width(85.dp))
         Column(

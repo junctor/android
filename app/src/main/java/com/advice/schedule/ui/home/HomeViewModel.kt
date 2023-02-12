@@ -2,40 +2,38 @@ package com.advice.schedule.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.Article
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
+import com.advice.schedule.database.repository.HomeRepository
 import com.advice.schedule.utilities.Analytics
+import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class HomeViewModel : ViewModel(), KoinComponent {
+
+    private val repository by inject<HomeRepository>()
 
     private val database by inject<DatabaseManager>()
     private val analytics by inject<Analytics>()
 
     private val conference: LiveData<Conference> = database.conference
     private val conferences: LiveData<List<Conference>> = database.conferences
-    private val articles: LiveData<List<Article>>
+    private val articles = MutableLiveData<List<Article>>()
 
     private val state: LiveData<HomeState>
 
     init {
-        articles = Transformations.switchMap(database.conference) {
-            val result = MediatorLiveData<List<Article>>()
-
-            if (it == null) {
-                result.value = emptyList()
-            } else {
-                result.addSource(database.getArticles(it)) {
-                    result.value = it
-                }
+        viewModelScope.launch {
+            repository.contents.collect {
+                articles.value = it
             }
-
-            return@switchMap result
         }
 
         state = Transformations.switchMap(database.conference) { conference ->

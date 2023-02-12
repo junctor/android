@@ -4,18 +4,25 @@ import androidx.lifecycle.*
 import com.advice.core.utils.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
+import com.advice.schedule.database.repository.ScheduleRepository
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.firebase.FirebaseTag.Companion.bookmark
 import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
+import com.advice.ui.ScheduleScreenState
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
 
 class ScheduleViewModel : ViewModel(), KoinComponent {
+
+    private val dataSource by inject<ScheduleRepository>()
+
+    private val state = MutableLiveData<ScheduleScreenState>(ScheduleScreenState.Init)
+//    private val elements = MutableLiveData<List<Event>>()
 
     private val database: DatabaseManager by inject()
 
@@ -26,6 +33,12 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     private val searchQuery = MutableLiveData<String?>()
 
     init {
+        viewModelScope.launch {
+            dataSource.list.collect { elements ->
+                state.value = ScheduleScreenState.Success(elements)
+            }
+        }
+
         source = Transformations.switchMap(database.conference) {
             val result = MutableLiveData<List<Event>>()
 
@@ -63,6 +76,8 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
             }
         }
     }
+
+    fun getState(): LiveData<ScheduleScreenState> = state
 
     private fun getList(list: List<Event>, query: String?): Response.Success<List<Event>> {
         val data = list.filter {

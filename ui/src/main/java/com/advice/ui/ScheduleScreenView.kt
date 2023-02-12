@@ -27,9 +27,16 @@ import com.advice.schedule.models.local.Event
 import com.advice.ui.views.DaySelectorView
 import com.advice.ui.views.EventRowView
 
+sealed class ScheduleScreenState {
+    object Init : ScheduleScreenState()
+    object Loading : ScheduleScreenState()
+    data class Success(val events: List<Event>) : ScheduleScreenState()
+    data class Error(val error: String) : ScheduleScreenState()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreenView(state: Response<List<Event>>?, onEventClick: (Event) -> Unit) {
+fun ScheduleScreenView(state: ScheduleScreenState?, onEventClick: (Event) -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -52,31 +59,19 @@ fun ScheduleScreenView(state: Response<List<Event>>?, onEventClick: (Event) -> U
     )
     { contentPadding ->
         when (state) {
-            Response.Loading -> {
+            is ScheduleScreenState.Error -> {
 
             }
-
-            is Response.Success<List<Event>> -> {
-                ScheduleScreenContent(state.data, onEventClick, modifier = Modifier.padding(contentPadding))
+            null,
+            ScheduleScreenState.Init -> {
             }
 
-            is Response.Error -> {
-
-            }
-
-            Response.Init -> {
-
-            }
-
-            null -> {
-
+            ScheduleScreenState.Loading -> {}
+            is ScheduleScreenState.Success -> {
+                ScheduleScreenContent(state.events, onEventClick, modifier = Modifier.padding(contentPadding))
             }
         }
-
-
     }
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

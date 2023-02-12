@@ -40,18 +40,18 @@ class DatabaseManager(
 ) {
 
     companion object {
-        private const val CONFERENCES = "conferences"
+        const val CONFERENCES = "conferences"
 
-        private const val USERS = "users"
-        private const val BOOKMARKS = "bookmarks"
+        const val USERS = "users"
+        const val BOOKMARKS = "bookmarks"
 
-        private const val EVENTS = "events"
-        private const val TYPES = "types"
-        private const val FAQS = "faqs"
-        private const val VENDORS = "vendors"
-        private const val SPEAKERS = "speakers"
-        private const val LOCATIONS = "locations"
-        private const val ARTICLES = "articles"
+        const val EVENTS = "events"
+        const val TYPES = "types"
+        const val FAQS = "faqs"
+        const val VENDORS = "vendors"
+        const val SPEAKERS = "speakers"
+        const val LOCATIONS = "locations"
+        const val ARTICLES = "articles"
 
         fun getNextConference(preferred: Long, conferences: List<Conference>): Conference? {
             if (preferred != -1L) {

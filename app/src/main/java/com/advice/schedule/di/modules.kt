@@ -2,11 +2,13 @@ package com.advice.schedule.di
 
 import androidx.work.WorkManager
 import com.advice.schedule.PreferenceViewModel
+import com.advice.schedule.database.datasource.BookmarksDataSource
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.advice.schedule.database.DatabaseManager
+import com.advice.schedule.database.repository.HomeRepository
 import com.advice.schedule.database.ReminderManager
 import com.advice.schedule.ui.HackerTrackerViewModel
 import com.advice.schedule.ui.home.HomeViewModel
@@ -23,6 +25,20 @@ import com.advice.schedule.utilities.Storage
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import com.advice.schedule.database.datasource.EventsDataSource
+import com.advice.schedule.database.repository.ScheduleRepository
+import com.google.firebase.firestore.FirebaseFirestore
+import com.advice.schedule.database.datasource.TagsDataSource
+import com.advice.schedule.database.UserSession
+import com.advice.schedule.database.datasource.ArticleDataSource
+import com.advice.schedule.database.datasource.ConferencesDataSource
+import com.advice.schedule.database.datasource.FAQDataSource
+import com.advice.schedule.database.datasource.LocationsDataSource
+import com.advice.schedule.database.datasource.MapsDataSource
+import com.advice.schedule.database.datasource.SpeakersDataSource
+import com.advice.schedule.database.datasource.VendorsDataSource
+import com.advice.schedule.database.repository.SpeakersRepository
+import com.google.firebase.auth.FirebaseAuth
 
 val appModule = module {
 
@@ -32,14 +48,36 @@ val appModule = module {
         GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     }
     single { FirebaseJobDispatcher(GooglePlayDriver(get())) }
-    single { DatabaseManager(get(),/* get()*/) }
+    single { DatabaseManager(get()/* get()*/) }
     single { ThemesManager(get()) }
 
     single { FirebaseCrashlytics.getInstance() }
+    single { FirebaseFirestore.getInstance() }
+    single { FirebaseAuth.getInstance() }
 
     single { Analytics(get()) }
     single { WorkManager.getInstance() }
     single { ReminderManager(get(), get()) }
+
+    // auth
+    single { UserSession(get(), get()) }
+
+    // repo
+    single { ScheduleRepository(get(), get()) }
+    single { HomeRepository(get()) }
+    single { SpeakersRepository(get()) }
+
+    // data source
+    single { ConferencesDataSource(get()) }
+    single { EventsDataSource(get(), get(), get()) }
+    single { BookmarksDataSource(get(), get()) }
+    single { TagsDataSource(get(), get()) }
+    single { ArticleDataSource(get(), get()) }
+    single { FAQDataSource(get(), get()) }
+    single { LocationsDataSource(get(), get()) }
+    single { MapsDataSource(get(), get()) }
+    single { VendorsDataSource(get(), get()) }
+    single { SpeakersDataSource(get(), get()) }
 
 
     viewModel { HomeViewModel() }
