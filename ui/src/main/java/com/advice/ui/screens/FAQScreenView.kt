@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.advice.schedule.models.firebase.FirebaseFAQ
-import com.advice.schedule.models.local.FAQQuestion
 import com.advice.ui.views.QuestionView
 
 @OptIn(ExperimentalMaterial3Api::class)

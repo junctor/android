@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.ui.activities.MainActivity
@@ -20,7 +19,6 @@ import com.advice.schedule.ui.information.speakers.SpeakersFragment
 import com.advice.schedule.ui.information.vendors.VendorsFragment
 import com.advice.schedule.utilities.Analytics
 import com.advice.ui.screens.InformationScreenView
-import com.shortstack.hackertracker.databinding.FragmentInformationBinding
 import org.koin.android.ext.android.inject
 
 class InformationFragment : Fragment() {
