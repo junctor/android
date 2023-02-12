@@ -42,7 +42,9 @@ fun SpeakerView(name: String, title: String? = null) {
         Spacer(Modifier.width(4.dp))
         Column {
             Text(name)
-            Text(title ?: "Hacker")
+            if(title?.isNotBlank() == true) {
+                Text(title)
+            }
         }
     }
 }
