@@ -1,4 +1,4 @@
-package com.advice.ui
+package com.advice.ui.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons

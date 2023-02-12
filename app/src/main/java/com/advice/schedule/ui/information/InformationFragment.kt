@@ -19,7 +19,7 @@ import com.advice.schedule.ui.information.locations.LocationsFragment
 import com.advice.schedule.ui.information.speakers.SpeakersFragment
 import com.advice.schedule.ui.information.vendors.VendorsFragment
 import com.advice.schedule.utilities.Analytics
-import com.advice.ui.InformationScreenView
+import com.advice.ui.screens.InformationScreenView
 import com.shortstack.hackertracker.databinding.FragmentInformationBinding
 import org.koin.android.ext.android.inject
 

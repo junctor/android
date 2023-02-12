@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.core.local.Conference
-import com.advice.ui.HomeScreenView
+import com.advice.ui.screens.HomeScreenView
 import com.shortstack.hackertracker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

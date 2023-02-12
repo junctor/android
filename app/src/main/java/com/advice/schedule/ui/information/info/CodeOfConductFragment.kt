@@ -8,7 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.ui.CodeOfConductScreenView
+import com.advice.ui.screens.CodeOfConductScreenView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CodeOfConductFragment : Fragment() {

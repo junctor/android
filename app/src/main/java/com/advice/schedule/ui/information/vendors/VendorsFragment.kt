@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import com.advice.core.utils.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.models.local.Vendor
-import com.advice.ui.VendorsScreenView
+import com.advice.ui.screens.VendorsScreenView
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

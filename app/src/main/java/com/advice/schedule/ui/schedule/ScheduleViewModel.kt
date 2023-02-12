@@ -12,7 +12,7 @@ import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
-import com.advice.ui.ScheduleScreenState
+import com.advice.ui.screens.ScheduleScreenState
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject

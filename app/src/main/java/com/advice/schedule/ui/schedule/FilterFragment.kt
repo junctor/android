@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.core.ui.FiltersScreenState
-import com.advice.ui.FilterScreenView
+import com.advice.ui.screens.FilterScreenView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FilterFragment : Fragment() {

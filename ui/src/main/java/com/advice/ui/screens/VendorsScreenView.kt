@@ -1,4 +1,4 @@
-package com.advice.ui
+package com.advice.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -90,7 +90,7 @@ fun VendorsScreenViewPreview() {
                 )
             )
         ) {
-            
+
         }
     }
 }

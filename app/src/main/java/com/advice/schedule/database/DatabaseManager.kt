@@ -595,6 +595,4 @@ class DatabaseManager(
         }
         return mutableLiveData
     }
-
-
 }

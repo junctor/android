@@ -8,7 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.ui.SupportScreenView
+import com.advice.ui.screens.SupportScreenView
 import com.shortstack.hackertracker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

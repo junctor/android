@@ -13,7 +13,7 @@ import com.advice.schedule.ui.information.locations.LocationsViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.Storage
-import com.advice.ui.EventScreenView
+import com.advice.ui.screens.EventScreenView
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 

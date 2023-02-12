@@ -15,7 +15,7 @@ import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.utilities.Storage
-import com.advice.ui.ScheduleScreenView
+import com.advice.ui.screens.ScheduleScreenView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
