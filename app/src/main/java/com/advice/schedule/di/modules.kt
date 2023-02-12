@@ -37,8 +37,10 @@ import com.advice.schedule.database.datasource.LocationsDataSource
 import com.advice.schedule.database.datasource.MapsDataSource
 import com.advice.schedule.database.datasource.SpeakersDataSource
 import com.advice.schedule.database.datasource.VendorsDataSource
+import com.advice.schedule.database.repository.FAQRepository
 import com.advice.schedule.database.repository.FiltersRepository
 import com.advice.schedule.database.repository.SpeakersRepository
+import com.advice.schedule.ui.information.info.ConferenceViewModel
 import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -69,6 +71,7 @@ val appModule = module {
     single { HomeRepository(get(), get(), get()) }
     single { SpeakersRepository(get()) }
     single { FiltersRepository(get()) }
+    single { FAQRepository(get()) }
 
     // data source
     single { ConferencesDataSource(get()) }
@@ -93,5 +96,6 @@ val appModule = module {
     viewModel { FAQViewModel() }
     viewModel { SettingsViewModel() }
     viewModel { FiltersViewModel() }
+    viewModel { ConferenceViewModel() }
 
 }

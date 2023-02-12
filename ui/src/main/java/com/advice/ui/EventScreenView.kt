@@ -78,8 +78,8 @@ fun EventScreenContent(event: Event, modifier: Modifier = Modifier) {
 @Composable
 fun HeaderSection(title: String, categories: List<FirebaseTag>, date: String, location: String) {
     Column {
-        Text(title, style = MaterialTheme.typography.displayLarge)
-        Spacer(Modifier.height(8.dp))
+//        Text(title, style = MaterialTheme.typography.displayLarge)
+//        Spacer(Modifier.height(8.dp))
         Row(Modifier.padding(16.dp)) {
             for (tag in categories) {
                 CategoryView(tag)
