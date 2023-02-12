@@ -2,7 +2,6 @@ package com.advice.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -18,14 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.core.ui.FiltersScreenState
 import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.schedule.models.firebase.FirebaseTagType
+import com.advice.ui.views.FilterHeaderView
 import com.advice.ui.views.FilterView
-
-data class UiState(val tags: List<FirebaseTag>)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreenView(state: UiState) {
+fun FilterScreenView(state: FiltersScreenState, onClick: (FirebaseTag) -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Filter") }, actions = {
@@ -36,23 +36,42 @@ fun FilterScreenView(state: UiState) {
         },
         modifier = Modifier.clip(RoundedCornerShape(16.dp))
     ) { contentPadding ->
-        FilterScreenContent(state.tags, Modifier.padding(contentPadding))
+        when (state) {
+            FiltersScreenState.Init -> {
+
+            }
+
+            is FiltersScreenState.Success -> {
+                FilterScreenContent(state.filters, Modifier.padding(contentPadding), onClick)
+            }
+        }
     }
 }
 
 @Composable
-fun FilterScreenContent(tags: List<FirebaseTag>, modifier: Modifier = Modifier) {
+fun FilterScreenContent(tags: List<FirebaseTagType>, modifier: Modifier = Modifier, onClick: (FirebaseTag) -> Unit) {
     LazyColumn(modifier = modifier) {
-        items(tags) {
-            FilterView(it)
+        for (tag in tags) {
+            item {
+                FilterHeaderView(tag.label)
+            }
+            for (tag in tag.tags) {
+                item {
+                    FilterView(tag) {
+                        onClick(tag)
+                    }
+                }
+            }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun FilterScreenViewPreview() {
     MaterialTheme {
-        FilterScreenView(UiState(listOf(FirebaseTag(label = "Talk", color_background = "#EE11AA"))))
+//        val state = FiltersScreenState(listOf(FirebaseTag(label = "Talk", color_background = "#EE11AA")))
+//        FilterScreenView(state)
     }
 }

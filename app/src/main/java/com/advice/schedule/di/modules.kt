@@ -37,7 +37,9 @@ import com.advice.schedule.database.datasource.LocationsDataSource
 import com.advice.schedule.database.datasource.MapsDataSource
 import com.advice.schedule.database.datasource.SpeakersDataSource
 import com.advice.schedule.database.datasource.VendorsDataSource
+import com.advice.schedule.database.repository.FiltersRepository
 import com.advice.schedule.database.repository.SpeakersRepository
+import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 val appModule = module {
@@ -60,12 +62,13 @@ val appModule = module {
     single { ReminderManager(get(), get()) }
 
     // auth
-    single { UserSession(get(), get()) }
+    single { UserSession(get(), get(), ) }
 
     // repo
     single { ScheduleRepository(get(), get()) }
-    single { HomeRepository(get()) }
+    single { HomeRepository(get(), get(), get()) }
     single { SpeakersRepository(get()) }
+    single { FiltersRepository(get()) }
 
     // data source
     single { ConferencesDataSource(get()) }
@@ -89,5 +92,6 @@ val appModule = module {
     viewModel { VendorsViewModel() }
     viewModel { FAQViewModel() }
     viewModel { SettingsViewModel() }
+    viewModel { FiltersViewModel() }
 
 }

@@ -22,15 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.core.utils.Response
 import com.advice.schedule.models.local.Event
+import com.advice.ui.views.DayHeaderView
 import com.advice.ui.views.DaySelectorView
 import com.advice.ui.views.EventRowView
 
 sealed class ScheduleScreenState {
     object Init : ScheduleScreenState()
     object Loading : ScheduleScreenState()
-    data class Success(val events: List<Event>) : ScheduleScreenState()
+    data class Success(val days: Map<String, List<Event>>) : ScheduleScreenState()
     data class Error(val error: String) : ScheduleScreenState()
 }
 
@@ -62,55 +62,37 @@ fun ScheduleScreenView(state: ScheduleScreenState?, onEventClick: (Event) -> Uni
             is ScheduleScreenState.Error -> {
 
             }
+
             null,
             ScheduleScreenState.Init -> {
             }
 
             ScheduleScreenState.Loading -> {}
             is ScheduleScreenState.Success -> {
-                ScheduleScreenContent(state.events, onEventClick, modifier = Modifier.padding(contentPadding))
+                ScheduleScreenContent(state.days, onEventClick, modifier = Modifier.padding(contentPadding))
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreenView() {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text("Schedule")
-                },
-                navigationIcon = {
-                    Icon(Icons.Default.Menu, null)
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.Search, null)
-            }
-
-        }, modifier = Modifier.clip(RoundedCornerShape(16.dp))
-    )
-    { contentPadding ->
-        ScheduleScreenContent(emptyList(), {
-
-        }, modifier = Modifier.padding(contentPadding))
-    }
-}
-
-@Composable
-fun ScheduleScreenContent(events: List<Event>, onEventClick: (Event) -> Unit, modifier: Modifier) {
+fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) -> Unit, modifier: Modifier) {
     Column(modifier = modifier) {
-        DaySelectorView(days = listOf("May 31", "June 1", "June 2", "June 3"))
+        DaySelectorView(days = days.map { it.key })
         LazyColumn {
-            items(events) {
-                EventRowView(it.title, it.location.name, it.types, modifier = Modifier.clickable {
-                    onEventClick(it)
-                })
+            for (day in days) {
+                // Header
+                item {
+                    DayHeaderView(day.key)
+                }
+                // Events
+                for (it in day.value) {
+                    item {
+                        EventRowView(it.title, it.location.name, it.types, modifier = Modifier.clickable {
+                            onEventClick(it)
+                        })
+                    }
+                }
             }
         }
     }
@@ -120,6 +102,6 @@ fun ScheduleScreenContent(events: List<Event>, onEventClick: (Event) -> Unit, mo
 @Composable
 fun ScheduleScreenViewPreview() {
     MaterialTheme {
-        ScheduleScreenView()
+        ScheduleScreenView(null) {}
     }
 }

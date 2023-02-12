@@ -11,6 +11,7 @@ class ScheduleRepository(
 ) {
 
     val list = combine(eventsDataSource.get(), bookmarksDataSource.get()) { events, bookmarks ->
+        Timber.e("repo events: ${events.size}")
         // marking bookmarked items
         for (bookmark in bookmarks) {
             events.find { it.id.toString() == bookmark.id }?.isBookmarked = bookmark.value

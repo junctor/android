@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 class BookmarksDataSource(
     private val userSession: UserSession,
@@ -31,8 +32,11 @@ class BookmarksDataSource(
 
     override fun get(): Flow<List<FirebaseBookmark>> = userSession.user.flatMapMerge { user ->
         if (user == null) {
+            Timber.e("User is null, returning empty bookmarks")
+            // todo: This flow breaks the Schedule
             flow { emptyList<FirebaseBookmark>() }
         } else {
+            Timber.e("User is NOT null, fetching bookmarks")
             getBookmarks(user)
         }
     }

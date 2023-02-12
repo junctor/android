@@ -38,8 +38,10 @@ class EventsDataSource(
     override fun get(): Flow<List<Event>> {
         return userSession.conference.flatMapMerge { conference ->
             combine(getEvents(conference.code), tagsDataSource.get()) { events, tags ->
-                Timber.e("events: ${events.size}, tags: ${tags.size}")
-                events.mapNotNull { it.toEvent(tags) }
+                Timber.e("firebase events: ${events.size}, tags: ${tags.size}")
+                events.mapNotNull { it.toEvent(tags) }.also {
+                    Timber.e("events: ${it.size}")
+                }
             }
         }
     }

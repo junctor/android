@@ -2,6 +2,7 @@ package com.advice.schedule.ui.schedule
 
 import androidx.lifecycle.*
 import com.advice.core.utils.Response
+import com.advice.core.utils.TimeUtil
 import com.advice.schedule.dObj
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.repository.ScheduleRepository
@@ -19,7 +20,7 @@ import timber.log.Timber
 
 class ScheduleViewModel : ViewModel(), KoinComponent {
 
-    private val dataSource by inject<ScheduleRepository>()
+    private val repository by inject<ScheduleRepository>()
 
     private val state = MutableLiveData<ScheduleScreenState>(ScheduleScreenState.Init)
 //    private val elements = MutableLiveData<List<Event>>()
@@ -34,8 +35,9 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
 
     init {
         viewModelScope.launch {
-            dataSource.list.collect { elements ->
-                state.value = ScheduleScreenState.Success(elements)
+            repository.list.collect { elements ->
+                val days = elements.groupBy { TimeUtil.getDateStamp(it.start.toDate()) }
+                state.value = ScheduleScreenState.Success(days)
             }
         }
 

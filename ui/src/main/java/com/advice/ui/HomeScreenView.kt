@@ -1,6 +1,7 @@
 package com.advice.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,28 +34,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
-
-
-private val articles = listOf("Welcome to DEFCON 28")
 
 val roundedCornerShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenView(state: HomeState?) {
-    Scaffold(topBar = { TopAppBar(title = { Text("Home") }) }, modifier = Modifier.clip(roundedCornerShape)) { contentPadding ->
-        HomeScreenContent(state, modifier = Modifier.padding(contentPadding))
+fun HomeScreenView(state: HomeState?, onConferenceClick: (Conference) -> Unit) {
+    Scaffold(
+        topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) }, modifier = Modifier.clip(roundedCornerShape)
+    ) { contentPadding ->
+        HomeScreenContent(state, modifier = Modifier.padding(contentPadding), onConferenceClick)
     }
 }
 
 @Composable
-fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier) {
+fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier, onConferenceClick: (Conference) -> Unit) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         when (state) {
             is HomeState.Error -> {}
             is HomeState.Loaded -> {
-                ConferenceSelector(state)
+
 
                 ConferenceView(state.conference.name)
                 // todo: CountdownView(state.conference.)
@@ -71,27 +73,38 @@ fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConferenceSelector(state: HomeState.Loaded) {
+fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference) -> Unit) {
+    if (state == null) {
+        CenterAlignedTopAppBar(title = { Text("Home") })
+        return
+    }
+
     var expanded by rememberSaveable {
         mutableStateOf(value = false)
     }
 
-    Row(
-        modifier = Modifier
-            .padding(16.dp)
-            .clickable {
-                expanded = !expanded
-            }, verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(state.conference.name)
-        Icon(Icons.Default.ArrowDropDown, null)
+    Box(modifier = Modifier
+        .clickable {
+            expanded = !expanded
+        }
+        .fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(16.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(state.conference.name)
+            Icon(Icons.Default.ArrowDropDown, null)
+        }
     }
     DropdownMenu(expanded = expanded, onDismissRequest = {
         expanded = false
     }) {
         for (conference in state.conferences) {
             DropdownMenuItem(text = { Text(conference.name) }, onClick = {
+                onConferenceClick(conference)
                 expanded = false
             })
         }
@@ -110,7 +123,6 @@ fun HomeScreenViewPreview() {
 fun ConferenceView(name: String) {
     Card(
         modifier = Modifier
-            .aspectRatio(1f)
             .padding(8.dp)
             .fillMaxWidth()
     ) {

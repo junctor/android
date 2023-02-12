@@ -27,22 +27,11 @@ class HomeFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val state = viewModel.getHomeState().observeAsState()
-                HomeScreenView(state.value)
+                HomeScreenView(state.value) {
+                    viewModel.setConference(it)
+                }
             }
         }
-    }
-
-    private fun showConferenceChooseDialog(conference: Conference, conferences: List<Conference>) {
-        val selected = conferences.indexOf(conference)
-
-        val items = conferences.map { it.name }.toTypedArray()
-
-        AlertDialog.Builder(requireContext(), R.style.MyAlertDialogStyle)
-            .setTitle(getString(R.string.choose_conference))
-            .setSingleChoiceItems(items, selected) { dialog, which ->
-                viewModel.changeConference(conferences[which])
-                dialog.dismiss()
-            }.show()
     }
 
     companion object {

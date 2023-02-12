@@ -22,11 +22,11 @@ import androidx.compose.ui.unit.dp
 import com.advice.schedule.models.firebase.FirebaseTag
 
 @Composable
-fun FilterView(tag: FirebaseTag) {
+fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
         .fillMaxWidth()
         .clickable {
-            // todo:
+            onClick()
         }
         .padding(16.dp)) {
         Box(
@@ -46,6 +46,8 @@ fun FilterView(tag: FirebaseTag) {
 @Composable
 fun FilterViewPreview() {
     MaterialTheme {
-        FilterView(FirebaseTag(label = "Talk", color_background = "#123123"))
+        FilterView(FirebaseTag(label = "Talk", color_background = "#123123")) {
+
+        }
     }
 }

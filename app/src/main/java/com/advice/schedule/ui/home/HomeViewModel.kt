@@ -1,13 +1,10 @@
 package com.advice.schedule.ui.home
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.schedule.database.DatabaseManager
-import com.advice.schedule.models.local.Article
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
 import com.advice.schedule.database.repository.HomeRepository
@@ -23,41 +20,21 @@ class HomeViewModel : ViewModel(), KoinComponent {
     private val database by inject<DatabaseManager>()
     private val analytics by inject<Analytics>()
 
-    private val conference: LiveData<Conference> = database.conference
-    private val conferences: LiveData<List<Conference>> = database.conferences
-    private val articles = MutableLiveData<List<Article>>()
-
-    private val state: LiveData<HomeState>
+    private val state = MutableLiveData<HomeState>()
 
     init {
         viewModelScope.launch {
             repository.contents.collect {
-                articles.value = it
+                state.value = it
             }
-        }
-
-        state = Transformations.switchMap(database.conference) { conference ->
-            val result = MediatorLiveData<HomeState>()
-
-            if (conference == null) {
-                result.value = HomeState.Loading
-            } else {
-                result.addSource(articles) { articles ->
-                    result.value = HomeState.Loaded(conferences.value ?: emptyList(), conference, articles)
-                }
-                result.addSource(conferences) { conferences ->
-                    result.value = HomeState.Loaded(conferences, conference, articles.value ?: emptyList())
-                }
-            }
-
-            return@switchMap result
         }
     }
 
-    fun changeConference(conference: Conference) {
+    fun setConference(conference: Conference) {
+        viewModelScope.launch {
+            repository.setConference(conference)
+        }
         analytics.onConferenceChangeEvent(conference)
-        database.conference.value = null
-        database.changeConference(conference.id)
     }
 
     fun getHomeState(): LiveData<HomeState> = state
