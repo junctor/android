@@ -1,10 +1,13 @@
 package com.advice.schedule.database.datasource
 
+import com.advice.core.firebase.FirebaseBookmark
+import com.advice.core.local.Conference
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.UserSession
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.schedule.toObjectsOrEmpty
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -20,6 +23,22 @@ class TagsDataSource(
     private val firestore: FirebaseFirestore
 ) : DataSource<FirebaseTagType> {
     override fun get(): Flow<List<FirebaseTagType>> {
+        return combine(getTagTypes(), getBookmarks()) { tags, bookmarks ->
+            // clearing any previous set selections
+            tags.flatMap {
+                it.tags
+            }.forEach {
+                it.isSelected = false
+            }
+
+            for (bookmark in bookmarks) {
+                tags.flatMap { it.tags }.find { it.id.toString() == bookmark.id }?.isSelected = bookmark.value
+            }
+            tags
+        }
+    }
+
+    private fun getTagTypes(): Flow<List<FirebaseTagType>> {
         return userSession.conference.flatMapMerge { conference ->
             firestore.collection(DatabaseManager.CONFERENCES)
                 .document(conference.code)
@@ -32,7 +51,25 @@ class TagsDataSource(
         }
     }
 
-    suspend fun updateTypeIsSelected(type: FirebaseTag) {
+    data class MyObject(val conference: Conference, val user: FirebaseUser?)
+
+    private fun getBookmarks(): Flow<List<FirebaseBookmark>> {
+        return combine(userSession.user, userSession.conference) { user, conference ->
+            MyObject(conference, user)
+        }.flatMapMerge {
+            firestore.collection(DatabaseManager.CONFERENCES)
+                .document(it.conference.code)
+                .collection("users")
+                .document(it.user!!.uid)
+                .collection("types")
+                .snapshotFlow()
+                .map { querySnapshot ->
+                    querySnapshot.toObjectsOrEmpty(FirebaseBookmark::class.java)
+                }
+        }
+    }
+
+    fun updateTypeIsSelected(type: FirebaseTag) {
         Timber.e("Updating type selection: $type")
 
         val conference = userSession.currentConference

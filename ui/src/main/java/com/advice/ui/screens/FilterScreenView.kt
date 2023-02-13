@@ -29,8 +29,11 @@ fun FilterScreenView(state: FiltersScreenState, onClick: (FirebaseTag) -> Unit) 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Filter") }, actions = {
-                IconButton(onClick = {}) {
-                    Icon(Icons.Default.Close, null)
+                val showClearButton = state is FiltersScreenState.Success && state.filters.flatMap { it.tags }.any { it.isSelected }
+                if (showClearButton) {
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Default.Close, null)
+                    }
                 }
             })
         },

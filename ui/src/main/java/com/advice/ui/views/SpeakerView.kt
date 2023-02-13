@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -33,20 +34,20 @@ fun SpeakerView(name: String, title: String? = null, onSpeakerClicked: () -> Uni
                 onSpeakerClicked()
             }
             .padding(16.dp)
-            .height(IntrinsicSize.Min)
+            .height(IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
                 .size(48.dp)
                 .fillMaxHeight()
                 .clip(CircleShape)
-                .background(Color.Red)
+                .background(Color.White)
         )
 
         Spacer(Modifier.width(4.dp))
         Column {
             Text(name)
-            if(title?.isNotBlank() == true) {
+            if (title?.isNotBlank() == true) {
                 Text(title)
             }
         }
@@ -58,5 +59,13 @@ fun SpeakerView(name: String, title: String? = null, onSpeakerClicked: () -> Uni
 fun SpeakerViewPreview() {
     MaterialTheme {
         SpeakerView("John McAfee", "Hacker", {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SpeakerViewNoTitlePreview() {
+    MaterialTheme {
+        SpeakerView("Gary Johnson", null, {})
     }
 }

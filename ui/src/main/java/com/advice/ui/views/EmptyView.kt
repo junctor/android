@@ -16,14 +16,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun EmptyView(modifier: Modifier = Modifier) {
+fun EmptyView(message: String? = null, modifier: Modifier = Modifier) {
     Box(modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.align(Alignment.Center)
         ) {
             Text("404", style = MaterialTheme.typography.displayLarge)
-            Text("Maps not found", style = MaterialTheme.typography.displayMedium)
+            if(message != null) {
+                Text(message, style = MaterialTheme.typography.displayMedium)
+            }
         }
         Icon(
             Icons.Default.Star, null,
@@ -38,6 +40,6 @@ fun EmptyView(modifier: Modifier = Modifier) {
 @Composable
 fun EmptyViewPreview() {
     MaterialTheme {
-        EmptyView()
+        EmptyView("Maps not found")
     }
 }

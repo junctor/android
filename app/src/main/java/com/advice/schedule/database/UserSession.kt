@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 class UserSession(
@@ -28,12 +29,8 @@ class UserSession(
     conferencesDataSource: ConferencesDataSource,
 ) {
 
-//    private val _user = MutableStateFlow<FirebaseUser?>(null)
-//    val user = _user
-
-    val user = auth.signInAnonymously().snapshotFlow().map {
-        it.user
-    }
+    private val _user = MutableStateFlow<FirebaseUser?>(null)
+    val user = _user
 
     private val _conference = MutableStateFlow<Conference>(Conference.Zero)
     val conference: Flow<Conference> = _conference
@@ -46,10 +43,11 @@ class UserSession(
             }
         }
 
-//        auth.signInAnonymously().snapshotFlow().map {
-//            Timber.e("AuthResult: ${it.user}")
-//            _user.value = it.user
-//        }
+        CoroutineScope(Job()).launch {
+            val it = auth.signInAnonymously().await()
+            Timber.e("User is now: ${it.user}")
+            _user.value = it.user
+        }
     }
 
     private fun getConference(preferred: Long, conferences: List<Conference>): Conference {
@@ -76,7 +74,7 @@ class UserSession(
         get() = _conference.value
 
     val currentUser: FirebaseUser?
-        get() = null
+        get() = _user.value
 }
 
 fun Task<AuthResult>.snapshotFlow(): Flow<AuthResult> = callbackFlow {

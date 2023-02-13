@@ -15,8 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.schedule.models.firebase.FirebaseTag
 
 @Composable
-fun EventRowView(title: String, location: String, tags: List<FirebaseTag>, modifier: Modifier = Modifier) {
+fun EventRowView(title: String, location: String, tags: List<FirebaseTag>, isBookmarked: Boolean, modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier
             .fillMaxWidth()
@@ -63,27 +66,11 @@ fun EventRowView(title: String, location: String, tags: List<FirebaseTag>, modif
                 }
             }
         }
-        Icon(Icons.Default.Star, contentDescription = null,
-            Modifier
-                .size(48.dp)
-                .padding(12.dp)
-                .clickable {
+        val icon = if (isBookmarked) Icons.Default.Favorite else Icons.Default.FavoriteBorder
 
-                })
-    }
-}
-
-@Composable
-fun CategoryView(tag: FirebaseTag) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            Modifier
-                .size(8.dp)
-                .clip(CircleShape)
-                .background(Color(android.graphics.Color.parseColor(tag.color)))
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(tag.label, style = MaterialTheme.typography.bodySmall)
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(icon, contentDescription = null)
+        }
     }
 }
 
@@ -91,8 +78,11 @@ fun CategoryView(tag: FirebaseTag) {
 @Composable
 fun EventRowViewPreview() {
     MaterialTheme {
-        EventRowView(title = "Compelled Decryption", location = "Track 1", tags = listOf(FirebaseTag(label = "Talk", color_background = "#FF61EEAA")))
+        EventRowView(
+            title = "Compelled Decryption", location = "Track 1", tags = listOf(
+                FirebaseTag(label = "Talk", color_background = "#FF61EEAA"),
+                FirebaseTag(label = "Introduction", color_background = "#EEAAFF"),
+            ), isBookmarked = false
+        )
     }
 }
-
-fun Color.fromHex(color: String) = Color(android.graphics.Color.parseColor("#$color"))

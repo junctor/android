@@ -24,6 +24,7 @@ class FiltersViewModel : ViewModel(), KoinComponent {
     }
 
     fun toggle(tag: FirebaseTag) {
+        Timber.e("tag: $tag")
         viewModelScope.launch {
             repository.toggle(tag)
         }

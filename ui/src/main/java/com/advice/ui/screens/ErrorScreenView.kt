@@ -26,7 +26,7 @@ fun ErrorScreenView() {
                 }
             })
         }) { contentPadding ->
-        EmptyView(Modifier.padding(contentPadding))
+        EmptyView(modifier = Modifier.padding(contentPadding))
     }
 }
 

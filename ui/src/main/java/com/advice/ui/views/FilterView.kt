@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,22 +24,36 @@ import com.advice.schedule.models.firebase.FirebaseTag
 
 @Composable
 fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-        .fillMaxWidth()
-        .clickable {
-            onClick()
+    Box {
+        if (tag.isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(2.dp)
+                    .clip(CircleShape)
+                    .background(Color(android.graphics.Color.parseColor(tag.color)))
+                    .align(Alignment.Center)
+            )
+
         }
-        .padding(16.dp)) {
-        Box(
-            modifier = Modifier
-                .size(12.dp)
-                .clip(CircleShape)
-                .background(Color(android.graphics.Color.parseColor(tag.color)))
-        )
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
+            .padding(16.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(12.dp)
+                    .clip(CircleShape)
+                    .background(Color(android.graphics.Color.parseColor(tag.color)))
+            )
 
-        Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(12.dp))
 
-        Text(tag.label)
+            Text(tag.label)
+        }
     }
 }
 
@@ -47,6 +62,16 @@ fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
 fun FilterViewPreview() {
     MaterialTheme {
         FilterView(FirebaseTag(label = "Talk", color_background = "#123123")) {
+
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FilterViewSelectedPreview() {
+    MaterialTheme {
+        FilterView(FirebaseTag(label = "Talk", color_background = "#123123", isSelected = true)) {
 
         }
     }

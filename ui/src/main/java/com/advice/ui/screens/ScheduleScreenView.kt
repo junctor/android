@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.schedule.models.local.Event
 import com.advice.ui.views.DayHeaderView
 import com.advice.ui.views.DaySelectorView
+import com.advice.ui.views.EmptyView
 import com.advice.ui.views.EventRowView
 
 sealed class ScheduleScreenState {
@@ -77,24 +78,28 @@ fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, o
 
 @Composable
 fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) -> Unit, modifier: Modifier) {
-    Column(modifier = modifier) {
-        DaySelectorView(days = days.map { it.key })
-        LazyColumn {
-            for (day in days) {
-                // Header
-                item {
-                    DayHeaderView(day.key)
-                }
-                // Events
-                for (it in day.value) {
+    if (days.isNotEmpty()) {
+        Column(modifier = modifier) {
+            DaySelectorView(days = days.map { it.key })
+            LazyColumn {
+                for (day in days) {
+                    // Header
                     item {
-                        EventRowView(it.title, it.location.name, it.types, modifier = Modifier.clickable {
-                            onEventClick(it)
-                        })
+                        DayHeaderView(day.key)
+                    }
+                    // Events
+                    for (it in day.value) {
+                        item {
+                            EventRowView(it.title, it.location.name, it.types, it.isBookmarked, modifier = Modifier.clickable {
+                                onEventClick(it)
+                            })
+                        }
                     }
                 }
             }
         }
+    } else {
+        EmptyView("Schedule not found")
     }
 }
 

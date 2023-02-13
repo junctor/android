@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.schedule.models.local.Vendor
+import com.advice.ui.views.EmptyView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,10 +43,14 @@ fun VendorsScreenView(vendors: List<Vendor>, onBackPressed: () -> Unit) {
 
 @Composable
 fun VendorsScreenContent(vendors: List<Vendor>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier) {
-        items(vendors) {
-            VendorCard(it.name, it.summary, hasLink = it.link != null)
+    if (vendors.isNotEmpty()) {
+        LazyColumn(modifier) {
+            items(vendors) {
+                VendorCard(it.name, it.summary, hasLink = it.link != null)
+            }
         }
+    } else {
+        EmptyView("Vendors not found")
     }
 }
 

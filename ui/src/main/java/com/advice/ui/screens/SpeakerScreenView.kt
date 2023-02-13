@@ -59,7 +59,7 @@ fun SpeakerScreenContent(title: String, description: String, events: List<Event>
             Text("Events")
 
             for (event in events) {
-                EventRowView(title = event.title, location = event.location.name, tags = event.types)
+                EventRowView(title = event.title, location = event.location.name, tags = event.types, event.isBookmarked)
             }
         }
     }
