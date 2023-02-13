@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,7 +40,18 @@ import com.advice.ui.views.SpeakerView
 @Composable
 fun EventScreenView(event: Event) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text(event.title) }) }) { contentPadding ->
+        topBar = {
+            TopAppBar(title = { Text(event.title) }, navigationIcon = {
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(Icons.Default.ArrowBack, null)
+                }
+            },
+                actions = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(Icons.Default.Star, null)
+                    }
+                })
+        }) { contentPadding ->
         EventScreenContent(event, modifier = Modifier.padding(contentPadding))
     }
 }
@@ -45,6 +60,7 @@ fun EventScreenView(event: Event) {
 fun EventScreenContent(event: Event, modifier: Modifier = Modifier) {
     Column(
         modifier
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
 
     ) {
@@ -54,22 +70,17 @@ fun EventScreenContent(event: Event, modifier: Modifier = Modifier) {
             modifier = Modifier.padding(vertical = 16.dp)
         )
         Card {
-            LazyColumn {
-                items(event.urls) { action ->
-                    ActionView(action.label)
-                }
+            for (action in event.urls) {
+                ActionView(action.label)
             }
         }
         if (event.speakers.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             Text("Speakers", style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-            LazyColumn {
-                items(event.speakers) { speaker ->
-                    SpeakerView(speaker.name, speaker.title)
-                }
+            for (speaker in event.speakers) {
+                SpeakerView(speaker.name, speaker.title)
             }
         }
-
     }
 }
 
