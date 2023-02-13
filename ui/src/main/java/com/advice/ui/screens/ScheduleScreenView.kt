@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -35,7 +36,7 @@ sealed class ScheduleScreenState {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreenView(state: ScheduleScreenState?, onEventClick: (Event) -> Unit) {
+fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, onFabClicked: () -> Unit, onEventClick: (Event) -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -43,14 +44,14 @@ fun ScheduleScreenView(state: ScheduleScreenState?, onEventClick: (Event) -> Uni
                     Text("Schedule")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = onMenuClicked) {
                         Icon(Icons.Default.Menu, null)
                     }
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
+            FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
                 Icon(Icons.Default.Search, null)
             }
 
@@ -59,7 +60,7 @@ fun ScheduleScreenView(state: ScheduleScreenState?, onEventClick: (Event) -> Uni
     { contentPadding ->
         when (state) {
             is ScheduleScreenState.Error -> {
-
+                ErrorScreenView()
             }
 
             null,
@@ -101,6 +102,6 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
 @Composable
 fun ScheduleScreenViewPreview() {
     MaterialTheme {
-        ScheduleScreenView(null) {}
+        ScheduleScreenView(null, {}, {}, {})
     }
 }

@@ -6,91 +6,41 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.core.utils.Response
+import com.advice.schedule.dObj
+import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Speaker
-import com.advice.schedule.ui.schedule.list.ScheduleAdapter
-import com.advice.timehop.StickyRecyclerHeadersDecoration
-import com.shortstack.hackertracker.R
-import com.shortstack.hackertracker.databinding.FragmentSpeakersBinding
+import com.advice.ui.screens.ErrorScreenView
+import com.advice.ui.screens.SpeakerScreenView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 class SpeakerFragment : Fragment() {
 
-    private var _binding: FragmentSpeakersBinding? = null
-    private val binding get() = _binding!!
-
     private val viewModel by sharedViewModel<SpeakersViewModel>()
 
-    private val adapter = ScheduleAdapter()
-    private val decoration = StickyRecyclerHeadersDecoration(adapter)
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentSpeakersBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
-        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        binding.toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
-        }
-
         val speaker = arguments?.getParcelable(EXTRA_SPEAKER) as? Speaker ?: error("speaker must not be null")
 
-        viewModel.getSpeaker(speaker).observe(viewLifecycleOwner) {
-            when (it) {
-                Response.Init -> {
-
-                }
-                Response.Loading -> {
-
-                }
-                is Response.Success -> {
-                    showSpeaker(it.data)
-                }
-                is Response.Error -> {
-
+        return ComposeView(requireContext()).apply {
+            isTransitionGroup = true
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val events = emptyList<Event>()//viewModel.getSpeakerEvents(speaker).observeAsState().value
+                val s = viewModel.getSpeaker(speaker).observeAsState().value?.dObj as? Speaker
+                Timber.e("Speaker: $speaker, events: $events, s: $s")
+                if(speaker != null) {
+                    SpeakerScreenView(speaker.name, speaker.title, speaker.description, events ?: emptyList()) {
+                        requireActivity().onBackPressed()
+                    }
+                } else {
+                    ErrorScreenView()
                 }
             }
         }
-
-        binding.schedule.adapter = adapter
-        binding.schedule.addItemDecoration(decoration)
-
-        viewModel.getSpeakerEvents(speaker).observe(viewLifecycleOwner) { list ->
-            binding.eventsHeader.isVisible = list.isNotEmpty()
-            adapter.setSchedule(list)
-        }
-    }
-
-    private fun showSpeaker(speaker: Speaker) = with(binding) {
-        speakerName.text = speaker.name
-
-        titleContainer.isVisible = speaker.title.isNotEmpty()
-        speakerTitle.text = speaker.title
-
-        toolbar.menu.clear()
-
-        if (speaker.twitter.isNotEmpty()) {
-            toolbar.inflateMenu(R.menu.speaker_twitter)
-            toolbar.setOnMenuItemClickListener {
-                openTwitter(speaker.twitter)
-                viewModel.onOpenTwitter(speaker)
-                true
-            }
-        }
-
-        val hasDescription = speaker.description.isNotBlank()
-        empty.isVisible = !hasDescription
-        description.isVisible = hasDescription
-        description.text = speaker.description
     }
 
     private fun openTwitter(url: String) {

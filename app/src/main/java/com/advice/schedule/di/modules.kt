@@ -67,7 +67,7 @@ val appModule = module {
     // repo
     single { ScheduleRepository(get(), get()) }
     single { HomeRepository(get(), get(), get()) }
-    single { SpeakersRepository(get()) }
+    single { SpeakersRepository(get(), get()) }
     single { FiltersRepository(get()) }
     single { FAQRepository(get()) }
 

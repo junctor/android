@@ -7,7 +7,10 @@ import com.advice.schedule.database.repository.SpeakersRepository
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.utilities.Analytics
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -49,10 +52,10 @@ class SpeakersViewModel : ViewModel(), KoinComponent {
         return result
     }
 
-    fun getSpeakerEvents(speaker: Speaker): LiveData<List<Event>> {
-        val result = MediatorLiveData<List<Event>>()
-
-        return result
+    fun getSpeakerEvents(speaker: Speaker): Flow<List<Event>> {
+        return flow<List<Event>> {
+            //repository.events.filter { it. }
+        }
     }
 
     fun onOpenTwitter(speaker: Speaker) {

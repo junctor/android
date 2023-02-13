@@ -20,24 +20,25 @@ import com.advice.ui.views.SpeakerView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpeakersScreenView(speakers: List<Speaker>) {
+fun SpeakersScreenView(speakers: List<Speaker>, onBackPressed: () -> Unit, onSpeakerClicked: (Speaker) -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("Speakers") }, navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onBackPressed) {
                 Icon(Icons.Default.ArrowBack, null)
             }
         })
     }) {
-        SpeakersScreenContent(speakers, modifier = Modifier.padding(it))
-
+        SpeakersScreenContent(speakers, modifier = Modifier.padding(it), onSpeakerClicked)
     }
 }
 
 @Composable
-fun SpeakersScreenContent(speakers: List<Speaker>, modifier: Modifier = Modifier) {
+fun SpeakersScreenContent(speakers: List<Speaker>, modifier: Modifier = Modifier, onSpeakerClicked: (Speaker) -> Unit) {
     LazyColumn(modifier) {
         items(speakers) {
-            SpeakerView(it.name, it.title)
+            SpeakerView(it.name, it.title) {
+                onSpeakerClicked(it)
+            }
         }
     }
 }
@@ -46,6 +47,6 @@ fun SpeakersScreenContent(speakers: List<Speaker>, modifier: Modifier = Modifier
 @Composable
 fun SpeakersScreenViewPreview() {
     MaterialTheme {
-        SpeakersScreenView(listOf(Speaker(-1, "John", "", "", "", "")))
+        SpeakersScreenView(listOf(Speaker(-1, "John", "", "", "", "")), {}, {})
     }
 }

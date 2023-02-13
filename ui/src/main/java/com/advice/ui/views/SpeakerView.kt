@@ -1,6 +1,7 @@
 package com.advice.ui.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -19,15 +20,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.schedule.models.local.Speaker
 
 @Composable
-fun SpeakerView(name: String, title: String? = null) {
+fun SpeakerView(name: String, title: String? = null, onSpeakerClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onSpeakerClicked()
+            }
             .padding(16.dp)
             .height(IntrinsicSize.Min)
     ) {
@@ -53,6 +57,6 @@ fun SpeakerView(name: String, title: String? = null) {
 @Composable
 fun SpeakerViewPreview() {
     MaterialTheme {
-        SpeakerView("John McAfee", "Hacker")
+        SpeakerView("John McAfee", "Hacker", {})
     }
 }

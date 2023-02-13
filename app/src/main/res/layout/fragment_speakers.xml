@@ -80,7 +80,7 @@
                     <TextView
                         android:id="@+id/empty"
                         style="@style/EmptyText"
-                        tools:visibility="gone" />
+                        tools:visibility="visible" />
 
                     <TextView
                         android:id="@+id/description"

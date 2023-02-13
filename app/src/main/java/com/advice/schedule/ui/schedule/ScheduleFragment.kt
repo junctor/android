@@ -13,6 +13,7 @@ import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
+import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.utilities.Storage
 import com.advice.ui.screens.ScheduleScreenView
@@ -22,7 +23,6 @@ import org.koin.core.inject
 
 class ScheduleFragment : Fragment(), KoinComponent {
 
-    private val storage by inject<Storage>()
     private val viewModel by sharedViewModel<ScheduleViewModel>()
 
     override fun onCreateView(
@@ -34,9 +34,13 @@ class ScheduleFragment : Fragment(), KoinComponent {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val state = viewModel.getState().observeAsState().value
-                ScheduleScreenView(state) {
+                ScheduleScreenView(state, {
+                    (parentFragment as PanelsFragment).openStartPanel()
+                }, {
+                    (parentFragment as PanelsFragment).openEndPanel()
+                }, {
                     openEventDetails(it)
-                }
+                })
             }
         }
     }

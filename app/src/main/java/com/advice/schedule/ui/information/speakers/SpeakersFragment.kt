@@ -8,6 +8,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import com.advice.schedule.ui.activities.MainActivity
 import com.advice.ui.screens.SpeakersScreenView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -24,7 +25,11 @@ class SpeakersFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val state = viewModel.speakers.observeAsState().value
-                SpeakersScreenView(state ?: emptyList())
+                SpeakersScreenView(state ?: emptyList(), {
+                    requireActivity().onBackPressed()
+                }, {
+                    (requireActivity() as MainActivity).showSpeaker(it)
+                })
             }
         }
     }
