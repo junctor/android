@@ -32,6 +32,8 @@ class InformationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
+            // fix for navigation crash
+            isTransitionGroup = true
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val state = database.conference.observeAsState().value

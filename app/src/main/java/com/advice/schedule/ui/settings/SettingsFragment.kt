@@ -33,6 +33,8 @@ class SettingsFragment : Fragment(), KoinComponent {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return ComposeView(requireContext()).apply {
+            // fix for navigation crash
+            isTransitionGroup = true
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val conference = viewModel.getConference().observeAsState().value
