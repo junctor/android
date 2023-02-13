@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.advice.schedule.database.DatabaseManager
 import com.advice.core.local.Conference
-import com.advice.schedule.ui.themes.ThemesManager
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.Storage
 import com.advice.schedule.utilities.Time
@@ -31,11 +30,6 @@ class SettingsViewModel : ViewModel(), KoinComponent {
         if (dayOfYear >= 219 && storage.getPreference(Storage.EASTER_EGGS_ENABLED_KEY, false)) {
             hasReboot.value = true
         }
-    }
-
-    fun setTheme(theme: ThemesManager.Theme) {
-        storage.theme = theme
-        storage.setPreference(Storage.SAFE_MODE_ENABLED, theme == ThemesManager.Theme.SafeMode)
     }
 
     fun onVersionClick() {

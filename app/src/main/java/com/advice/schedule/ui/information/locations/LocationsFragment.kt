@@ -8,18 +8,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.core.utils.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.models.local.LocationContainer
 import com.advice.ui.screens.LocationsScreenView
-import com.shortstack.hackertracker.R
-import com.shortstack.hackertracker.databinding.FragmentRecyclerviewBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class LocationsFragment : Fragment() {
 
     private val viewModel by sharedViewModel<LocationsViewModel>()
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

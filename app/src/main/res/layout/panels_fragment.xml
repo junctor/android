@@ -43,7 +43,7 @@
                 android:name="com.advice.schedule.ui.schedule.ScheduleFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:layout="@layout/fragment_schedule" />
+                 />
 
 
         </com.google.android.material.card.MaterialCardView>

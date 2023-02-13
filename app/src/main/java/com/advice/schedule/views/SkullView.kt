@@ -11,7 +11,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.advice.schedule.ui.glitch.Glitch
-import com.advice.schedule.ui.themes.ThemesManager
 import com.advice.schedule.utilities.Storage
 import com.shortstack.hackertracker.R
 import org.koin.core.KoinComponent
@@ -77,8 +76,7 @@ class SkullView : AppCompatImageView, KoinComponent {
         }
 
         val storage = get<Storage>()
-        isGlitch =
-            storage.theme == ThemesManager.Theme.SafeMode && storage.corruption > Storage.CorruptionLevel.MINOR
+        isGlitch = storage.corruption > Storage.CorruptionLevel.MINOR
 
         if (isGlitch) {
             val delay = when (storage.corruption) {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.google.gson.Gson
-import com.advice.schedule.ui.themes.ThemesManager
 import java.util.*
 
 class Storage(context: Context, private val gson: Gson) {
@@ -76,15 +75,6 @@ class Storage(context: Context, private val gson: Gson) {
             preferences.edit().putLong(PREFERRED_CONFERENCE, value).apply()
         }
 
-    var theme: ThemesManager.Theme?
-        get() = gson.fromJson(
-            preferences.getString(USER_THEME, ""),
-            ThemesManager.Theme::class.java
-        )
-        set(value) {
-            preferences.edit().putString(USER_THEME, gson.toJson(value)).apply()
-        }
-
     fun setPreference(key: String, isChecked: Boolean) {
         when (key) {
             USER_ANALYTICS_KEY -> allowAnalytics = isChecked
@@ -118,7 +108,7 @@ class Storage(context: Context, private val gson: Gson) {
             if (!getPreference(
                     EASTER_EGGS_ENABLED_KEY,
                     false
-                ) || theme != ThemesManager.Theme.SafeMode
+                )
             ) {
                 return CorruptionLevel.NONE
             }

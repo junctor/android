@@ -17,7 +17,6 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="preferenceTheme">@style/PrefsTheme</item>
 
         <item name="android:checkboxStyle">@style/AppCheckBoxStyle</item>
 
@@ -29,12 +28,6 @@
 
         <item name="checkboxStyle">@style/AppCheckBoxStyle</item>
 
-    </style>
-
-    <style name="PrefsTheme" parent="PreferenceThemeOverlay">
-        <item name="android:layout">@layout/fragment_settings</item>
-        <item name="android:listPreferredItemPaddingLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:listPreferredItemPaddingRight">@dimen/activity_horizontal_margin</item>
     </style>
 
     <!-- Used for Filter View -->

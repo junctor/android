@@ -7,7 +7,6 @@ import android.os.Handler
 import android.util.AttributeSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.advice.schedule.ui.glitch.Glitch
-import com.advice.schedule.ui.themes.ThemesManager
 import com.advice.schedule.utilities.Storage
 import com.shortstack.hackertracker.R
 import org.koin.core.KoinComponent
@@ -57,8 +56,7 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
             getDelay(corruption)
         } else {
             val storage = get<Storage>()
-            isGlitch =
-                storage.theme == ThemesManager.Theme.SafeMode && storage.corruption > GLITCH_MEDIUM
+            isGlitch = storage.corruption > GLITCH_MEDIUM
             getDelay(storage.corruption)
         }
 

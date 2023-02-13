@@ -18,7 +18,6 @@ import com.advice.schedule.ui.information.speakers.SpeakersViewModel
 import com.advice.schedule.ui.information.vendors.VendorsViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
-import com.advice.schedule.ui.themes.ThemesManager
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.NotificationHelper
 import com.advice.schedule.utilities.Storage
@@ -53,7 +52,6 @@ val appModule = module {
     }
     single { FirebaseJobDispatcher(GooglePlayDriver(get())) }
     single { DatabaseManager(get()/* get()*/) }
-    single { ThemesManager(get()) }
 
     single { FirebaseCrashlytics.getInstance() }
     single { FirebaseFirestore.getInstance() }

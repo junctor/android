@@ -20,7 +20,6 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="preferenceTheme">@style/PrefsTheme</item>
 
         <item name="android:checkboxStyle">@style/AppCheckBoxStyle</item>
 
