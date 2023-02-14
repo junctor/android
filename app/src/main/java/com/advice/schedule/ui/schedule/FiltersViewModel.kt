@@ -19,7 +19,7 @@ class FiltersViewModel : ViewModel(), KoinComponent {
     val state = flow {
         emit(FiltersScreenState.Init)
         repository.tags.collect {
-            emit(FiltersScreenState.Success(it))
+            emit(FiltersScreenState.Success(it.filter { it.is_browsable }))
         }
     }
 

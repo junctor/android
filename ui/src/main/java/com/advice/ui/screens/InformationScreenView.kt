@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InformationScreenView(hasCodeOfConduct: Boolean, hasSupport: Boolean, hasWifi: Boolean, onClick: (Int) -> Unit) {
+fun InformationScreenView(hasCodeOfConduct: Boolean, hasSupport: Boolean, hasWifi: Boolean, onClick: (Int) -> Unit, onBackPressed: () -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -30,7 +30,7 @@ fun InformationScreenView(hasCodeOfConduct: Boolean, hasSupport: Boolean, hasWif
                     Text("Information")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = onBackPressed) {
                         Icon(Icons.Default.Menu, null)
                     }
                 }
@@ -93,8 +93,8 @@ fun NavigationPreview() {
 @Composable
 fun InformationScreenViewPreview() {
     MaterialTheme {
-        InformationScreenView(hasCodeOfConduct = true, hasSupport = true, hasWifi = true) {
+        InformationScreenView(hasCodeOfConduct = true, hasSupport = true, hasWifi = true, {
 
-        }
+        }, {})
     }
 }

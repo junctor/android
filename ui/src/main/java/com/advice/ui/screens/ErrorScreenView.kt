@@ -17,11 +17,11 @@ import com.advice.ui.views.EmptyView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorScreenView() {
+fun ErrorScreenView(onBackPressed: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Error") }, navigationIcon = {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = onBackPressed) {
                     Icon(Icons.Default.ArrowBack, null)
                 }
             })
@@ -34,6 +34,8 @@ fun ErrorScreenView() {
 @Composable
 fun ErrorScreenViewPreview() {
     MaterialTheme {
-        ErrorScreenView()
+        ErrorScreenView() {
+
+        }
     }
 }

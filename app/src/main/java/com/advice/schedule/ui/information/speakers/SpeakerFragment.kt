@@ -37,7 +37,9 @@ class SpeakerFragment : Fragment() {
                         requireActivity().onBackPressed()
                     }
                 } else {
-                    ErrorScreenView()
+                    ErrorScreenView {
+                        requireActivity().onBackPressed()
+                    }
                 }
             }
         }

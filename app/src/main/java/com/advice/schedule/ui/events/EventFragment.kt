@@ -40,7 +40,11 @@ class EventFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                EventScreenView(event)
+                EventScreenView(event, {
+                    viewModel.bookmark(event)
+                }, {
+                    requireActivity().onBackPressed()
+                })
             }
         }
     }

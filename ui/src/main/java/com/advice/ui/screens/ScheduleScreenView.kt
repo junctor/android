@@ -62,7 +62,7 @@ fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, o
     { contentPadding ->
         when (state) {
             is ScheduleScreenState.Error -> {
-                ErrorScreenView()
+                EmptyView()
             }
 
             null,

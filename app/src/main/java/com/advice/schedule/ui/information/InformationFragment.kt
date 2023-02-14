@@ -41,39 +41,46 @@ class InformationFragment : Fragment() {
                     InformationScreenView(
                         hasCodeOfConduct = state.conduct != null,
                         hasSupport = state.support != null,
-                        hasWifi = state.code.contains("DEFCON")
-                    ) {
-                        when (it) {
-                            -1 -> {
-                                (requireActivity() as MainActivity).setAboveFragment(WiFiFragment.newInstance(), hasAnimation = false)
-                                analytics.setScreen(Analytics.SCREEN_WIFI)
+                        hasWifi = state.code.contains("DEFCON"), {
+                            when (it) {
+                                -1 -> {
+                                    (requireActivity() as MainActivity).setAboveFragment(WiFiFragment.newInstance(), hasAnimation = false)
+                                    analytics.setScreen(Analytics.SCREEN_WIFI)
+                                }
+
+                                -2 -> {
+                                    (requireActivity() as MainActivity).setAboveFragment(CodeOfConductFragment.newInstance(), hasAnimation = false)
+                                    analytics.setScreen(Analytics.SCREEN_CODE_OF_CONDUCT)
+                                }
+
+                                -3 -> {
+                                    (requireActivity() as MainActivity).setAboveFragment(SupportFragment.newInstance(), hasAnimation = false)
+                                    analytics.setScreen(Analytics.SCREEN_HELP_AND_SUPPORT)
+                                }
+
+                                1 -> {
+                                    (requireActivity() as MainActivity).setAboveFragment(LocationsFragment.newInstance(), hasAnimation = false)
+                                    analytics.setScreen(Analytics.SCREEN_LOCATIONS)
+                                }
+
+                                0 -> {
+                                    (requireActivity() as MainActivity).setAboveFragment(FAQFragment.newInstance(), hasAnimation = false)
+                                    analytics.setScreen(Analytics.SCREEN_FAQ)
+                                }
+
+                                3 -> {
+                                    (requireActivity() as MainActivity).setAboveFragment(VendorsFragment.newInstance(), hasAnimation = false)
+                                    analytics.setScreen(Analytics.SCREEN_VENDORS_AND_PARTNERS)
+                                }
+
+                                2 -> {
+                                    (requireActivity() as MainActivity).setAboveFragment(SpeakersFragment.newInstance(), hasAnimation = false)
+                                    analytics.setScreen(Analytics.SCREEN_SPEAKERS)
+                                }
                             }
-                            -2 -> {
-                                (requireActivity() as MainActivity).setAboveFragment(CodeOfConductFragment.newInstance(), hasAnimation = false)
-                                analytics.setScreen(Analytics.SCREEN_CODE_OF_CONDUCT)
-                            }
-                            -3 -> {
-                                (requireActivity() as MainActivity).setAboveFragment(SupportFragment.newInstance(), hasAnimation = false)
-                                analytics.setScreen(Analytics.SCREEN_HELP_AND_SUPPORT)
-                            }
-                            1 -> {
-                                (requireActivity() as MainActivity).setAboveFragment(LocationsFragment.newInstance(), hasAnimation = false)
-                                analytics.setScreen(Analytics.SCREEN_LOCATIONS)
-                            }
-                            0 -> {
-                                (requireActivity() as MainActivity).setAboveFragment(FAQFragment.newInstance(), hasAnimation = false)
-                                analytics.setScreen(Analytics.SCREEN_FAQ)
-                            }
-                            3 -> {
-                                (requireActivity() as MainActivity).setAboveFragment(VendorsFragment.newInstance(), hasAnimation = false)
-                                analytics.setScreen(Analytics.SCREEN_VENDORS_AND_PARTNERS)
-                            }
-                            2 -> {
-                                (requireActivity() as MainActivity).setAboveFragment(SpeakersFragment.newInstance(), hasAnimation = false)
-                                analytics.setScreen(Analytics.SCREEN_SPEAKERS)
-                            }
-                        }
-                    }
+                        }, {
+                            requireActivity().onBackPressed()
+                        })
                 }
             }
         }

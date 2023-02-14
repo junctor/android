@@ -31,7 +31,9 @@ class SettingsFragment : Fragment(), KoinComponent {
                 //            conference.timezone.uppercase(Locale.getDefault())
                 //        )
                 // getString(R.string.version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
-                SettingScreenView()
+                SettingScreenView() {
+                    requireActivity().onBackPressed()
+                }
             }
         }
     }

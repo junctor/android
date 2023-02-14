@@ -1,12 +1,16 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -38,13 +43,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreenView() {
+fun SettingScreenView(onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("Settings") }, navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onBackPressed) {
                 Icon(Icons.Default.ArrowBack, null)
             }
         })
@@ -68,9 +74,11 @@ fun SettingsScreenContent(modifier: Modifier) {
 
 @Composable
 private fun VersionNumber() {
-    Text("Version 7.0.0 (1)", modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp), textAlign = TextAlign.Center)
+    Text(
+        "Version 7.0.0 (1)", modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp), textAlign = TextAlign.Center
+    )
 }
 
 @Composable
@@ -93,9 +101,11 @@ private fun DeveloperSection() {
 
 @Composable
 fun TwitterBadge() {
-    Card(androidx.compose.ui.Modifier.padding(16.dp)) {
+    Card(Modifier.padding(16.dp)) {
         Row(Modifier.padding(16.dp)) {
-            Box(
+            Image(
+                painterResource(R.drawable.doggo),
+                null,
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
@@ -124,10 +134,14 @@ fun SwitchPreference(title: String, summary: String? = null, summaryOn: String? 
     Row(
         Modifier
             .fillMaxWidth()
+            .height(IntrinsicSize.Min)
             .padding(16.dp)
     ) {
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
-            Text(title, fontWeight = FontWeight.Bold)
+        Column(
+            Modifier
+                .weight(1f)
+                .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+            Text(title)
             when {
                 summary != null -> {
                     Text(summary)
@@ -148,7 +162,10 @@ fun SwitchPreference(title: String, summary: String? = null, summaryOn: String? 
 @Composable
 fun SwitchPreferencePreview() {
     MaterialTheme {
-        SwitchPreference("Events in (EUROPE/HELSINKI)", summaryOn = "Using conference's timezone", summaryOff = "Using device's timezone")
+        Column {
+            SwitchPreference("Events in (EUROPE/HELSINKI)", summaryOn = "Using conference's timezone", summaryOff = "Using device's timezone")
+            SwitchPreference("Show filter button")
+        }
     }
 }
 
@@ -156,6 +173,8 @@ fun SwitchPreferencePreview() {
 @Composable
 fun SettingScreenViewPreview() {
     MaterialTheme {
-        SettingScreenView()
+        SettingScreenView() {
+
+        }
     }
 }
