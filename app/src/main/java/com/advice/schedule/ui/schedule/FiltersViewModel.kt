@@ -29,5 +29,9 @@ class FiltersViewModel : ViewModel(), KoinComponent {
             repository.toggle(tag)
         }
     }
+
+    fun clearBookmarks() {
+        repository.clear()
+    }
 }
 

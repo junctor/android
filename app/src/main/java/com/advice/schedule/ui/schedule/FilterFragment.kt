@@ -23,9 +23,11 @@ class FilterFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val state = viewModel.state.collectAsState(initial = FiltersScreenState.Init).value
-                FilterScreenView(state) {
+                FilterScreenView(state, {
                     viewModel.toggle(it)
-                }
+                }, {
+                    viewModel.clearBookmarks()
+                })
             }
         }
     }

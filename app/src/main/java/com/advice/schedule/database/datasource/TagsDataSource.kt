@@ -104,6 +104,28 @@ class TagsDataSource(
 
     }
 
+    fun clearBookmarks() {
+        val conference = userSession.currentConference
+        val user = userSession.currentUser
+
+        if (user == null) {
+            Timber.e("User is null!")
+            return
+        }
+
+        firestore.collection(DatabaseManager.CONFERENCES)
+            .document(conference.code)
+            .collection(DatabaseManager.USERS)
+            .document(user.uid)
+            .collection(DatabaseManager.TYPES)
+            .get()
+            .addOnCompleteListener {
+                for (document in it.result.documents) {
+                    document.reference.delete()
+                }
+            }
+    }
+
     override fun clear() {
         TODO("Not yet implemented")
     }

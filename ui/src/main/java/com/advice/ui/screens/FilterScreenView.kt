@@ -25,13 +25,13 @@ import com.advice.ui.views.FilterView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreenView(state: FiltersScreenState, onClick: (FirebaseTag) -> Unit) {
+fun FilterScreenView(state: FiltersScreenState, onClick: (FirebaseTag) -> Unit, onClear: () -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Filter") }, actions = {
                 val showClearButton = state is FiltersScreenState.Success && state.filters.flatMap { it.tags }.any { it.isSelected }
                 if (showClearButton) {
-                    IconButton(onClick = {}) {
+                    IconButton(onClear) {
                         Icon(Icons.Default.Close, null)
                     }
                 }

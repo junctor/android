@@ -14,4 +14,8 @@ class FiltersRepository(private val tagsDataSource: TagsDataSource) {
         tagsDataSource.updateTypeIsSelected(tag)
     }
 
+    fun clear() {
+        tagsDataSource.clearBookmarks()
+    }
+
 }
