@@ -81,7 +81,9 @@ fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, o
 fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) -> Unit, onBookmarkClick: (Event) -> Unit, modifier: Modifier) {
     if (days.isNotEmpty()) {
         Column(modifier = modifier) {
-            DaySelectorView(days = days.map { it.key })
+            DaySelectorView(days = days.map { it.key }) {
+                // scroll to date
+            }
             LazyColumn {
                 for (day in days) {
                     // Header

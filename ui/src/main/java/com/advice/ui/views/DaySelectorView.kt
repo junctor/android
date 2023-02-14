@@ -1,6 +1,8 @@
 package com.advice.ui.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
@@ -23,14 +25,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.ui.Colors
 
 data class BubblePosition(val start: Int, val width: Int) {
     companion object {
@@ -39,23 +44,28 @@ data class BubblePosition(val start: Int, val width: Int) {
 }
 
 @Composable
-fun DaySelectorView(days: List<String>) {
+fun DaySelectorView(days: List<String>, onDaySelected: (String) -> Unit) {
     var startPosition by remember {
         mutableStateOf(BubblePosition.Zero)
     }
 
 
-    Box(Modifier.height(IntrinsicSize.Min)) {
+    Box(
+        Modifier
+            .height(IntrinsicSize.Min)
+        //        .border(1.dp, Color.Yellow)
+    ) {
         // todo:
-//        Box(
-//            modifier = Modifier
-//                .width(startPosition.width.dp)
-//                .padding(vertical = 4.dp)
-//                .offset(startPosition.start.dp, 0.dp)
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 8.dp, vertical = 16.dp)
+                .width(with(LocalDensity.current) { startPosition.width.toDp() })
+                .fillMaxHeight()
+                .offset(with(LocalDensity.current) { startPosition.start.toDp() }, 0.dp)
 //                .clip(CircleShape)
-//                .fillMaxHeight()
-//                .background(Color.Red)
-//        )
+                //.background(Color.Blue)
+                .border(3.dp, Color.Black)
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -63,14 +73,21 @@ fun DaySelectorView(days: List<String>) {
                 .padding(horizontal = 8.dp, vertical = 16.dp)
         ) {
             days.forEach {
-                Text(it, modifier = Modifier
-                    .padding(horizontal = 12.dp)
+                Box(modifier = Modifier
+//                    .border(1.dp, Color.Green)
+                    .clickable {
+                        onDaySelected(it)
+                    }
+                    .padding(10.dp)
                     .onGloballyPositioned {
                         if (startPosition == BubblePosition.Zero) {
                             val x = it.positionInParent().x.toInt()
                             startPosition = BubblePosition(x, it.size.width)
+                            println("bubble: $startPosition")
                         }
-                    })
+                    }) {
+                    Text(it, modifier = Modifier.padding(horizontal = 12.dp))
+                }
             }
         }
 
@@ -81,6 +98,8 @@ fun DaySelectorView(days: List<String>) {
 @Composable
 fun DaySelectorViewPreview() {
     MaterialTheme {
-        DaySelectorView(listOf("May 31", "June 1", "June 2"))
+        DaySelectorView(listOf("May 31", "June 1", "June 2")) {
+
+        }
     }
 }
