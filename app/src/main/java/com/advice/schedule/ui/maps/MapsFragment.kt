@@ -8,17 +8,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import com.advice.core.firebase.FirebaseConferenceMap
-import com.advice.core.utils.Response
 import com.advice.schedule.dObj
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.ui.HackerTrackerViewModel
-import com.advice.schedule.utilities.Analytics
 import com.advice.ui.screens.MapsScreenView
-import com.shortstack.hackertracker.databinding.FragmentMapsBinding
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MapsFragment : Fragment() {
