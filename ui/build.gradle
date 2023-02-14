@@ -50,6 +50,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.8.0'
 
+    // ViewPager
+    implementation "com.google.accompanist:accompanist-pager:0.19.0"
+    // PDFViewer
+    implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
