@@ -60,10 +60,10 @@ fun DaySelectorView(days: List<String>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(8.dp)
+                .padding(horizontal = 8.dp, vertical = 16.dp)
         ) {
             days.forEach {
-                Text(it, style = MaterialTheme.typography.titleLarge, modifier = Modifier
+                Text(it, modifier = Modifier
                     .padding(horizontal = 12.dp)
                     .onGloballyPositioned {
                         if (startPosition == BubblePosition.Zero) {

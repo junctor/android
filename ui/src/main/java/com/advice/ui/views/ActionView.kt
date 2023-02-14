@@ -23,10 +23,11 @@ fun ActionView(text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(16.dp)
             .clickable {
 
-            }) {
+            }
+            .padding(16.dp)
+    ) {
         Icon(Icons.Default.Star, null)
         Spacer(Modifier.width(4.dp))
         Text(text, Modifier.fillMaxWidth())

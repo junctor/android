@@ -193,4 +193,8 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
             null
         }
     }
+
+    fun bookmark(event: Event) {
+        repository.bookmark(event)
+    }
 }

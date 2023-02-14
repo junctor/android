@@ -37,7 +37,7 @@ fun QuestionView(question: String, answer: String) {
                 }
                 .padding(horizontal = 16.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = question, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            Text(text = question, modifier = Modifier.weight(1f))
             IconButton(onClick = {
                 isExpanded = !isExpanded
             }) {

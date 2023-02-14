@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
 import com.advice.ui.views.ActionView
+import com.advice.ui.views.BookmarkButton
 import com.advice.ui.views.CategoryView
 import com.advice.ui.views.SpeakerView
 
@@ -45,8 +46,8 @@ fun EventScreenView(event: Event) {
                 }
             },
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Default.Star, null)
+                    BookmarkButton(isBookmarked = event.isBookmarked) {
+                        event.isBookmarked = !event.isBookmarked
                     }
                 })
         }) { contentPadding ->

@@ -18,15 +18,17 @@ class ScheduleRepository(
         Timber.e("repo events: ${events.size}")
         val filter = tags.flatMap { it.tags }.filter { it.isSelected }
 
+        val sortedEvents = events.sortedBy { it.start }
+
         // marking bookmarked items
         for (bookmark in bookmarks) {
-            events.find { it.id.toString() == bookmark.id }?.isBookmarked = bookmark.value
+            sortedEvents.find { it.id.toString() == bookmark.id }?.isBookmarked = bookmark.value
         }
         if(filter.isEmpty()) {
-            return@combine events
+            return@combine sortedEvents
         }
 
-        filter(events, filter)
+        filter(sortedEvents, filter)
     }
 
     private fun filter(
@@ -35,6 +37,10 @@ class ScheduleRepository(
     ): List<Event> {
         val ids = filter.map { it.id }
         return events.filter { it.types.any { it.id in ids } }
+    }
+
+    fun bookmark(event: Event) {
+        eventsDataSource.bookmark(event)
     }
 
 }

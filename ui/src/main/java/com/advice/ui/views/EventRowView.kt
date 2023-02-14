@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,12 +30,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.ui.Colors
 
 @Composable
-fun EventRowView(title: String, location: String, tags: List<FirebaseTag>, isBookmarked: Boolean, modifier: Modifier = Modifier) {
+fun EventRowView(title: String, time: String, location: String, tags: List<FirebaseTag>, isBookmarked: Boolean, modifier: Modifier = Modifier, onBookmark: (Boolean) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier
             .fillMaxWidth()
@@ -51,7 +56,9 @@ fun EventRowView(title: String, location: String, tags: List<FirebaseTag>, isBoo
             )
         }
 
-        Spacer(modifier = Modifier.width(85.dp))
+        Text(time, textAlign = TextAlign.Center, modifier = Modifier.width(85.dp))
+//        Spacer(modifier = Modifier.width(85.dp))
+
         Column(
             Modifier
                 .weight(1f)
@@ -66,23 +73,30 @@ fun EventRowView(title: String, location: String, tags: List<FirebaseTag>, isBoo
                 }
             }
         }
-        val icon = if (isBookmarked) Icons.Default.Favorite else Icons.Default.FavoriteBorder
-
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(icon, contentDescription = null)
+        BookmarkButton(isBookmarked = isBookmarked) {
+            onBookmark(it)
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun EventRowViewPreview() {
     MaterialTheme {
-        EventRowView(
-            title = "Compelled Decryption", location = "Track 1", tags = listOf(
-                FirebaseTag(label = "Talk", color_background = "#FF61EEAA"),
-                FirebaseTag(label = "Introduction", color_background = "#EEAAFF"),
-            ), isBookmarked = false
-        )
+        Column {
+            EventRowView(
+                title = "Compelled Decryption", time = "5:30\nAM", location = "Track 1", tags = listOf(
+                    FirebaseTag(label = "Introduction", color_background = "#EEAAFF"),
+                ), isBookmarked = true
+            ) {}
+            EventRowView(
+                title = "Compelled Decryption", time = "6:00\nAM", location = "Track 1", tags = listOf(
+                    FirebaseTag(label = "Talk", color_background = "#FF61EEAA"),
+                    FirebaseTag(label = "Introduction", color_background = "#EEAAFF"),
+                ), isBookmarked = false
+            ) {}
+        }
+
     }
 }

@@ -55,6 +55,13 @@ data class Event(
             }.time
         }
 
+    val startTime: Date
+        get() {
+            return Calendar.getInstance().apply {
+                time = start.toDate()
+            }.time
+        }
+
     val adjustedDate: Date
         get() {
             return getDateMidnight(start.toDate())

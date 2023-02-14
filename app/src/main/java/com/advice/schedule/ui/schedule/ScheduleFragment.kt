@@ -40,6 +40,8 @@ class ScheduleFragment : Fragment(), KoinComponent {
                     (parentFragment as PanelsFragment).openEndPanel()
                 }, {
                     openEventDetails(it)
+                }, {
+                    viewModel.bookmark(it)
                 })
             }
         }

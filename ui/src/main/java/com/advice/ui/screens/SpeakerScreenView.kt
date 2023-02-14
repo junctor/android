@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.core.utils.TimeUtil
 import com.advice.schedule.models.local.Event
 import com.advice.ui.views.EventRowView
 import com.advice.ui.views.NoDetailsView
@@ -59,7 +60,15 @@ fun SpeakerScreenContent(title: String, description: String, events: List<Event>
             Text("Events")
 
             for (event in events) {
-                EventRowView(title = event.title, location = event.location.name, tags = event.types, event.isBookmarked)
+                EventRowView(
+                    title = event.title,
+                    time = TimeUtil.getTimeStamp(event.startTime, is24HourFormat = false),
+                    location = event.location.name,
+                    tags = event.types,
+                    event.isBookmarked
+                ) {
+                    // todo:
+                }
             }
         }
     }

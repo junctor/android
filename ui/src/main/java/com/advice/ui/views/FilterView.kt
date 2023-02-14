@@ -29,8 +29,8 @@ fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
-                    .padding(2.dp)
+                    .height(32.dp)
+                    .padding(horizontal = 8.dp, vertical = 2.dp)
                     .clip(CircleShape)
                     .background(Color(android.graphics.Color.parseColor(tag.color)))
                     .align(Alignment.Center)

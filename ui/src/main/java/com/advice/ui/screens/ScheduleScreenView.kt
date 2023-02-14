@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.core.utils.TimeUtil
 import com.advice.schedule.models.local.Event
 import com.advice.ui.views.DayHeaderView
 import com.advice.ui.views.DaySelectorView
@@ -37,7 +38,7 @@ sealed class ScheduleScreenState {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, onFabClicked: () -> Unit, onEventClick: (Event) -> Unit) {
+fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, onFabClicked: () -> Unit, onEventClick: (Event) -> Unit, onBookmarkClick: (Event) -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -70,14 +71,14 @@ fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, o
 
             ScheduleScreenState.Loading -> {}
             is ScheduleScreenState.Success -> {
-                ScheduleScreenContent(state.days, onEventClick, modifier = Modifier.padding(contentPadding))
+                ScheduleScreenContent(state.days, onEventClick, onBookmarkClick, modifier = Modifier.padding(contentPadding))
             }
         }
     }
 }
 
 @Composable
-fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) -> Unit, modifier: Modifier) {
+fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) -> Unit, onBookmarkClick: (Event) -> Unit, modifier: Modifier) {
     if (days.isNotEmpty()) {
         Column(modifier = modifier) {
             DaySelectorView(days = days.map { it.key })
@@ -90,9 +91,17 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
                     // Events
                     for (it in day.value) {
                         item {
-                            EventRowView(it.title, it.location.name, it.types, it.isBookmarked, modifier = Modifier.clickable {
-                                onEventClick(it)
-                            })
+                            EventRowView(
+                                it.title,
+                                TimeUtil.getTimeStamp(it.startTime, is24HourFormat = false),
+                                it.location.name,
+                                it.types,
+                                it.isBookmarked,
+                                modifier = Modifier.clickable {
+                                    onEventClick(it)
+                                }) {isChecked ->
+                                onBookmarkClick(it)
+                            }
                         }
                     }
                 }
@@ -107,6 +116,6 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
 @Composable
 fun ScheduleScreenViewPreview() {
     MaterialTheme {
-        ScheduleScreenView(null, {}, {}, {})
+        ScheduleScreenView(null, {}, {}, {}, {})
     }
 }

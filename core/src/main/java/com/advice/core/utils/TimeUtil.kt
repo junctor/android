@@ -37,4 +37,13 @@ object TimeUtil {
 
         return formatter.format(date)
     }
+
+    fun getTimeStamp(date: Date?, is24HourFormat: Boolean): String {
+        val pattern = if (is24HourFormat) {
+            "HH:mm"
+        } else {
+            "h:mm\naa"
+        }
+        return SimpleDateFormat(pattern).format(date)
+    }
 }
