@@ -14,6 +14,7 @@ import com.advice.schedule.models.local.Location
 import com.advice.schedule.ui.HackerTrackerViewModel
 import com.advice.ui.screens.MapsScreenView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 class MapsFragment : Fragment() {
 
@@ -29,6 +30,7 @@ class MapsFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val maps = viewModel.maps.observeAsState().value?.dObj as? List<FirebaseConferenceMap> ?: emptyList()
+                Timber.e("Maps: $maps")
                 MapsScreenView(maps) {
                     requireActivity().onBackPressed()
                 }

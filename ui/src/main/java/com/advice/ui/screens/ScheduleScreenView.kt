@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.utils.TimeUtil
 import com.advice.schedule.models.local.Event
+import com.advice.ui.ScrollContext
+import com.advice.ui.rememberScrollContext
 import com.advice.ui.views.DayHeaderView
 import com.advice.ui.views.DaySelectorView
 import com.advice.ui.views.EmptyView
@@ -38,7 +41,13 @@ sealed class ScheduleScreenState {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, onFabClicked: () -> Unit, onEventClick: (Event) -> Unit, onBookmarkClick: (Event) -> Unit) {
+fun ScheduleScreenView(
+    state: ScheduleScreenState?,
+    onMenuClicked: () -> Unit,
+    onFabClicked: () -> Unit,
+    onEventClick: (Event) -> Unit,
+    onBookmarkClick: (Event) -> Unit,
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -79,12 +88,24 @@ fun ScheduleScreenView(state: ScheduleScreenState?, onMenuClicked: () -> Unit, o
 
 @Composable
 fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) -> Unit, onBookmarkClick: (Event) -> Unit, modifier: Modifier) {
+    val listState = rememberLazyListState()
+
+    val scrollContext = rememberScrollContext(listState = listState)
+
+    val elements = days.flatMap { listOf(it.key) + it.value }
+    val i = elements.mapIndexed { index, any -> index to any }.filter { it.second is String }.map { it.first }
+    println(i)
+
+    val start = i.indexOfLast { it < scrollContext.start }
+    val end = i.indexOfLast { it < scrollContext.end }
+    print("$start,$end")
+
     if (days.isNotEmpty()) {
         Column(modifier = modifier) {
-            DaySelectorView(days = days.map { it.key }) {
+            DaySelectorView(days = days.map { it.key }, start = start, end = end) {
                 // scroll to date
             }
-            LazyColumn {
+            LazyColumn(state = listState) {
                 for (day in days) {
                     // Header
                     item {
@@ -101,7 +122,7 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
                                 it.isBookmarked,
                                 modifier = Modifier.clickable {
                                     onEventClick(it)
-                                }) {isChecked ->
+                                }) { isChecked ->
                                 onBookmarkClick(it)
                             }
                         }
