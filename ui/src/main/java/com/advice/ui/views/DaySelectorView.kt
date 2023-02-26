@@ -90,10 +90,10 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                         if (positions[index] == IntSize.Zero) {
                             positions[index] = it.size
                         }
-                    Text(it, modifier = Modifier.padding(horizontal = 12.dp))
                     }
                     .padding(10.dp)
                 ) {
+                    Text(it, modifier = Modifier.padding(horizontal = 12.dp), color = if (index in start..end) Color.White else Color.Black)
                 }
             }
         }
