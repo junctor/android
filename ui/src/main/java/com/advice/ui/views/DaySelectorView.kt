@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,9 +42,26 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
         Animatable(0f)
     }
 
+    val positions: Array<IntSize> = remember {
+        Array(days.size) { IntSize.Zero }
+    }
+
+    if (positions[start] != IntSize.Zero) {
+        val x = positions.take(start).sumOf { it.width }
+
+        startPosition.set(x.toFloat(), coroutineScope)
+
+    }
+    if (positions[end] != IntSize.Zero) {
+        val x = positions.take(end).sumOf { it.width }
+
+        endPosition.set(x.toFloat() + positions[end].width, coroutineScope)
+    }
+
     Box(
         Modifier
             .height(IntrinsicSize.Min)
+
     ) {
         Row(
             modifier = Modifier
@@ -51,7 +69,7 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                 .horizontalScroll(rememberScrollState())
                 .drawBehind {
                     val verticalPadding = size.height * 0.25f
-                    translate(left = startPosition.value, top = verticalPadding) {
+                    translate(left = startPosition.value + 8.dp.toPx(), top = verticalPadding) {
                         drawRoundRect(
                             Colors.controlActive, size = Size(
                                 width = endPosition.value - startPosition.value,
@@ -68,19 +86,14 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                     .clickable {
                         onDaySelected(it)
                     }
-                    .padding(10.dp)
                     .onGloballyPositioned {
-                        val x = it.positionInParent().x
-
-                        if (index == start) {
-                            startPosition.set(x, coroutineScope)
+                        if (positions[index] == IntSize.Zero) {
+                            positions[index] = it.size
                         }
-
-                        if (index == end) {
-                            endPosition.set(it.positionInParent().x + it.size.width, coroutineScope)
-                        }
-                    }) {
                     Text(it, modifier = Modifier.padding(horizontal = 12.dp))
+                    }
+                    .padding(10.dp)
+                ) {
                 }
             }
         }
