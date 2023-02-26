@@ -32,7 +32,7 @@ class ArticleDataSource(
         }
     }
 
-    override fun clear() {
+    override suspend fun clear() {
         TODO("Not yet implemented")
     }
 }

@@ -1,6 +1,11 @@
 package com.advice.schedule.ui.schedule
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.advice.core.utils.Response
 import com.advice.core.utils.TimeUtil
 import com.advice.schedule.dObj
@@ -195,6 +200,8 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     }
 
     fun bookmark(event: Event) {
-        repository.bookmark(event)
+        viewModelScope.launch {
+            repository.bookmark(event)
+        }
     }
 }

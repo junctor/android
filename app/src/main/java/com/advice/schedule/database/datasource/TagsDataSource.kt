@@ -4,26 +4,34 @@ import com.advice.core.firebase.FirebaseBookmark
 import com.advice.core.local.Conference
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.UserSession
-import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.schedule.toObjectsOrEmpty
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import timber.log.Timber
 
-class TagsDataSource(
+interface TagsDataSource : DataSource<FirebaseTagType>
+
+interface BookmarkedElementDataSource {
+
+    fun get(): Flow<List<FirebaseBookmark>>
+
+    suspend fun clear()
+
+    suspend fun bookmark(id: Long, isBookmarked: Boolean)
+}
+
+class FirebaseTagsDataSourceImpl(
     private val userSession: UserSession,
-    private val firestore: FirebaseFirestore
-) : DataSource<FirebaseTagType> {
+    private val firestore: FirebaseFirestore,
+    private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
+) : TagsDataSource {
     override fun get(): Flow<List<FirebaseTagType>> {
-        return combine(getTagTypes(), getBookmarks()) { tags, bookmarks ->
+        return combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
             // clearing any previous set selections
             tags.flatMap {
                 it.tags
@@ -31,11 +39,16 @@ class TagsDataSource(
                 it.isSelected = false
             }
 
+            Timber.e("Bookmarks: $bookmarks")
             for (bookmark in bookmarks) {
                 tags.flatMap { it.tags }.find { it.id.toString() == bookmark.id }?.isSelected = bookmark.value
             }
             tags
         }
+    }
+
+    override suspend fun clear() {
+        TODO("Not yet implemented")
     }
 
     private fun getTagTypes(): Flow<List<FirebaseTagType>> {
@@ -52,10 +65,16 @@ class TagsDataSource(
     }
 
     data class MyObject(val conference: Conference, val user: FirebaseUser?)
+}
 
-    private fun getBookmarks(): Flow<List<FirebaseBookmark>> {
+
+class FirebaseBookmarkedTagsDataSource(
+    private val userSession: UserSession,
+    private val firestore: FirebaseFirestore
+) : BookmarkedElementDataSource {
+    override fun get(): Flow<List<FirebaseBookmark>> {
         return combine(userSession.user, userSession.conference) { user, conference ->
-            MyObject(conference, user)
+            FirebaseTagsDataSourceImpl.MyObject(conference, user)
         }.flatMapMerge {
             firestore.collection(DatabaseManager.CONFERENCES)
                 .document(it.conference.code)
@@ -69,8 +88,8 @@ class TagsDataSource(
         }
     }
 
-    fun updateTypeIsSelected(type: FirebaseTag) {
-        Timber.e("Updating type selection: $type")
+    override suspend fun bookmark(id: Long, isBookmarked: Boolean) {
+        Timber.e("Updating type selection: $id")
 
         val conference = userSession.currentConference
         val user = userSession.currentUser
@@ -85,15 +104,15 @@ class TagsDataSource(
             .collection(DatabaseManager.USERS)
             .document(user.uid)
             .collection(DatabaseManager.TYPES)
-            .document(type.id.toString())
+            .document(id.toString())
 
-        Timber.e("User: ${user.uid}, type: ${type.id}, conference: ${conference.code}")
+        Timber.e("User: ${user.uid}, type: ${id}, conference: ${conference.code}")
 
-        if (!type.isSelected) {
+        if (isBookmarked) {
             Timber.e("Adding item")
             document.set(
                 mapOf(
-                    "id" to type.id.toString(),
+                    "id" to id.toString(),
                     "value" to true
                 )
             )
@@ -101,10 +120,10 @@ class TagsDataSource(
             Timber.e("Deleting item")
             document.delete()
         }
-
     }
 
-    fun clearBookmarks() {
+
+    override suspend fun clear() {
         val conference = userSession.currentConference
         val user = userSession.currentUser
 
@@ -124,9 +143,5 @@ class TagsDataSource(
                     document.reference.delete()
                 }
             }
-    }
-
-    override fun clear() {
-        TODO("Not yet implemented")
     }
 }

@@ -1,6 +1,5 @@
 package com.advice.schedule.database.datasource
 
-import com.advice.core.firebase.FirebaseBookmark
 import com.advice.core.firebase.FirebaseEvent
 import com.advice.schedule.App
 import com.advice.schedule.database.DatabaseManager
@@ -22,6 +21,7 @@ import timber.log.Timber
 class EventsDataSource(
     private val userSession: UserSession,
     private val tagsDataSource: TagsDataSource,
+    private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
     private val firestore: FirebaseFirestore
 ) : DataSource<Event> {
 
@@ -38,7 +38,7 @@ class EventsDataSource(
 
     override fun get(): Flow<List<Event>> {
         return userSession.conference.flatMapMerge { conference ->
-            combine(getEvents(conference.code), tagsDataSource.get(), getBookmarks()) { events, tags, bookmarks ->
+            combine(getEvents(conference.code), tagsDataSource.get(), bookmarkedEventsDataSource.get()) { events, tags, bookmarks ->
                 Timber.e("firebase events: ${events.size}, tags: ${tags.size}")
                 val events = events.mapNotNull { it.toEvent(tags) }
 
@@ -53,57 +53,12 @@ class EventsDataSource(
         }
     }
 
-    private fun getBookmarks(): Flow<List<FirebaseBookmark>> {
-        return combine(userSession.user, userSession.conference) { user, conference ->
-            TagsDataSource.MyObject(conference, user)
-        }.flatMapMerge {
-            firestore.collection(DatabaseManager.CONFERENCES)
-                .document(it.conference.code)
-                .collection("users")
-                .document(it.user!!.uid)
-                .collection("bookmarks")
-                .snapshotFlow()
-                .map { querySnapshot ->
-                    querySnapshot.toObjectsOrEmpty(FirebaseBookmark::class.java)
-                }
-        }
+
+    suspend fun bookmark(event: Event) {
+        bookmarkedEventsDataSource.bookmark(event.id, isBookmarked = !event.isBookmarked)
     }
 
-    fun bookmark(event: Event) {
-        Timber.e("Updating event selection: $event")
-
-        val conference = userSession.currentConference
-        val user = userSession.currentUser
-
-        if (user == null) {
-            Timber.e("User is null!")
-            return
-        }
-
-        val document = firestore.collection(DatabaseManager.CONFERENCES)
-            .document(conference.code)
-            .collection(DatabaseManager.USERS)
-            .document(user.uid)
-            .collection("bookmarks")
-            .document(event.id.toString())
-
-        Timber.e("User: ${user.uid}, event: ${event.id}, conference: ${conference.code}")
-
-        if (!event.isBookmarked) {
-            Timber.e("Adding item")
-            document.set(
-                mapOf(
-                    "id" to event.id.toString(),
-                    "value" to true
-                )
-            )
-        } else {
-            Timber.e("Deleting item")
-            document.delete()
-        }
-    }
-
-    override fun clear() {
+    override suspend fun clear() {
         TODO("Not yet implemented")
     }
 }

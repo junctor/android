@@ -31,7 +31,9 @@ class FiltersViewModel : ViewModel(), KoinComponent {
     }
 
     fun clearBookmarks() {
-        repository.clear()
+        viewModelScope.launch {
+            repository.clear()
+        }
     }
 }
 

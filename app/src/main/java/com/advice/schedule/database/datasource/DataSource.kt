@@ -6,5 +6,5 @@ interface  DataSource<T> {
 
     fun get(): Flow<List<T>>
 
-    fun clear()
+    suspend fun clear()
 }
