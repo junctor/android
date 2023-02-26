@@ -4,6 +4,7 @@ import com.advice.core.firebase.FirebaseBookmark
 import com.advice.core.local.Conference
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.UserSession
+import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.schedule.toObjectsOrEmpty
 import com.google.firebase.auth.FirebaseUser
@@ -32,8 +33,11 @@ class FirebaseTagsDataSourceImpl(
 ) : TagsDataSource {
     override fun get(): Flow<List<FirebaseTagType>> {
         return combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
+            val temp = listOf(FirebaseTagType(tags = listOf(FirebaseTag.bookmark))) + tags.toMutableList()
+                .filter { it.is_browsable }
+
             // clearing any previous set selections
-            tags.flatMap {
+            temp.flatMap {
                 it.tags
             }.forEach {
                 it.isSelected = false
@@ -41,9 +45,9 @@ class FirebaseTagsDataSourceImpl(
 
             Timber.e("Bookmarks: $bookmarks")
             for (bookmark in bookmarks) {
-                tags.flatMap { it.tags }.find { it.id.toString() == bookmark.id }?.isSelected = bookmark.value
+                temp.flatMap { it.tags }.find { it.id.toString() == bookmark.id }?.isSelected = bookmark.value
             }
-            tags
+            temp
         }
     }
 

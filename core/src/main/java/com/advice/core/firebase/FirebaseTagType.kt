@@ -33,7 +33,7 @@ data class FirebaseTag(
 ) : Parcelable {
 
     companion object {
-        val bookmark = FirebaseTag(-1, "Bookmark", color_background = "#FFFFFF", color_foreground = "#000000")
+        val bookmark = FirebaseTag(-1, "Bookmark", color_background = "#000000", color_foreground = "#000000")
     }
 
     // todo: remove default
