@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.ui.screens.SpeakersScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SpeakersFragment : Fragment() {
@@ -24,12 +25,14 @@ class SpeakersFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.speakers.observeAsState().value
-                SpeakersScreenView(state ?: emptyList(), {
-                    requireActivity().onBackPressed()
-                }, {
-                    (requireActivity() as MainActivity).showSpeaker(it)
-                })
+                ScheduleTheme {
+                    val state = viewModel.speakers.observeAsState().value
+                    SpeakersScreenView(state ?: emptyList(), {
+                        requireActivity().onBackPressed()
+                    }, {
+                        (requireActivity() as MainActivity).showSpeaker(it)
+                    })
+                }
             }
         }
     }

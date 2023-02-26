@@ -9,7 +9,6 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.advice.ui.Colors
 
 @Composable
 fun BookmarkButton(isBookmarked: Boolean, onCheckChanged: (Boolean) -> Unit) {
@@ -19,7 +18,7 @@ fun BookmarkButton(isBookmarked: Boolean, onCheckChanged: (Boolean) -> Unit) {
         checked = isBookmarked,
         onCheckedChange = onCheckChanged,
         colors = IconButtonDefaults.iconToggleButtonColors(
-            checkedContentColor = Colors.controlActive
+            checkedContentColor = MaterialTheme.colorScheme.primary
         )
     ) {
         Icon(icon, contentDescription = null)

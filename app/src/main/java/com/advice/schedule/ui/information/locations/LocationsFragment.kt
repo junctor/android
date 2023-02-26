@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.advice.schedule.dObj
 import com.advice.schedule.models.local.LocationContainer
 import com.advice.ui.screens.LocationsScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class LocationsFragment : Fragment() {
@@ -25,17 +26,19 @@ class LocationsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.getLocations().observeAsState().value
-                val containers = state?.dObj as? List<LocationContainer>
-                LocationsScreenView(containers ?: emptyList()) {
-                    requireActivity().onBackPressed()
-                }
+                ScheduleTheme {
+                    val state = viewModel.getLocations().observeAsState().value
+                    val containers = state?.dObj as? List<LocationContainer>
+                    LocationsScreenView(containers ?: emptyList()) {
+                        requireActivity().onBackPressed()
+                    }
 
-                // if (location.hasChildren) {
-                //                viewModel.toggle(location)
-                //            } else {
-                //                openScheduleBottomSheet(location)
-                //            }
+                    // if (location.hasChildren) {
+                    //                viewModel.toggle(location)
+                    //            } else {
+                    //                openScheduleBottomSheet(location)
+                    //            }
+                }
             }
         }
     }

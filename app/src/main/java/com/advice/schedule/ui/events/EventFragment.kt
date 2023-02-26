@@ -2,7 +2,9 @@ package com.advice.schedule.ui.events
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -14,6 +16,7 @@ import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.Storage
 import com.advice.ui.screens.EventScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -40,11 +43,13 @@ class EventFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                EventScreenView(event, {
-                    viewModel.bookmark(event)
-                }, {
-                    requireActivity().onBackPressed()
-                })
+                ScheduleTheme {
+                    EventScreenView(event, {
+                        viewModel.bookmark(event)
+                    }, {
+                        requireActivity().onBackPressed()
+                    })
+                }
             }
         }
     }

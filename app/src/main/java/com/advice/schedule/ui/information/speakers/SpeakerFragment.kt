@@ -15,6 +15,7 @@ import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Speaker
 import com.advice.ui.screens.ErrorScreenView
 import com.advice.ui.screens.SpeakerScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
@@ -29,16 +30,18 @@ class SpeakerFragment : Fragment() {
             isTransitionGroup = true
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val events = emptyList<Event>()//viewModel.getSpeakerEvents(speaker).observeAsState().value
-                val s = viewModel.getSpeaker(speaker).observeAsState().value?.dObj as? Speaker
-                Timber.e("Speaker: $speaker, events: $events, s: $s")
-                if(speaker != null) {
-                    SpeakerScreenView(speaker.name, speaker.title, speaker.description, events ?: emptyList()) {
-                        requireActivity().onBackPressed()
-                    }
-                } else {
-                    ErrorScreenView {
-                        requireActivity().onBackPressed()
+                ScheduleTheme {
+                    val events = emptyList<Event>()//viewModel.getSpeakerEvents(speaker).observeAsState().value
+                    val s = viewModel.getSpeaker(speaker).observeAsState().value?.dObj as? Speaker
+                    Timber.e("Speaker: $speaker, events: $events, s: $s")
+                    if (speaker != null) {
+                        SpeakerScreenView(speaker.name, speaker.title, speaker.description, events ?: emptyList()) {
+                            requireActivity().onBackPressed()
+                        }
+                    } else {
+                        ErrorScreenView {
+                            requireActivity().onBackPressed()
+                        }
                     }
                 }
             }

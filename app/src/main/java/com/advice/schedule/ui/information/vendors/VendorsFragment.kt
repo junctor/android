@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.advice.schedule.dObj
 import com.advice.schedule.models.local.Vendor
 import com.advice.ui.screens.VendorsScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class VendorsFragment : Fragment() {
@@ -26,10 +27,12 @@ class VendorsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.getVendors().observeAsState()
-                val vendors = state.value?.dObj as? List<Vendor> ?: emptyList()
-                VendorsScreenView(vendors = vendors) {
-                    requireActivity().onBackPressed()
+                ScheduleTheme {
+                    val state = viewModel.getVendors().observeAsState()
+                    val vendors = state.value?.dObj as? List<Vendor> ?: emptyList()
+                    VendorsScreenView(vendors = vendors) {
+                        requireActivity().onBackPressed()
+                    }
                 }
             }
         }

@@ -13,6 +13,7 @@ import com.advice.schedule.dObj
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.ui.HackerTrackerViewModel
 import com.advice.ui.screens.MapsScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
@@ -29,10 +30,12 @@ class MapsFragment : Fragment() {
             isTransitionGroup = true
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val maps = viewModel.maps.observeAsState().value?.dObj as? List<FirebaseConferenceMap> ?: emptyList()
-                Timber.e("Maps: $maps")
-                MapsScreenView(maps) {
-                    requireActivity().onBackPressed()
+                ScheduleTheme {
+                    val maps = viewModel.maps.observeAsState().value?.dObj as? List<FirebaseConferenceMap> ?: emptyList()
+                    Timber.e("Maps: $maps")
+                    MapsScreenView(maps) {
+                        requireActivity().onBackPressed()
+                    }
                 }
             }
         }

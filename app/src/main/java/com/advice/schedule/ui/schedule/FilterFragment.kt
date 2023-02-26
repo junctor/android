@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.core.ui.FiltersScreenState
 import com.advice.ui.screens.FilterScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FilterFragment : Fragment() {
@@ -22,12 +23,14 @@ class FilterFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.state.collectAsState(initial = FiltersScreenState.Init).value
-                FilterScreenView(state, {
-                    viewModel.toggle(it)
-                }, {
-                    viewModel.clearBookmarks()
-                })
+                ScheduleTheme {
+                    val state = viewModel.state.collectAsState(initial = FiltersScreenState.Init).value
+                    FilterScreenView(state, {
+                        viewModel.toggle(it)
+                    }, {
+                        viewModel.clearBookmarks()
+                    })
+                }
             }
         }
     }

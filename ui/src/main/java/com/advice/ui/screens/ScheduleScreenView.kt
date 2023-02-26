@@ -1,5 +1,6 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -19,14 +20,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.utils.TimeUtil
 import com.advice.schedule.models.local.Event
-import com.advice.ui.ScrollContext
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.views.DayHeaderView
 import com.advice.ui.views.DaySelectorView
@@ -68,7 +70,9 @@ fun ScheduleScreenView(
                 Icon(Icons.Default.Search, null)
             }
 
-        }, modifier = Modifier.clip(RoundedCornerShape(16.dp))
+        }, modifier = Modifier
+            .background(Color.Transparent)
+            .clip(RoundedCornerShape(16.dp))
     )
     { contentPadding ->
         when (state) {
@@ -94,18 +98,20 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
     val coroutineScope = rememberCoroutineScope()
     val scrollContext = rememberScrollContext(listState = listState)
 
-    // todo: refactor, this is run too many times.
-    val elements = days.flatMap { listOf(it.key) + it.value }
-    val i = elements.mapIndexed { index, any -> index to any }.filter { it.second is String }.map { it.first }
+    val temp = remember {
+        // todo: refactor, this is run too many times.
+        val elements = days.flatMap { listOf(it.key) + it.value }
+        elements.mapIndexed { index, any -> index to any }.filter { it.second is String }.map { it.first }
+    }
 
-    val start = i.indexOfLast { it <= scrollContext.start }
-    val end = i.indexOfLast { it <= scrollContext.end }
+    val start = temp.indexOfLast { it <= scrollContext.start }
+    val end = temp.indexOfLast { it <= scrollContext.end }
 
     if (days.isNotEmpty()) {
         Column(modifier = modifier) {
             DaySelectorView(days = days.map { it.key }, start = start, end = end) {
                 coroutineScope.launch {
-                    listState.scrollToItem(elements.indexOf(it))
+                    //todo: listState.scrollToItem(temp.indexOf(it))
                 }
             }
             LazyColumn(state = listState) {

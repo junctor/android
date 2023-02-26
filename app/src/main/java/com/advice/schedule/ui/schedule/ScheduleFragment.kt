@@ -16,6 +16,7 @@ import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.ui.screens.ScheduleScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
 
@@ -31,16 +32,18 @@ class ScheduleFragment : Fragment(), KoinComponent {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.getState().observeAsState().value
-                ScheduleScreenView(state, {
-                    (parentFragment as PanelsFragment).openStartPanel()
-                }, {
-                    (parentFragment as PanelsFragment).openEndPanel()
-                }, {
-                    openEventDetails(it)
-                }, {
-                    viewModel.bookmark(it)
-                })
+                ScheduleTheme {
+                    val state = viewModel.getState().observeAsState().value
+                    ScheduleScreenView(state, {
+                        (parentFragment as PanelsFragment).openStartPanel()
+                    }, {
+                        (parentFragment as PanelsFragment).openEndPanel()
+                    }, {
+                        openEventDetails(it)
+                    }, {
+                        viewModel.bookmark(it)
+                    })
+                }
             }
         }
     }

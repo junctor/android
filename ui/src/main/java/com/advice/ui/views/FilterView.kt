@@ -65,7 +65,9 @@ fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
                 )
             }) {
             Spacer(Modifier.width(24.dp))
-            Text(tag.label, color = if (tag.isSelected) Color.White else Color.Black)
+            Text(
+                tag.label, color = if (tag.isSelected) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
@@ -74,7 +76,7 @@ fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
 @Composable
 fun FilterViewPreview() {
     MaterialTheme {
-        FilterView(FirebaseTag(label = "Talk", color_background = "#123123")) {
+        FilterView(FirebaseTag(label = "Talk", color_background = "#FF0066")) {
 
         }
     }
@@ -84,7 +86,7 @@ fun FilterViewPreview() {
 @Composable
 fun FilterViewSelectedPreview() {
     MaterialTheme {
-        FilterView(FirebaseTag(label = "Talk", color_background = "#123123", isSelected = true)) {
+        FilterView(FirebaseTag(label = "Talk", color_background = "#FF0066", isSelected = true)) {
 
         }
     }

@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.ui.screens.SettingScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -25,14 +26,16 @@ class SettingsFragment : Fragment(), KoinComponent {
             isTransitionGroup = true
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val conference = viewModel.getConference().observeAsState().value
-                // getString(
-                //            R.string.setting_time_zone,
-                //            conference.timezone.uppercase(Locale.getDefault())
-                //        )
-                // getString(R.string.version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
-                SettingScreenView() {
-                    requireActivity().onBackPressed()
+                ScheduleTheme {
+                    val conference = viewModel.getConference().observeAsState().value
+                    // getString(
+                    //            R.string.setting_time_zone,
+                    //            conference.timezone.uppercase(Locale.getDefault())
+                    //        )
+                    // getString(R.string.version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+                    SettingScreenView() {
+                        requireActivity().onBackPressed()
+                    }
                 }
             }
         }

@@ -20,13 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.advice.ui.Colors
+import com.advice.ui.theme.ScheduleTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -58,6 +57,8 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
         endPosition.set(x.toFloat() + positions[end].width, coroutineScope)
     }
 
+    val color = MaterialTheme.colorScheme.primary
+
     Box(
         Modifier
             .height(IntrinsicSize.Min)
@@ -71,7 +72,7 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                     val verticalPadding = size.height * 0.25f
                     translate(left = startPosition.value + 8.dp.toPx(), top = verticalPadding) {
                         drawRoundRect(
-                            Colors.controlActive, size = Size(
+                            color, size = Size(
                                 width = endPosition.value - startPosition.value,
                                 height = size.height - (verticalPadding * 2)
                             ),
@@ -93,7 +94,7 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                     }
                     .padding(10.dp)
                 ) {
-                    Text(it, modifier = Modifier.padding(horizontal = 12.dp), color = if (index in start..end) Color.White else Color.Black)
+                    Text(it, modifier = Modifier.padding(horizontal = 12.dp), color = if (index in start..end) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.onSurface)
                 }
             }
         }
@@ -109,7 +110,7 @@ private fun Animatable<Float, AnimationVector1D>.set(value: Float, coroutineScop
 @Preview(showBackground = true)
 @Composable
 fun DaySelectorViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         DaySelectorView(listOf("May 31", "June 1", "June 2"), 0, 1) {
 
         }

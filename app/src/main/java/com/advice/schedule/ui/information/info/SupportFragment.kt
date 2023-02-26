@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.ui.screens.SupportScreenView
+import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SupportFragment : Fragment() {
@@ -23,9 +24,11 @@ class SupportFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.conference.collectAsState(initial = null)
-                SupportScreenView(message = state.value?.support) {
-                    requireActivity().onBackPressed()
+                ScheduleTheme {
+                    val state = viewModel.conference.collectAsState(initial = null)
+                    SupportScreenView(message = state.value?.support) {
+                        requireActivity().onBackPressed()
+                    }
                 }
             }
         }
