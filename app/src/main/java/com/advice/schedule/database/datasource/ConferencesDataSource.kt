@@ -2,7 +2,6 @@ package com.advice.schedule.database.datasource
 
 import com.advice.core.firebase.FirebaseConference
 import com.advice.core.local.Conference
-import com.advice.schedule.App
 import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.toConference
 import com.advice.schedule.toObjectsOrEmpty
@@ -16,7 +15,7 @@ class ConferencesDataSource(private val firestore: FirebaseFirestore) : DataSour
             .snapshotFlow()
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseConference::class.java)
-                    .filter { !it.hidden || App.isDeveloper }
+                    .filter { !it.hidden }
                     .mapNotNull { it.toConference() }
                     .sortedBy { it.startDate }
             }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -39,8 +38,9 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
 import com.shortstack.hackertracker.R
+import java.util.Date
+import com.advice.ui.theme.roundedCornerShape
 
-val roundedCornerShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,12 +48,12 @@ fun HomeScreenView(state: HomeState?, onConferenceClick: (Conference) -> Unit) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) }, modifier = Modifier.clip(roundedCornerShape)
     ) { contentPadding ->
-        HomeScreenContent(state, modifier = Modifier.padding(contentPadding), onConferenceClick)
+        HomeScreenContent(state, modifier = Modifier.padding(contentPadding))
     }
 }
 
 @Composable
-fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier, onConferenceClick: (Conference) -> Unit) {
+fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         when (state) {
             is HomeState.Error -> {}
@@ -61,8 +61,15 @@ fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier, onConfer
 
 
                 ConferenceView(state.conference.name)
-                // todo: CountdownView(state.conference.)
+
                 LazyColumn {
+                    val remainder = state.conference.startDate.time - Date().time
+                    if (remainder > 0L) {
+                        item {
+                            CountdownView(remainder)
+                        }
+                    }
+
                     items(state.article) {
                         ArticleView(text = it.text)
                     }
@@ -106,7 +113,7 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
         expanded = false
     }) {
         for (conference in state.conferences) {
-            DropdownMenuItem(text = { Text(conference.name) }, onClick = {
+            DropdownMenuItem(text = { Text(conference.name, modifier = Modifier.fillMaxWidth()) }, onClick = {
                 onConferenceClick(conference)
                 expanded = false
             })
@@ -141,17 +148,22 @@ fun ConferenceView(name: String) {
 }
 
 @Composable
-fun CountdownView() {
+fun CountdownView(time: Long) {
+    val seconds: Long = time / 1000
+    val minutes = seconds / 60
+    val hours = minutes / 60
+    val days = hours / 24
+
     Card(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("76 days")
-            Text("05 hours")
-            Text("56 minutes")
-            Text("08 seconds")
+            Text("$days days")
+            Text("${hours % 24} hours")
+            Text("${minutes % 60} minutes")
+            Text("${seconds % 60}seconds")
         }
     }
 }
@@ -179,7 +191,7 @@ fun ConferenceViewPreview() {
 @Composable
 fun CountdownViewPreview() {
     MaterialTheme {
-        CountdownView()
+        CountdownView(152_352_123)
     }
 }
 

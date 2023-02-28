@@ -37,6 +37,7 @@ class EventsDataSource(
     }
 
     override fun get(): Flow<List<Event>> {
+        // todo: fix issue when switching between conferences (concurrency = 1?)
         return userSession.conference.flatMapMerge { conference ->
             combine(getEvents(conference.code), tagsDataSource.get(), bookmarkedEventsDataSource.get()) { events, tags, bookmarks ->
                 Timber.e("firebase events: ${events.size}, tags: ${tags.size}")

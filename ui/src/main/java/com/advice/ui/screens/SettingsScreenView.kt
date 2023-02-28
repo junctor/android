@@ -1,5 +1,6 @@
 package com.advice.ui.screens
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +22,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -42,11 +43,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.ui.theme.ScheduleTheme
 import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreenView(onBackPressed: () -> Unit) {
+fun SettingScreenView(timeZone: String, version: String, code: Int, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("Settings") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
@@ -54,27 +56,27 @@ fun SettingScreenView(onBackPressed: () -> Unit) {
             }
         })
     }) {
-        SettingsScreenContent(Modifier.padding(it))
+        SettingsScreenContent(timeZone, version, code, Modifier.padding(it))
     }
 }
 
 @Composable
-fun SettingsScreenContent(modifier: Modifier) {
+fun SettingsScreenContent(timeZone: String, version: String, code: Int, modifier: Modifier) {
     Column(modifier) {
-        SwitchPreference("Events in (EUROPE/HELSINKI)", summaryOn = "Using conference's timezone", summaryOff = "Using device's timezone")
-        SwitchPreference("Show filter button")
-        SwitchPreference("Easter Eggs", summary = "???")
-        SwitchPreference("Send anonymous usage statistics")
+        SwitchPreference("Events in ($timeZone)", isChecked = true, summaryOn = "Using conference's timezone", summaryOff = "Using device's timezone")
+        SwitchPreference("Show filter button", isChecked = true)
+        SwitchPreference("Easter Eggs", summary = "???", isChecked = false)
+        SwitchPreference("Send anonymous usage statistics", isChecked = true)
         DeveloperSection()
         TwitterBadge()
-        VersionNumber()
+        VersionNumber(version, code)
     }
 }
 
 @Composable
-private fun VersionNumber() {
+private fun VersionNumber(version: String, code: Int) {
     Text(
-        "Version 7.0.0 (1)", modifier = Modifier
+        "Version $version ($code)", modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp), textAlign = TextAlign.Center
     )
@@ -125,9 +127,9 @@ fun TwitterBadge() {
 }
 
 @Composable
-fun SwitchPreference(title: String, summary: String? = null, summaryOn: String? = null, summaryOff: String? = null) {
+fun SwitchPreference(title: String, isChecked: Boolean, summary: String? = null, summaryOn: String? = null, summaryOff: String? = null) {
     var checked by rememberSaveable {
-        mutableStateOf(false)
+        mutableStateOf(isChecked)
     }
 
     Row(
@@ -139,7 +141,8 @@ fun SwitchPreference(title: String, summary: String? = null, summaryOn: String? 
         Column(
             Modifier
                 .weight(1f)
-                .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                .fillMaxHeight(), verticalArrangement = Arrangement.Center
+        ) {
             Text(title)
             when {
                 summary != null -> {
@@ -153,26 +156,28 @@ fun SwitchPreference(title: String, summary: String? = null, summaryOn: String? 
         }
         Switch(checked = checked, onCheckedChange = {
             checked = it
-        })
+        }, colors = SwitchDefaults.colors(checkedThumbColor = Color.White, uncheckedThumbColor = Color.White))
     }
 }
 
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Preview(showBackground = true)
 @Composable
 fun SwitchPreferencePreview() {
-    MaterialTheme {
+    ScheduleTheme {
         Column {
-            SwitchPreference("Events in (EUROPE/HELSINKI)", summaryOn = "Using conference's timezone", summaryOff = "Using device's timezone")
-            SwitchPreference("Show filter button")
+            SwitchPreference("Events in (EUROPE/HELSINKI)", true, summaryOn = "Using conference's timezone", summaryOff = "Using device's timezone")
+            SwitchPreference("Show filter button", false)
         }
     }
 }
 
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Preview(showBackground = true)
 @Composable
-fun SettingScreenViewPreview() {
-    MaterialTheme {
-        SettingScreenView() {
+fun SettingScreenViewDarkPreview() {
+    ScheduleTheme {
+        SettingScreenView("Europe/Helsinki", "7.0.0", 1) {
 
         }
     }
