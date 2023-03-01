@@ -27,7 +27,8 @@ import java.lang.Float.min
 
 @Composable
 fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
-//    val coroutineScope = rememberCoroutineScope()
+    val smallSize = 8f
+
     val height = remember {
         Animatable(0f)
     }
@@ -37,7 +38,7 @@ fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
     }
 
     LaunchedEffect(key1 = tag.isSelected, block = {
-        height.animateTo(if (tag.isSelected) 24f else 16f)
+        height.animateTo(if (tag.isSelected) 24f else smallSize)
     })
 
     LaunchedEffect(key1 = tag.isSelected, block = {
@@ -53,7 +54,7 @@ fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
             }
             .padding(16.dp)
             .drawBehind {
-                val width = min(size.width, 16f.dp.toPx() + width.value * size.width)
+                val width = min(size.width, smallSize.dp.toPx() + width.value * size.width)
 
 
                 val smallSize = Size(width, height.value.dp.toPx())
