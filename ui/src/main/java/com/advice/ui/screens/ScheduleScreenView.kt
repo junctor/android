@@ -154,6 +154,12 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
                         }
                     }
                 }
+
+                item {
+                    Text("--- EOF ---", textAlign = TextAlign.Center, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp))
+                }
             }
         }
     } else {
