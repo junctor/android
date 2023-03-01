@@ -1,29 +1,35 @@
 package com.advice.schedule.di
 
 import androidx.work.WorkManager
+import com.advice.data.UserSession
+import com.advice.data.datasource.ArticleDataSource
+import com.advice.data.datasource.BookmarkedElementDataSource
+import com.advice.data.datasource.ConferencesDataSource
+import com.advice.data.datasource.EventsDataSource
+import com.advice.data.datasource.FAQDataSource
+import com.advice.data.datasource.InMemoryBookmarkedDataSourceImpl
+import com.advice.data.datasource.LocationsDataSource
+import com.advice.data.datasource.MapsDataSource
+import com.advice.data.datasource.SpeakersDataSource
+import com.advice.data.datasource.TagsDataSource
+import com.advice.data.datasource.VendorsDataSource
+import com.advice.firebase.FirebaseUserSession
+import com.advice.firebase.datasource.FirebaseArticleDataSource
+import com.advice.firebase.datasource.FirebaseConferencesDataSource
+import com.advice.firebase.datasource.FirebaseEventsDataSource
+import com.advice.firebase.datasource.FirebaseFAQDataSource
+import com.advice.firebase.datasource.FirebaseLocationsDataSource
+import com.advice.firebase.datasource.FirebaseMapsDataSource
+import com.advice.firebase.datasource.FirebaseSpeakersDataSource
+import com.advice.firebase.datasource.FirebaseTagsDataSource
+import com.advice.firebase.datasource.FirebaseVendorsDataSource
 import com.advice.schedule.PreferenceViewModel
-import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.ReminderManager
-import com.advice.schedule.database.UserSession
-import com.advice.schedule.database.datasource.ArticleDataSource
-import com.advice.schedule.database.datasource.BookmarkedElementDataSource
-import com.advice.schedule.database.datasource.ConferencesDataSource
-import com.advice.schedule.database.datasource.EventsDataSource
-import com.advice.schedule.database.datasource.FAQDataSource
-import com.advice.schedule.database.datasource.FirebaseBookmarkedTagsDataSource
-import com.advice.schedule.database.datasource.FirebaseTagsDataSourceImpl
-import com.advice.schedule.database.datasource.InMemoryBookmarkedDataSourceImpl
-import com.advice.schedule.database.datasource.LocationsDataSource
-import com.advice.schedule.database.datasource.MapsDataSource
-import com.advice.schedule.database.datasource.SpeakersDataSource
-import com.advice.schedule.database.datasource.TagsDataSource
-import com.advice.schedule.database.datasource.VendorsDataSource
 import com.advice.schedule.database.repository.FAQRepository
 import com.advice.schedule.database.repository.FiltersRepository
 import com.advice.schedule.database.repository.HomeRepository
 import com.advice.schedule.database.repository.ScheduleRepository
 import com.advice.schedule.database.repository.SpeakersRepository
-import com.advice.schedule.ui.HackerTrackerViewModel
 import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
 import com.advice.schedule.ui.information.info.ConferenceViewModel
@@ -54,7 +60,6 @@ val appModule = module {
         GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     }
     single { FirebaseJobDispatcher(GooglePlayDriver(get())) }
-    single { DatabaseManager(get()/* get()*/) }
 
     single { FirebaseCrashlytics.getInstance() }
     single { FirebaseFirestore.getInstance() }
@@ -62,10 +67,10 @@ val appModule = module {
 
     single { Analytics(get()) }
     single { WorkManager.getInstance() }
-    single { ReminderManager(get(), get()) }
+    single { ReminderManager(get()) }
 
     // auth
-    single { UserSession(get(), get()) }
+
 
     // repo
     single { ScheduleRepository(get(), get()) }
@@ -75,26 +80,23 @@ val appModule = module {
     single { FAQRepository(get()) }
 
     // data source
-    single { ConferencesDataSource(get()) }
-    single { EventsDataSource(get(), get(), get(), get()) }
+
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
     single<BookmarkedElementDataSource> { InMemoryBookmarkedDataSourceImpl() }
 
-    single<TagsDataSource> { FirebaseTagsDataSourceImpl(get(), get(), get()) }
-    single { FirebaseBookmarkedTagsDataSource(get(), get()) }
-
-
-    single { ArticleDataSource(get(), get()) }
-    single { FAQDataSource(get(), get()) }
-    single { LocationsDataSource(get(), get()) }
-    single { MapsDataSource(get(), get()) }
-    single { VendorsDataSource(get(), get()) }
-    single { SpeakersDataSource(get(), get()) }
-
+    single<UserSession> { FirebaseUserSession(get(), get()) }
+    single<ArticleDataSource> { FirebaseArticleDataSource(get(), get()) }
+    single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
+    single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(), get()) }
+    single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get()) }
+    single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
+    single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
+    single<MapsDataSource> { FirebaseMapsDataSource(get(), get()) }
+    single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
+    single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
 
     viewModel { HomeViewModel() }
-    viewModel { HackerTrackerViewModel() }
     viewModel { PreferenceViewModel() }
     viewModel { ScheduleViewModel() }
     viewModel { SpeakersViewModel() }

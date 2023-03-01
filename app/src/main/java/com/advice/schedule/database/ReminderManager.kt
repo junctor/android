@@ -10,7 +10,7 @@ import com.advice.schedule.utilities.Time
 import java.util.concurrent.TimeUnit
 
 class ReminderManager(
-    private val databaseManager: DatabaseManager,
+//    private val databaseManager: DatabaseManager,
     private val workManager: WorkManager
 ) {
 
@@ -20,7 +20,8 @@ class ReminderManager(
     }
 
     suspend fun getEvent(conference: String, id: Long): Event? {
-        return databaseManager.getEventById(conference, id)
+//        return databaseManager.getEventById(conference, id)
+        TODO()
     }
 
     fun setReminder(event: Event) {

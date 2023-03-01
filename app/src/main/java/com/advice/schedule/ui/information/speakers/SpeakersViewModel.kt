@@ -2,14 +2,11 @@ package com.advice.schedule.ui.information.speakers
 
 import androidx.lifecycle.*
 import com.advice.core.utils.Response
-import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.repository.SpeakersRepository
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.utilities.Analytics
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent

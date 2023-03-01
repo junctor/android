@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
         Timber.d("target: $target")
         if (target != null) {
             lifecycleScope.launch {
-                val event = viewModel.getEventById(target)
+                val event = TODO()
                 if (event != null) {
                     showEvent(event)
                 } else {

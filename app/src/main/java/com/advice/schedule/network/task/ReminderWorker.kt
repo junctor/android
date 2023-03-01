@@ -3,7 +3,6 @@ package com.advice.schedule.network.task
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.utilities.NotificationHelper
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -15,7 +14,6 @@ class ReminderWorker(
 ) : CoroutineWorker(context, params),
     KoinComponent {
 
-    private val database: DatabaseManager by inject()
     private val notifications: NotificationHelper by inject()
 
     override suspend fun doWork(): Result {
@@ -31,16 +29,16 @@ class ReminderWorker(
             return Result.failure()
         }
 
-        val event = database.getEventById(conference, id)
-        if (event == null) {
-            Timber.e("Could not find the target event.")
-            return Result.failure()
-        }
-
-        // Event has already happened, skip this notification
-        if(event.hasStarted || event.hasFinished) {
-            return Result.success()
-        }
+        val event = TODO()
+//        if (event == null) {
+//            Timber.e("Could not find the target event.")
+//            return Result.failure()
+//        }
+//
+//        // Event has already happened, skip this notification
+//        if(event.hasStarted || event.hasFinished) {
+//            return Result.success()
+//        }
 
         notifications.notifyStartingSoon(event)
 

@@ -2,9 +2,9 @@ package com.advice.schedule.database.repository
 
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
-import com.advice.schedule.database.UserSession
-import com.advice.schedule.database.datasource.ArticleDataSource
-import com.advice.schedule.database.datasource.ConferencesDataSource
+import com.advice.data.UserSession
+import com.advice.data.datasource.ArticleDataSource
+import com.advice.data.datasource.ConferencesDataSource
 import kotlinx.coroutines.flow.combine
 
 class HomeRepository(
@@ -19,6 +19,6 @@ class HomeRepository(
     }
 
     fun setConference(conference: Conference) {
-        userSession.setConference(conference)
+        userSession.setConference( conference)
     }
 }

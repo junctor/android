@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.advice.schedule.database.DatabaseManager
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
 import com.advice.schedule.database.repository.HomeRepository
@@ -17,7 +16,6 @@ class HomeViewModel : ViewModel(), KoinComponent {
 
     private val repository by inject<HomeRepository>()
 
-    private val database by inject<DatabaseManager>()
     private val analytics by inject<Analytics>()
 
     private val state = MutableLiveData<HomeState>()

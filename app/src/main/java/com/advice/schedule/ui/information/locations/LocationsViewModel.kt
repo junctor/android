@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.utils.Response
 import com.advice.schedule.dObj
-import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.models.local.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -17,26 +16,11 @@ import timber.log.Timber
 
 class LocationsViewModel : ViewModel(), KoinComponent {
 
-    private val database: DatabaseManager by inject()
-
     private var _locations = listOf<LocationContainer>()
     private val locations = MediatorLiveData<Response<List<LocationContainer>>>()
 
     init {
-        locations.addSource(database.conference) {
-            if (it == null) {
-                locations.value = Response.Init
-            } else {
-                locations.value = Response.Loading
-                locations.addSource(database.getLocations(it)) {
-                    val list = it.sortedWith(compareBy({ it.hier_extent_left }, { it.hier_extent_right }))
-                    // need to populate the list first
-                    _locations = list.map { element -> element.toContainer(list.any { it.parent_id == element.id }) }
-                    // then update the status
-                    locations.value = Response.Success(updateLocations())
-                }
-            }
-        }
+
 
         viewModelScope.launch {
             while (isActive) {

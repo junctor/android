@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.database.ReminderManager
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.ui.activities.MainActivity
@@ -25,7 +24,6 @@ class EventView : FrameLayout, KoinComponent {
 
     // todo: extract
     private val analytics: Analytics by inject()
-    private val database: DatabaseManager by inject()
     private val reminder: ReminderManager by inject()
 
     var displayMode: Int = DISPLAY_MODE_MIN
@@ -141,18 +139,7 @@ class EventView : FrameLayout, KoinComponent {
     }
 
     private fun onBookmarkClick(event: Event) {
-        event.isBookmarked = !event.isBookmarked
-        database.updateBookmark(event)
 
-        if (event.isBookmarked) {
-            reminder.setReminder(event)
-        } else {
-            reminder.cancel(event)
-        }
-
-        analytics.onEventBookmark(event)
-
-        updateBookmark(event)
     }
 
     companion object {

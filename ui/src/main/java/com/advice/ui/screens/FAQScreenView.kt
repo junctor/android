@@ -15,12 +15,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.advice.schedule.models.firebase.FirebaseFAQ
+import com.advice.core.local.FAQ
 import com.advice.ui.views.QuestionView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FAQScreenView(faqs: List<FirebaseFAQ>, onBackPressed: () -> Unit) {
+fun FAQScreenView(faqs: List<FAQ>, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("Frequently Asked Questions") }, navigationIcon =
         {
@@ -34,7 +34,7 @@ fun FAQScreenView(faqs: List<FirebaseFAQ>, onBackPressed: () -> Unit) {
 }
 
 @Composable
-fun FAQScreenContent(faqs: List<FirebaseFAQ>, modifier: Modifier = Modifier) {
+fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
     LazyColumn(modifier) {
         items(faqs) {
             QuestionView(it.question, it.answer)
@@ -46,7 +46,7 @@ fun FAQScreenContent(faqs: List<FirebaseFAQ>, modifier: Modifier = Modifier) {
 @Composable
 fun FAQScreenViewPreview() {
     MaterialTheme {
-        val faqs = listOf(FirebaseFAQ(-1, "DEFCON28", "Cost?", "$300"))
+        val faqs = listOf(FAQ("Cost?", "$300"))
         FAQScreenView(faqs) {}
     }
 }

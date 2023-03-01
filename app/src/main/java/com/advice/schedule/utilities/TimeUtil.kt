@@ -2,7 +2,6 @@ package com.advice.schedule.utilities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.advice.schedule.App
 import com.shortstack.hackertracker.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,10 +31,11 @@ object TimeUtil {
 
         val formatter = SimpleDateFormat(s)
 
-        if (App.instance.storage.forceTimeZone) {
-            val timezone = App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"
-            formatter.timeZone = TimeZone.getTimeZone(timezone)
-        }
+        // todo:
+//        if (App.instance.storage.forceTimeZone) {
+//            val timezone = App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"
+//            formatter.timeZone = TimeZone.getTimeZone(timezone)
+//        }
 
         return formatter.format(date)
     }

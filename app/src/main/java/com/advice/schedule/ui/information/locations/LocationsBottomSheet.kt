@@ -63,10 +63,10 @@ class LocationsBottomSheet : BottomSheetDialogFragment() {
 
         val formatter = SimpleDateFormat(s)
 
-        if (App.instance.storage.forceTimeZone) {
-            val timezone = App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"
-            formatter.timeZone = TimeZone.getTimeZone(timezone)
-        }
+//        if (App.instance.storage.forceTimeZone) {
+//            val timezone = App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"
+//            formatter.timeZone = TimeZone.getTimeZone(timezone)
+//        }
 
         return formatter.format(date)
     }

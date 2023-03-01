@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -16,19 +15,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.transition.Fade
-import com.advice.core.firebase.FirebaseAction
-import com.advice.core.firebase.FirebaseArticle
-import com.advice.core.firebase.FirebaseConference
-import com.advice.core.firebase.FirebaseEvent
-import com.advice.schedule.models.firebase.*
-import com.advice.schedule.models.local.*
 import com.advice.schedule.utilities.Time
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
-import com.advice.core.local.Conference
-import timber.log.Timber
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 fun Date.isToday(): Boolean {
@@ -105,159 +95,10 @@ fun AppCompatActivity.replaceFragment(
     }
 }
 
-fun FirebaseConference.toConference(): Conference? {
-    return try {
-        Conference(
-            id,
-            name,
-            description,
-            codeofconduct,
-            supportdoc,
-            code,
-            maps,
-            start_timestamp.toDate(),
-            end_timestamp.toDate(),
-            timezone
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Conference: ${ex.message}")
-        null
-    }
-}
-
-fun FirebaseType.toType(): Type? {
-    return try {
-        val actions = ArrayList<Action>()
-        discord_url?.let {
-            if (it.isNotBlank()) {
-                actions.add(Action(Action.getLabel(it), it))
-            }
-        }
-
-        subforum_url?.let {
-            if (it.isNotBlank()) {
-                actions.add(Action(Action.getLabel(it), it))
-            }
-        }
-
-        Type(
-            id,
-            name,
-            conference,
-            color,
-            description,
-            actions
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Location: ${ex.message}")
-        null
-    }
-}
-
-fun FirebaseLocation.toLocation(): Location? {
-    return try {
-        Location(
-            id,
-            name,
-            short_name,
-            hotel,
-            conference,
-            default_status, hier_depth, hier_extent_left, hier_extent_right, parent_id, peer_sort_order, schedule
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Location: ${ex.message}")
-        null
-    }
-}
-
-fun FirebaseEvent.toEvent(tags: List<FirebaseTagType>): Event? {
-    try {
-        val list = tags.flatMap { it.tags.sortedBy { it.sort_order } }
-
-        val links = links.map { it.toAction() }
-        val types = tag_ids.mapNotNull { id ->
-            list.find { it.id == id }
-        }.sortedBy { list.indexOf(it) }
-
-        return Event(
-            id,
-            conference,
-            title,
-            android_description,
-            begin_timestamp,
-            end_timestamp,
-            //todo:
-            updated_timestamp.seconds.toString(),
-            speakers.mapNotNull { it.toSpeaker() },
-            types,
-            location.toLocation()!!,
-            links
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Event: ${ex.message}")
-        return null
-    }
-}
-
 fun Timestamp.toDate(): Date {
     return Date(seconds * 1000)
 }
 
-private fun FirebaseAction.toAction() =
-    Action(this.label, this.url)
-
-fun FirebaseSpeaker.toSpeaker(): Speaker? {
-    return try {
-        Speaker(
-            id,
-            name,
-            description,
-            link,
-            twitter,
-            title
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Speaker: ${ex.message}")
-        null
-    }
-}
-
-fun FirebaseVendor.toVendor(): Vendor? {
-    return try {
-        Vendor(
-            id,
-            name,
-            description,
-            link,
-            partner
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Vendor: ${ex.message}")
-        null
-    }
-}
-
-fun FirebaseArticle.toArticle(): Article? {
-    return try {
-        Article(
-            id,
-            name,
-            text
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Article: ${ex.message}")
-        null
-    }
-}
-
-fun FirebaseFAQ.toFAQ(isExpanded: Boolean = false): Pair<FAQQuestion, FAQAnswer>? {
-    return try {
-        FAQQuestion(id, question, isExpanded) to FAQAnswer(id, answer, isExpanded)
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to FAQ: ${ex.message}")
-        null
-    }
-}
 
 fun FragmentActivity.showKeyboard() {
     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -274,23 +115,6 @@ fun <T> List<Fragment>.get(clazz: Class<T>): T {
     return first { it::class.java == clazz } as T
 }
 
-fun <T> QuerySnapshot.toObjectsOrEmpty(@NonNull clazz: Class<T>): List<T> {
-    return try {
-        toObjects(clazz)
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to objects: ${ex.message}")
-        return emptyList()
-    }
-}
-
-fun <T> DocumentSnapshot.toObjectOrNull(@NonNull clazz: Class<T>): T? {
-    return try {
-        toObject(clazz)
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to objects: ${ex.message}")
-        return null
-    }
-}
 
 inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
     this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

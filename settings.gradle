@@ -19,3 +19,5 @@ rootProject.name = "Schedule"
 include ':app'
 include ':ui'
 include ':core'
+include ':data'
+include ':feature-firebase'

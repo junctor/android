@@ -2,7 +2,6 @@ package com.advice.schedule
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.advice.schedule.database.DatabaseManager
 import com.advice.schedule.di.appModule
 import com.advice.schedule.utilities.Storage
 import com.github.stkent.amplify.feedback.DefaultEmailFeedbackCollector
@@ -26,7 +25,6 @@ class App : Application() {
 
 
     val storage: Storage by inject()
-    val database: DatabaseManager by inject()
 
     override fun onCreate() {
         super.onCreate()

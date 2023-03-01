@@ -1,7 +1,7 @@
 package com.advice.schedule.database.repository
 
-import com.advice.schedule.database.datasource.EventsDataSource
-import com.advice.schedule.database.datasource.TagsDataSource
+import com.advice.data.datasource.EventsDataSource
+import com.advice.data.datasource.TagsDataSource
 import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
 import kotlinx.coroutines.flow.combine

@@ -3,22 +3,21 @@ package com.advice.schedule.ui.settings
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.advice.schedule.database.DatabaseManager
 import com.advice.core.local.Conference
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.utilities.Storage
 import com.advice.schedule.utilities.Time
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.util.*
+import java.util.Calendar
 
 class SettingsViewModel : ViewModel(), KoinComponent {
 
-    private val database by inject<DatabaseManager>()
+    private val _conference = MutableLiveData<Conference>()
+
     private val storage  by inject<Storage>()
     private val analytics by inject<Analytics>()
 
-    private val conference = database.conference
     private val hasReboot = MutableLiveData<Boolean>()
     private var clickCounter = 0
 
@@ -42,7 +41,7 @@ class SettingsViewModel : ViewModel(), KoinComponent {
         analytics.onDeveloperEvent(isFollow)
     }
 
-    fun getConference(): LiveData<Conference> = conference
+    fun getConference(): LiveData<Conference> = _conference
 
     fun hasReboot(): LiveData<Boolean> = hasReboot
 
