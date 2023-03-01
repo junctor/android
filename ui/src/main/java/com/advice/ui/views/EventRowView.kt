@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.schedule.models.firebase.FirebaseTag
@@ -43,8 +42,8 @@ fun EventRowView(title: String, time: String, location: String, tags: List<Fireb
             )
         }
 
-        Text(time, textAlign = TextAlign.Center, modifier = Modifier.width(85.dp))
-//        Spacer(modifier = Modifier.width(85.dp))
+//        Text("", textAlign = TextAlign.Center, modifier = Modifier.width(85.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         Column(
             Modifier

@@ -42,7 +42,7 @@ object TimeUtil {
         val pattern = if (is24HourFormat) {
             "HH:mm"
         } else {
-            "h:mm\naa"
+            "h:mm aa"
         }
         return SimpleDateFormat(pattern).format(date)
     }
