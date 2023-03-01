@@ -1,4 +1,4 @@
-package com.advice.core.firebase
+package com.advice.firebase.models
 
 import com.google.firebase.Timestamp
 

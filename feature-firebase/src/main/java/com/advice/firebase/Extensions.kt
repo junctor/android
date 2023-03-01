@@ -1,23 +1,28 @@
 package com.advice.firebase
 
 import androidx.annotation.NonNull
-import com.advice.core.firebase.FirebaseAction
-import com.advice.core.firebase.FirebaseArticle
-import com.advice.core.firebase.FirebaseConference
-import com.advice.core.firebase.FirebaseEvent
+import com.advice.core.local.Bookmark
 import com.advice.core.local.Conference
+import com.advice.core.local.ConferenceMap
 import com.advice.core.local.FAQ
-import com.advice.schedule.models.firebase.FirebaseFAQ
-import com.advice.schedule.models.firebase.FirebaseLocation
-import com.advice.schedule.models.firebase.FirebaseSpeaker
-import com.advice.schedule.models.firebase.FirebaseTagType
-import com.advice.schedule.models.firebase.FirebaseType
-import com.advice.schedule.models.firebase.FirebaseVendor
+import com.advice.core.local.Tag
+import com.advice.core.local.TagType
+import com.advice.firebase.models.FirebaseAction
+import com.advice.firebase.models.FirebaseArticle
+import com.advice.firebase.models.FirebaseBookmark
+import com.advice.firebase.models.FirebaseConference
+import com.advice.firebase.models.FirebaseEvent
+import com.advice.firebase.models.FirebaseFAQ
+import com.advice.firebase.models.FirebaseLocation
+import com.advice.firebase.models.FirebaseMap
+import com.advice.firebase.models.FirebaseSpeaker
+import com.advice.firebase.models.FirebaseTag
+import com.advice.firebase.models.FirebaseTagType
+import com.advice.firebase.models.FirebaseType
+import com.advice.firebase.models.FirebaseVendor
 import com.advice.schedule.models.local.Action
 import com.advice.schedule.models.local.Article
 import com.advice.schedule.models.local.Event
-import com.advice.schedule.models.local.FAQAnswer
-import com.advice.schedule.models.local.FAQQuestion
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
 import com.advice.schedule.models.local.Type
@@ -62,6 +67,7 @@ fun Query.snapshotFlow(): Flow<QuerySnapshot> = callbackFlow {
         listenerRegistration.remove()
     }
 }
+
 fun FirebaseConference.toConference(): Conference? {
     return try {
         Conference(
@@ -71,7 +77,7 @@ fun FirebaseConference.toConference(): Conference? {
             codeofconduct,
             supportdoc,
             code,
-            maps,
+            maps.mapNotNull { it.toMap() },
             start_timestamp.toDate(),
             end_timestamp.toDate(),
             timezone
@@ -127,9 +133,9 @@ fun FirebaseLocation.toLocation(): Location? {
     }
 }
 
-fun FirebaseEvent.toEvent(tags: List<FirebaseTagType>): Event? {
+fun FirebaseEvent.toEvent(tags: List<TagType>): Event? {
     try {
-        val list = tags.flatMap { it.tags.sortedBy { it.sort_order } }
+        val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
 
         val links = links.map { it.toAction() }
         val types = tag_ids.mapNotNull { id ->
@@ -155,8 +161,24 @@ fun FirebaseEvent.toEvent(tags: List<FirebaseTagType>): Event? {
         return null
     }
 }
+
 private fun FirebaseAction.toAction() =
     Action(this.label, this.url)
+
+fun FirebaseTag.toTag(): Tag? {
+    return try {
+        Tag(
+            id,
+            label,
+            description,
+            color_background,
+            sort_order
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Speaker: ${ex.message}")
+        null
+    }
+}
 
 fun FirebaseSpeaker.toSpeaker(): Speaker? {
     return try {
@@ -202,11 +224,37 @@ fun FirebaseArticle.toArticle(): Article? {
     }
 }
 
-fun FirebaseFAQ.toFAQ(isExpanded: Boolean = false): Pair<FAQQuestion, FAQAnswer>? {
+fun FirebaseMap.toMap(): ConferenceMap? {
     return try {
-        FAQQuestion(id, question, isExpanded) to FAQAnswer(id, answer, isExpanded)
+        ConferenceMap(
+            name,
+            file,
+            description,
+        )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to FAQ: ${ex.message}")
+        Timber.e("Could not map data to Map: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseBookmark.toBookmark(): Bookmark? {
+    return try {
+        Bookmark(
+            id, value
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Bookmark: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseTagType.toTagType(): TagType? {
+    return try {
+        TagType(
+            id, label, category, is_browsable, sort_order, tags.mapNotNull { it.toTag() }
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Bookmark: ${ex.message}")
         null
     }
 }

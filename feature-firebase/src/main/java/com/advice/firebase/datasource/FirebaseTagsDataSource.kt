@@ -1,12 +1,13 @@
 package com.advice.firebase.datasource
 
+import com.advice.core.local.TagType
 import com.advice.data.UserSession
 import com.advice.data.datasource.BookmarkedElementDataSource
 import com.advice.data.datasource.TagsDataSource
+import com.advice.firebase.models.FirebaseTagType
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toObjectsOrEmpty
-import com.advice.schedule.models.firebase.FirebaseTag
-import com.advice.schedule.models.firebase.FirebaseTagType
+import com.advice.firebase.toTagType
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -20,10 +21,10 @@ class FirebaseTagsDataSource(
     private val firestore: FirebaseFirestore,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : TagsDataSource {
-    override fun get(): Flow<List<FirebaseTagType>> {
+    override fun get(): Flow<List<TagType>> {
         return combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
-            val temp = listOf(FirebaseTagType(tags = listOf(FirebaseTag.bookmark))) + tags.toMutableList()
-                .filter { it.is_browsable }
+            val temp = /*listOf(TagType(tags = listOf(Tag.bookmark))) +*/ tags.toMutableList()
+                .filter { it.isBrowsable }
 
             // clearing any previous set selections
             temp.flatMap {
@@ -40,7 +41,7 @@ class FirebaseTagsDataSource(
         }
     }
 
-    private fun getTagTypes(): Flow<List<FirebaseTagType>> {
+    private fun getTagTypes(): Flow<List<TagType>> {
         return userSession.conference.flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
@@ -49,6 +50,7 @@ class FirebaseTagsDataSource(
                 .map { querySnapshot ->
                     querySnapshot.toObjectsOrEmpty(FirebaseTagType::class.java)
                         .sortedBy { it.sort_order }
+                        .mapNotNull { it.toTagType() }
                 }
         }
     }

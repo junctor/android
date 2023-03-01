@@ -2,10 +2,10 @@ package com.advice.firebase.datasource
 
 import com.advice.data.UserSession
 import com.advice.data.datasource.SpeakersDataSource
+import com.advice.firebase.models.FirebaseSpeaker
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toObjectsOrEmpty
 import com.advice.firebase.toSpeaker
-import com.advice.schedule.models.firebase.FirebaseSpeaker
 import com.advice.schedule.models.local.Speaker
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow

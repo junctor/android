@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.core.firebase.FirebaseConferenceMap
+import com.advice.core.local.MapFile
+import com.advice.firebase.models.FirebaseConferenceMap
 import com.advice.schedule.models.local.Location
 import com.advice.ui.screens.MapsScreenView
 import com.advice.ui.theme.ScheduleTheme
@@ -25,7 +26,7 @@ class MapsFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val maps = /*viewModel.maps.observeAsState().value?.dObj as? List<FirebaseConferenceMap> ?:*/ emptyList<FirebaseConferenceMap>()
+                    val maps = /*viewModel.maps.observeAsState().value?.dObj as? List<FirebaseConferenceMap> ?:*/ emptyList<MapFile>()
                     Timber.e("Maps: $maps")
                     MapsScreenView(maps) {
                         requireActivity().onBackPressed()

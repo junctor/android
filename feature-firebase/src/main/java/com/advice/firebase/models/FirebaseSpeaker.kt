@@ -1,7 +1,6 @@
-package com.advice.schedule.models.firebase
+package com.advice.firebase.models
 
 import android.os.Parcelable
-import com.google.firebase.Timestamp
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

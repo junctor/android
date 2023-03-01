@@ -1,8 +1,8 @@
 package com.advice.schedule.database.repository
 
+import com.advice.core.local.Tag
 import com.advice.data.datasource.EventsDataSource
 import com.advice.data.datasource.TagsDataSource
-import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
 import kotlinx.coroutines.flow.combine
 
@@ -25,7 +25,7 @@ class ScheduleRepository(
 
     private fun filter(
         events: List<Event>,
-        filter: List<FirebaseTag>
+        filter: List<Tag>
     ): List<Event> {
         val bookmarksOnly = filter.any { it.isBookmark && it.isSelected }
         val ids = filter.filter { !it.isBookmark }.map { it.id }

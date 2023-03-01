@@ -22,11 +22,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.core.local.Tag
+import com.advice.ui.createTag
 import java.lang.Float.min
 
 @Composable
-fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
+fun FilterView(tag: Tag, onClick: () -> Unit) {
     val smallSize = 8f
 
     val height = remember {
@@ -77,7 +78,7 @@ fun FilterView(tag: FirebaseTag, onClick: () -> Unit) {
 @Composable
 fun FilterViewPreview() {
     MaterialTheme {
-        FilterView(FirebaseTag(label = "Talk", color_background = "#FF0066")) {
+        FilterView(createTag(label = "Talk", color = "#FF0066")) {
 
         }
     }
@@ -87,7 +88,7 @@ fun FilterViewPreview() {
 @Composable
 fun FilterViewSelectedPreview() {
     MaterialTheme {
-        FilterView(FirebaseTag(label = "Talk", color_background = "#FF0066", isSelected = true)) {
+        FilterView(createTag(label = "Talk", color = "#FF0066", isSelected = true)) {
 
         }
     }

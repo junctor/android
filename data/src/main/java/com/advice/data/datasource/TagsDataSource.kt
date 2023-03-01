@@ -1,10 +1,10 @@
 package com.advice.data.datasource
 
-import com.advice.schedule.models.firebase.FirebaseTagType
+import com.advice.core.local.TagType
 import kotlinx.coroutines.flow.Flow
 
 
 interface TagsDataSource {
-    fun get(): Flow<List<FirebaseTagType>>
+    fun get(): Flow<List<TagType>>
 }
 

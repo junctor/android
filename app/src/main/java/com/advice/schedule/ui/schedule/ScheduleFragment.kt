@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.core.local.Tag
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
@@ -61,7 +61,7 @@ class ScheduleFragment : Fragment(), KoinComponent {
             return ScheduleFragment()
         }
 
-        fun newInstance(type: FirebaseTag): ScheduleFragment {
+        fun newInstance(type: Tag): ScheduleFragment {
             return ScheduleFragment().apply {
                 arguments = bundleOf(
                     EXTRA_TYPE to type

@@ -1,6 +1,6 @@
 package com.advice.firebase.datasource
 
-import com.advice.core.firebase.FirebaseConference
+import com.advice.firebase.models.FirebaseConference
 import com.advice.core.local.Conference
 import com.advice.data.datasource.ConferencesDataSource
 import com.advice.firebase.snapshotFlow

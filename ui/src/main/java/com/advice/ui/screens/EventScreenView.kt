@@ -1,6 +1,5 @@
 package com.advice.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +15,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,7 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.core.local.Tag
 import com.advice.schedule.models.local.Event
 import com.advice.ui.views.ActionView
 import com.advice.ui.views.BookmarkButton
@@ -102,7 +100,7 @@ fun EventScreenContent(event: Event, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HeaderSection(title: String, categories: List<FirebaseTag>, date: String, location: String) {
+fun HeaderSection(title: String, categories: List<Tag>, date: String, location: String) {
     Column {
         Row(Modifier.padding(16.dp)) {
             for (tag in categories) {

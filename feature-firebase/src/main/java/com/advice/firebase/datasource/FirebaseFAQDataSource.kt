@@ -3,10 +3,10 @@ package com.advice.firebase.datasource
 import com.advice.core.local.FAQ
 import com.advice.data.UserSession
 import com.advice.data.datasource.FAQDataSource
+import com.advice.firebase.models.FirebaseFAQ
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toFAQ
 import com.advice.firebase.toObjectsOrEmpty
-import com.advice.schedule.models.firebase.FirebaseFAQ
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge

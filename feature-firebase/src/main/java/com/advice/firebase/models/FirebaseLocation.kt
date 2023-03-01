@@ -1,4 +1,4 @@
-package com.advice.schedule.models.firebase
+package com.advice.firebase.models
 
 import android.os.Parcelable
 import com.advice.schedule.models.local.LocationSchedule

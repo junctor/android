@@ -2,10 +2,10 @@ package com.advice.firebase.datasource
 
 import com.advice.data.UserSession
 import com.advice.data.datasource.VendorsDataSource
+import com.advice.firebase.models.FirebaseVendor
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toObjectsOrEmpty
 import com.advice.firebase.toVendor
-import com.advice.schedule.models.firebase.FirebaseVendor
 import com.advice.schedule.models.local.Vendor
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow

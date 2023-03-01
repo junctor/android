@@ -2,16 +2,17 @@ package com.advice.schedule.models.local
 
 import android.content.Context
 import android.os.Parcelable
-import com.advice.schedule.models.firebase.FirebaseTag
-import com.google.firebase.Timestamp
+import com.advice.core.local.Tag
 import com.advice.core.utils.Time
 import com.advice.core.utils.TimeUtil
 import com.advice.core.utils.getDateMidnight
 import com.advice.core.utils.getLocalizedDate
 import com.advice.core.utils.toTimestamp
+import com.google.firebase.Timestamp
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 @Parcelize
 data class Event(
@@ -23,7 +24,7 @@ data class Event(
     val end: Timestamp,
     val updated: String,
     val speakers: List<Speaker>,
-    val types: List<FirebaseTag>,
+    val types: List<Tag>,
     val location: Location,
     val urls: List<Action>,
     var isBookmarked: Boolean = false,

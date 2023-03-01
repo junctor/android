@@ -1,4 +1,4 @@
-package com.advice.schedule.models.firebase
+package com.advice.firebase.models
 
 data class FirebaseFAQ(
     val id: Int = -1,

@@ -1,8 +1,8 @@
 package com.advice.schedule.database.repository
 
+import com.advice.core.local.Tag
 import com.advice.data.datasource.BookmarkedElementDataSource
 import com.advice.data.datasource.TagsDataSource
-import com.advice.schedule.models.firebase.FirebaseTag
 
 
 class FiltersRepository(
@@ -12,7 +12,7 @@ class FiltersRepository(
 
     val tags = tagsDataSource.get()
 
-    suspend fun toggle(tag: FirebaseTag) {
+    suspend fun toggle(tag: Tag) {
         bookmarksDataSource.bookmark(tag.id, !tag.isSelected)
     }
 

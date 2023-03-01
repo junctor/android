@@ -9,8 +9,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.advice.core.local.Tag
 import com.advice.schedule.get
-import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.models.local.Event
 import com.advice.schedule.models.local.Location
 import com.advice.schedule.models.local.Speaker
@@ -20,7 +20,6 @@ import com.advice.schedule.ui.events.EventFragment
 import com.advice.schedule.ui.information.InformationFragment
 import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
-import com.advice.schedule.ui.schedule.ScheduleFragment
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
@@ -180,17 +179,17 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     }
 
     fun showSchedule(location: Location) {
-        setAboveFragment(ScheduleFragment.newInstance(location), hasAnimation = false)
+//        setAboveFragment(ScheduleFragment.newInstance(location), hasAnimation = false)
         analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 
-    fun showSchedule(type: FirebaseTag) {
-        setAboveFragment(ScheduleFragment.newInstance(type), hasAnimation = false)
+    fun showSchedule(type: Tag) {
+//        setAboveFragment(ScheduleFragment.newInstance(type), hasAnimation = false)
         analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 
     fun showSchedule(speaker: Speaker) {
-        setAboveFragment(ScheduleFragment.newInstance(speaker), hasAnimation = false)
+//        setAboveFragment(ScheduleFragment.newInstance(speaker), hasAnimation = false)
         analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 

@@ -2,10 +2,8 @@ package com.advice.core.local
 
 import android.os.Parcelable
 import com.advice.core.utils.Time
-import com.advice.schedule.models.firebase.FirebaseMap
 import kotlinx.android.parcel.Parcelize
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Date
 
 @Parcelize
 data class Conference(
@@ -15,7 +13,7 @@ data class Conference(
     val conduct: String?,
     val support: String?,
     val code: String,
-    val maps: ArrayList<FirebaseMap>,
+    val maps: List<ConferenceMap>,
     val startDate: Date,
     val endDate: Date,
     val timezone: String,

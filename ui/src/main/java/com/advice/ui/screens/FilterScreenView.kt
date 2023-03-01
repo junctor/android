@@ -17,15 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.core.local.Tag
+import com.advice.core.local.TagType
 import com.advice.core.ui.FiltersScreenState
-import com.advice.schedule.models.firebase.FirebaseTag
-import com.advice.schedule.models.firebase.FirebaseTagType
 import com.advice.ui.views.FilterHeaderView
 import com.advice.ui.views.FilterView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreenView(state: FiltersScreenState, onClick: (FirebaseTag) -> Unit, onClear: () -> Unit) {
+fun FilterScreenView(state: FiltersScreenState, onClick: (Tag) -> Unit, onClear: () -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Filter") }, actions = {
@@ -52,7 +52,7 @@ fun FilterScreenView(state: FiltersScreenState, onClick: (FirebaseTag) -> Unit, 
 }
 
 @Composable
-fun FilterScreenContent(tags: List<FirebaseTagType>, modifier: Modifier = Modifier, onClick: (FirebaseTag) -> Unit) {
+fun FilterScreenContent(tags: List<TagType>, modifier: Modifier = Modifier, onClick: (Tag) -> Unit) {
     LazyColumn(modifier = modifier) {
         for (tag in tags) {
             item {

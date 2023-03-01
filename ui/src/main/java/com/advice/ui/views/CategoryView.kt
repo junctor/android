@@ -18,10 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.core.local.Tag
+import com.advice.ui.createTag
 
 @Composable
-fun CategoryView(tag: FirebaseTag) {
+fun CategoryView(tag: Tag) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)) {
         Box(
             Modifier
@@ -38,6 +39,6 @@ fun CategoryView(tag: FirebaseTag) {
 @Composable
 fun CategoryViewPreview() {
     MaterialTheme {
-        CategoryView(FirebaseTag(label = "Talk", color_background = "#EE11EE"))
+        CategoryView(createTag(label = "Talk", color = "#EE11EE"))
     }
 }

@@ -1,10 +1,12 @@
 package com.advice.firebase.datasource
 
-import com.advice.core.firebase.FirebaseBookmark
+import com.advice.core.local.Bookmark
 import com.advice.data.UserSession
 import com.advice.data.datasource.BookmarkedElementDataSource
 import com.advice.firebase.CurrentUserState
+import com.advice.firebase.models.FirebaseBookmark
 import com.advice.firebase.snapshotFlow
+import com.advice.firebase.toBookmark
 import com.advice.firebase.toObjectsOrEmpty
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +19,7 @@ class FirebaseBookmarkedTagsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore
 ) : BookmarkedElementDataSource {
-    override fun get(): Flow<List<FirebaseBookmark>> {
+    override fun get(): Flow<List<Bookmark>> {
         return combine(userSession.user, userSession.conference) { user, conference ->
             CurrentUserState(conference, user)
         }.flatMapMerge {
@@ -28,7 +30,7 @@ class FirebaseBookmarkedTagsDataSource(
                 .collection("types")
                 .snapshotFlow()
                 .map { querySnapshot ->
-                    querySnapshot.toObjectsOrEmpty(FirebaseBookmark::class.java)
+                    querySnapshot.toObjectsOrEmpty(FirebaseBookmark::class.java).mapNotNull { it.toBookmark() }
                 }
         }
     }

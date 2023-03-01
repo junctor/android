@@ -21,10 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.schedule.models.firebase.FirebaseTag
+import com.advice.core.local.Tag
+import com.advice.ui.createTag
 
 @Composable
-fun EventRowView(title: String, time: String, location: String, tags: List<FirebaseTag>, isBookmarked: Boolean, modifier: Modifier = Modifier, onBookmark: (Boolean) -> Unit) {
+fun EventRowView(title: String, time: String, location: String, tags: List<Tag>, isBookmarked: Boolean, modifier: Modifier = Modifier, onBookmark: (Boolean) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier
             .fillMaxWidth()
@@ -73,13 +74,13 @@ fun EventRowViewPreview() {
         Column {
             EventRowView(
                 title = "Compelled Decryption", time = "5:30\nAM", location = "Track 1", tags = listOf(
-                    FirebaseTag(label = "Introduction", color_background = "#EEAAFF"),
+                    createTag(label = "Introduction", color= "#EEAAFF"),
                 ), isBookmarked = true
             ) {}
             EventRowView(
                 title = "Compelled Decryption", time = "6:00\nAM", location = "Track 1", tags = listOf(
-                    FirebaseTag(label = "Talk", color_background = "#FF61EEAA"),
-                    FirebaseTag(label = "Introduction", color_background = "#EEAAFF"),
+                    createTag(label = "Talk", color = "#FF61EEAA"),
+                    createTag(label = "Introduction", color = "#EEAAFF"),
                 ), isBookmarked = false
             ) {}
         }

@@ -1,9 +1,5 @@
 package com.advice.ui.screens
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -17,11 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.advice.core.firebase.FirebaseConferenceMap
+import com.advice.core.local.MapFile
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.util.FitPolicy
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -30,7 +24,7 @@ import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapsScreenView(maps: List<FirebaseConferenceMap>, onBackPressed: () -> Unit) {
+fun MapsScreenView(maps: List<MapFile>, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("Maps") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
@@ -75,7 +69,7 @@ private fun PDFView(file: File, modifier: Modifier) {
 @Composable
 fun MapsScreenViewPreview() {
     MaterialTheme {
-        MapsScreenView(listOf(FirebaseConferenceMap("Map", "", File("/")))) {
+        MapsScreenView(listOf(MapFile("Map", File("/")))) {
 
         }
     }

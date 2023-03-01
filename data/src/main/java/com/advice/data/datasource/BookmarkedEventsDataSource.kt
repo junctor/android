@@ -1,10 +1,11 @@
 package com.advice.data.datasource
 
-import com.advice.core.firebase.FirebaseBookmark
+import com.advice.core.local.Bookmark
 import com.advice.data.DataSource
 
 
-interface BookmarkedEventsDataSource : DataSource<FirebaseBookmark> {
+interface BookmarkedEventsDataSource : DataSource<Bookmark> {
+
     suspend fun bookmark(id: Long, isBookmarked: Boolean)
 }
 

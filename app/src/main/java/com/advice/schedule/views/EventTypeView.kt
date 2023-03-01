@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.advice.core.local.Tag
 import com.advice.schedule.getTintedDrawable
-import com.advice.schedule.models.firebase.FirebaseTag
 import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.ViewEventTypeBinding
@@ -32,7 +32,7 @@ class EventTypeView(context: Context, attrs: AttributeSet) : LinearLayout(contex
         }
     }
 
-    fun render(type: FirebaseTag) {
+    fun render(type: Tag) {
         binding.eventTypeText.text = type.label
 
         val value = TypedValue()

@@ -1,6 +1,6 @@
 package com.advice.firebase.datasource
 
-import com.advice.core.firebase.FirebaseArticle
+import com.advice.firebase.models.FirebaseArticle
 import com.advice.data.UserSession
 import com.advice.data.datasource.ArticleDataSource
 import com.advice.firebase.snapshotFlow

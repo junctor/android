@@ -1,10 +1,10 @@
 package com.advice.firebase.datasource
 
-import com.advice.core.firebase.FirebaseEvent
 import com.advice.data.UserSession
 import com.advice.data.datasource.BookmarkedElementDataSource
 import com.advice.data.datasource.EventsDataSource
 import com.advice.data.datasource.TagsDataSource
+import com.advice.firebase.models.FirebaseEvent
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toEvent
 import com.advice.firebase.toObjectsOrEmpty

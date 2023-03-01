@@ -1,10 +1,12 @@
 package com.advice.firebase.datasource
 
-import com.advice.core.firebase.FirebaseBookmark
+import com.advice.core.local.Bookmark
 import com.advice.core.local.User
 import com.advice.data.UserSession
 import com.advice.data.datasource.BookmarkedEventsDataSource
+import com.advice.firebase.models.FirebaseBookmark
 import com.advice.firebase.snapshotFlow
+import com.advice.firebase.toBookmark
 import com.advice.firebase.toObjectsOrEmpty
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
@@ -27,11 +29,11 @@ class FirebaseBookmarkedEventsDataSource(
                 .collection("bookmarks")
                 .snapshotFlow()
                 .map { querySnapshot ->
-                    querySnapshot.toObjectsOrEmpty(FirebaseBookmark::class.java)
+                    querySnapshot.toObjectsOrEmpty(FirebaseBookmark::class.java).mapNotNull { it.toBookmark() }
                 }
         }
 
-    override fun get(): Flow<List<FirebaseBookmark>> = userSession.user.flatMapMerge { user ->
+    override fun get(): Flow<List<Bookmark>> = userSession.user.flatMapMerge { user ->
         if (user == null) {
             Timber.e("User is null, returning empty bookmarks")
             flow { emit(emptyList()) }
