@@ -14,9 +14,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
@@ -33,17 +35,25 @@ import kotlinx.coroutines.launch
 fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (String) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
-    val startPosition = remember {
+    val alpha = remember {
         Animatable(0f)
     }
 
+    val startPosition = remember {
+        Animatable(-1f)
+    }
+
     val endPosition = remember {
-        Animatable(0f)
+        Animatable(-1f)
     }
 
     val positions: Array<IntSize> = remember {
         Array(days.size) { IntSize.Zero }
     }
+
+    LaunchedEffect(key1 = "alpha", block = {
+        alpha.animateTo(1f)
+    })
 
     if (positions[start] != IntSize.Zero) {
         val x = positions.take(start).sumOf { it.width }
@@ -62,7 +72,7 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
     Box(
         Modifier
             .height(IntrinsicSize.Min)
-
+            .alpha(alpha.value)
     ) {
         Row(
             modifier = Modifier
@@ -94,7 +104,11 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                     }
                     .padding(10.dp)
                 ) {
-                    Text(it, modifier = Modifier.padding(horizontal = 12.dp), color = if (index in start..end) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        it,
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        color = if (index in start..end) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
@@ -103,7 +117,11 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
 
 private fun Animatable<Float, AnimationVector1D>.set(value: Float, coroutineScope: CoroutineScope) {
     coroutineScope.launch {
-        animateTo(value)
+        if (this@set.value == -1f) {
+            snapTo(value)
+        } else {
+            animateTo(value)
+        }
     }
 }
 
