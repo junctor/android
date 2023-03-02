@@ -1,4 +1,4 @@
-package com.advice.schedule.views
+package com.advice.glitch
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -6,14 +6,9 @@ import android.graphics.Canvas
 import android.os.Handler
 import android.util.AttributeSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.advice.schedule.ui.glitch.Glitch
-import com.advice.schedule.utilities.Storage
-import com.shortstack.hackertracker.R
-import org.koin.core.KoinComponent
-import org.koin.core.get
 
 class GlitchContainerView(context: Context, attrs: AttributeSet?) :
-    CoordinatorLayout(context, attrs), KoinComponent {
+    CoordinatorLayout(context, attrs) {
 
     private var isGlitch = false
     private var corruption = GLITCH_NONE
@@ -29,17 +24,11 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
     private lateinit var glitchRunnable: Runnable
 
     init {
-        val array =
-            context.theme.obtainStyledAttributes(attrs, R.styleable.GlitchContainerView, 0, 0)
-        try {
-            corruption =
-                array.getInt(R.styleable.GlitchContainerView_glitch_corruptionLevel, GLITCH_NONE)
-            isGlitch = array.getBoolean(R.styleable.GlitchContainerView_glitch_isGlitch, false)
-            // if enabled via attrs, always use these settings
-            isOverriding = isGlitch
-        } finally {
-            array.recycle()
-        }
+
+        corruption = GLITCH_NONE
+        isGlitch = false
+        // if enabled via attrs, always use these settings
+        isOverriding = isGlitch
 
         setWillNotDraw(false)
     }
@@ -52,13 +41,7 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
             return
         }
 
-        val delay = if (isOverriding) {
-            getDelay(corruption)
-        } else {
-            val storage = get<Storage>()
-            isGlitch = storage.corruption > GLITCH_MEDIUM
-            getDelay(storage.corruption)
-        }
+        val delay = getDelay(corruption)
 
         if (isGlitch) {
             isDrawingCacheEnabled = true

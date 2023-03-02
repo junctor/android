@@ -18,7 +18,6 @@ class VendorsFragment : Fragment() {
 
     private val viewModel by sharedViewModel<VendorsViewModel>()
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

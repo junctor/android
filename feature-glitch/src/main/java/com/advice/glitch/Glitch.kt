@@ -1,13 +1,10 @@
-package com.advice.schedule.ui.glitch
+package com.advice.glitch
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
-import com.advice.schedule.utilities.Storage
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 
-object Glitch : KoinComponent {
+object Glitch {
 
     fun apply(canvas: Canvas, bitmap: Bitmap, isGlitch: Boolean = false) {
         val effect = ColorChannelShift(bitmap)

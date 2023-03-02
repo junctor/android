@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.glitch
+package com.advice.glitch
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

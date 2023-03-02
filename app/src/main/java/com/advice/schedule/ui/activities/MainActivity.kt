@@ -20,17 +20,13 @@ import com.advice.schedule.ui.events.EventFragment
 import com.advice.schedule.ui.information.InformationFragment
 import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
-import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
-import com.github.stkent.amplify.tracking.Amplify
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
-import com.shortstack.hackertracker.BuildConfig
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
@@ -39,8 +35,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     FragmentManager.OnBackStackChangedListener, KoinComponent {
 
     private val analytics by inject<Analytics>()
-
-    private val viewModel by viewModel<ScheduleViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -57,11 +51,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
         setContentView(view)
 
         if (savedInstanceState == null) {
-            if (Amplify.getSharedInstance().shouldPrompt() && !BuildConfig.DEBUG) {
-                val review = ReviewBottomSheet.newInstance()
-                review.show(this.supportFragmentManager, review.tag)
-            }
-
             setMainFragment(R.id.nav_home, getString(R.string.home), false)
         }
 
