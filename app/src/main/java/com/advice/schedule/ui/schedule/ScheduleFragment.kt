@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
@@ -33,9 +33,11 @@ class ScheduleFragment : Fragment(), KoinComponent {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val state = viewModel.getState().observeAsState().value
+                    val state = viewModel.state.collectAsState(initial = null).value
                     ScheduleScreenView(state, {
                         (parentFragment as PanelsFragment).openStartPanel()
+                    }, onSearchQuery = { query ->
+                        viewModel.search(query)
                     }, {
                         (parentFragment as PanelsFragment).openEndPanel()
                     }, {
