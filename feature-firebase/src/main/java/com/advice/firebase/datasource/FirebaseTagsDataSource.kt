@@ -42,7 +42,7 @@ class FirebaseTagsDataSource(
     }
 
     private fun getTagTypes(): Flow<List<TagType>> {
-        return userSession.conference.flatMapMerge { conference ->
+        return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("tagtypes")

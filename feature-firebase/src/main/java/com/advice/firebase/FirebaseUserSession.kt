@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -25,16 +26,14 @@ class FirebaseUserSession(
     private val _user = MutableStateFlow<User?>(null)
     override var user: Flow<User?> = _user
 
-    private val _conference = MutableStateFlow<Conference>(Conference.Zero)
-
-    override var conference: Flow<Conference> = _conference
+    private val _conference = MutableStateFlow<Conference?>(null)
 
     override var isDeveloper: Boolean = false
 
     init {
         CoroutineScope(Job()).launch {
             conferencesDataSource.get().collect {
-//                _conference.value = it.random()
+                _conference.value = getConference(-1, it)
                 Timber.e("Conference is: ${_conference.value}")
             }
         }
@@ -65,11 +64,15 @@ class FirebaseUserSession(
         return list.firstOrNull { !it.hasFinished } ?: conferences.last()
     }
 
+    override fun getConference(): Flow<Conference> {
+        return _conference.filterNotNull()
+    }
+
     override fun setConference(conference: Conference) {
         _conference.value = conference
     }
 
-    override val currentConference: Conference
+    override val currentConference: Conference?
         get() = _conference.value
 
     override val currentUser: User?

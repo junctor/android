@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -28,7 +28,7 @@ class SettingsFragment : Fragment(), KoinComponent {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val conference = viewModel.getConference().observeAsState().value
+                    val conference = viewModel.conference.collectAsState(initial = null).value
                     SettingScreenView(conference?.timezone ?: "---", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE) {
                         requireActivity().onBackPressed()
                     }

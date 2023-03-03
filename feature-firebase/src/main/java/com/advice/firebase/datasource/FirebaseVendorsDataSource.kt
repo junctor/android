@@ -18,7 +18,7 @@ class FirebaseVendorsDataSource(
 ) : VendorsDataSource {
 
     override fun get(): Flow<List<Vendor>> {
-        return userSession.conference.flatMapMerge { conference ->
+        return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("vendors")

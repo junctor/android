@@ -15,7 +15,7 @@ class FirebaseMapsDataSource(
 
 ) : MapsDataSource {
     override fun get(): Flow<List<ConferenceMap>> {
-        return userSession.conference.flatMapMerge { conference ->
+        return userSession.getConference().flatMapMerge { conference ->
             val list = conference.maps.map {
                 FirebaseConferenceMap(it.name, it.file, null)
             }

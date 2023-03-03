@@ -20,7 +20,7 @@ class FirebaseBookmarkedTagsDataSource(
     private val firestore: FirebaseFirestore
 ) : BookmarkedElementDataSource {
     override fun get(): Flow<List<Bookmark>> {
-        return combine(userSession.user, userSession.conference) { user, conference ->
+        return combine(userSession.user, userSession.getConference()) { user, conference ->
             CurrentUserState(conference, user)
         }.flatMapMerge {
             firestore.collection("conferences")

@@ -8,15 +8,14 @@ interface UserSession {
 
     var user: Flow<User?>
 
-    var conference: Flow<Conference>
-
     var isDeveloper: Boolean
-
 
     // current state
     val currentUser: User?
 
     val currentConference: Conference?
+
+    fun getConference(): Flow<Conference>
 
     fun setConference(conference: Conference)
 }

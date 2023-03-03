@@ -14,7 +14,7 @@ class HomeRepository(
 ) {
 
 
-    val contents = combine(userSession.conference, conferencesDataSource.get(), articleDataSource.get()) { conference, conferences, articles ->
+    val contents = combine(userSession.getConference(), conferencesDataSource.get(), articleDataSource.get()) { conference, conferences, articles ->
         HomeState.Loaded(conferences, conference, articles)
     }
 

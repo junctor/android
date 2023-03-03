@@ -19,7 +19,7 @@ class FirebaseSpeakersDataSource(
 ) : SpeakersDataSource {
 
     override fun get(): Flow<List<Speaker>> {
-        return userSession.conference.flatMapMerge { conference ->
+        return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("speakers")

@@ -18,7 +18,7 @@ class FirebaseLocationsDataSource(
 ) : LocationsDataSource {
 
     override fun get(): Flow<List<Location>> {
-        return userSession.conference.flatMapMerge { conference ->
+        return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("locations")

@@ -18,7 +18,7 @@ class FirebaseFAQDataSource(
 ) : FAQDataSource {
 
     override fun get(): Flow<List<FAQ>> {
-        return userSession.conference.flatMapMerge { conference ->
+        return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("faqs")

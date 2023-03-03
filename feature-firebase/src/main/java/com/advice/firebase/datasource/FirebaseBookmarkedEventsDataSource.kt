@@ -21,7 +21,7 @@ class FirebaseBookmarkedEventsDataSource(
 ) : BookmarkedEventsDataSource {
 
     private fun getBookmarks(user: User) =
-        userSession.conference.flatMapMerge { conference ->
+        userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("users")

@@ -1,8 +1,8 @@
 package com.advice.firebase.datasource
 
-import com.advice.firebase.models.FirebaseArticle
 import com.advice.data.UserSession
 import com.advice.data.datasource.ArticleDataSource
+import com.advice.firebase.models.FirebaseArticle
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toArticle
 import com.advice.firebase.toObjectsOrEmpty
@@ -18,7 +18,7 @@ class FirebaseArticleDataSource(
     private val firestore: FirebaseFirestore
 ) : ArticleDataSource {
     override fun get(): Flow<List<Article>> {
-        return userSession.conference.flatMapMerge { conference ->
+        return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("articles")
