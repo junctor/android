@@ -19,6 +19,7 @@ import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
+import timber.log.Timber
 
 class ScheduleFragment : Fragment(), KoinComponent {
 
@@ -33,13 +34,23 @@ class ScheduleFragment : Fragment(), KoinComponent {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val state = viewModel.state.collectAsState(initial = null).value
+                    var state = viewModel.state.collectAsState(initial = null).value
+
+                    val location = arguments?.getParcelable<Location>(EXTRA_LOCATION)
+                    
+                    if (state != null && location != null) {
+                        val entries = state.days.entries
+                        val associate = entries.associate { it.key to it.value.filter { it.location.id == location.id } }
+                        val days = associate.filter { it.value.isNotEmpty() }
+                        state = state.copy(days = days)
+                    }
+
                     ScheduleScreenView(state, {
-                        (parentFragment as PanelsFragment).openStartPanel()
+                        (parentFragment as? PanelsFragment)?.openStartPanel()
                     }, onSearchQuery = { query ->
                         viewModel.search(query)
                     }, {
-                        (parentFragment as PanelsFragment).openEndPanel()
+                        (parentFragment as? PanelsFragment)?.openEndPanel()
                     }, {
                         openEventDetails(it)
                     }, {

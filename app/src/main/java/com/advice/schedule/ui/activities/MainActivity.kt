@@ -20,6 +20,7 @@ import com.advice.schedule.ui.events.EventFragment
 import com.advice.schedule.ui.information.InformationFragment
 import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
+import com.advice.schedule.ui.schedule.ScheduleFragment
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
@@ -168,7 +169,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     }
 
     fun showSchedule(location: Location) {
-//        setAboveFragment(ScheduleFragment.newInstance(location), hasAnimation = false)
+        setAboveFragment(ScheduleFragment.newInstance(location), hasAnimation = false)
         analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 

@@ -1,5 +1,7 @@
 package com.advice.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +26,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -41,7 +47,7 @@ import com.advice.ui.views.SpeakerView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventScreenView(event: Event, onBookmark: () -> Unit, onBackPressed: () -> Unit) {
+fun EventScreenView(event: Event, onBookmark: () -> Unit, onBackPressed: () -> Unit, onLocationClicked: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(event.title, maxLines = 2, overflow = TextOverflow.Ellipsis) }, navigationIcon = {
@@ -55,19 +61,19 @@ fun EventScreenView(event: Event, onBookmark: () -> Unit, onBackPressed: () -> U
                     }
                 })
         }) { contentPadding ->
-        EventScreenContent(event, modifier = Modifier.padding(contentPadding))
+        EventScreenContent(event, onLocationClicked, modifier = Modifier.padding(contentPadding))
     }
 }
 
 @Composable
-fun EventScreenContent(event: Event, modifier: Modifier = Modifier) {
+fun EventScreenContent(event: Event, onLocationClicked: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
 
     ) {
-        HeaderSection(event.title, event.types, event.date.toString(), event.location.name)
+        HeaderSection(event.types, event.startTime.toString(), event.location.name, onLocationClicked)
         if (event.description.isNotBlank()) {
             Text(
                 event.description,
@@ -100,7 +106,7 @@ fun EventScreenContent(event: Event, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HeaderSection(title: String, categories: List<Tag>, date: String, location: String) {
+fun HeaderSection(categories: List<Tag>, date: String, location: String, onLocationClicked: () -> Unit) {
     Column {
         Row(Modifier.padding(16.dp)) {
             for (tag in categories) {
@@ -111,27 +117,38 @@ fun HeaderSection(title: String, categories: List<Tag>, date: String, location: 
         DetailsCard(Icons.Default.Info, "Tap the location to show all events from this location") {
             // dismiss
         }
-        DetailsCard(Icons.Default.LocationOn, location)
+        DetailsCard(Icons.Default.LocationOn, location, modifier = Modifier.clickable {
+            onLocationClicked()
+        })
     }
 }
 
 @Composable
-private fun DetailsCard(icon: ImageVector, text: String, onDismiss: (() -> Unit)? = null) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
+private fun DetailsCard(icon: ImageVector, text: String, modifier: Modifier = Modifier, onDismiss: (() -> Unit)? = null) {
+    var isVisible by remember {
+        mutableStateOf(true)
+    }
+
+    AnimatedVisibility(isVisible) {
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
         ) {
-            Icon(icon, null)
-            Spacer(Modifier.width(8.dp))
-            Text(text, modifier = Modifier.weight(1f))
-            if (onDismiss != null) {
-                IconButton(onClick = onDismiss) {
-                    Icon(Icons.Default.Close, null)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Icon(icon, null)
+                Spacer(Modifier.width(8.dp))
+                Text(text, modifier = Modifier.weight(1f))
+                if (onDismiss != null) {
+                    IconButton(onClick = {
+                        onDismiss()
+                        isVisible = false
+                    }) {
+                        Icon(Icons.Default.Close, null)
+                    }
                 }
             }
         }

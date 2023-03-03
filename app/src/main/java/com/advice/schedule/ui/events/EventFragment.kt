@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.schedule.models.local.Event
+import com.advice.schedule.ui.activities.MainActivity
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.ui.screens.EventScreenView
 import com.advice.ui.theme.ScheduleTheme
@@ -36,6 +37,8 @@ class EventFragment : Fragment() {
                         viewModel.bookmark(event)
                     }, {
                         requireActivity().onBackPressed()
+                    }, {
+                        (requireActivity() as MainActivity).showSchedule(event.location)
                     })
                 }
             }
