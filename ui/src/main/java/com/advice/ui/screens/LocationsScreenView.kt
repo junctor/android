@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,18 +31,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.schedule.models.local.LocationContainer
 import com.advice.schedule.models.local.LocationStatus
+import com.advice.ui.views.SearchableTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationsScreenView(containers: List<LocationContainer>, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Locations") }, navigationIcon =
-        {
-            IconButton(onClick = { onBackPressed() }) {
-                Icon(Icons.Default.ArrowBack, null)
+        SearchableTopAppBar(
+            title = { Text("Locations") },
+            navigationIcon = {
+                IconButton(onClick = { onBackPressed() }) {
+                    Icon(Icons.Default.ArrowBack, null)
+                }
             }
+        ) { query ->
+
         }
-        )
     }) {
         LocationsScreenContent(containers, modifier = Modifier.padding(it))
     }

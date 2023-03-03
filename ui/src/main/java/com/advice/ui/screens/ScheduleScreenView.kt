@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,11 +20,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -40,7 +36,7 @@ import com.advice.ui.views.DayHeaderView
 import com.advice.ui.views.DaySelectorView
 import com.advice.ui.views.EmptyView
 import com.advice.ui.views.EventRowView
-import com.advice.ui.views.SearchBar
+import com.advice.ui.views.SearchableTopAppBar
 import kotlinx.coroutines.launch
 
 sealed class ScheduleScreenState {
@@ -60,59 +56,29 @@ fun ScheduleScreenView(
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event) -> Unit,
 ) {
-    var isSearching by remember {
-        mutableStateOf(false)
-    }
-
-    Scaffold(
-        topBar = {
-            if (!isSearching) {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text("Schedule")
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onMenuClicked) {
-                            Icon(Icons.Default.Menu, null)
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = {
-                            isSearching = true
-                        }) {
-                            Icon(Icons.Default.Search, null)
-                        }
-
-                    }
-                )
-            } else {
-                SearchBar(
-                    onQuery = {
-                        onSearchQuery(it)
-                    },
-                    onDismiss = {
-                        isSearching = false
-                    }
-                )
+    Scaffold(topBar = {
+        SearchableTopAppBar(title = { Text("Schedule") }, navigationIcon = {
+            IconButton(onClick = onMenuClicked) {
+                Icon(Icons.Default.Menu, null)
             }
-        },
-        floatingActionButton = {
-            FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
-                Icon(Icons.Default.Search, null)
-            }
+        }) { query ->
+            onSearchQuery(query)
+        }
+    }, floatingActionButton = {
+        FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
+            Icon(Icons.Default.Search, null)
+        }
 
-        }, modifier = Modifier
-            .background(Color.Transparent)
-            .clip(RoundedCornerShape(16.dp))
-    )
-    { contentPadding ->
+    }, modifier = Modifier
+        .background(Color.Transparent)
+        .clip(RoundedCornerShape(16.dp))
+    ) { contentPadding ->
         when (state) {
             is ScheduleScreenState.Error -> {
                 EmptyView()
             }
 
-            null,
-            ScheduleScreenState.Init -> {
+            null, ScheduleScreenState.Init -> {
             }
 
             ScheduleScreenState.Loading -> {}
@@ -169,8 +135,7 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
                             }
                         }
                         item {
-                            EventRowView(
-                                it.title,
+                            EventRowView(it.title,
                                 TimeUtil.getTimeStamp(it.startTime, is24HourFormat = false),
                                 it.location.name,
                                 it.types,

@@ -8,25 +8,27 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.advice.schedule.models.local.Speaker
+import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.views.SearchableTopAppBar
 import com.advice.ui.views.SpeakerView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakersScreenView(speakers: List<Speaker>, onBackPressed: () -> Unit, onSpeakerClicked: (Speaker) -> Unit) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Speakers") }, navigationIcon = {
+        SearchableTopAppBar(title = { Text("Speakers") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(Icons.Default.ArrowBack, null)
             }
-        })
+        }) { query ->
+
+        }
     }) {
         SpeakersScreenContent(speakers, modifier = Modifier.padding(it), onSpeakerClicked)
     }
@@ -46,7 +48,7 @@ fun SpeakersScreenContent(speakers: List<Speaker>, modifier: Modifier = Modifier
 @Preview(showBackground = true)
 @Composable
 fun SpeakersScreenViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         SpeakersScreenView(listOf(Speaker(-1, "John", "", "", "", "")), {}, {})
     }
 }
