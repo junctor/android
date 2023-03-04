@@ -1,6 +1,6 @@
 package com.advice.data.datasource
 
-import com.advice.schedule.models.local.Location
+import com.advice.core.local.Location
 import kotlinx.coroutines.flow.Flow
 
 interface LocationsDataSource {

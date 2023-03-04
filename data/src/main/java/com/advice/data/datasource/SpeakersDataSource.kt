@@ -1,6 +1,6 @@
 package com.advice.data.datasource
 
-import com.advice.schedule.models.local.Speaker
+import com.advice.core.local.Speaker
 import kotlinx.coroutines.flow.Flow
 
 interface SpeakersDataSource {

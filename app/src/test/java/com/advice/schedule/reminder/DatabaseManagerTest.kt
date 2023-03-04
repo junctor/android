@@ -1,4 +1,4 @@
-package com.advice.schedule.database
+package com.advice.schedule.reminder
 
 import com.advice.schedule.fromString
 import com.advice.schedule.models.firebase.FirebaseConference

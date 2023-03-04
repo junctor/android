@@ -6,7 +6,7 @@ import com.advice.firebase.models.FirebaseVendor
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toObjectsOrEmpty
 import com.advice.firebase.toVendor
-import com.advice.schedule.models.local.Vendor
+import com.advice.core.local.Vendor
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge

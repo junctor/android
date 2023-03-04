@@ -1,4 +1,4 @@
-package com.advice.schedule.models.local
+package com.advice.core.local
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -11,11 +11,11 @@ data class Location(
     val hotel: String?,
     val conference: String,
     // Schedule
-    val default_status: String? = null,
-    val hier_depth: Int = -1,
-    val hier_extent_left: Int = -1,
-    val hier_extent_right: Int = -1,
-    val parent_id: Long = -1,
-    val peer_sort_order: Int = -1,
+    val defaultStatus: String? = null,
+    val depth: Int = -1,
+    val hierExtentLeft: Int = -1,
+    val hierExtentRight: Int = -1,
+    val parent: Long = -1,
+    val peerSortOrder: Int = -1,
     val schedule: List<LocationSchedule>? = null,
 ) : Parcelable

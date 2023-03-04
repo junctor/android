@@ -1,9 +1,9 @@
-package com.advice.schedule.database.repository
+package com.advice.schedule.repository
 
 import com.advice.core.local.Tag
 import com.advice.data.datasource.EventsDataSource
 import com.advice.data.datasource.TagsDataSource
-import com.advice.schedule.models.local.Event
+import com.advice.core.local.Event
 import kotlinx.coroutines.flow.combine
 
 class ScheduleRepository(

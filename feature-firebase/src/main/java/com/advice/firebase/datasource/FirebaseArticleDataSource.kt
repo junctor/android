@@ -6,7 +6,7 @@ import com.advice.firebase.models.FirebaseArticle
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toArticle
 import com.advice.firebase.toObjectsOrEmpty
-import com.advice.schedule.models.local.Article
+import com.advice.core.local.Article
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.Flow

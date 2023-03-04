@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.ui.theme.ScheduleTheme
 import com.shortstack.hackertracker.R
 
 @Composable
@@ -48,7 +49,7 @@ fun EmptyView(message: String? = null, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun EmptyViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         EmptyView("Maps not found")
     }
 }

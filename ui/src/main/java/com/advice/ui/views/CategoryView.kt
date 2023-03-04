@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
 import com.advice.ui.createTag
+import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun CategoryView(tag: Tag) {
@@ -38,7 +39,7 @@ fun CategoryView(tag: Tag) {
 @Preview(showBackground = true)
 @Composable
 fun CategoryViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         CategoryView(createTag(label = "Talk", color = "#EE11EE"))
     }
 }

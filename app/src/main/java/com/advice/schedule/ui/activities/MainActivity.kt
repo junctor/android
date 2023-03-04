@@ -11,9 +11,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.advice.core.local.Tag
 import com.advice.schedule.get
-import com.advice.schedule.models.local.Event
-import com.advice.schedule.models.local.Location
-import com.advice.schedule.models.local.Speaker
+import com.advice.core.local.Event
+import com.advice.core.local.Location
+import com.advice.core.local.Speaker
 import com.advice.schedule.replaceFragment
 import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.events.EventFragment

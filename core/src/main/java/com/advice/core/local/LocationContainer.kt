@@ -1,11 +1,10 @@
-package com.advice.schedule.models.local
+package com.advice.core.local
 
-import android.graphics.Color
 import android.os.Parcelable
 import com.advice.core.utils.Time
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 @Parcelize
 data class LocationContainer(
@@ -73,11 +72,4 @@ fun LocationContainer.hasChildren(hasChildren: Boolean) = copy(hasChildren = has
 fun LocationContainer.setStatus(status: LocationStatus): LocationContainer {
     this.status = status
     return this
-}
-
-fun LocationStatus.toColour(): Int = when (this) {
-    LocationStatus.Open -> Color.GREEN
-    LocationStatus.Closed -> Color.RED
-    LocationStatus.Mixed -> Color.YELLOW
-    LocationStatus.Unknown -> Color.GRAY
 }

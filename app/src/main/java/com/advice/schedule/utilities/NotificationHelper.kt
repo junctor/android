@@ -14,7 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.advice.schedule.models.local.Event
+import com.advice.core.local.Event
 import com.advice.schedule.ui.activities.MainActivity
 import com.shortstack.hackertracker.R
 import org.koin.core.KoinComponent

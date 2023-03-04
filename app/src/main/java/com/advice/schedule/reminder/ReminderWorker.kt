@@ -1,4 +1,4 @@
-package com.advice.schedule.network.task
+package com.advice.schedule.reminder
 
 import android.content.Context
 import androidx.work.CoroutineWorker

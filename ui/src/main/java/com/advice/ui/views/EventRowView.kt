@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
 import com.advice.ui.createTag
+import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun EventRowView(title: String, time: String, location: String, tags: List<Tag>, isBookmarked: Boolean, modifier: Modifier = Modifier, onBookmark: (Boolean) -> Unit) {
@@ -70,7 +71,7 @@ fun EventRowView(title: String, time: String, location: String, tags: List<Tag>,
 @Preview(showBackground = true)
 @Composable
 fun EventRowViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         Column {
             EventRowView(
                 title = "Compelled Decryption", time = "5:30\nAM", location = "Track 1", tags = listOf(

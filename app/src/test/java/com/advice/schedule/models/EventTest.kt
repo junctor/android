@@ -2,7 +2,7 @@ package com.advice.schedule.models
 
 import com.advice.schedule.models.firebase.FirebaseEvent
 import com.advice.schedule.models.firebase.FirebaseSpeaker
-import com.advice.schedule.models.local.Event
+import com.advice.core.local.Event
 import com.advice.schedule.parse
 import com.advice.schedule.setCurrentClock
 import com.advice.schedule.toEvent

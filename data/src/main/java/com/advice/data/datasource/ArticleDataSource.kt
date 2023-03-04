@@ -1,6 +1,6 @@
 package com.advice.data.datasource
 
-import com.advice.schedule.models.local.Article
+import com.advice.core.local.Article
 import kotlinx.coroutines.flow.Flow
 
 interface ArticleDataSource {

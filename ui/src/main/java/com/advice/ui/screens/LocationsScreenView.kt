@@ -19,28 +19,34 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.advice.schedule.models.local.LocationContainer
-import com.advice.schedule.models.local.LocationStatus
+import com.advice.core.local.Location
+import com.advice.core.local.LocationContainer
+import com.advice.core.local.LocationStatus
+import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.LocationContainerProvider
+import com.advice.ui.preview.LocationProvider
+import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.SearchableTopAppBar
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LocationsScreenView(containers: List<LocationContainer>, onBackPressed: () -> Unit) {
+fun LocationsScreenView(containers: List<LocationContainer>, onScheduleClicked: (LocationContainer) -> Unit, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         SearchableTopAppBar(
             title = { Text("Locations") },
             navigationIcon = {
-                IconButton(onClick = { onBackPressed() }) {
+                IconButton(onClick = onBackPressed) {
                     Icon(Icons.Default.ArrowBack, null)
                 }
             }
@@ -48,21 +54,21 @@ fun LocationsScreenView(containers: List<LocationContainer>, onBackPressed: () -
 
         }
     }) {
-        LocationsScreenContent(containers, modifier = Modifier.padding(it))
+        LocationsScreenContent(containers, onScheduleClicked, modifier = Modifier.padding(it))
     }
 }
 
 @Composable
-fun LocationsScreenContent(containers: List<LocationContainer>, modifier: Modifier) {
+fun LocationsScreenContent(containers: List<LocationContainer>, onScheduleClicked: (LocationContainer) -> Unit, modifier: Modifier) {
     LazyColumn(modifier) {
         items(containers) {
-            LocationView(it.title, null, it.status, it.hasChildren)
+            LocationView(it.title, null, it.status, it.hasChildren, it.isChildrenExpanded, it.depth) { onScheduleClicked(it) }
         }
     }
 }
 
 @Composable
-fun LocationView(label: String, description: String?, status: LocationStatus, hasChildren: Boolean) {
+fun LocationView(label: String, description: String?, status: LocationStatus, hasChildren: Boolean, isExpanded: Boolean, depth: Int, onScheduleClicked: () -> Unit) {
     val colour = when (status) {
         LocationStatus.Closed -> Color.Red
         LocationStatus.Mixed -> Color.Yellow
@@ -72,9 +78,11 @@ fun LocationView(label: String, description: String?, status: LocationStatus, ha
 
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
         .clickable {
-            // todo:
+            Timber.e("LocationView: Clicked!", )
+            onScheduleClicked()
         }
         .padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Spacer(modifier = Modifier.width((16 * depth).dp))
         Box(
             modifier = Modifier
                 .size(12.dp)
@@ -91,27 +99,32 @@ fun LocationView(label: String, description: String?, status: LocationStatus, ha
         }
 
         if (hasChildren) {
+            val rotation = if (isExpanded) 180f else 0f
             IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.KeyboardArrowDown, null)
+                Icon(Icons.Default.KeyboardArrowDown, null, modifier = Modifier.rotate(rotation))
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
-fun LocationViewPreview() {
-    MaterialTheme {
-        LocationView("Caesars Forum", "Closes in 30 minutes", LocationStatus.Open, hasChildren = true)
+fun LocationViewPreview(
+    @PreviewParameter(LocationProvider::class) location: Location,
+) {
+    ScheduleTheme {
+        LocationView(location.name, location.name, LocationStatus.Open, hasChildren = true, isExpanded = true, location.depth) {}
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
-fun LocationsScreenViewPreview() {
-    MaterialTheme {
-        LocationsScreenView(emptyList()) {
+fun LocationsScreenViewPreview(
+    @PreviewParameter(LocationContainerProvider::class) location: LocationContainer,
+) {
+    ScheduleTheme {
+        LocationsScreenView(listOf(location), {
 
-        }
+        }, {})
     }
 }

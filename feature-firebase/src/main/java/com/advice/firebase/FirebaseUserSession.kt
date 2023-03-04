@@ -57,11 +57,11 @@ class FirebaseUserSession(
         val list = conferences.sortedBy { it.startDate }
 
         val defcon = list.find { it.code == "DEFCON30" }
-        if (defcon?.hasFinished == false) {
-            return defcon
-        }
+//        if (defcon?.hasFinished == false) {
+            return defcon!!
+//        }
 
-        return list.firstOrNull { !it.hasFinished } ?: conferences.last()
+//        return list.firstOrNull { !it.hasFinished } ?: conferences.last()
     }
 
     override fun getConference(): Flow<Conference> {

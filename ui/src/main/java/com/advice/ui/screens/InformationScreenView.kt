@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +85,7 @@ fun Navigation(label: String, modifier: Modifier = Modifier, onClick: () -> Unit
 @Preview(showBackground = true)
 @Composable
 fun NavigationPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         Navigation("Help & Support") {}
     }
 }
@@ -92,7 +93,7 @@ fun NavigationPreview() {
 @Preview(showBackground = true)
 @Composable
 fun InformationScreenViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         InformationScreenView(hasCodeOfConduct = true, hasSupport = true, hasWifi = true, {
 
         }, {})

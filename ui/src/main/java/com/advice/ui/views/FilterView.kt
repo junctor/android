@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
 import com.advice.ui.createTag
+import com.advice.ui.theme.ScheduleTheme
 import java.lang.Float.min
 
 @Composable
@@ -77,7 +78,7 @@ fun FilterView(tag: Tag, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun FilterViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         FilterView(createTag(label = "Talk", color = "#FF0066")) {
 
         }
@@ -87,7 +88,7 @@ fun FilterViewPreview() {
 @Preview(showBackground = true)
 @Composable
 fun FilterViewSelectedPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         FilterView(createTag(label = "Talk", color = "#FF0066", isSelected = true)) {
 
         }

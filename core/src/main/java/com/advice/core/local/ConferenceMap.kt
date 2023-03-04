@@ -8,4 +8,4 @@ data class ConferenceMap(
     val name: String = "",
     val file: String = "",
     val description: String? = null
-): Parcelable
+) : Parcelable

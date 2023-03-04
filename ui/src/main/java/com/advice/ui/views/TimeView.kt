@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun TimeView() {
@@ -29,7 +30,7 @@ fun TimeView() {
 @Preview
 @Composable
 fun TimeViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         TimeView()
     }
 }

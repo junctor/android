@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
-import com.advice.schedule.database.repository.HomeRepository
+import com.advice.schedule.repository.HomeRepository
 import com.advice.schedule.utilities.Analytics
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent

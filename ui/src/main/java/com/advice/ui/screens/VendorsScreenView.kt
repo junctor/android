@@ -13,7 +13,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,9 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.schedule.models.local.Vendor
+import com.advice.core.local.Vendor
+import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.EmptyView
 import com.advice.ui.views.SearchableTopAppBar
 
@@ -57,12 +57,14 @@ fun VendorsScreenContent(vendors: List<Vendor>, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun VendorCard(title: String, description: String, hasLink: Boolean) {
+fun VendorCard(title: String, description: String?, hasLink: Boolean) {
     Card(modifier = Modifier.padding(16.dp)) {
         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.End) {
             Text(title, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(8.dp))
-            Text(description)
+            if (description != null) {
+                Text(description)
+            }
             if (hasLink) {
                 OutlinedButton(onClick = { /*TODO*/ }) {
                     Text("Website")
@@ -73,10 +75,10 @@ fun VendorCard(title: String, description: String, hasLink: Boolean) {
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview()
 @Composable
 fun VendorsScreenViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         VendorsScreenView(
             listOf(
                 Vendor(

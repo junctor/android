@@ -6,7 +6,7 @@ import com.advice.firebase.models.FirebaseLocation
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toLocation
 import com.advice.firebase.toObjectsOrEmpty
-import com.advice.schedule.models.local.Location
+import com.advice.core.local.Location
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge

@@ -10,7 +10,6 @@ data class Tag(
     val description: String,
     val color: String?,
     val sortOrder: Int,
-    // todo: move to client model
     var isSelected: Boolean = false
 ) : Parcelable {
 

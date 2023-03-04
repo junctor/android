@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
+import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun BookmarkButton(isBookmarked: Boolean, onCheckChanged: (Boolean) -> Unit) {
@@ -39,7 +40,7 @@ fun BookmarkButton(isBookmarked: Boolean, onCheckChanged: (Boolean) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun BookmarkButtonPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         BookmarkButton(isBookmarked = false) {
 
         }
@@ -49,7 +50,7 @@ fun BookmarkButtonPreview() {
 @Preview(showBackground = true)
 @Composable
 fun BookmarkButtonCheckedPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         BookmarkButton(isBookmarked = true) {
 
         }

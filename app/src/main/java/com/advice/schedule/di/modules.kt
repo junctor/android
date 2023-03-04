@@ -24,17 +24,21 @@ import com.advice.firebase.datasource.FirebaseSpeakersDataSource
 import com.advice.firebase.datasource.FirebaseTagsDataSource
 import com.advice.firebase.datasource.FirebaseVendorsDataSource
 import com.advice.schedule.PreferenceViewModel
-import com.advice.schedule.database.ReminderManager
-import com.advice.schedule.database.repository.FAQRepository
-import com.advice.schedule.database.repository.FiltersRepository
-import com.advice.schedule.database.repository.HomeRepository
-import com.advice.schedule.database.repository.ScheduleRepository
-import com.advice.schedule.database.repository.SettingsRepository
-import com.advice.schedule.database.repository.SpeakersRepository
+import com.advice.schedule.reminder.ReminderManager
+import com.advice.schedule.repository.FAQRepository
+import com.advice.schedule.repository.FiltersRepository
+import com.advice.schedule.repository.HomeRepository
+import com.advice.schedule.repository.LocationRepository
+import com.advice.schedule.repository.ScheduleRepository
+import com.advice.schedule.repository.SettingsRepository
+import com.advice.schedule.repository.SpeakerRepository
+import com.advice.schedule.repository.SpeakersRepository
+import com.advice.schedule.repository.VendorsRepository
 import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
 import com.advice.schedule.ui.information.info.ConferenceViewModel
 import com.advice.schedule.ui.information.locations.LocationsViewModel
+import com.advice.schedule.ui.information.speakers.SpeakerViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
 import com.advice.schedule.ui.information.vendors.VendorsViewModel
 import com.advice.schedule.ui.schedule.FiltersViewModel
@@ -77,12 +81,13 @@ val appModule = module {
     // repo
     single { ScheduleRepository(get(), get()) }
     single { HomeRepository(get(), get(), get()) }
-    single { SpeakersRepository(get(), get()) }
+    single { SpeakersRepository(get()) }
+    single { SpeakerRepository(get()) }
     single { FiltersRepository(get(), get()) }
     single { FAQRepository(get()) }
     single { SettingsRepository(get()) }
-
-    // data source
+    single { LocationRepository(get()) }
+    single { VendorsRepository(get()) }
 
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
@@ -102,6 +107,7 @@ val appModule = module {
     viewModel { HomeViewModel() }
     viewModel { PreferenceViewModel() }
     viewModel { ScheduleViewModel() }
+    viewModel { SpeakerViewModel() }
     viewModel { SpeakersViewModel() }
     viewModel { LocationsViewModel() }
     viewModel { VendorsViewModel() }

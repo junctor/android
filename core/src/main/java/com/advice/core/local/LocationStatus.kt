@@ -1,4 +1,4 @@
-package com.advice.schedule.models.local
+package com.advice.core.local
 
 sealed class LocationStatus {
     object Open : LocationStatus()

@@ -1,11 +1,10 @@
-package com.advice.schedule.database
+package com.advice.schedule.reminder
 
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.advice.schedule.models.local.Event
-import com.advice.schedule.network.task.ReminderWorker
+import com.advice.core.local.Event
 import com.advice.schedule.utilities.Time
 import java.util.concurrent.TimeUnit
 
@@ -28,7 +27,7 @@ class ReminderManager(
         val start = event.start
         val now = Time.now()
 
-        val delay = start.toDate().time - now.time - TWENTY_MINUTES_BEFORE
+        val delay = start.time - now.time - TWENTY_MINUTES_BEFORE
 
         if (delay < 0) {
             return

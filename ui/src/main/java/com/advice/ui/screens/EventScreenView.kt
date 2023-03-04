@@ -21,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,10 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.advice.core.local.Event
+import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
-import com.advice.schedule.models.local.Event
+import com.advice.ui.preview.FakeEventProvider
+import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.ActionView
 import com.advice.ui.views.BookmarkButton
 import com.advice.ui.views.CategoryView
@@ -47,7 +50,7 @@ import com.advice.ui.views.SpeakerView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventScreenView(event: Event, onBookmark: () -> Unit, onBackPressed: () -> Unit, onLocationClicked: () -> Unit) {
+fun EventScreenView(event: Event, onBookmark: () -> Unit, onBackPressed: () -> Unit, onLocationClicked: () -> Unit, onSpeakerClicked: (Speaker) -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(event.title, maxLines = 2, overflow = TextOverflow.Ellipsis) }, navigationIcon = {
@@ -61,12 +64,12 @@ fun EventScreenView(event: Event, onBookmark: () -> Unit, onBackPressed: () -> U
                     }
                 })
         }) { contentPadding ->
-        EventScreenContent(event, onLocationClicked, modifier = Modifier.padding(contentPadding))
+        EventScreenContent(event, onLocationClicked, onSpeakerClicked, modifier = Modifier.padding(contentPadding))
     }
 }
 
 @Composable
-fun EventScreenContent(event: Event, onLocationClicked: () -> Unit, modifier: Modifier = Modifier) {
+fun EventScreenContent(event: Event, onLocationClicked: () -> Unit, onSpeakerClicked: (Speaker) -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier
             .verticalScroll(rememberScrollState())
@@ -94,7 +97,7 @@ fun EventScreenContent(event: Event, onLocationClicked: () -> Unit, modifier: Mo
             )
             for (speaker in event.speakers) {
                 SpeakerView(speaker.name, speaker.title) {
-
+                    onSpeakerClicked(speaker)
                 }
             }
         }
@@ -155,10 +158,12 @@ private fun DetailsCard(icon: ImageVector, text: String, modifier: Modifier = Mo
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview()
 @Composable
-fun EventScreenPreview() {
-    MaterialTheme {
-        //EventScreenContent(Event(id = -1, conference = "DEFCON30", title = "Arcade Party", _description = "", start = Timestamp.now()))
+fun EventScreenPreview(
+    @PreviewParameter(FakeEventProvider::class) event: Event
+) {
+    ScheduleTheme {
+        EventScreenView(event, {}, {}, {}, {})
     }
 }

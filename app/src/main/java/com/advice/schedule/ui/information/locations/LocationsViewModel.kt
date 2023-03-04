@@ -1,13 +1,18 @@
 package com.advice.schedule.ui.information.locations
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.advice.core.utils.Response
-import com.advice.schedule.dObj
-import com.advice.schedule.models.local.*
+import com.advice.core.local.Location
+import com.advice.core.local.LocationContainer
+import com.advice.core.local.LocationStatus
+import com.advice.core.local.hasChildren
+import com.advice.core.local.isChildrenExpanded
+import com.advice.core.local.isExpanded
+import com.advice.core.local.setStatus
+import com.advice.schedule.repository.LocationRepository
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
@@ -16,26 +21,31 @@ import timber.log.Timber
 
 class LocationsViewModel : ViewModel(), KoinComponent {
 
-    private var _locations = listOf<LocationContainer>()
-    private val locations = MediatorLiveData<Response<List<LocationContainer>>>()
+    private val repository by inject<LocationRepository>()
+
+    private val _locations = MutableStateFlow<List<LocationContainer>>(emptyList())
+
+    private val ping = MutableStateFlow(false)
+
+    val locations = combine(repository.locations, ping) { locations, _ ->
+        val list = locations.sortedWith(compareBy({ it.hierExtentLeft }, { it.hierExtentRight }))
+        val elements = list.map { element -> element.toContainer(list.any { it.parent == element.id }) }
+        updateLocations(elements).also {
+            Timber.e("${it.take(10)}: ")
+        }
+    }
 
     init {
-
-
         viewModelScope.launch {
             while (isActive) {
-                Timber.d(("Updating location list"))
+                Timber.e(("Updating location list"))
                 delay(LOCATION_UPDATE_DELAY)
-                val data = updateLocations()
-                _locations = data
-                locations.value = Response.Success(data)
+                ping.emit(!ping.value)
             }
         }
     }
 
-    private fun updateLocations(): List<LocationContainer> {
-        val list = _locations
-
+    private fun updateLocations(list: List<LocationContainer>): List<LocationContainer> {
         return list.map { location ->
             val children = location.getChildren()
 
@@ -59,7 +69,7 @@ class LocationsViewModel : ViewModel(), KoinComponent {
     }
 
     fun toggle(location: LocationContainer) {
-        val list = _locations.toMutableList()
+        val list = _locations.value.toMutableList()
 
         val indexOf = list.indexOf(location)
         val isExpanded = !list[indexOf].isChildrenExpanded
@@ -72,12 +82,11 @@ class LocationsViewModel : ViewModel(), KoinComponent {
                 .isChildrenExpanded(isExpanded = isExpanded)
         }
 
-        _locations = list
-        locations.value = Response.Success(list)
+        _locations.value = list
     }
 
     private fun LocationContainer.getChildren(): List<LocationContainer> {
-        val list = _locations
+        val list = _locations.value
 
         var index = list.indexOf(this)
         if (index == -1)
@@ -91,28 +100,13 @@ class LocationsViewModel : ViewModel(), KoinComponent {
         return result
     }
 
-    fun getLocations(): LiveData<Response<List<LocationContainer>>> = locations
-
-    fun updatedSchedule(location: Location): LiveData<LocationContainer> {
-        val result = MediatorLiveData<LocationContainer>()
-
-        result.addSource(locations) {
-            val element = (it.dObj as? List<LocationContainer>)?.find { it.id == location.id }
-            if (element != null) {
-                result.value = element
-            }
-        }
-        
-        return result
-    }
-
     companion object {
         private const val LOCATION_UPDATE_DELAY = 30_000L
     }
 }
 
 fun Location.toContainer(hasChildren: Boolean = false): LocationContainer {
-    return LocationContainer(id, name, shortName, default_status, hier_depth, schedule ?: emptyList())
+    return LocationContainer(id, name, shortName, defaultStatus, depth, schedule ?: emptyList(), isExpanded = true, isChildrenExpanded = true)
         .hasChildren(hasChildren)
 }
 

@@ -2,9 +2,9 @@ package com.advice.schedule.ui.schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.advice.core.local.Event
 import com.advice.core.utils.TimeUtil
-import com.advice.schedule.database.repository.ScheduleRepository
-import com.advice.schedule.models.local.Event
+import com.advice.schedule.repository.ScheduleRepository
 import com.advice.ui.screens.ScheduleScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -22,7 +22,7 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
         repository.list, query
     ) { events, query ->
         val elements = events.filter { query == null || it.title.contains(query, ignoreCase = true) }
-        val days = elements.groupBy { TimeUtil.getDateStamp(it.start.toDate()) }
+        val days = elements.groupBy { TimeUtil.getDateStamp(it.start) }
         return@combine ScheduleScreenState.Success(days)
     }
 

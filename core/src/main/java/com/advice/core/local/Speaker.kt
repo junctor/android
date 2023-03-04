@@ -1,15 +1,14 @@
-package com.advice.schedule.models.local
+package com.advice.core.local
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import kotlin.math.absoluteValue
 
 @Parcelize
 data class Speaker(
-        val id: Long,
-        val name: String,
-        val description: String,
-        val link: String,
-        val twitter: String,
-        val title: String
+    val id: Long,
+    val name: String,
+    val description: String,
+    val link: String,
+    val twitter: String,
+    val title: String
 ) : Parcelable

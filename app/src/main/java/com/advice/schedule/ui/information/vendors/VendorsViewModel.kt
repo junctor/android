@@ -1,16 +1,14 @@
 package com.advice.schedule.ui.information.vendors
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.advice.core.utils.Response
-import com.advice.schedule.models.local.Vendor
+import com.advice.schedule.repository.VendorsRepository
 import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class VendorsViewModel : ViewModel(), KoinComponent {
 
-    private val _vendors = MutableLiveData<Response<List<Vendor>>>()
+    private val repository by inject<VendorsRepository>()
 
-    fun getVendors(): LiveData<Response<List<Vendor>>> = _vendors
+    val vendors = repository.vendors
 
 }

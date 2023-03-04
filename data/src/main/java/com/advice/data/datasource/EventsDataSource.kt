@@ -1,6 +1,6 @@
 package com.advice.data.datasource
 
-import com.advice.schedule.models.local.Event
+import com.advice.core.local.Event
 import kotlinx.coroutines.flow.Flow
 
 interface EventsDataSource {

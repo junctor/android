@@ -8,8 +8,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.core.local.MapFile
-import com.advice.firebase.models.FirebaseConferenceMap
-import com.advice.schedule.models.local.Location
+import com.advice.core.local.Location
 import com.advice.ui.screens.MapsScreenView
 import com.advice.ui.theme.ScheduleTheme
 import timber.log.Timber

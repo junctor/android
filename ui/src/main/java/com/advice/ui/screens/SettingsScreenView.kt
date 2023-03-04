@@ -1,8 +1,8 @@
 package com.advice.ui.screens
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -22,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -41,8 +42,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.shortstack.hackertracker.R
 
@@ -96,8 +97,6 @@ private fun DeveloperSection() {
             .fillMaxWidth()
             .padding(16.dp), textAlign = TextAlign.Center
     )
-
-
 }
 
 @Composable
@@ -119,8 +118,14 @@ fun TwitterBadge() {
                 Text("advice", fontWeight = FontWeight.Bold)
                 Text("@_advice_dog")
             }
-            Button(onClick = { /*TODO*/ }) {
-                Text("Follow")
+            if (isSystemInDarkTheme()) {
+                OutlinedButton(onClick = { /*TODO*/ }) {
+                    Text("Follow")
+                }
+            } else {
+                Button(onClick = { /*TODO*/ }) {
+                    Text("Follow")
+                }
             }
         }
     }
@@ -160,8 +165,7 @@ fun SwitchPreference(title: String, isChecked: Boolean, summary: String? = null,
     }
 }
 
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Preview(showBackground = true)
+@LightDarkPreview()
 @Composable
 fun SwitchPreferencePreview() {
     ScheduleTheme {
@@ -172,8 +176,7 @@ fun SwitchPreferencePreview() {
     }
 }
 
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Preview(showBackground = true)
+@LightDarkPreview()
 @Composable
 fun SettingScreenViewDarkPreview() {
     ScheduleTheme {

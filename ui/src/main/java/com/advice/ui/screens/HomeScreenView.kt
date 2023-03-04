@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Card
@@ -19,7 +18,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
+import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.roundedCornerShape
 import com.shortstack.hackertracker.R
 import java.util.Date
-import com.advice.ui.theme.roundedCornerShape
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,11 +57,11 @@ fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier) {
         when (state) {
             is HomeState.Error -> {}
             is HomeState.Loaded -> {
-
-
-                ConferenceView(state.conference.name)
-
                 LazyColumn {
+                    item {
+                        ConferenceView(state.conference.name)
+                    }
+
                     val remainder = state.conference.startDate.time - Date().time
                     if (remainder > 0L) {
                         item {
@@ -124,7 +123,7 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
 @Preview
 @Composable
 fun HomeScreenViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
 //        HomeScreenView(HomeState.Loaded(listOf("")))
     }
 }
@@ -182,7 +181,7 @@ fun ArticleView(text: String) {
 @Preview
 @Composable
 fun ConferenceViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         ConferenceView("DEFCON")
     }
 }
@@ -190,7 +189,7 @@ fun ConferenceViewPreview() {
 @Preview
 @Composable
 fun CountdownViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         CountdownView(152_352_123)
     }
 }
@@ -198,7 +197,7 @@ fun CountdownViewPreview() {
 @Preview
 @Composable
 fun ArticleViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         ArticleView("Welcome to DEFCON 28!")
     }
 }
@@ -206,7 +205,7 @@ fun ArticleViewPreview() {
 @Preview
 @Composable
 fun ConferenceSelectorPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         //ConferenceSelector(state = )
     }
 }

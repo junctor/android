@@ -5,10 +5,13 @@ import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
-import com.advice.schedule.App
-import com.advice.schedule.models.local.LocationContainer
+import com.advice.core.local.LocationContainer
 import com.advice.schedule.ui.activities.MainActivity
+import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.views.LocationView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.shortstack.hackertracker.R
 import timber.log.Timber
@@ -20,33 +23,25 @@ class LocationsBottomSheet : BottomSheetDialogFragment() {
 
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        val view = View.inflate(context, R.layout.bottom_sheet_locations, null)
-        dialog.setContentView(view)
 
         val location = arguments?.getParcelable<LocationContainer>("location") ?: error("location cannot be null")
 
-        Timber.e(location.toString())
-
-        setSchedule(view, location)
-
-        view.findViewById<TextView>(R.id.title).text = location.title
-
-        view.findViewById<View>(R.id.schedule).setOnClickListener {
-            (requireActivity() as MainActivity).showSchedule(location.toLocation())
-            dismiss()
-        }
-    }
-
-    private fun setSchedule(view: View, it: LocationContainer) {
-        val container = view.findViewById<LinearLayout>(R.id.container)
-        container.removeAllViews()
-
-        it.schedule.forEach {
-            val view = (layoutInflater.inflate(R.layout.locations_schedule_row, null) as TextView).apply {
-                text = "${getTimeStamp(context, parse(it.begin))}   to   ${getTimeStamp(context, parse(it.end))}"
+        val view = ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                ScheduleTheme {
+                    val schedule = location.schedule.map { "${getTimeStamp(context, parse(it.begin))}   to   ${getTimeStamp(context, parse(it.end))}" }
+                    LocationView(location.title, schedule, onScheduleClicked = {
+                        (requireActivity() as MainActivity).showSchedule(location.toLocation())
+                        dismiss()
+                    }) {
+                        dismiss()
+                    }
+                }
             }
-            container.addView(view)
         }
+
+        dialog.setContentView(view)
     }
 
     private fun getTimeStamp(context: Context, date: Date?): String {

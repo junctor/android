@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,7 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.schedule.models.local.Speaker
+import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun SpeakerView(name: String, title: String? = null, onSpeakerClicked: () -> Unit) {
@@ -57,7 +56,7 @@ fun SpeakerView(name: String, title: String? = null, onSpeakerClicked: () -> Uni
 @Preview(showBackground = true)
 @Composable
 fun SpeakerViewPreview() {
-    MaterialTheme {
+    ScheduleTheme {
         SpeakerView("John McAfee", "Hacker", {})
     }
 }
@@ -65,7 +64,7 @@ fun SpeakerViewPreview() {
 @Preview(showBackground = true)
 @Composable
 fun SpeakerViewNoTitlePreview() {
-    MaterialTheme {
+    ScheduleTheme {
         SpeakerView("Gary Johnson", null, {})
     }
 }

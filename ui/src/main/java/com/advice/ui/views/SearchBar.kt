@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.advice.ui.LightDarkPreview
+import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
 

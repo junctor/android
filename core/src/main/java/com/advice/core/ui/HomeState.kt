@@ -1,7 +1,7 @@
 package com.advice.core.ui
 
 import com.advice.core.local.Conference
-import com.advice.schedule.models.local.Article
+import com.advice.core.local.Article
 
 sealed class HomeState {
     object Loading : HomeState()

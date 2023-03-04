@@ -13,7 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +54,7 @@ fun SearchableTopAppBar(
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
 fun SearchableToolbarPreview() {
     ScheduleTheme {

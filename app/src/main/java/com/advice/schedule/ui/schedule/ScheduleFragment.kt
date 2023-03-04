@@ -9,17 +9,16 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import com.advice.core.local.Event
+import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
-import com.advice.schedule.models.local.Event
-import com.advice.schedule.models.local.Location
-import com.advice.schedule.models.local.Speaker
+import com.advice.core.local.Location
 import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
-import timber.log.Timber
 
 class ScheduleFragment : Fragment(), KoinComponent {
 

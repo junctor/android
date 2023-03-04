@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Tag
 import com.advice.core.ui.FiltersScreenState
-import com.advice.schedule.database.repository.FiltersRepository
+import com.advice.schedule.repository.FiltersRepository
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent

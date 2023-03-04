@@ -1,4 +1,4 @@
-package com.advice.schedule.database
+package com.advice.schedule.reminder
 
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager

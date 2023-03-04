@@ -1,5 +1,6 @@
 package com.advice.firebase.datasource
 
+import com.advice.core.local.Event
 import com.advice.data.UserSession
 import com.advice.data.datasource.BookmarkedElementDataSource
 import com.advice.data.datasource.EventsDataSource
@@ -8,7 +9,6 @@ import com.advice.firebase.models.FirebaseEvent
 import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toEvent
 import com.advice.firebase.toObjectsOrEmpty
-import com.advice.schedule.models.local.Event
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

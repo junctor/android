@@ -1,14 +1,11 @@
-package com.advice.schedule.models.local
+package com.advice.core.local
 
 import android.content.Context
 import android.os.Parcelable
-import com.advice.core.local.Tag
 import com.advice.core.utils.Time
 import com.advice.core.utils.TimeUtil
 import com.advice.core.utils.getDateMidnight
 import com.advice.core.utils.getLocalizedDate
-import com.advice.core.utils.toTimestamp
-import com.google.firebase.Timestamp
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -19,9 +16,9 @@ data class Event(
     val id: Long = -1,
     val conference: String,
     val title: String,
-    val _description: String,
-    val start: Timestamp,
-    val end: Timestamp,
+    val description: String,
+    val start: Date,
+    val end: Date,
     val updated: String,
     val speakers: List<Speaker>,
     val types: List<Tag>,
@@ -38,16 +35,16 @@ data class Event(
 
     val hasFinished: Boolean
         get() {
-            return end.compareTo(Time.now().toTimestamp()) == 1
+            return end.compareTo(Time.now()) == 1
         }
 
     val hasStarted: Boolean
-        get() =  start.compareTo(Time.now().toTimestamp()) == -1
+        get() = start.compareTo(Time.now()) == -1
 
     val date: Date
         get() {
             return Calendar.getInstance().apply {
-                time = start.toDate()
+                time = start
 
                 set(Calendar.HOUR_OF_DAY, 0)
                 set(Calendar.MINUTE, 0)
@@ -59,17 +56,17 @@ data class Event(
     val startTime: Date
         get() {
             return Calendar.getInstance().apply {
-                time = start.toDate()
+                time = start
             }.time
         }
 
     val adjustedDate: Date
         get() {
-            return getDateMidnight(start.toDate())
+            return getDateMidnight(start)
         }
 
     fun getFullTimeStamp(context: Context): String {
-        val localizedDate = getLocalizedDate(start.toDate())
+        val localizedDate = getLocalizedDate(start)
 
         val date = TimeUtil.getDateStamp(localizedDate)
 
@@ -81,23 +78,4 @@ data class Event(
 
         return "TODO"//String.format(context.getString(R.string.timestamp_start), date, time)
     }
-
-    val description: String
-        get() {
-            if (urls.isEmpty())
-                return _description
-
-            val firstUrl = urls.minByOrNull { _description.indexOf(it.url) } ?: return _description
-            val end = _description.indexOf(firstUrl.url)
-            if (end == -1) {
-                return _description
-            }
-
-            val newLine = _description.substring(0, end).lastIndexOf("\n")
-            if (newLine == -1) {
-                return _description
-            }
-
-            return _description.substring(0, newLine).trim()
-        }
 }

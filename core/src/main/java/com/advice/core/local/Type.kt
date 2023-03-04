@@ -1,4 +1,4 @@
-package com.advice.schedule.models.local
+package com.advice.core.local
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

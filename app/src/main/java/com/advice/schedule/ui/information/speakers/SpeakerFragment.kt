@@ -6,43 +6,36 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.schedule.dObj
-import com.advice.schedule.models.local.Event
-import com.advice.schedule.models.local.Speaker
-import com.advice.ui.screens.ErrorScreenView
+import com.advice.core.local.Speaker
+import com.advice.schedule.ui.activities.MainActivity
 import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.theme.ScheduleTheme
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SpeakerFragment : Fragment() {
 
-    private val viewModel by sharedViewModel<SpeakersViewModel>()
+    private val viewModel by viewModel<SpeakerViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val speaker = arguments?.getParcelable(EXTRA_SPEAKER) as? Speaker ?: error("speaker must not be null")
+
+        viewModel.setSpeaker(speaker)
 
         return ComposeView(requireContext()).apply {
             isTransitionGroup = true
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val events = emptyList<Event>()//viewModel.getSpeakerEvents(speaker).observeAsState().value
-                    val s = viewModel.getSpeaker(speaker).observeAsState().value?.dObj as? Speaker
-                    Timber.e("Speaker: $speaker, events: $events, s: $s")
-                    if (speaker != null) {
-                        SpeakerScreenView(speaker.name, speaker.title, speaker.description, events ?: emptyList()) {
-                            requireActivity().onBackPressed()
-                        }
-                    } else {
-                        ErrorScreenView {
-                            requireActivity().onBackPressed()
-                        }
-                    }
+                    val events = viewModel.events.collectAsState(initial = null).value
+                    SpeakerScreenView(speaker.name, speaker.title, speaker.description, events ?: emptyList(), {
+                        requireActivity().onBackPressed()
+                    }, {
+                        (requireActivity() as MainActivity).showEvent(it)
+                    })
                 }
             }
         }

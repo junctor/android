@@ -1,4 +1,4 @@
-package com.advice.schedule.database.repository
+package com.advice.schedule.repository
 
 import com.advice.data.datasource.FAQDataSource
 

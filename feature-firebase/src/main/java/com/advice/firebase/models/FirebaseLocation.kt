@@ -1,7 +1,7 @@
 package com.advice.firebase.models
 
 import android.os.Parcelable
-import com.advice.schedule.models.local.LocationSchedule
+import com.advice.core.local.LocationSchedule
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
