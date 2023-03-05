@@ -98,9 +98,7 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                         onDaySelected(it)
                     }
                     .onGloballyPositioned {
-                        if (positions[index] == IntSize.Zero) {
-                            positions[index] = it.size
-                        }
+                        positions[index] = it.size
                     }
                     .padding(10.dp)
                 ) {
