@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -25,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
 import com.advice.ui.createTag
 import com.advice.ui.theme.ScheduleTheme
-import java.lang.Float.min
 
 @Composable
 fun FilterView(tag: Tag, onClick: () -> Unit) {
@@ -49,6 +49,7 @@ fun FilterView(tag: Tag, onClick: () -> Unit) {
 
 
     Box {
+        val color = MaterialTheme.colorScheme.background
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
             .clickable {
@@ -56,20 +57,32 @@ fun FilterView(tag: Tag, onClick: () -> Unit) {
             }
             .padding(16.dp)
             .drawBehind {
-                val width = min(size.width, smallSize.dp.toPx() + width.value * size.width)
+                val colorWidth = 8.dp.toPx() + width.value * 4.dp.toPx()
+                val smallSize = Size(colorWidth, colorWidth)
+                val dotWidth = 6.dp.toPx() - width.value * 6.dp.toPx()
+                val dotSize = Size(dotWidth, dotWidth)
 
 
-                val smallSize = Size(width, height.value.dp.toPx())
                 drawRoundRect(
                     color = Color(android.graphics.Color.parseColor(tag.color)),
-                    topLeft = Offset(0f, size.height / 2 - height.value.dp.toPx() / 2),
+                    topLeft = Offset(0f, size.height / 2 - colorWidth / 2),
                     size = smallSize,
                     cornerRadius = CornerRadius(40f)
                 )
+
+                drawRoundRect(
+                    color = color,
+                    topLeft = Offset(1.dp.toPx(), size.height / 2 - dotSize.height / 2),
+                    size = dotSize,
+                    cornerRadius = CornerRadius(40f)
+                )
+
+
             }) {
             Spacer(Modifier.width(24.dp))
             Text(
-                tag.label, color = if (tag.isSelected) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.onSurface
+                tag.label,
+                Modifier.alpha(if (tag.isSelected) 1.0f else .75f)
             )
         }
     }
