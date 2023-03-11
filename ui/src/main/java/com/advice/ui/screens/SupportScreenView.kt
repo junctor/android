@@ -14,10 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.views.Paragraph
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SupportScreenView(message: String?, onBackPressed: () -> Unit) {
+fun SupportScreenView(
+    message: String?,
+    onBackPressed: () -> Unit,
+    onLinkClicked: (String) -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -30,10 +35,10 @@ fun SupportScreenView(message: String?, onBackPressed: () -> Unit) {
             )
         }) {
         if (message != null) {
-            Text(
-                message, modifier = Modifier
-                    .padding(it)
-                    .padding(16.dp)
+            Paragraph(
+                message,
+                Modifier.padding(it),
+                onLinkClicked
             )
         }
     }
@@ -43,6 +48,6 @@ fun SupportScreenView(message: String?, onBackPressed: () -> Unit) {
 @Composable
 fun SupportScreenViewPreview() {
     ScheduleTheme {
-        SupportScreenView("If you need support, please call us 555-555-0000") {}
+        SupportScreenView("If you need support, please call us 555-555-0000", {}, {})
     }
 }

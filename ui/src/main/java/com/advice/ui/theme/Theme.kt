@@ -5,6 +5,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 
 private val DarkColorPalette = darkColorScheme(
     primary = HotPink,
@@ -26,6 +30,11 @@ private val LightColorPalette = lightColorScheme(
     onSurface = Color.Black,
     */
 )
+
+val UrlStyle = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)
+val BoldStyle = SpanStyle(fontWeight = FontWeight.Bold)
+val PhoneNumberStyle = SpanStyle()
+val EmailStyle = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)
 
 @Composable
 fun ScheduleTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {

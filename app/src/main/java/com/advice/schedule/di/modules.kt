@@ -28,6 +28,7 @@ import com.advice.schedule.reminder.ReminderManager
 import com.advice.schedule.repository.FAQRepository
 import com.advice.schedule.repository.FiltersRepository
 import com.advice.schedule.repository.HomeRepository
+import com.advice.schedule.repository.InformationRepository
 import com.advice.schedule.repository.LocationRepository
 import com.advice.schedule.repository.ScheduleRepository
 import com.advice.schedule.repository.SettingsRepository
@@ -35,6 +36,7 @@ import com.advice.schedule.repository.SpeakerRepository
 import com.advice.schedule.repository.SpeakersRepository
 import com.advice.schedule.repository.VendorsRepository
 import com.advice.schedule.ui.home.HomeViewModel
+import com.advice.schedule.ui.information.InformationViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
 import com.advice.schedule.ui.information.info.ConferenceViewModel
 import com.advice.schedule.ui.information.locations.LocationsViewModel
@@ -88,6 +90,7 @@ val appModule = module {
     single { SettingsRepository(get()) }
     single { LocationRepository(get()) }
     single { VendorsRepository(get()) }
+    single { InformationRepository(get())}
 
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
@@ -109,6 +112,8 @@ val appModule = module {
     viewModel { ScheduleViewModel() }
     viewModel { SpeakerViewModel() }
     viewModel { SpeakersViewModel() }
+
+    viewModel { InformationViewModel() }
     viewModel { LocationsViewModel() }
     viewModel { VendorsViewModel() }
     viewModel { FAQViewModel() }

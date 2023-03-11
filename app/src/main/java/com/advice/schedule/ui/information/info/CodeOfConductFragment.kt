@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import com.advice.schedule.ui.activities.MainActivity
 import com.advice.ui.screens.CodeOfConductScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,9 +27,11 @@ class CodeOfConductFragment : Fragment() {
             setContent {
                 ScheduleTheme {
                     val state = viewModel.conference.collectAsState(initial = null)
-                    CodeOfConductScreenView(state.value?.conduct) {
+                    CodeOfConductScreenView(state.value?.conduct, {
                         requireActivity().onBackPressed()
-                    }
+                    }, {
+                        (requireActivity() as MainActivity).openLink(it)
+                    })
                 }
             }
         }

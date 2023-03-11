@@ -1,10 +1,14 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -13,21 +17,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import com.advice.core.local.FAQ
 import com.advice.ui.preview.FAQProvider
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.QuestionView
+import com.advice.ui.views.SearchBar
+import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FAQScreenView(faqs: List<FAQ>, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Frequently Asked Questions") }, navigationIcon =
+        CenterAlignedTopAppBar(title = { Text("FAQ") }, navigationIcon =
         {
             IconButton(onClick = { onBackPressed() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null)
+                Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
             }
         })
     }) {
@@ -37,9 +45,23 @@ fun FAQScreenView(faqs: List<FAQ>, onBackPressed: () -> Unit) {
 
 @Composable
 fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier) {
-        items(faqs) {
-            QuestionView(it.question, it.answer)
+    Column(modifier) {
+        LazyColumn {
+            item {
+                TopBar()
+            }
+            items(faqs) {
+                QuestionView(it.question, it.answer)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TopBar() {
+    Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+        SearchBar {
+
         }
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -22,6 +23,8 @@ import org.koin.android.ext.android.inject
 
 class InformationFragment : Fragment() {
 
+    private val viewModel by inject<InformationViewModel>()
+
     private val analytics by inject<Analytics>()
 
     override fun onCreateView(
@@ -34,11 +37,13 @@ class InformationFragment : Fragment() {
             isTransitionGroup = true
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
+                val conference = viewModel.conference.collectAsState(initial = null).value
+
                 ScheduleTheme {
                     InformationScreenView(
-                        hasCodeOfConduct = false,
-                        hasSupport = false,
-                        hasWifi = false,
+                        hasCodeOfConduct = conference?.conduct != null,
+                        hasSupport = conference?.support != null,
+                        hasWifi = conference?.code?.contains("DEFCON") == true,
                         {
                             when (it) {
                                 -1 -> {

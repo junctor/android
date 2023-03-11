@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -13,40 +14,37 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.views.Paragraph
 import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WifiScreenView(onBackPressed: () -> Unit) {
+fun WifiScreenView(onBackPressed: () -> Unit, onLinkClicked: (String) -> Unit) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text("WiFi") }, navigationIcon =
+        CenterAlignedTopAppBar(title = { Text("WiFi") }, navigationIcon =
         {
             IconButton(onClick = onBackPressed) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null)
+                Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
             }
         })
     }) {
-        WifiScreenContent(Modifier.padding(it))
+        WifiScreenContent(Modifier.padding(it), onLinkClicked)
     }
 }
 
 @Composable
-fun WifiScreenContent(modifier: Modifier) {
+fun WifiScreenContent(modifier: Modifier, onLinkClicked: (String) -> Unit) {
     val text = stringResource(R.string.wifi_instructions)
-    val string = buildAnnotatedString {
-        val s = text.replace("<br/>", "\n")
-        append(s)
-    }
-    Text(
-        string,
-        modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+    Paragraph(
+        text,
+        modifier,
+        onLinkClicked
     )
 }
 
@@ -54,6 +52,6 @@ fun WifiScreenContent(modifier: Modifier) {
 @Composable
 fun WifiScreenViewPreview() {
     ScheduleTheme {
-        WifiScreenView {}
+        WifiScreenView({}, {})
     }
 }

@@ -3,17 +3,26 @@ package com.advice.ui.views
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -81,10 +90,60 @@ fun SearchBar(onQuery: (String) -> Unit, onDismiss: () -> Unit) {
     )
 }
 
+@Composable
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+fun SearchBar(modifier: Modifier = Modifier, onQuery: (String) -> Unit) {
+    var text by remember { mutableStateOf("") }
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    keyboardController?.show()
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = { newText ->
+            onQuery(newText)
+            text = newText
+        },
+        modifier = modifier
+            .fillMaxWidth(),
+        leadingIcon = {
+            Icon(Icons.Default.Search, null)
+        },
+        trailingIcon = {
+            if (text.isNotEmpty()) {
+                IconButton(onClick = {
+                    onQuery("")
+                    text = ""
+                }) {
+                    Icon(Icons.Default.Close, null)
+                }
+            }
+        },
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                keyboardController?.hide()
+                // todo: search?
+            }
+        ),
+        placeholder = { Text("Search frequently asked questions") },
+        shape = RoundedCornerShape(8.dp)
+    )
+}
+
 @LightDarkPreview
 @Composable
 fun SearchBarPreview() {
     ScheduleTheme {
-        SearchBar(onQuery = {}, onDismiss = {})
+        Column(
+            Modifier
+                .padding(4.dp)
+        ) {
+            SearchBar(onQuery = {}, onDismiss = {})
+            Spacer(modifier = Modifier.height(4.dp))
+            SearchBar(onQuery = {})
+        }
     }
 }
