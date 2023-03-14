@@ -1,5 +1,6 @@
 package com.advice.ui.views
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,29 +29,33 @@ import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun SpeakerView(name: String, title: String? = null, onSpeakerClicked: () -> Unit) {
-    Row(
-        modifier = Modifier
+fun SpeakerView(
+    name: String,
+    title: String? = null,
+    modifier: Modifier = Modifier,
+    onSpeakerClicked: () -> Unit
+) {
+    Surface(
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
+        shape = RoundedCornerShape(8.dp),
+        modifier = modifier
             .fillMaxWidth()
-            .clickable {
-                onSpeakerClicked()
-            }
-            .padding(16.dp)
-            .height(IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 0.dp, vertical = 4.dp)
     ) {
-        Box(
+        Row(
             modifier = Modifier
-                .size(48.dp)
-                .fillMaxHeight()
-                .clip(CircleShape)
-                .background(Color.White)
-        )
-
-        Spacer(Modifier.width(4.dp))
-        Column {
-            Text(name)
-            if (title?.isNotBlank() == true) {
-                Text(title)
+                .fillMaxWidth()
+                .clickable {
+                    onSpeakerClicked()
+                }
+                .padding(16.dp)
+                .height(IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(name)
+                if (title?.isNotBlank() == true) {
+                    Text(title)
+                }
             }
         }
     }
@@ -57,7 +65,7 @@ fun SpeakerView(name: String, title: String? = null, onSpeakerClicked: () -> Uni
 @Composable
 fun SpeakerViewPreview() {
     ScheduleTheme {
-        SpeakerView("John McAfee", "Hacker", {})
+        SpeakerView("John McAfee", "Hacker") {}
     }
 }
 
@@ -65,6 +73,6 @@ fun SpeakerViewPreview() {
 @Composable
 fun SpeakerViewNoTitlePreview() {
     ScheduleTheme {
-        SpeakerView("Gary Johnson", null, {})
+        SpeakerView("Gary Johnson", null) {}
     }
 }

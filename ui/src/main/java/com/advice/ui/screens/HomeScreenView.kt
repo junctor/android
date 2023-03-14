@@ -1,24 +1,28 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,11 +36,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
+import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
+import com.advice.ui.views.ConferenceSelectorView
 import com.shortstack.hackertracker.R
 import java.util.Date
 
@@ -45,7 +52,8 @@ import java.util.Date
 @Composable
 fun HomeScreenView(state: HomeState?, onConferenceClick: (Conference) -> Unit) {
     Scaffold(
-        topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) }, modifier = Modifier.clip(roundedCornerShape)
+        topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
+        modifier = Modifier.clip(roundedCornerShape)
     ) { contentPadding ->
         HomeScreenContent(state, modifier = Modifier.padding(contentPadding))
     }
@@ -57,7 +65,7 @@ fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier) {
         when (state) {
             is HomeState.Error -> {}
             is HomeState.Loaded -> {
-                LazyColumn {
+                LazyColumn(Modifier.padding(bottom = 30.dp)) {
                     item {
                         ConferenceView(state.conference.name)
                     }
@@ -108,14 +116,21 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
             Icon(Icons.Default.ArrowDropDown, null)
         }
     }
-    DropdownMenu(expanded = expanded, onDismissRequest = {
-        expanded = false
-    }) {
-        for (conference in state.conferences) {
-            DropdownMenuItem(text = { Text(conference.name, modifier = Modifier.fillMaxWidth()) }, onClick = {
-                onConferenceClick(conference)
-                expanded = false
-            })
+    DropdownMenu(
+        expanded = expanded, onDismissRequest = {
+            expanded = false
+        },
+        Modifier,
+
+        offset = DpOffset(32.dp, 140.dp)
+    ) {
+        Column(Modifier.background(MaterialTheme.colorScheme.background)) {
+            for (conference in state.conferences) {
+                ConferenceSelectorView(conference.name, conference.startDate, conference.endDate, conference.hasFinished) {
+                    onConferenceClick(conference)
+                    expanded = false
+                }
+            }
         }
     }
 }
@@ -130,17 +145,25 @@ fun HomeScreenViewPreview() {
 
 @Composable
 fun ConferenceView(name: String) {
-    Card(
+    Surface(
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
+            .defaultMinSize(minHeight = 140.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            Image(painterResource(R.drawable.skull), contentDescription = null, modifier = Modifier.size(48.dp), colorFilter = ColorFilter.tint(Color.Black))
+            Image(
+                painterResource(R.drawable.skull),
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                colorFilter = ColorFilter.tint(Color.Black)
+            )
             Text(name)
         }
     }
@@ -153,10 +176,12 @@ fun CountdownView(time: Long) {
     val hours = minutes / 60
     val days = hours / 24
 
-    Card(
+    Surface(
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text("$days days")
@@ -169,16 +194,18 @@ fun CountdownView(time: Long) {
 
 @Composable
 fun ArticleView(text: String) {
-    Card(
+    Surface(
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
         Text(text, modifier = Modifier.padding(16.dp))
     }
 }
 
-@Preview
+@LightDarkPreview
 @Composable
 fun ConferenceViewPreview() {
     ScheduleTheme {
@@ -186,7 +213,7 @@ fun ConferenceViewPreview() {
     }
 }
 
-@Preview
+@LightDarkPreview
 @Composable
 fun CountdownViewPreview() {
     ScheduleTheme {
@@ -194,7 +221,7 @@ fun CountdownViewPreview() {
     }
 }
 
-@Preview
+@LightDarkPreview
 @Composable
 fun ArticleViewPreview() {
     ScheduleTheme {
@@ -202,10 +229,11 @@ fun ArticleViewPreview() {
     }
 }
 
-@Preview
-@Composable
-fun ConferenceSelectorPreview() {
-    ScheduleTheme {
-        //ConferenceSelector(state = )
-    }
-}
+//@LightDarkPreview
+//@Composable
+//fun ConferenceSelectorPreview() {
+//    ScheduleTheme {
+//        //ConferenceSelector(state = )
+//    }
+//}
+

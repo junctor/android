@@ -35,6 +35,7 @@ val UrlStyle = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Und
 val BoldStyle = SpanStyle(fontWeight = FontWeight.Bold)
 val PhoneNumberStyle = SpanStyle()
 val EmailStyle = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)
+val HashTagStyle = SpanStyle(color = HotPink, fontWeight = FontWeight.Bold)
 
 @Composable
 fun ScheduleTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {

@@ -16,10 +16,10 @@ class FakeEventProvider : PreviewParameterProvider<Event> {
         Event(
             0,
             "DEFCON",
-            "Keynote",
-            "Hello World",
+            "Payment Hacking Challenge",
+            "Try yourself in ATM, Online bank, POST and Cards hacking challenges.\nPlease join the DEF CON Discord and see the #payv-labs-text channel for more information.",
             Date(),
-            Date(),
+            Date(Date().time + 8300_000L),
             "",
             listOf(SpeakerProvider.speakers.random()),
             listOf(TagProvider.tags.random()),

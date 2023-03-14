@@ -3,60 +3,62 @@ package com.advice.schedule.ui.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.ui.graphics.Color
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.advice.core.local.Tag
-import com.advice.schedule.get
 import com.advice.core.local.Event
 import com.advice.core.local.Location
 import com.advice.core.local.Speaker
-import com.advice.schedule.replaceFragment
+import com.advice.schedule.ui.MainScreenView
 import com.advice.schedule.ui.PanelsFragment
-import com.advice.schedule.ui.events.EventFragment
 import com.advice.schedule.ui.information.InformationFragment
 import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
 import com.advice.schedule.ui.schedule.ScheduleFragment
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import com.advice.schedule.ui.home.HomeViewModel
+import com.advice.schedule.ui.schedule.ScheduleViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.auth.FirebaseAuth
 import com.shortstack.hackertracker.R
-import com.shortstack.hackertracker.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
 
-class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
-    FragmentManager.OnBackStackChangedListener, KoinComponent {
+class MainActivity :
+    ComponentActivity(),
+//    OnNavigationItemSelectedListener,
+//    FragmentManager.OnBackStackChangedListener,
+    KoinComponent {
 
     private val analytics by inject<Analytics>()
 
-    private lateinit var binding: ActivityMainBinding
+
+    private val scheduleViewModel by viewModel<ScheduleViewModel>()
+    private val homeViewModel by viewModel<HomeViewModel>()
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     private val map = HashMap<Int, Fragment>()
 
-    private var secondaryVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        // This will lay out our app behind the system bars
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        if (savedInstanceState == null) {
-            setMainFragment(R.id.nav_home, getString(R.string.home), false)
+        setContent {
+            val systemUiController = rememberSystemUiController()
+            systemUiController.setStatusBarColor(Color.Transparent)
+            MainScreenView(homeViewModel, scheduleViewModel)
         }
-
-        supportFragmentManager.addOnBackStackChangedListener(this)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
             intent.data != null -> {
                 intent.data.toString().substringAfter("events/").take(5).toLongOrNull()
             }
+
             else -> null
         }
 
@@ -94,29 +97,29 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        setMainFragment(item.itemId, item.title.toString(), false)
-        binding.drawerLayout.closeDrawers()
-        return true
-    }
+//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//        setMainFragment(item.itemId, item.title.toString(), false)
+////        binding.drawerLayout.closeDrawers()
+//        return true
+//    }
 
-    override fun onBackStackChanged() {
-        val fragments = supportFragmentManager.fragments
-        val last = fragments.lastOrNull()
-
-        if (last is EventFragment || last is SpeakerFragment) {
-            secondaryVisible = true
-            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-            binding.main.container.visibility = View.INVISIBLE
-        } else {
-            secondaryVisible = false
-            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-            binding.main.container.visibility = View.VISIBLE
-
-            val panels = fragments.get(PanelsFragment::class.java)
-            panels.invalidate()
-        }
-    }
+//    override fun onBackStackChanged() {
+////        val fragments = supportFragmentManager.fragments
+////        val last = fragments.lastOrNull()
+////
+////        if (last is EventFragment || last is SpeakerFragment) {
+////            secondaryVisible = true
+////            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+////            binding.main.container.visibility = View.INVISIBLE
+////        } else {
+////            secondaryVisible = false
+////            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+////            binding.main.container.visibility = View.VISIBLE
+////
+////            val panels = fragments.get(PanelsFragment::class.java)
+////            panels.invalidate()
+////        }
+//    }
 
     private fun getFragment(id: Int): Fragment {
         // TODO: Remove, this is a hacky solution for caching issue with InformationFragment's children fragments.
@@ -140,11 +143,11 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     }
 
     fun showEvent(event: Event) {
-        //setAboveFragment(EventFragment.newInstance(event))
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container_above, EventFragment.newInstance(event))
-            .addToBackStack(null)
-            .commit()
+//        //setAboveFragment(EventFragment.newInstance(event))
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.container_above, EventFragment.newInstance(event))
+//            .addToBackStack(null)
+//            .commit()
         analytics.setScreen(Analytics.SCREEN_EVENT)
     }
 
@@ -185,19 +188,19 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener,
     }
 
     private fun setMainFragment(id: Int, title: String? = null, addToBackStack: Boolean) {
-        replaceFragment(getFragment(id), R.id.container, backStack = addToBackStack)
-
-        title?.let {
-            supportActionBar?.title = it
-        }
+//        replaceFragment(getFragment(id), R.id.container, backStack = addToBackStack)
+//
+//        title?.let {
+//            supportActionBar?.title = it
+//        }
     }
 
     fun setAboveFragment(fragment: Fragment, hasAnimation: Boolean = true) {
-        replaceFragment(
-            fragment,
-            R.id.container_above,
-            hasAnimation = hasAnimation
-        )
+//        replaceFragment(
+//            fragment,
+//            R.id.container_above,
+//            hasAnimation = hasAnimation
+//        )
     }
 
     fun openLink(url: String) {

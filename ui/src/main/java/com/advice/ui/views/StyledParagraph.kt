@@ -19,12 +19,14 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.advice.core.HashTagParser
 import com.advice.core.utils.HtmlParser
 import com.advice.core.utils.Tag
 import com.advice.core.utils.UrlParser
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.BoldStyle
 import com.advice.ui.theme.EmailStyle
+import com.advice.ui.theme.HashTagStyle
 import com.advice.ui.theme.PhoneNumberStyle
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.UrlStyle
@@ -44,6 +46,7 @@ fun Paragraph(
     val tags = HtmlParser.findHtmlTags(text)
     val string = replaceHtmlTags(text, tags)
     val urls = UrlParser.findAllUrls(string.text)
+    val hashTags = HashTagParser.findAllHashTags(string.text)
 
     val x = buildAnnotatedString {
         append(string)
@@ -58,6 +61,13 @@ fun Paragraph(
                 annotation = url.link,
                 start = url.start,
                 end = url.end,
+            )
+        }
+        for(tag in hashTags) {
+            addStyle(
+                HashTagStyle,
+                tag.start,
+                tag.end,
             )
         }
     }
@@ -88,7 +98,7 @@ fun Paragraph(
     Text(
         x, modifier = modifier
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            /*.verticalScroll(rememberScrollState())*/
             .then(pressIndicator),
         onTextLayout = {
             layoutResult.value = it
@@ -125,7 +135,7 @@ fun replaceHtmlTags(input: String, tags: List<Tag>): AnnotatedString {
 fun ParagraphPreview() {
     ScheduleTheme {
         Paragraph(
-            "Write an regex expression to match <a href=\"mailto:support@contact.com\">content</a> and <b>content</b> and <font>content</font> while getting the value \"content\", <a href=\"tel:9115552123\">911</a> I am <b>very</b> happy to meet you.\n<br />-> Hello world, welcome to my <a href=\"https://example.com\">website</a>!"
+            "Write an #regex-expression to match <a href=\"mailto:support@contact.com\">content</a> and <b>content</b> and <font>content</font> while getting the value \"content\", <a href=\"tel:9115552123\">911</a> I am <b>very</b> happy to meet you.\n<br />-> Hello world, welcome to my <a href=\"https://example.com\">website</a>!"
         ) {
 
         }
