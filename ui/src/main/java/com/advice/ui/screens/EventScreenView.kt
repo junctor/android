@@ -136,8 +136,8 @@ fun EventScreenContent(
             .drawBehind {
                 drawRoundRect(
                     brush,
-                    // need to add extra height for padding + status bar
-                    size = Size(size.width, topHeight.value + 64.dp.toPx() + 64.dp.toPx() + 12.dp.toPx()),
+                    // need to add extra height for padding
+                    size = Size(size.width, topHeight.value + 64.dp.toPx() + 32.dp.toPx()),
                     cornerRadius = CornerRadius(16.dp.toPx())
                 )
             }
