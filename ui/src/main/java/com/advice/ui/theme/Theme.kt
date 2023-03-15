@@ -31,10 +31,10 @@ private val LightColorPalette = lightColorScheme(
     */
 )
 
-val UrlStyle = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)
+val UrlStyle = SpanStyle(color = SugarHearts, textDecoration = TextDecoration.Underline)
 val BoldStyle = SpanStyle(fontWeight = FontWeight.Bold)
 val PhoneNumberStyle = SpanStyle()
-val EmailStyle = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)
+val EmailStyle = SpanStyle(color = SugarHearts, textDecoration = TextDecoration.Underline)
 val HashTagStyle = SpanStyle(color = HotPink, fontWeight = FontWeight.Bold)
 
 @Composable
