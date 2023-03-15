@@ -166,8 +166,11 @@ fun EventScreenContent(
                     // onclick
                 }
             }
-            for (action in event.urls) {
-                ActionView(action.label)
+            if(event.urls.isNotEmpty()) {
+                Spacer(Modifier.height(16.dp))
+                for (action in event.urls) {
+                    ActionView(action.label)
+                }
             }
             if (event.speakers.isNotEmpty()) {
                 Spacer(Modifier.height(16.dp))
@@ -184,6 +187,7 @@ fun EventScreenContent(
             }
 
             if (event.description.isBlank() && event.urls.isEmpty() && event.speakers.isEmpty()) {
+                Spacer(Modifier.height(32.dp))
                 NoDetailsView()
             }
         }
