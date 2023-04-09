@@ -14,11 +14,15 @@ data class LocationContainer(
     val defaultStatus: String?,
     val depth: Int,
     val schedule: List<LocationSchedule>,
-    val isChildrenExpanded: Boolean = true,
+    val children: List<Location>,
     val isExpanded: Boolean = true,
-    val hasChildren: Boolean = false
-) : Parcelable {
+    val isVisible: Boolean = true,
 
+    ) : Parcelable {
+
+    val hasChildren: Boolean
+        get() = children.isNotEmpty()
+    
     var status: LocationStatus = LocationStatus.Closed
 
     fun getCurrentStatus(): LocationStatus {
@@ -53,21 +57,19 @@ data class LocationContainer(
     }
 }
 
-fun LocationContainer.isExpanded(isExpanded: Boolean): LocationContainer {
+fun LocationContainer.isVisible(isVisible: Boolean): LocationContainer {
     val status = status
-    return copy(isExpanded = isExpanded).apply {
+    return copy(isVisible = isVisible).apply {
         setStatus(status)
     }
 }
 
 fun LocationContainer.isChildrenExpanded(isExpanded: Boolean): LocationContainer {
     val status = status
-    return copy(isChildrenExpanded = isExpanded).apply {
+    return copy(isExpanded = isExpanded).apply {
         setStatus(status)
     }
 }
-
-fun LocationContainer.hasChildren(hasChildren: Boolean) = copy(hasChildren = hasChildren)
 
 fun LocationContainer.setStatus(status: LocationStatus): LocationContainer {
     this.status = status

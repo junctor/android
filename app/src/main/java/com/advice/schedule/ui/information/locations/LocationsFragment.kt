@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import com.advice.core.local.Location
 import com.advice.core.local.LocationContainer
 import com.advice.ui.screens.LocationsScreenView
 import com.advice.ui.theme.ScheduleTheme
@@ -27,12 +28,21 @@ class LocationsFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val locations = viewModel.locations.collectAsState(initial = null).value
-                    LocationsScreenView(locations ?: emptyList(), { location ->
-                        openScheduleBottomSheet(location)
-                    }, {
-                        requireActivity().onBackPressed()
-                    })
+                    val state =
+                        viewModel.state.collectAsState(initial = null).value
+                    Timber.e("onCreateView: locations")
+                    LocationsScreenView(
+                        state?.list ?: emptyList(),
+                        { location ->
+                            if (location.hasChildren) {
+                                viewModel.toggle(location)
+                            } else {
+//                                openScheduleBottomSheet(location)
+                            }
+                        },
+                        {
+                            requireActivity().onBackPressed()
+                        })
 
                     // if (location.hasChildren) {
                     //                viewModel.toggle(location)
@@ -44,7 +54,7 @@ class LocationsFragment : Fragment() {
         }
     }
 
-    private fun openScheduleBottomSheet(location: LocationContainer) {
+    private fun openScheduleBottomSheet(location: Location) {
         Timber.e("openScheduleBottomSheet: $location")
         val fragment = LocationsBottomSheet.newInstance(location)
         fragment.show(childFragmentManager, "location")

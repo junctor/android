@@ -31,6 +31,9 @@ import com.advice.schedule.ui.schedule.ScheduleFragment
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
 import com.advice.schedule.ui.home.HomeViewModel
+import com.advice.schedule.ui.information.locations.LocationsFragment
+import com.advice.schedule.ui.merch.MerchFragment
+import com.advice.schedule.ui.merch.MerchSummaryFragment
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.material.navigation.NavigationView
@@ -216,5 +219,9 @@ class MainActivity :
     fun openLink(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
+    }
+
+    fun showMerchSummary() {
+        setAboveFragment(MerchSummaryFragment.newInstance())
     }
 }

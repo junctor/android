@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Location
 import com.advice.core.local.LocationContainer
+import com.advice.core.local.LocationRow
 import com.advice.core.local.LocationStatus
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.LocationContainerProvider
@@ -41,7 +42,11 @@ import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LocationsScreenView(containers: List<LocationContainer>, onScheduleClicked: (LocationContainer) -> Unit, onBackPressed: () -> Unit) {
+fun LocationsScreenView(
+    containers: List<LocationRow>,
+    onScheduleClicked: (LocationRow) -> Unit,
+    onBackPressed: () -> Unit
+) {
     Scaffold(topBar = {
         SearchableTopAppBar(
             title = { Text("Locations") },
@@ -59,16 +64,36 @@ fun LocationsScreenView(containers: List<LocationContainer>, onScheduleClicked: 
 }
 
 @Composable
-fun LocationsScreenContent(containers: List<LocationContainer>, onScheduleClicked: (LocationContainer) -> Unit, modifier: Modifier) {
+fun LocationsScreenContent(
+    containers: List<LocationRow>,
+    onScheduleClicked: (LocationRow) -> Unit,
+    modifier: Modifier
+) {
+    //Timber.e("LocationsScreenContent: ${containers.first()}", )
     LazyColumn(modifier) {
         items(containers) {
-            LocationView(it.title, null, it.status, it.hasChildren, it.isChildrenExpanded, it.depth) { onScheduleClicked(it) }
+            LocationView(
+                it.title,
+                null,
+                it.status,
+                it.hasChildren,
+                it.isExpanded,
+                it.depth
+            ) { onScheduleClicked(it) }
         }
     }
 }
 
 @Composable
-fun LocationView(label: String, description: String?, status: LocationStatus, hasChildren: Boolean, isExpanded: Boolean, depth: Int, onScheduleClicked: () -> Unit) {
+fun LocationView(
+    label: String,
+    description: String?,
+    status: LocationStatus,
+    hasChildren: Boolean,
+    isExpanded: Boolean,
+    depth: Int,
+    onScheduleClicked: () -> Unit
+) {
     val colour = when (status) {
         LocationStatus.Closed -> Color.Red
         LocationStatus.Mixed -> Color.Yellow
@@ -78,7 +103,7 @@ fun LocationView(label: String, description: String?, status: LocationStatus, ha
 
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
         .clickable {
-            Timber.e("LocationView: Clicked!", )
+            Timber.e("LocationView: Clicked!")
             onScheduleClicked()
         }
         .padding(horizontal = 16.dp, vertical = 8.dp)) {
@@ -92,7 +117,7 @@ fun LocationView(label: String, description: String?, status: LocationStatus, ha
         Spacer(modifier = Modifier.width(8.dp))
 
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
-            Text(label)
+            Text(label + "  (${isExpanded.toString()})")
             if (description != null) {
                 Text(description)
             }
@@ -100,7 +125,7 @@ fun LocationView(label: String, description: String?, status: LocationStatus, ha
 
         if (hasChildren) {
             val rotation = if (isExpanded) 180f else 0f
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onScheduleClicked) {
                 Icon(Icons.Default.KeyboardArrowDown, null, modifier = Modifier.rotate(rotation))
             }
         }
@@ -113,18 +138,25 @@ fun LocationViewPreview(
     @PreviewParameter(LocationProvider::class) location: Location,
 ) {
     ScheduleTheme {
-        LocationView(location.name, location.name, LocationStatus.Open, hasChildren = true, isExpanded = true, location.depth) {}
+        LocationView(
+            location.name,
+            location.name,
+            LocationStatus.Open,
+            hasChildren = true,
+            isExpanded = true,
+            location.depth
+        ) {}
     }
 }
 
-@LightDarkPreview
-@Composable
-fun LocationsScreenViewPreview(
-    @PreviewParameter(LocationContainerProvider::class) location: LocationContainer,
-) {
-    ScheduleTheme {
-        LocationsScreenView(listOf(location), {
-
-        }, {})
-    }
-}
+//@LightDarkPreview
+//@Composable
+//fun LocationsScreenViewPreview(
+//    @PreviewParameter(LocationContainerProvider::class) location: Location,
+//) {
+//    ScheduleTheme {
+//        LocationsScreenView(listOf(location), {
+//
+//        }, {})
+//    }
+//}

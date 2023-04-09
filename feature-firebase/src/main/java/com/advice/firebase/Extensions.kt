@@ -86,7 +86,7 @@ fun FirebaseConference.toConference(): Conference? {
     }
 }
 
-fun FirebaseLocation.toLocation(): Location? {
+fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Location? {
     return try {
         Location(
             id,
@@ -94,7 +94,14 @@ fun FirebaseLocation.toLocation(): Location? {
             short_name,
             hotel,
             conference,
-            default_status, hier_depth, hier_extent_left, hier_extent_right, parent_id, peer_sort_order, schedule
+            default_status,
+            hier_depth,
+            hier_extent_left,
+            hier_extent_right,
+            parent_id,
+            peer_sort_order,
+            schedule,
+            children
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Location: ${ex.message}")

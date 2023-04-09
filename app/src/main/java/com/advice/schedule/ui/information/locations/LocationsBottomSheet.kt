@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
+import com.advice.core.local.Location
 import com.advice.core.local.LocationContainer
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.ui.theme.ScheduleTheme
@@ -24,15 +25,15 @@ class LocationsBottomSheet : BottomSheetDialogFragment() {
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
 
-        val location = arguments?.getParcelable<LocationContainer>("location") ?: error("location cannot be null")
+        val location = arguments?.getParcelable<Location>("location") ?: error("location cannot be null")
 
         val view = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val schedule = location.schedule.map { "${getTimeStamp(context, parse(it.begin))}   to   ${getTimeStamp(context, parse(it.end))}" }
-                    LocationView(location.title, schedule, onScheduleClicked = {
-                        (requireActivity() as MainActivity).showSchedule(location.toLocation())
+                    val schedule = location.schedule?.map { "${getTimeStamp(context, parse(it.begin))}   to   ${getTimeStamp(context, parse(it.end))}" } ?: emptyList()
+                    LocationView(location.name, schedule, onScheduleClicked = {
+                        (requireActivity() as MainActivity).showSchedule(location)
                         dismiss()
                     }) {
                         dismiss()
@@ -76,7 +77,7 @@ class LocationsBottomSheet : BottomSheetDialogFragment() {
 
 
     companion object {
-        fun newInstance(location: LocationContainer): LocationsBottomSheet {
+        fun newInstance(location: Location): LocationsBottomSheet {
             val args = bundleOf("location" to location)
             val fragment = LocationsBottomSheet()
             fragment.arguments = args

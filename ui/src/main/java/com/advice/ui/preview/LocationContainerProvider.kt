@@ -8,6 +8,7 @@ class LocationContainerProvider : PreviewParameterProvider<LocationContainer> {
         get() = containers.asSequence()
 
     companion object {
-        val containers = listOf(LocationContainer(-1, "Casino", "Casino", "open", 0, listOf()))
+        val containers =
+            listOf(LocationContainer(-1, "Casino", "Casino", "open", 0, listOf(), emptyList()))
     }
 }
