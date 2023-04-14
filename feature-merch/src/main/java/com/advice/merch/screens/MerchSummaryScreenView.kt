@@ -1,12 +1,9 @@
 package com.advice.merch.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,14 +17,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Merch
@@ -38,14 +32,12 @@ import com.advice.merch.views.PromoSwitch
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.MerchProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.merch.views.QuantityView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchSummaryScreenView(
     state: MerchState,
-    onRemoveClicked: (Merch) -> Unit,
-    onAddClicked: (Merch) -> Unit,
+    onQuantityChanged: (String, Int, String?) -> Unit,
     onBackPressed: () -> Unit,
     onDiscountApplied: (Boolean) -> Unit,
 ) {
@@ -62,8 +54,7 @@ fun MerchSummaryScreenView(
             list,
             state.hasDiscount,
             Modifier.padding(it),
-            onRemoveClicked,
-            onAddClicked,
+            onQuantityChanged,
             onDiscountApplied
         )
     }
@@ -74,8 +65,7 @@ fun MerchSummaryContents(
     list: List<Merch>,
     hasDiscount: Boolean,
     modifier: Modifier,
-    onRemoveClicked: (Merch) -> Unit,
-    onAddClicked: (Merch) -> Unit,
+    onQuantityChanged: (String, Int, String?) -> Unit,
     onDiscountApplied: (Boolean) -> Unit,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
@@ -89,12 +79,9 @@ fun MerchSummaryContents(
         }
 
         for (merch in list) {
-            EditableMerchItem(merch,
-                onRemoveClicked = {
-                    onRemoveClicked(merch)
-                }, onAddClicked = {
-                    onAddClicked(merch)
-                })
+            EditableMerchItem(merch, onQuantityChanged = {
+                onQuantityChanged(merch.id, it, merch.selectedOption)
+            })
         }
 
         PromoSwitch(
@@ -128,6 +115,6 @@ fun getSubtotal(list: List<Merch>): Int {
 @Composable
 fun MerchSummaryScreenViewPreview(@PreviewParameter(MerchProvider::class) state: MerchState) {
     ScheduleTheme {
-        MerchSummaryScreenView(state, {}, {}, {}, {})
+        MerchSummaryScreenView(state, { _, _, _ -> }, {}, {})
     }
 }

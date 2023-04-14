@@ -22,9 +22,8 @@ import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun QuantityView(
-    count: Int,
-    onRemoveClicked: () -> Unit,
-    onAddClicked: () -> Unit,
+    quantity: Int,
+    onQuantityChanged: (Int) -> Unit,
     canDelete: Boolean,
 ) {
     Row(
@@ -34,23 +33,23 @@ fun QuantityView(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = onRemoveClicked, Modifier.size(24.dp),
-            enabled = canDelete || count > 1
+            onClick = { onQuantityChanged(quantity - 1) }, Modifier.size(24.dp),
+            enabled = canDelete || quantity > 1
         ) {
             Icon(
-                painterResource(if (canDelete && count == 1) R.drawable.ic_delete else R.drawable.ic_remove),
+                painterResource(if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
                 null,
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }
         Text(
-            count.toString(),
+            quantity.toString(),
             Modifier.defaultMinSize(minWidth = 48.dp),
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
-        IconButton(onClick = onAddClicked, Modifier.size(24.dp)) {
+        IconButton(onClick = { onQuantityChanged(quantity + 1) }, Modifier.size(24.dp)) {
             Icon(
                 painterResource(R.drawable.ic_add), null,
                 tint = MaterialTheme.colorScheme.onSurface
@@ -63,6 +62,6 @@ fun QuantityView(
 @Composable
 fun QuantityViewPreview() {
     ScheduleTheme {
-        QuantityView(1, {}, {}, canDelete = true)
+        QuantityView(1, {}, canDelete = true)
     }
 }

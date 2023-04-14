@@ -99,30 +99,16 @@ class MerchViewModel : ViewModel() {
         _summary.emit(MerchState(summary, hasDiscount = hasDiscount))
     }
 
-    fun increaseQuantity(merch: Merch) {
+    fun setQuantity(id: String, quantity: Int, selectedOption: String?) {
         viewModelScope.launch {
             val indexOf =
-                selections.indexOfFirst { it.id == merch.id && it.selectionOption == merch.selectedOption }
+                selections.indexOfFirst { it.id == id && it.selectionOption == selectedOption }
             if (indexOf != -1) {
                 val element = selections[indexOf]
-                selections[indexOf] = element.copy(quantity = element.quantity + 1)
-            }
-
-            updateList()
-            updateSummary()
-        }
-    }
-
-    fun reduceQuantity(merch: Merch) {
-        viewModelScope.launch {
-            val indexOf =
-                selections.indexOfFirst { it.id == merch.id && it.selectionOption == merch.selectedOption }
-            if (indexOf != -1) {
-                val element = selections[indexOf]
-                if (element.quantity == 1) {
+                if (quantity == 0) {
                     selections.removeAt(indexOf)
                 } else {
-                    selections[indexOf] = element.copy(quantity = element.quantity - 1)
+                    selections[indexOf] = element.copy(quantity = quantity)
                 }
             }
 

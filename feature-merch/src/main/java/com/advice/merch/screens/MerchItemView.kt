@@ -25,7 +25,8 @@ import com.shortstack.hackertracker.R
 @Composable
 fun MerchItemScreenView(
     merch: Merch,
-    onSummaryClicked: () -> Unit, onMerchClicked: (MerchSelection) -> Unit,
+    onAddClicked: (MerchSelection) -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     var quantity by remember {
         mutableStateOf(1)
@@ -40,7 +41,7 @@ fun MerchItemScreenView(
             CenterAlignedTopAppBar(
                 title = { Text("Merch") },
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = onBackPressed) {
                         Icon(Icons.Default.Close, null)
                     }
                 },
@@ -50,7 +51,7 @@ fun MerchItemScreenView(
             FloatingActionButton(
                 onClick = {
                     if (selection != null || merch.options.isEmpty()) {
-                        onMerchClicked(
+                        onAddClicked(
                             MerchSelection(
                                 id = merch.label,
                                 quantity = quantity,
@@ -114,25 +115,24 @@ fun MerchItem(
                         )
                         .padding(16.dp)
                 )
-                RadioButton(selected = option == selection, onClick = { onSelectionChanged(option) })
+                RadioButton(
+                    selected = option == selection,
+                    onClick = { onSelectionChanged(option) })
             }
         }
 
         QuantityView(
-            count = quantity,
-            onRemoveClicked = { onQuantityChanged(quantity - 1) },
-            onAddClicked = { onQuantityChanged(quantity + 1) },
+            quantity = quantity,
+            onQuantityChanged = onQuantityChanged,
             canDelete = false
         )
     }
-
-
 }
 
 @LightDarkPreview
 @Composable
 fun MerchItemScreenViewPreview(@PreviewParameter(MerchProvider::class) state: MerchState) {
     ScheduleTheme {
-        MerchItemScreenView(state.elements.first(), {}, {})
+        MerchItemScreenView(state.elements.first(), {}) {}
     }
 }

@@ -18,8 +18,7 @@ import com.advice.merch.R
 @Composable
 fun EditableMerchItem(
     merch: Merch,
-    onRemoveClicked: () -> Unit,
-    onAddClicked: () -> Unit
+    onQuantityChanged: (Int) -> Unit,
 ) {
     Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
         Row(
@@ -50,7 +49,7 @@ fun EditableMerchItem(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            QuantityView(merch.quantity, onRemoveClicked, onAddClicked, canDelete = true)
+            QuantityView(merch.quantity, onQuantityChanged, canDelete = true)
             Column {
                 val hasDiscount = merch.discountedPrice != null
                 Text(

@@ -29,10 +29,8 @@ class MerchSummaryFragment : Fragment() {
                 val state = viewModel.summary.collectAsState(initial = null).value
                 ScheduleTheme {
                     if (state != null) {
-                        MerchSummaryScreenView(state, {
-                            viewModel.reduceQuantity(it)
-                        }, {
-                            viewModel.increaseQuantity(it)
+                        MerchSummaryScreenView(state, { id, quantity, selectedOption ->
+                            viewModel.setQuantity(id, quantity, selectedOption)
                         }, {
                             requireActivity().onBackPressed()
                         }, {

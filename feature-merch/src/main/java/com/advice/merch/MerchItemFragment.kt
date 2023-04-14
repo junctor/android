@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.core.Navigation
 import com.advice.core.local.Merch
 import com.advice.merch.screens.MerchItemScreenView
 import com.advice.ui.theme.ScheduleTheme
@@ -32,15 +31,19 @@ class MerchItemFragment : Fragment() {
                 ScheduleTheme {
                     MerchItemScreenView(
                         merch,
-                        onSummaryClicked = {
-                            (requireActivity() as Navigation).showMerchSummary()
-                        }, onMerchClicked = {
+                        onAddClicked = {
                             viewModel.addToCart(it)
-                            requireActivity().onBackPressed()
-                        })
+                            dismiss()
+                        }) {
+                        dismiss()
+                    }
                 }
             }
         }
+    }
+
+    private fun dismiss() {
+        requireActivity().onBackPressed()
     }
 
     companion object {
