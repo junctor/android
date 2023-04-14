@@ -5,23 +5,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.view.WindowCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.advice.core.local.Tag
-import com.advice.core.local.Event
-import com.advice.core.local.Location
-import com.advice.core.local.Speaker
+import com.advice.core.Navigation
+import com.advice.core.local.*
 import com.advice.schedule.get
 import com.advice.schedule.replaceFragment
-import com.advice.schedule.ui.MainScreenView
 import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.events.EventFragment
 import com.advice.schedule.ui.information.InformationFragment
@@ -30,18 +22,14 @@ import com.advice.schedule.ui.maps.MapsFragment
 import com.advice.schedule.ui.schedule.ScheduleFragment
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
-import com.advice.schedule.ui.home.HomeViewModel
-import com.advice.schedule.ui.information.locations.LocationsFragment
-import com.advice.schedule.ui.merch.MerchFragment
-import com.advice.schedule.ui.merch.MerchSummaryFragment
-import com.advice.schedule.ui.schedule.ScheduleViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.advice.merch.MerchFragment
+import com.advice.merch.MerchItemFragment
+import com.advice.merch.MerchSummaryFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.shortstack.hackertracker.R
 import com.shortstack.hackertracker.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
@@ -50,6 +38,7 @@ class MainActivity :
     AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
     FragmentManager.OnBackStackChangedListener,
+    Navigation,
     KoinComponent {
 
     private val analytics by inject<Analytics>()
@@ -70,6 +59,8 @@ class MainActivity :
         setContentView(view)
         if (savedInstanceState == null) {
             setMainFragment(R.id.nav_home, getString(R.string.home), false)
+
+            showMerchList()
         }
         supportFragmentManager.addOnBackStackChangedListener(this)
     }
@@ -221,7 +212,14 @@ class MainActivity :
         startActivity(intent)
     }
 
-    fun showMerchSummary() {
+    fun showMerchList() {
+        setAboveFragment(MerchFragment.newInstance())
+    }
+
+    override fun showMerchItem(merch: Merch) {
+        setAboveFragment(MerchItemFragment.newInstance(merch))
+    }
+    override fun showMerchSummary() {
         setAboveFragment(MerchSummaryFragment.newInstance())
     }
 }

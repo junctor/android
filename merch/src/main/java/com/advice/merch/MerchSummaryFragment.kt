@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.merch
+package com.advice.merch
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,14 +8,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.schedule.ui.activities.MainActivity
-import com.advice.ui.screens.MerchScreenView
+import com.advice.merch.screens.MerchSummaryScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
-class MerchFragment: Fragment() {
+class MerchSummaryFragment : Fragment() {
 
     private val viewModel by sharedViewModel<MerchViewModel>()
 
@@ -29,25 +26,29 @@ class MerchFragment: Fragment() {
 
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.state.collectAsState(initial = null).value
+                val state = viewModel.summary.collectAsState(initial = null).value
                 ScheduleTheme {
-                    MerchScreenView(
-                        state ?: emptyList(),
-                        onSummaryClicked = {
-                        (requireActivity() as MainActivity).showMerchSummary()
-                    }, onMerchClicked = {
-                        viewModel.addMerch(it)
-                    })
+                    if (state != null) {
+                        MerchSummaryScreenView(state, {
+                            viewModel.reduceQuantity(it)
+                        }, {
+                            viewModel.increaseQuantity(it)
+                        }, {
+                            requireActivity().onBackPressed()
+                        }, {
+                            viewModel.applyDiscount(it)
+                        })
+                    }
                 }
             }
         }
     }
 
     companion object {
-        fun newInstance(): MerchFragment {
+        fun newInstance(): MerchSummaryFragment {
             val args = Bundle()
 
-            val fragment = MerchFragment()
+            val fragment = MerchSummaryFragment()
             fragment.arguments = args
             return fragment
         }

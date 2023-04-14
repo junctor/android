@@ -1,19 +1,19 @@
-package com.advice.schedule.ui.merch
+package com.advice.merch
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.ui.screens.MerchSummaryScreenView
+import com.advice.core.Navigation
+import com.advice.core.local.Merch
+import com.advice.merch.screens.MerchItemScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MerchSummaryFragment : Fragment() {
+class MerchItemFragment : Fragment() {
 
     private val viewModel by sharedViewModel<MerchViewModel>()
 
@@ -22,31 +22,33 @@ class MerchSummaryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val merch = arguments?.getParcelable<Merch>("merch") ?: error("merch cannot be null")
+
         return ComposeView(requireContext()).apply {
             isTransitionGroup = true
 
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val state = viewModel.state.collectAsState(initial = null).value
-
                 ScheduleTheme {
-                    MerchSummaryScreenView(state ?: emptyList(), {
-                        viewModel.removeMerch(it)
-                    }, {
-                        viewModel.addMerch(it)
-                    }, {
-                        requireActivity().onBackPressed()
-                    })
+                    MerchItemScreenView(
+                        merch,
+                        onSummaryClicked = {
+                            (requireActivity() as Navigation).showMerchSummary()
+                        }, onMerchClicked = {
+                            viewModel.addToCart(it)
+                            requireActivity().onBackPressed()
+                        })
                 }
             }
         }
     }
 
     companion object {
-        fun newInstance(): MerchSummaryFragment {
+        fun newInstance(merch: Merch): MerchItemFragment {
             val args = Bundle()
+            args.putParcelable("merch", merch)
 
-            val fragment = MerchSummaryFragment()
+            val fragment = MerchItemFragment()
             fragment.arguments = args
             return fragment
         }

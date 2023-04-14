@@ -1,4 +1,4 @@
-package com.advice.ui.screens
+package com.advice.merch.screens
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,19 +21,20 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Merch
 import com.advice.core.ui.MerchState
+import com.advice.merch.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.MerchProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.views.MerchItem
-import com.shortstack.hackertracker.R
-
+import com.advice.merch.views.MerchItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchScreenView(
-    list: List<Merch>,
+    state: MerchState,
     onSummaryClicked: () -> Unit, onMerchClicked: (Merch) -> Unit,
 ) {
+    val list = state.elements
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -48,7 +49,7 @@ fun MerchScreenView(
                 )
         },
         floatingActionButton = {
-            val itemCount = list.sumOf { it.count }
+            val itemCount = state.elements.sumOf { it.quantity }
             if (itemCount > 0) {
                 FloatingActionButton(
                     onClick = onSummaryClicked,
@@ -67,7 +68,7 @@ fun MerchScreenView(
 
 @Composable
 fun MerchList(list: List<Merch>, onMerchClicked: (Merch) -> Unit, modifier: Modifier) {
-    LazyColumn(modifier, contentPadding = PaddingValues(vertical = 16.dp)) {
+    LazyColumn(modifier, contentPadding = PaddingValues(vertical = 32.dp)) {
         items(list) {
             MerchItem(it, onMerchClicked)
         }
@@ -78,6 +79,6 @@ fun MerchList(list: List<Merch>, onMerchClicked: (Merch) -> Unit, modifier: Modi
 @Composable
 fun MerchScreenViewPreview(@PreviewParameter(MerchProvider::class) state: MerchState) {
     ScheduleTheme {
-        MerchScreenView(state.elements, {}, {})
+        MerchScreenView(state, {}, {})
     }
 }

@@ -1,4 +1,4 @@
-package com.advice.ui.screens
+package com.advice.merch.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,13 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,23 +27,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Merch
 import com.advice.core.ui.MerchState
+import com.advice.merch.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.MerchProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.views.QuantityView
-import com.shortstack.hackertracker.R
+import com.advice.merch.views.QuantityView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchSummaryScreenView(
-    list: List<Merch>, onRemoveClicked: (Merch) -> Unit,
-    onAddClicked: (Merch) -> Unit, onBackPressed: () -> Unit
+    state: MerchState,
+    onRemoveClicked: (Merch) -> Unit,
+    onAddClicked: (Merch) -> Unit,
+    onBackPressed: () -> Unit,
+    onDiscountApplied: (Boolean) -> Unit,
 ) {
+    val list = state.elements.filter { it.quantity > 0 }
+
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("Merch") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
@@ -53,16 +56,25 @@ fun MerchSummaryScreenView(
             }
         })
     }) {
-        MerchSummaryContents(list, Modifier.padding(it), onRemoveClicked, onAddClicked)
+        MerchSummaryContents(
+            list,
+            state.hasDiscount,
+            Modifier.padding(it),
+            onRemoveClicked,
+            onAddClicked,
+            onDiscountApplied
+        )
     }
 }
 
 @Composable
 fun MerchSummaryContents(
     list: List<Merch>,
+    hasDiscount: Boolean,
     modifier: Modifier,
     onRemoveClicked: (Merch) -> Unit,
-    onAddClicked: (Merch) -> Unit
+    onAddClicked: (Merch) -> Unit,
+    onDiscountApplied: (Boolean) -> Unit,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
         Box(Modifier.fillMaxWidth()) {
@@ -74,7 +86,6 @@ fun MerchSummaryContents(
             )
         }
 
-        val list = list.filter { it.count > 0 }
         for (merch in list) {
             EditableMerchItem(merch,
                 onRemoveClicked = {
@@ -89,8 +100,8 @@ fun MerchSummaryContents(
                 Text("Goon Discount")
                 Text("Must present Goon badge")
             }
-            Switch(checked = false, onCheckedChange = {
-
+            Switch(checked = hasDiscount, onCheckedChange = {
+                onDiscountApplied(it)
             })
         }
 
@@ -101,15 +112,25 @@ fun MerchSummaryContents(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            val subtotal = list.sumOf { it.cost * it.count }
+            val subtotal = getSubtotal(list)
             Text("Subtotal", style = MaterialTheme.typography.titleLarge)
             Text("$${subtotal} USD", style = MaterialTheme.typography.titleLarge)
         }
     }
 }
 
+fun getSubtotal(list: List<Merch>): Int {
+    return list.sumOf { element ->
+        element.discountedPrice ?: element.cost
+    }
+}
+
 @Composable
-fun EditableMerchItem(merch: Merch, onRemoveClicked: () -> Unit, onAddClicked: () -> Unit) {
+fun EditableMerchItem(
+    merch: Merch,
+    onRemoveClicked: () -> Unit,
+    onAddClicked: () -> Unit
+) {
     Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
         Row(
             Modifier
@@ -120,12 +141,12 @@ fun EditableMerchItem(merch: Merch, onRemoveClicked: () -> Unit, onAddClicked: (
                     merch.label,
                     style = MaterialTheme.typography.labelLarge
                 )
-                if (merch.sizes.isNotEmpty()) {
-                    Text(merch.sizes.first())
+                if (merch.selectedOption != null) {
+                    Text(merch.selectedOption!!)
                 }
             }
 
-            if (merch.image) {
+            if (merch.hasImage) {
                 Box(
                     Modifier
                         .background(Color.White)
@@ -139,8 +160,21 @@ fun EditableMerchItem(merch: Merch, onRemoveClicked: () -> Unit, onAddClicked: (
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            QuantityView(merch.count, onRemoveClicked, onAddClicked)
-            Text("$${merch.cost} USD", style = MaterialTheme.typography.bodyMedium)
+            QuantityView(merch.quantity, onRemoveClicked, onAddClicked, canDelete = true)
+            Column {
+                val hasDiscount = merch.discountedPrice != null
+                Text(
+                    "$${merch.cost} USD",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textDecoration = if (hasDiscount) TextDecoration.LineThrough else null
+                )
+                if (hasDiscount) {
+                    Text(
+                        "$${merch.discountedPrice} USD",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
         }
     }
 }
@@ -150,6 +184,6 @@ fun EditableMerchItem(merch: Merch, onRemoveClicked: () -> Unit, onAddClicked: (
 @Composable
 fun MerchSummaryScreenViewPreview(@PreviewParameter(MerchProvider::class) state: MerchState) {
     ScheduleTheme {
-        MerchSummaryScreenView(state.elements.filter { it.count > 0 }, {}, {}, {})
+        MerchSummaryScreenView(state, {}, {}, {}, {})
     }
 }

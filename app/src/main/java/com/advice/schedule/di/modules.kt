@@ -43,7 +43,7 @@ import com.advice.schedule.ui.information.locations.LocationsViewModel
 import com.advice.schedule.ui.information.speakers.SpeakerViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
 import com.advice.schedule.ui.information.vendors.VendorsViewModel
-import com.advice.schedule.ui.merch.MerchViewModel
+import com.advice.merch.MerchViewModel
 import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel

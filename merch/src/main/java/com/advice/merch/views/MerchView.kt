@@ -1,4 +1,4 @@
-package com.advice.ui.views
+package com.advice.merch.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,30 +10,24 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Merch
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.hackertracker.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MerchItem(merch: Merch, onMerchClicked: (Merch) -> Unit) {
     BadgedBox(badge = {
-        if (merch.count > 0) {
+        if (merch.quantity > 0) {
             Badge(containerColor = Color.Red) {
-                Text("${merch.count}", style = MaterialTheme.typography.labelLarge)
+                Text("${merch.quantity}", style = MaterialTheme.typography.labelLarge)
             }
         }
     }, Modifier
@@ -45,10 +39,10 @@ fun MerchItem(merch: Merch, onMerchClicked: (Merch) -> Unit) {
         ) {
             Column(Modifier.weight(1.0f)) {
                 Text(merch.label, style = MaterialTheme.typography.labelLarge)
-                Text("$${merch.cost} USD", style = MaterialTheme.typography.bodyMedium)
+                Text("$${merch.baseCost} USD", style = MaterialTheme.typography.bodyMedium)
 
                 Row {
-                    for (tag in merch.sizes) {
+                    for (tag in merch.options) {
                         Text(
                             tag,
                             Modifier
@@ -64,13 +58,13 @@ fun MerchItem(merch: Merch, onMerchClicked: (Merch) -> Unit) {
                 }
             }
 
-            if (merch.image) {
+            if (merch.hasImage) {
                 Box(
                     Modifier
                         .background(Color.White)
                         .size(64.dp)
                 ) {
-                    Image(painterResource(R.drawable.doggo), null)
+                    //todo: Image(painterResource(R.drawable.doggo), null)
                 }
             }
         }
@@ -81,11 +75,13 @@ fun MerchItem(merch: Merch, onMerchClicked: (Merch) -> Unit) {
 @Composable
 fun MerchItemPreview() {
     val element = Merch(
+        "1",
         "DC30 Homecoming Men's T-Shirt",
         35,
         listOf("S", "4XL", "5XL", "6XL"),
-        image = true,
-        count = 3
+        hasImage = true,
+        quantity = 3,
+
     )
     ScheduleTheme {
         MerchItem(element) {}
