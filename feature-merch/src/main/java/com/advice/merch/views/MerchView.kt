@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Merch
+import com.advice.merch.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
@@ -64,7 +65,7 @@ fun MerchItem(merch: Merch, onMerchClicked: (Merch) -> Unit) {
                         .background(Color.White)
                         .size(64.dp)
                 ) {
-                    //todo: Image(painterResource(R.drawable.doggo), null)
+                    Image(painterResource(R.drawable.doggo), null)
                 }
             }
         }

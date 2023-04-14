@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Merch
 import com.advice.core.ui.MerchState
 import com.advice.merch.R
+import com.advice.merch.views.EditableMerchItem
+import com.advice.merch.views.PromoSwitch
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.MerchProvider
 import com.advice.ui.theme.ScheduleTheme
@@ -95,16 +97,12 @@ fun MerchSummaryContents(
                 })
         }
 
-        Row(Modifier.padding(16.dp)) {
-            Column(Modifier.weight(1.0f)) {
-                Text("Goon Discount")
-                Text("Must present Goon badge")
-            }
-            Switch(checked = hasDiscount, onCheckedChange = {
-                onDiscountApplied(it)
-            })
-        }
-
+        PromoSwitch(
+            title = "Goon Discount",
+            description = "Must present Goon badge",
+            checked = hasDiscount,
+            onCheckedChange = onDiscountApplied
+        )
 
         Row(
             Modifier
@@ -122,60 +120,6 @@ fun MerchSummaryContents(
 fun getSubtotal(list: List<Merch>): Int {
     return list.sumOf { element ->
         element.discountedPrice ?: element.cost
-    }
-}
-
-@Composable
-fun EditableMerchItem(
-    merch: Merch,
-    onRemoveClicked: () -> Unit,
-    onAddClicked: () -> Unit
-) {
-    Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-        Row(
-            Modifier
-                .defaultMinSize(minHeight = 64.dp)
-        ) {
-            Column(Modifier.weight(1.0f)) {
-                Text(
-                    merch.label,
-                    style = MaterialTheme.typography.labelLarge
-                )
-                if (merch.selectedOption != null) {
-                    Text(merch.selectedOption!!)
-                }
-            }
-
-            if (merch.hasImage) {
-                Box(
-                    Modifier
-                        .background(Color.White)
-                        .size(48.dp)
-                ) {
-                    Image(painterResource(R.drawable.doggo), null)
-                }
-            }
-        }
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            QuantityView(merch.quantity, onRemoveClicked, onAddClicked, canDelete = true)
-            Column {
-                val hasDiscount = merch.discountedPrice != null
-                Text(
-                    "$${merch.cost} USD",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textDecoration = if (hasDiscount) TextDecoration.LineThrough else null
-                )
-                if (hasDiscount) {
-                    Text(
-                        "$${merch.discountedPrice} USD",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-        }
     }
 }
 
