@@ -56,7 +56,7 @@ fun EditableMerchItem(
                 Text(
                     "$${merch.cost} USD",
                     style = MaterialTheme.typography.bodyMedium,
-                    textDecoration = if (hasDiscount) TextDecoration.LineThrough else null
+                    textDecoration = if (hasDiscount) TextDecoration.LineThrough else TextDecoration.None
                 )
                 if (hasDiscount) {
                     Text(

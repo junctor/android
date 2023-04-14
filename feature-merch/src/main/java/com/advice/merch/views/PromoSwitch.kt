@@ -1,5 +1,6 @@
 package com.advice.merch.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -20,7 +21,12 @@ fun PromoSwitch(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    Row(Modifier.padding(16.dp)) {
+    Row(
+        Modifier
+            .clickable {
+                onCheckedChange(!checked)
+            }
+            .padding(16.dp)) {
         Column(Modifier.weight(1.0f)) {
             Text(title)
             Text(description)
