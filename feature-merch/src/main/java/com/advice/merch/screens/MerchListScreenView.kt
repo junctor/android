@@ -1,8 +1,6 @@
 package com.advice.merch.screens
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -25,7 +23,7 @@ import com.advice.merch.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.MerchProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.merch.views.MerchItem
+import com.advice.merch.views.MerchView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,16 +42,16 @@ fun MerchScreenView(
                         Icon(painterResource(id = R.drawable.ic_filter), null)
                     }
                 },
-
-
-                )
+            )
         },
         floatingActionButton = {
             val itemCount = state.elements.sumOf { it.quantity }
             if (itemCount > 0) {
                 FloatingActionButton(
                     onClick = onSummaryClicked,
-                    Modifier.padding(horizontal = 32.dp).fillMaxWidth(),
+                    Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth(),
                     shape = FloatingActionButtonDefaults.extendedFabShape
                 ) {
                     Text("View Cart ($itemCount)")
@@ -68,9 +66,12 @@ fun MerchScreenView(
 
 @Composable
 fun MerchList(list: List<Merch>, onMerchClicked: (Merch) -> Unit, modifier: Modifier) {
-    LazyColumn(modifier, contentPadding = PaddingValues(vertical = 32.dp)) {
+    LazyColumn(modifier, contentPadding = PaddingValues(vertical = 16.dp)) {
         items(list) {
-            MerchItem(it, onMerchClicked)
+            MerchView(it, onMerchClicked)
+        }
+        item {
+            Spacer(Modifier.height(64.dp))
         }
     }
 }

@@ -26,13 +26,12 @@ fun EditableMerchItem(
                 .defaultMinSize(minHeight = 64.dp)
         ) {
             Column(Modifier.weight(1.0f)) {
+                val title = merch.label + if(merch.selectedOption != null) " (${merch.selectedOption})" else ""
+
                 Text(
-                    merch.label,
+                    title,
                     style = MaterialTheme.typography.labelLarge
                 )
-                if (merch.selectedOption != null) {
-                    Text(merch.selectedOption!!)
-                }
             }
 
             if (merch.hasImage) {

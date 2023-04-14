@@ -1,12 +1,6 @@
 package com.advice.merch.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,7 +25,9 @@ import com.advice.merch.views.EditableMerchItem
 import com.advice.merch.views.PromoSwitch
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.MerchProvider
+import com.advice.ui.screens.ErrorScreenView
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.views.EmptyView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,13 +46,17 @@ fun MerchSummaryScreenView(
             }
         })
     }) {
-        MerchSummaryContents(
-            list,
-            state.hasDiscount,
-            Modifier.padding(it),
-            onQuantityChanged,
-            onDiscountApplied
-        )
+        if (list.isEmpty()) {
+            EmptyView(message = "Merch not found",modifier = Modifier.padding(it))
+        } else {
+            MerchSummaryContents(
+                list,
+                state.hasDiscount,
+                Modifier.padding(it),
+                onQuantityChanged,
+                onDiscountApplied
+            )
+        }
     }
 }
 

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -45,12 +46,13 @@ fun MerchItemScreenView(
                         Icon(Icons.Default.Close, null)
                     }
                 },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    if (selection != null || merch.options.isEmpty()) {
+                    if (selection != null || !merch.requiresSelection) {
                         onAddClicked(
                             MerchSelection(
                                 id = merch.label,
@@ -65,7 +67,7 @@ fun MerchItemScreenView(
                     .fillMaxWidth(),
                 shape = FloatingActionButtonDefaults.extendedFabShape
             ) {
-                Text("Add to Cart")
+                Text("Add $quantity to cart ∙ US$${merch.baseCost * quantity}")
             }
         },
         floatingActionButtonPosition = FabPosition.Center
@@ -92,22 +94,36 @@ fun MerchItem(
             Box(
                 Modifier
                     .background(Color.White)
-                    .size(128.dp)
+                    .aspectRatio(1f)
             ) {
-                Image(painterResource(R.drawable.doggo), null)
+                Image(
+                    painterResource(R.drawable.doggo),
+                    null,
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
         }
 
-        Column(Modifier.padding(16.dp)) {
+        Column(
+            Modifier.padding(16.dp)
+        ) {
             Text(merch.label, style = MaterialTheme.typography.labelLarge)
             Text("$${merch.baseCost} USD", style = MaterialTheme.typography.bodyMedium)
         }
 
 
+        Row(Modifier.padding(16.dp)) {
+            Text("Options", Modifier.weight(1.0f))
+            Text("Required")
+        }
         for (option in merch.options) {
-            Row(Modifier.clickable {
-                onSelectionChanged(option)
-            }) {
+            Row(
+                Modifier
+                    .clickable {
+                        onSelectionChanged(option)
+                    }
+                    .defaultMinSize(minHeight = 64.dp),
+                verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     option, style = MaterialTheme.typography.bodyMedium, modifier = Modifier
                         .weight(
@@ -124,8 +140,11 @@ fun MerchItem(
         QuantityView(
             quantity = quantity,
             onQuantityChanged = onQuantityChanged,
-            canDelete = false
+            canDelete = false,
+            Modifier.padding(16.dp)
         )
+
+        Spacer(Modifier.height(64.dp + 8.dp))
     }
 }
 

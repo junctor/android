@@ -47,4 +47,7 @@ data class Merch(
     val cost: Int = baseCost * quantity,
     val discountedPrice: Int? = null,
     val selectedOption: String? = null,
-) : Parcelable
+) : Parcelable {
+
+    val requiresSelection: Boolean = options.isNotEmpty()
+}

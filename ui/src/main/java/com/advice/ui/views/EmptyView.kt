@@ -18,8 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.shortstack.hackertracker.R
 
@@ -30,23 +34,32 @@ fun EmptyView(message: String? = null, modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.align(Alignment.Center)
         ) {
-            Text("404")
+            Text(
+                "404",
+                fontWeight = FontWeight.Black,
+                fontFamily = FontFamily.Monospace,
+                style = MaterialTheme.typography.displayLarge
+            )
             if (message != null) {
-                Text(message)
+                Text(
+                    message,
+                    fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.Monospace
+                )
             }
         }
         Image(
             painterResource(R.drawable.skull),
             null,
             Modifier
+                .padding(bottom = 16.dp)
                 .size(48.dp)
                 .align(Alignment.BottomCenter),
-            colorFilter = ColorFilter.tint(Color.Black)
         )
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
 fun EmptyViewPreview() {
     ScheduleTheme {

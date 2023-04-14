@@ -1,6 +1,7 @@
 package com.advice.merch.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.merch.R
 import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.theme.HotPink
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -25,10 +27,12 @@ fun QuantityView(
     quantity: Int,
     onQuantityChanged: (Int) -> Unit,
     canDelete: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        Modifier
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(32.dp))
+        modifier
+            .border(1.dp, HotPink, RoundedCornerShape(32.dp))
+            //.background(MaterialTheme.colorScheme.surface, RoundedCornerShape(32.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

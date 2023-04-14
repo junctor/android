@@ -3,12 +3,7 @@ package com.advice.merch.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,7 +19,7 @@ import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MerchItem(merch: Merch, onMerchClicked: (Merch) -> Unit) {
+fun MerchView(merch: Merch, onMerchClicked: (Merch) -> Unit) {
     BadgedBox(badge = {
         if (merch.quantity > 0) {
             Badge(containerColor = Color.Red) {
@@ -42,19 +37,16 @@ fun MerchItem(merch: Merch, onMerchClicked: (Merch) -> Unit) {
                 Text(merch.label, style = MaterialTheme.typography.labelLarge)
                 Text("$${merch.baseCost} USD", style = MaterialTheme.typography.bodyMedium)
 
-                Row {
-                    for (tag in merch.options) {
-                        Text(
-                            tag,
-                            Modifier
-                                .padding(horizontal = 4.dp)
-                                .background(
-                                    MaterialTheme.colorScheme.surface,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                                .padding(horizontal = 16.dp, vertical = 4.dp),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                ) {
+                    for ((index, option) in merch.options.withIndex()) {
+                        // todo: get in stock from backend
+                        MerchOption(option, inStock = option != "5XL")
+                        if (index != merch.options.size - 1) {
+                            Spacer(Modifier.width(8.dp))
+                        }
                     }
                 }
             }
@@ -83,8 +75,8 @@ fun MerchItemPreview() {
         hasImage = true,
         quantity = 3,
 
-    )
+        )
     ScheduleTheme {
-        MerchItem(element) {}
+        MerchView(element) {}
     }
 }
