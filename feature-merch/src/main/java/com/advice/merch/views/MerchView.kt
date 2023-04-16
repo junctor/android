@@ -24,7 +24,7 @@ fun MerchView(merch: Merch, onMerchClicked: (Merch) -> Unit) {
         Modifier
             .clickable { onMerchClicked(merch) }
             .defaultMinSize(minHeight = 86.dp)
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Column(Modifier.weight(1.0f)) {
             Text(merch.label, style = MaterialTheme.typography.labelLarge)
@@ -46,26 +46,32 @@ fun MerchView(merch: Merch, onMerchClicked: (Merch) -> Unit) {
                 }
             }
         }
-        BadgedBox(badge = {
-            if (merch.quantity > 0) {
-                Badge(containerColor = MaterialTheme.colorScheme.primary, modifier = Modifier.offset(x = -8.dp, y = 8.dp)) {
-                    Text(
-                        "${merch.quantity}",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 18.sp,
-                        style = MaterialTheme.typography.labelLarge,
-                    )
+        BadgedBox(
+            badge = {
+                if (merch.quantity > 0) {
+                    Badge(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .offset(x = -12.dp, y = 12.dp)
+                    ) {
+                        Text(
+                            "${merch.quantity}",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 16.sp,
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                    }
                 }
-            }
-        },
+            },
             Modifier
-                .size(64.dp)) {
+                .size(64.dp)
+        ) {
             if (merch.image != null) {
                 Box(
                     Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.Black)
-
                 ) {
                     AsyncImage(model = merch.image, contentDescription = null)
                 }

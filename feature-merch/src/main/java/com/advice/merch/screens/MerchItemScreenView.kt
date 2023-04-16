@@ -117,9 +117,11 @@ fun MerchItem(
         }
 
 
-        Row(Modifier.padding(16.dp)) {
-            Text("Options", Modifier.weight(1.0f))
-            Text("Required")
+        if(merch.requiresSelection) {
+            Row(Modifier.padding(16.dp)) {
+                Text("Options", Modifier.weight(1.0f))
+                Text("Required")
+            }
         }
         for (option in merch.options) {
             Row(
