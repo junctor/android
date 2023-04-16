@@ -49,6 +49,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.shortstack.hackertracker.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -80,7 +81,7 @@ val appModule = module {
     single { SpeakerRepository(get()) }
     single { FiltersRepository(get(), get()) }
     single { FAQRepository(get()) }
-    single { SettingsRepository(get()) }
+    single { SettingsRepository(get(), get(), "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})") }
     single { LocationRepository(get()) }
     single { VendorsRepository(get()) }
     single { InformationRepository(get()) }

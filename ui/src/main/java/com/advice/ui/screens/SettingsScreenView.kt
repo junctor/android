@@ -2,6 +2,7 @@ package com.advice.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,17 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,35 +40,80 @@ import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreenView(timeZone: String, version: String, code: Int, onBackPressed: () -> Unit) {
+fun SettingScreenView(
+    timeZone: String,
+    version: String,
+    useConferenceTimeZone: Boolean,
+    showFilterButton: Boolean,
+    enableEasterEggs: Boolean,
+    enableAnalytics: Boolean,
+    showTwitterHandle: Boolean,
+    onPreferenceChanged: (Int, Boolean) -> Unit,
+    onBackPressed: () -> Unit
+) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Settings") }, navigationIcon = {
+        CenterAlignedTopAppBar(title = { Text("Settings") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(Icons.Default.ArrowBack, null)
             }
         })
     }) {
-        SettingsScreenContent(timeZone, version, code, Modifier.padding(it))
+        SettingsScreenContent(
+            timeZone,
+            version,
+            useConferenceTimeZone,
+            showFilterButton,
+            enableEasterEggs,
+            enableAnalytics,
+            showTwitterHandle,
+            onPreferenceChanged,
+            Modifier.padding(it)
+        )
     }
 }
 
 @Composable
-fun SettingsScreenContent(timeZone: String, version: String, code: Int, modifier: Modifier) {
+fun SettingsScreenContent(
+    timeZone: String,
+    version: String,
+    useConferenceTimeZone: Boolean,
+    showFilterButton: Boolean,
+    enableEasterEggs: Boolean,
+    enableAnalytics: Boolean,
+    showTwitterHandle: Boolean,
+    onPreferenceChanged: (Int, Boolean) -> Unit,
+    modifier: Modifier
+) {
     Column(modifier) {
-        SwitchPreference("Events in ($timeZone)", isChecked = true, summaryOn = "Using conference's timezone", summaryOff = "Using device's timezone")
-        SwitchPreference("Show filter button", isChecked = true)
-        SwitchPreference("Easter Eggs", summary = "???", isChecked = false)
-        SwitchPreference("Send anonymous usage statistics", isChecked = true)
+        SwitchPreference(
+            "Events in ($timeZone)",
+            isChecked = useConferenceTimeZone,
+            summaryOn = "Using conference's timezone",
+            summaryOff = "Using device's timezone"
+        ) {
+            onPreferenceChanged(1, it)
+        }
+        SwitchPreference("Show filter button", isChecked = showFilterButton) {
+            onPreferenceChanged(2, it)
+        }
+        SwitchPreference("Easter Eggs", summary = "???", isChecked = enableEasterEggs) {
+            onPreferenceChanged(3, it)
+        }
+        SwitchPreference("Send anonymous usage statistics", isChecked = enableAnalytics) {
+            onPreferenceChanged(4, it)
+        }
         DeveloperSection()
-        TwitterBadge()
-        VersionNumber(version, code)
+        if (showTwitterHandle) {
+            TwitterBadge()
+        }
+        VersionNumber(version)
     }
 }
 
 @Composable
-private fun VersionNumber(version: String, code: Int) {
+private fun VersionNumber(version: String) {
     Text(
-        "Version $version ($code)", modifier = Modifier
+        "Version $version", modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp), textAlign = TextAlign.Center
     )
@@ -132,13 +168,24 @@ fun TwitterBadge() {
 }
 
 @Composable
-fun SwitchPreference(title: String, isChecked: Boolean, summary: String? = null, summaryOn: String? = null, summaryOff: String? = null) {
+fun SwitchPreference(
+    title: String,
+    isChecked: Boolean,
+    summary: String? = null,
+    summaryOn: String? = null,
+    summaryOff: String? = null,
+    onPreferenceChanged: (Boolean) -> Unit
+) {
     var checked by rememberSaveable {
         mutableStateOf(isChecked)
     }
 
     Row(
         Modifier
+            .clickable {
+                checked = !checked
+                onPreferenceChanged(checked)
+            }
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .padding(16.dp)
@@ -159,9 +206,17 @@ fun SwitchPreference(title: String, isChecked: Boolean, summary: String? = null,
                 }
             }
         }
-        Switch(checked = checked, onCheckedChange = {
-            checked = it
-        }, colors = SwitchDefaults.colors(checkedThumbColor = Color.White, uncheckedThumbColor = Color.White))
+        Switch(
+            checked = checked,
+            onCheckedChange = {
+                checked = it
+                onPreferenceChanged(it)
+            },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                uncheckedThumbColor = Color.White
+            )
+        )
     }
 }
 
@@ -170,8 +225,15 @@ fun SwitchPreference(title: String, isChecked: Boolean, summary: String? = null,
 fun SwitchPreferencePreview() {
     ScheduleTheme {
         Column {
-            SwitchPreference("Events in (EUROPE/HELSINKI)", true, summaryOn = "Using conference's timezone", summaryOff = "Using device's timezone")
-            SwitchPreference("Show filter button", false)
+            SwitchPreference(
+                "Events in (EUROPE/HELSINKI)",
+                true,
+                summaryOn = "Using conference's timezone",
+                summaryOff = "Using device's timezone"
+            ) {
+
+            }
+            SwitchPreference("Show filter button", false) {}
         }
     }
 }
@@ -180,7 +242,17 @@ fun SwitchPreferencePreview() {
 @Composable
 fun SettingScreenViewDarkPreview() {
     ScheduleTheme {
-        SettingScreenView("Europe/Helsinki", "7.0.0", 1) {
+        SettingScreenView(
+            timeZone = "Europe/Helsinki",
+            version = "7.0.0 (1)",
+            useConferenceTimeZone = true,
+            showFilterButton = true,
+            enableEasterEggs = false,
+            enableAnalytics = true,
+            showTwitterHandle = true, { _, _ ->
+
+            }
+        ) {
 
         }
     }

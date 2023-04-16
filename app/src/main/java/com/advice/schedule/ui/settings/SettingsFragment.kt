@@ -16,21 +16,37 @@ import com.shortstack.hackertracker.BuildConfig
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-
 class SettingsFragment : Fragment(), KoinComponent {
 
     private val viewModel by inject<SettingsViewModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return ComposeView(requireContext()).apply {
             // fix for navigation crash
             isTransitionGroup = true
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val conference = viewModel.conference.collectAsState(initial = null).value
-                    SettingScreenView(conference?.timezone ?: "---", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE) {
-                        requireActivity().onBackPressed()
+                    val state = viewModel.state.collectAsState(initial = null).value
+                    if (state != null) {
+                        SettingScreenView(
+                            state.timezone,
+                            state.version,
+                            state.useConferenceTimeZone,
+                            state.showFilterButton,
+                            state.enableEasterEggs,
+                            state.enableAnalytics,
+                            state.showTwitterHandle,
+                            onPreferenceChanged = { id, isChecked ->
+                                viewModel.onPreferenceChanged(id, isChecked)
+                            }
+                        ) {
+                            requireActivity().onBackPressed()
+                        }
                     }
                 }
             }
