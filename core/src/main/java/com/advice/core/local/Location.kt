@@ -3,6 +3,7 @@ package com.advice.core.local
 import android.os.Parcelable
 import com.advice.core.utils.Time
 import kotlinx.android.parcel.Parcelize
+import java.lang.Math.max
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -14,7 +15,6 @@ data class LocationRow(
     val hasChildren: Boolean,
     val isExpanded: Boolean,
 )
-
 
 
 @Parcelize
@@ -34,6 +34,7 @@ data class Location(
     val schedule: List<LocationSchedule>? = null,
     val children: List<Location> = emptyList(),
     var isVisible: Boolean = true,
+    var isExpanded: Boolean = false,
 ) : Parcelable {
 
     val hasChildren: Boolean
@@ -52,14 +53,6 @@ data class Location(
                 childrenStatus.all { it == LocationStatus.Unknown } -> LocationStatus.Unknown
                 else -> LocationStatus.Mixed
             }
-        }
-
-    val isExpanded: Boolean
-        get() {
-            if (!hasChildren) {
-                return false
-            }
-            return children.map { it.isVisible }.any()
         }
 
     private fun getCurrentStatus(): LocationStatus {
@@ -87,7 +80,8 @@ data class Location(
     }
 
     override fun toString(): String {
-        var s =  "  " + "--".repeat(depth - 1) + "> $name - isExpanded: $isExpanded, isVisible: $isVisible"
+        var s =
+            "  " + "--".repeat(max(0, depth - 1)) + "> $name - isExpanded: $isExpanded, isVisible: $isVisible"
 //        children.map {
 //            s = "$s\n  $it"
 //        }

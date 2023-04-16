@@ -26,7 +26,6 @@ class FirebaseLocationsDataSource(
                 .map { querySnapshot ->
                     val locations = querySnapshot.toObjectsOrEmpty(FirebaseLocation::class.java)
                         .sortedBy { it.hier_extent_left }
-                        .take(15)
 
                     getChildrenNodes(locations, parent = 0)
                 }

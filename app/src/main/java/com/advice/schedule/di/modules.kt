@@ -29,7 +29,7 @@ import com.advice.schedule.repository.FAQRepository
 import com.advice.schedule.repository.FiltersRepository
 import com.advice.schedule.repository.HomeRepository
 import com.advice.schedule.repository.InformationRepository
-import com.advice.schedule.repository.LocationRepository
+import com.advice.locations.data.LocationRepository
 import com.advice.schedule.repository.ScheduleRepository
 import com.advice.schedule.repository.SettingsRepository
 import com.advice.schedule.repository.SpeakerRepository
@@ -39,7 +39,6 @@ import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
 import com.advice.schedule.ui.information.info.ConferenceViewModel
-import com.advice.schedule.ui.information.locations.LocationsViewModel
 import com.advice.schedule.ui.information.speakers.SpeakerViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
 import com.advice.schedule.ui.information.vendors.VendorsViewModel
@@ -115,7 +114,7 @@ val appModule = module {
     viewModel { SpeakersViewModel() }
 
     viewModel { InformationViewModel() }
-    viewModel { LocationsViewModel() }
+    viewModel { com.advice.locations.LocationsViewModel() }
     viewModel { VendorsViewModel() }
     viewModel { FAQViewModel() }
     viewModel { SettingsViewModel() }

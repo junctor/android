@@ -25,6 +25,7 @@ import com.advice.schedule.utilities.Analytics
 import com.advice.merch.MerchFragment
 import com.advice.merch.MerchItemFragment
 import com.advice.merch.MerchSummaryFragment
+import com.advice.locations.LocationsFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.shortstack.hackertracker.R
@@ -60,7 +61,7 @@ class MainActivity :
         if (savedInstanceState == null) {
             setMainFragment(R.id.nav_home, getString(R.string.home), false)
 
-            showMerchList()
+            setAboveFragment(LocationsFragment.newInstance())
         }
         supportFragmentManager.addOnBackStackChangedListener(this)
     }

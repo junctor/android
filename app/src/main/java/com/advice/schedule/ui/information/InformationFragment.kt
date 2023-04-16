@@ -13,7 +13,7 @@ import com.advice.schedule.ui.information.faq.FAQFragment
 import com.advice.schedule.ui.information.info.CodeOfConductFragment
 import com.advice.schedule.ui.information.info.SupportFragment
 import com.advice.schedule.ui.information.info.WiFiFragment
-import com.advice.schedule.ui.information.locations.LocationsFragment
+import com.advice.locations.LocationsFragment
 import com.advice.schedule.ui.information.speakers.SpeakersFragment
 import com.advice.schedule.ui.information.vendors.VendorsFragment
 import com.advice.schedule.utilities.Analytics
@@ -62,7 +62,7 @@ class InformationFragment : Fragment() {
                                 }
 
                                 1 -> {
-                                    (requireActivity() as MainActivity).setAboveFragment(LocationsFragment.newInstance(), hasAnimation = false)
+                                    (requireActivity() as MainActivity).setAboveFragment(com.advice.locations.LocationsFragment.newInstance(), hasAnimation = false)
                                     analytics.setScreen(Analytics.SCREEN_LOCATIONS)
                                 }
 
