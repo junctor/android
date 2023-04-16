@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.advice.core.local.Merch
 import com.advice.merch.R
 
@@ -34,13 +35,13 @@ fun EditableMerchItem(
                 )
             }
 
-            if (merch.hasImage) {
+            if (merch.image != null) {
                 Box(
                     Modifier
                         .background(Color.White)
                         .size(48.dp)
                 ) {
-                    Image(painterResource(R.drawable.doggo), null)
+                    AsyncImage(model = merch.image, contentDescription = null)
                 }
             }
         }
@@ -52,13 +53,13 @@ fun EditableMerchItem(
             Column {
                 val hasDiscount = merch.discountedPrice != null
                 Text(
-                    "$${merch.cost} USD",
+                    "$${String.format("%.2f", merch.cost/100f)} USD",
                     style = MaterialTheme.typography.bodyMedium,
                     textDecoration = if (hasDiscount) TextDecoration.LineThrough else TextDecoration.None
                 )
                 if (hasDiscount) {
                     Text(
-                        "$${merch.discountedPrice} USD",
+                        "$${String.format("%.2f", merch.discountedPrice!!/100f)} USD",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

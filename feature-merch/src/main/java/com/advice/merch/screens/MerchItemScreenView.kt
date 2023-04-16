@@ -9,9 +9,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.advice.core.local.Merch
 import com.advice.core.local.MerchSelection
 import com.advice.core.ui.MerchState
@@ -67,7 +69,9 @@ fun MerchItemScreenView(
                     .fillMaxWidth(),
                 shape = FloatingActionButtonDefaults.extendedFabShape
             ) {
-                Text("Add $quantity to cart ∙ US$${merch.baseCost * quantity}")
+                val optionCost = if(merch.selectedOption != null) merch.options.find { it.label == merch.selectedOption }?.extraCost ?: 0 else 0
+                val cost = (merch.baseCost + optionCost) * quantity
+                Text("Add $quantity to cart ∙ US$${String.format("%.2f", cost / 100f)}")
             }
         },
         floatingActionButtonPosition = FabPosition.Center
@@ -90,16 +94,16 @@ fun MerchItem(
     modifier: Modifier
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
-        if (merch.hasImage) {
+        if (merch.image != null) {
             Box(
                 Modifier
                     .background(Color.White)
-                    .aspectRatio(1f)
+                    .fillMaxWidth()
             ) {
-                Image(
-                    painterResource(R.drawable.doggo),
-                    null,
-                    modifier = Modifier.align(Alignment.Center)
+                AsyncImage(
+                    model = merch.image, contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
                 )
             }
         }
@@ -108,7 +112,8 @@ fun MerchItem(
             Modifier.padding(16.dp)
         ) {
             Text(merch.label, style = MaterialTheme.typography.labelLarge)
-            Text("$${merch.baseCost} USD", style = MaterialTheme.typography.bodyMedium)
+            val cost = String.format("%.2f", merch.baseCost / 100f)
+            Text("$$cost USD", style = MaterialTheme.typography.bodyMedium)
         }
 
 
@@ -120,20 +125,24 @@ fun MerchItem(
             Row(
                 Modifier
                     .clickable {
-                        onSelectionChanged(option)
+                        onSelectionChanged(option.label)
                     }
                     .defaultMinSize(minHeight = 64.dp),
                 verticalAlignment = Alignment.CenterVertically) {
+                val label = if (option.extraCost > 0) option.label + "  (+US" + String.format(
+                    "%.2f",
+                    option.extraCost / 100f
+                ) + ")" else option.label
                 Text(
-                    option, style = MaterialTheme.typography.bodyMedium, modifier = Modifier
+                    label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier
                         .weight(
                             1.0f
                         )
                         .padding(16.dp)
                 )
                 RadioButton(
-                    selected = option == selection,
-                    onClick = { onSelectionChanged(option) })
+                    selected = option.label == selection,
+                    onClick = { onSelectionChanged(option.label) })
             }
         }
 

@@ -8,6 +8,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import com.advice.core.Navigation
 import com.advice.ui.screens.HomeScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,9 +27,15 @@ class HomeFragment : Fragment() {
             setContent {
                 ScheduleTheme {
                     val state = viewModel.getHomeState().observeAsState()
-                    HomeScreenView(state.value) {
-                        viewModel.setConference(it)
-                    }
+                    HomeScreenView(
+                        state.value,
+                        onConferenceClick = {
+                            viewModel.setConference(it)
+                        },
+                        onMerchClick = {
+                            (requireActivity() as Navigation).showMerch()
+                        },
+                    )
                 }
             }
         }

@@ -7,38 +7,17 @@ import com.advice.core.local.MerchDataModel
 import com.advice.core.local.MerchSelection
 import com.advice.core.local.toMerch
 import com.advice.core.ui.MerchState
+import com.advice.merch.data.MerchRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-val data = listOf(
-    MerchDataModel(
-        "DC30 Homecoming Men's T-Shirt",
-        35,
-        listOf("S", "4XL", "5XL", "6XL"),
-        hasImage = true
-    ),
-    MerchDataModel("DC30 Homecoming Women's T-Shirt", 35, listOf("XS", "S", "L", "XL")),
-    MerchDataModel(
-        "DC30 Square Men's T-Shirt",
-        35,
-        listOf("S", "4XL", "5XL", "6XL"),
-        hasImage = true,
-    ),
-    MerchDataModel(
-        "DC30 Square Women's T-Shirt",
-        35,
-        listOf("S", "4XL", "5XL", "6XL"),
-        hasImage = true
-    ),
-    MerchDataModel("DC30 Skull T-Shirt", 40, listOf("S", "4XL", "5XL", "6XL")),
-    MerchDataModel("DC30 Signal T-Shirt", 35, listOf("S", "4XL", "5XL", "6XL")),
-    MerchDataModel("DC30 Crown T-Shirt", 50, listOf("S", "4XL", "5XL", "6XL")),
-    MerchDataModel("Pride T-Shirt", 35, listOf("S", "4XL", "5XL", "6XL")),
-    MerchDataModel("D I S O B E Y Pin", 10, listOf(), hasImage = true),
-)
+class MerchViewModel : ViewModel(), KoinComponent {
 
-class MerchViewModel : ViewModel() {
+    private val repository by inject<MerchRepository>()
 
     private val selections = mutableListOf<MerchSelection>()
 
@@ -52,8 +31,11 @@ class MerchViewModel : ViewModel() {
     private val goonDiscount = 0.10f
 
     init {
-        val merch = data.map { it.toMerch() }
-        _state.value = MerchState(merch)
+        viewModelScope.launch {
+            repository.merch.collect {
+                _state.value = MerchState(it)
+            }
+        }
     }
 
     fun addToCart(selection: MerchSelection) {
@@ -77,23 +59,20 @@ class MerchViewModel : ViewModel() {
 
     private suspend fun updateList() {
         // merging the merch list with the selections
-        val list = data.map { model ->
+        val list = _state.value.elements.map { model ->
             val quantity = selections.filter { it.id == model.label }.sumOf { it.quantity }
-            model.toMerch(quantity = quantity)
+            model.copy(quantity = quantity)
         }
 
         _state.emit(MerchState(list))
     }
 
     private suspend fun updateSummary() {
+        val discount = if (hasDiscount) goonDiscount else null
         // updating the summary broke down based on selections
         val summary = selections.map { selection ->
-            val element = data.find { it.label == selection.id }!!
-            element.toMerch(
-                selection.quantity,
-                selection.selectionOption,
-                if (hasDiscount) goonDiscount else null
-            )
+            val element = _state.value.elements.find { it.label == selection.id }!!
+            element.update(selection, discount)
         }
 
         _summary.emit(MerchState(summary, hasDiscount = hasDiscount))

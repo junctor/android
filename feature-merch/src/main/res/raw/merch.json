@@ -1,0 +1,147 @@
+[
+  {
+    "id": "1",
+    "label": "DC30 Homecoming Men's T-Shirt",
+    "baseCost": 3500,
+    "options": [
+      {
+        "label": "S",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "M",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "L",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "XL",
+        "inStock": false,
+        "extraCost": 500
+      }
+    ],
+    "image": "https://image.uniqlo.com/UQ/ST3/WesternCommon/imagesgoods/422990/item/goods_09_422990.jpg?width=750"
+  },
+  {
+    "id": "2",
+    "label": "DC30 Homecoming Women's T-Shirt",
+    "baseCost": 3500,
+    "options": [
+      {
+        "label": "S",
+        "inStock": false,
+        "extraCost": 0
+      },
+      {
+        "label": "M",
+        "inStock": false,
+        "extraCost": 0
+      },
+      {
+        "label": "L",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "XL",
+        "inStock": false,
+        "extraCost": 500
+      }
+    ],
+    "image": "https://image.uniqlo.com/UQ/ST3/WesternCommon/imagesgoods/422990/item/goods_09_422990.jpg?width=750"
+  },
+  {
+    "id": "3",
+    "label": "C30 Square Men's T-Shirt",
+    "baseCost": 4000,
+    "options": [
+      {
+        "label": "S",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "M",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "L",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "XL",
+        "inStock": false,
+        "extraCost": 500
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "label": "DC30 Square Women's T-Shirt",
+    "baseCost": 4000,
+    "options": [
+      {
+        "label": "S",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "M",
+        "inStock": false,
+        "extraCost": 0
+      },
+      {
+        "label": "L",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "XL",
+        "inStock": false,
+        "extraCost": 500
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "label": "DC30 Skull T-Shirt",
+    "baseCost": 3850,
+    "options": [
+      {
+        "label": "S",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "M",
+        "inStock": true,
+        "extraCost": 0
+      },
+      {
+        "label": "L",
+        "inStock": true,
+        "extraCost": 750
+      },
+      {
+        "label": "XL",
+        "inStock": false,
+        "extraCost": 1250
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "label": "D I S O B E Y Pin",
+    "baseCost": 1000,
+    "options": [
+    ],
+    "image": "https://i1.sndcdn.com/artworks-T3fFnZH0gL5eJj0V-zB99zQ-t240x240.jpg"
+  }
+]

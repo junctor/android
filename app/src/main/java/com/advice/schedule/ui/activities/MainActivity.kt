@@ -60,6 +60,8 @@ class MainActivity :
         setContentView(view)
         if (savedInstanceState == null) {
             setMainFragment(R.id.nav_home, getString(R.string.home), false)
+
+            showMerch()
         }
         supportFragmentManager.addOnBackStackChangedListener(this)
     }
@@ -211,7 +213,7 @@ class MainActivity :
         startActivity(intent)
     }
 
-    fun showMerchList() {
+    override fun showMerch() {
         setAboveFragment(MerchFragment.newInstance())
     }
 

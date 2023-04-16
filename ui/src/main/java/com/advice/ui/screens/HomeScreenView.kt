@@ -50,17 +50,17 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenView(state: HomeState?, onConferenceClick: (Conference) -> Unit) {
+fun HomeScreenView(state: HomeState?, onConferenceClick: (Conference) -> Unit, onMerchClick: () -> Unit) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
         modifier = Modifier.clip(roundedCornerShape)
     ) { contentPadding ->
-        HomeScreenContent(state, modifier = Modifier.padding(contentPadding))
+        HomeScreenContent(state, onMerchClick, modifier = Modifier.padding(contentPadding))
     }
 }
 
 @Composable
-fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier) {
+fun HomeScreenContent(state: HomeState?, onMerchClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         when (state) {
             is HomeState.Error -> {}
@@ -68,6 +68,9 @@ fun HomeScreenContent(state: HomeState?, modifier: Modifier = Modifier) {
                 LazyColumn(Modifier.padding(bottom = 30.dp)) {
                     item {
                         ConferenceView(state.conference.name)
+                    }
+                    item {
+                        MerchCardView(onMerchClick)
                     }
 
                     val remainder = state.conference.startDate.time - Date().time
@@ -126,7 +129,12 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
     ) {
         Column(Modifier.background(MaterialTheme.colorScheme.background)) {
             for (conference in state.conferences) {
-                ConferenceSelectorView(conference.name, conference.startDate, conference.endDate, conference.hasFinished) {
+                ConferenceSelectorView(
+                    conference.name,
+                    conference.startDate,
+                    conference.endDate,
+                    conference.hasFinished
+                ) {
                     onConferenceClick(conference)
                     expanded = false
                 }
@@ -205,6 +213,20 @@ fun ArticleView(text: String) {
     }
 }
 
+@Composable
+fun MerchCardView(onMerchClick: () -> Unit) {
+    Surface(
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .clickable { onMerchClick() }
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+    ) {
+        Text("BROWSE MERCH", modifier = Modifier.padding(16.dp))
+    }
+}
+
 @LightDarkPreview
 @Composable
 fun ConferenceViewPreview() {
@@ -226,6 +248,14 @@ fun CountdownViewPreview() {
 fun ArticleViewPreview() {
     ScheduleTheme {
         ArticleView("Welcome to DEFCON 28!")
+    }
+}
+
+@LightDarkPreview
+@Composable
+fun MerchCardViewPreview() {
+    ScheduleTheme {
+        MerchCardView({})
     }
 }
 

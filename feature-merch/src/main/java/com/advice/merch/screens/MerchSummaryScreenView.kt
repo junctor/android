@@ -99,15 +99,15 @@ fun MerchSummaryContents(
         ) {
             val subtotal = getSubtotal(list)
             Text("Subtotal", style = MaterialTheme.typography.titleLarge)
-            Text("$${subtotal} USD", style = MaterialTheme.typography.titleLarge)
+            Text("$${String.format("%.2f", subtotal)} USD", style = MaterialTheme.typography.titleLarge)
         }
     }
 }
 
-fun getSubtotal(list: List<Merch>): Int {
+fun getSubtotal(list: List<Merch>): Float {
     return list.sumOf { element ->
         element.discountedPrice ?: element.cost
-    }
+    } / 100f
 }
 
 

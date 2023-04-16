@@ -26,9 +26,9 @@ fun MainScreenView(homeViewModel: HomeViewModel, scheduleViewModel: ScheduleView
         NavHost(navController = navController, startDestination = "schedule") {
             composable("home") {
                 val state = homeViewModel.getHomeState().observeAsState()
-                HomeScreenView(state.value) {
+                HomeScreenView(state.value, onConferenceClick = {
                     navController.navigate("schedule")
-                }
+                }, onMerchClick = {})
             }
             composable("schedule") {
                 val state = scheduleViewModel.state.collectAsState(initial = null).value
@@ -50,7 +50,7 @@ fun MainScreenView(homeViewModel: HomeViewModel, scheduleViewModel: ScheduleView
                 val id = backStackEntry.arguments?.getString("eventId")
                 val flatten =
                     scheduleViewModel.state.collectAsState(initial = null).value?.days?.values?.flatten()
-                Timber.e("onCreate: ${flatten?.size} - $id",)
+                Timber.e("onCreate: ${flatten?.size} - $id")
                 val event = flatten?.find { it.id.toString() == id }
 
                 if (event != null) {

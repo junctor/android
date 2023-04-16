@@ -2,17 +2,7 @@ package com.advice.schedule.di
 
 import androidx.work.WorkManager
 import com.advice.data.UserSession
-import com.advice.data.datasource.ArticleDataSource
-import com.advice.data.datasource.BookmarkedElementDataSource
-import com.advice.data.datasource.ConferencesDataSource
-import com.advice.data.datasource.EventsDataSource
-import com.advice.data.datasource.FAQDataSource
-import com.advice.data.datasource.InMemoryBookmarkedDataSourceImpl
-import com.advice.data.datasource.LocationsDataSource
-import com.advice.data.datasource.MapsDataSource
-import com.advice.data.datasource.SpeakersDataSource
-import com.advice.data.datasource.TagsDataSource
-import com.advice.data.datasource.VendorsDataSource
+import com.advice.data.datasource.*
 import com.advice.firebase.FirebaseUserSession
 import com.advice.firebase.datasource.FirebaseArticleDataSource
 import com.advice.firebase.datasource.FirebaseConferencesDataSource
@@ -43,6 +33,8 @@ import com.advice.schedule.ui.information.speakers.SpeakerViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
 import com.advice.schedule.ui.information.vendors.VendorsViewModel
 import com.advice.merch.MerchViewModel
+import com.advice.merch.data.LocalMerchDataSource
+import com.advice.merch.data.MerchRepository
 import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
@@ -57,6 +49,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -90,7 +83,8 @@ val appModule = module {
     single { SettingsRepository(get()) }
     single { LocationRepository(get()) }
     single { VendorsRepository(get()) }
-    single { InformationRepository(get())}
+    single { InformationRepository(get()) }
+    single { MerchRepository(androidContext(), get()) }
 
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
@@ -106,6 +100,7 @@ val appModule = module {
     single<MapsDataSource> { FirebaseMapsDataSource(get(), get()) }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
+    single<MerchDataSource> { LocalMerchDataSource() }
 
     viewModel { HomeViewModel() }
     viewModel { PreferenceViewModel() }
