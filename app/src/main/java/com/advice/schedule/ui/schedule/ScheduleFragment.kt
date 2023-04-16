@@ -9,10 +9,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.advice.core.local.Event
-import com.advice.core.local.Location
-import com.advice.core.local.Speaker
-import com.advice.core.local.Tag
+import com.advice.core.local.*
 import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.activities.MainActivity
 import com.advice.ui.screens.ScheduleScreenView
@@ -36,12 +33,12 @@ class ScheduleFragment : Fragment(), KoinComponent {
                     var state = viewModel.state.collectAsState(initial = null).value
 
                     // todo: move this to the ViewModel
-                    val location = arguments?.getParcelable<Location>(EXTRA_LOCATION)
+                    val location = arguments?.getLong(EXTRA_LOCATION)
 
                     if (state != null && location != null) {
                         val entries = state.days.entries
                         val associate =
-                            entries.associate { it.key to it.value.filter { it.location.id == location.id } }
+                            entries.associate { it.key to it.value.filter { it.location.id == location } }
                         val days = associate.filter { it.value.isNotEmpty() }
                         state = state.copy(days = days)
                     }
@@ -83,7 +80,7 @@ class ScheduleFragment : Fragment(), KoinComponent {
             }
         }
 
-        fun newInstance(location: Location): ScheduleFragment {
+        fun newInstance(location: Long): ScheduleFragment {
             return ScheduleFragment().apply {
                 arguments = bundleOf(
                     EXTRA_LOCATION to location

@@ -60,8 +60,6 @@ class MainActivity :
         setContentView(view)
         if (savedInstanceState == null) {
             setMainFragment(R.id.nav_home, getString(R.string.home), false)
-
-            setAboveFragment(LocationsFragment.newInstance())
         }
         supportFragmentManager.addOnBackStackChangedListener(this)
     }
@@ -177,7 +175,7 @@ class MainActivity :
         analytics.setScreen(Analytics.SCREEN_SETTINGS)
     }
 
-    fun showSchedule(location: Location) {
+    override fun showSchedule(location: Long) {
         setAboveFragment(ScheduleFragment.newInstance(location), hasAnimation = false)
         analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }

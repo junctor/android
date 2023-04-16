@@ -42,7 +42,7 @@ class EventFragment : Fragment() {
                     }, {
                         requireActivity().onBackPressed()
                     }, {
-                        (requireActivity() as MainActivity).showSchedule(event.location)
+                        (requireActivity() as MainActivity).showSchedule(event.location.id)
                     }, {
                         (requireActivity() as MainActivity).showSpeaker(it)
                     })

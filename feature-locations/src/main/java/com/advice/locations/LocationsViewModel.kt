@@ -22,7 +22,6 @@ class LocationsViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             repository.locations.collect { locations ->
-                Timber.e("locations: ${locations.size} ")
                 _state.value = LocationsScreenState(locations)
             }
         }
@@ -36,9 +35,5 @@ class LocationsViewModel : ViewModel(), KoinComponent {
                 repository.expand(location.id)
             }
         }
-    }
-
-    companion object {
-        private const val LOCATION_UPDATE_DELAY = 30_000L
     }
 }

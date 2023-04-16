@@ -13,13 +13,15 @@ import androidx.compose.ui.text.style.TextDecoration
 private val DarkColorPalette = darkColorScheme(
     primary = HotPink,
     inversePrimary = SugarHearts,
-    secondary = CertainFrogs
+    secondary = CertainFrogs,
+    onPrimary = Color.White
 )
 
 private val LightColorPalette = lightColorScheme(
     primary = HotPink,
     inversePrimary = SugarHearts,
-    secondary = CertainFrogs
+    secondary = CertainFrogs,
+    onPrimary = Color.White,
 
     /* Other default colors to override
     background = Color.White,

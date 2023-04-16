@@ -9,7 +9,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.core.local.Location
-import com.advice.ui.screens.LocationsScreenView
+import com.advice.core.local.LocationRow
+import com.advice.locations.ui.LocationsScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
@@ -27,36 +28,28 @@ class LocationsFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ScheduleTheme {
-                    val state =
-                        viewModel.state.collectAsState(initial = null).value
-                    Timber.e("onCreateView: locations")
+                    val state = viewModel.state.collectAsState(initial = null).value
                     LocationsScreenView(
-                        state?.list ?: emptyList(),
-                        { location ->
+                        containers = state?.list ?: emptyList(),
+                        onScheduleClicked = { location ->
                             if (location.hasChildren) {
                                 viewModel.toggle(location)
                             } else {
-//                                openScheduleBottomSheet(location)
+                                openScheduleBottomSheet(location)
                             }
                         },
-                        {
+                        onBackPressed = {
                             requireActivity().onBackPressed()
                         })
-
-                    // if (location.hasChildren) {
-                    //                viewModel.toggle(location)
-                    //            } else {
-                    //                openScheduleBottomSheet(location)
-                    //            }
                 }
             }
         }
     }
 
-    private fun openScheduleBottomSheet(location: Location) {
+    private fun openScheduleBottomSheet(location: LocationRow) {
         Timber.e("openScheduleBottomSheet: $location")
-//        val fragment = LocationsBottomSheet.newInstance(location)
-//        fragment.show(childFragmentManager, "location")
+        val fragment = LocationsBottomSheet.newInstance(location)
+        fragment.show(childFragmentManager, "location")
     }
 
     companion object {

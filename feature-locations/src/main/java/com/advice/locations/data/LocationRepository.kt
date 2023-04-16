@@ -26,7 +26,15 @@ class LocationRepository(private val locationsDataSource: LocationsDataSource) {
         }
 
         return@combine updated.filter { it.isVisible }.map {
-            LocationRow(it.id, it.name, it.status, it.depth, it.hasChildren, it.isExpanded)
+            LocationRow(
+                id = it.id,
+                title = it.shortName ?: it.name,
+                status = it.status,
+                depth = it.depth,
+                hasChildren = it.hasChildren,
+                isExpanded = it.isExpanded,
+                schedule = it.schedule ?: emptyList()
+            )
         }
     }
 
@@ -36,11 +44,11 @@ class LocationRepository(private val locationsDataSource: LocationsDataSource) {
         locations: List<Location>
     ): Boolean {
         // Root is always visible
-        if(location.parent == 0L)
+        if (location.parent == 0L)
             return true
 
         // Nothing is expanded or collapsed
-        if(expandedIds.isEmpty())
+        if (expandedIds.isEmpty())
             return true
 
         return (location.allParents(locations) { id in expandedIds } && location.parent in expandedIds)

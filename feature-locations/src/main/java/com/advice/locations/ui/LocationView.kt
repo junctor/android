@@ -19,10 +19,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Location
 import com.advice.core.local.LocationStatus
+import com.advice.locations.ui.preview.LocationProvider
 import com.advice.ui.preview.LightDarkPreview
-import com.advice.ui.preview.LocationProvider
 import com.advice.ui.theme.ScheduleTheme
-import timber.log.Timber
 
 
 @Composable
@@ -44,7 +43,6 @@ fun LocationView(
 
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
         .clickable {
-            Timber.e("LocationView: Clicked!")
             onScheduleClicked()
         }
         .padding(horizontal = 16.dp, vertical = 8.dp)) {
@@ -58,7 +56,7 @@ fun LocationView(
         Spacer(modifier = Modifier.width(8.dp))
 
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
-            Text(label + "  (${isExpanded.toString()})")
+            Text(label)
             if (description != null) {
                 Text(description)
             }
@@ -81,7 +79,7 @@ fun LocationViewPreview(
     ScheduleTheme {
         LocationView(
             location.name,
-            location.name,
+            location.shortName,
             LocationStatus.Open,
             hasChildren = true,
             isExpanded = true,

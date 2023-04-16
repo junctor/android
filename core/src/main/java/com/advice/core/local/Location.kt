@@ -7,6 +7,7 @@ import java.lang.Math.max
 import java.text.SimpleDateFormat
 import java.util.Date
 
+@Parcelize
 data class LocationRow(
     val id: Long,
     val title: String,
@@ -14,7 +15,8 @@ data class LocationRow(
     val depth: Int,
     val hasChildren: Boolean,
     val isExpanded: Boolean,
-)
+    val schedule: List<LocationSchedule>,
+): Parcelable
 
 
 @Parcelize
