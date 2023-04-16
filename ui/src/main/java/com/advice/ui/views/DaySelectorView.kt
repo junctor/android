@@ -105,7 +105,7 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                     Text(
                         it,
                         modifier = Modifier.padding(horizontal = 12.dp),
-                        color = if (index in start..end) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.onSurface
+                        color = if (index in start..end) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
