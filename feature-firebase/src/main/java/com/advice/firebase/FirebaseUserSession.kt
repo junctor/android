@@ -2,6 +2,7 @@ package com.advice.firebase
 
 import com.advice.core.local.Conference
 import com.advice.core.local.User
+import com.advice.core.utils.Storage
 import com.advice.data.UserSession
 import com.advice.data.datasource.ConferencesDataSource
 import com.google.android.gms.tasks.Task
@@ -21,6 +22,7 @@ import timber.log.Timber
 class FirebaseUserSession(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
     conferencesDataSource: ConferencesDataSource,
+    private val preferences: Storage
 ) : UserSession {
 
     private val _user = MutableStateFlow<User?>(null)
@@ -33,7 +35,7 @@ class FirebaseUserSession(
     init {
         CoroutineScope(Job()).launch {
             conferencesDataSource.get().collect {
-                _conference.value = getConference(-1, it)
+                _conference.value = getConference(preferences.preferredConference, it)
                 Timber.e("Conference is: ${_conference.value}")
             }
         }
@@ -57,11 +59,11 @@ class FirebaseUserSession(
         val list = conferences.sortedBy { it.startDate }
 
         val defcon = list.find { it.code == "DEFCON30" }
-//        if (defcon?.hasFinished == false) {
-            return defcon!!
-//        }
+        if (defcon?.hasFinished == false) {
+            return defcon
+        }
 
-//        return list.firstOrNull { !it.hasFinished } ?: conferences.last()
+        return list.firstOrNull { !it.hasFinished } ?: conferences.last()
     }
 
     override fun getConference(): Flow<Conference> {
@@ -69,6 +71,7 @@ class FirebaseUserSession(
     }
 
     override fun setConference(conference: Conference) {
+        preferences.preferredConference = conference.id
         _conference.value = conference
     }
 

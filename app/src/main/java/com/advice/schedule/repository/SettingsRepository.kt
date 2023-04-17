@@ -2,7 +2,7 @@ package com.advice.schedule.repository
 
 import com.advice.core.ui.SettingsScreenState
 import com.advice.data.UserSession
-import com.advice.schedule.utilities.Storage
+import com.advice.core.utils.Storage
 import kotlinx.coroutines.flow.map
 
 class SettingsRepository(

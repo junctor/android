@@ -64,7 +64,7 @@ fun FilterView(tag: Tag, onClick: () -> Unit) {
 
 
                 drawRoundRect(
-                    color = Color(android.graphics.Color.parseColor(tag.color)),
+                    color = Color(android.graphics.Color.parseColor(tag.color ?: "#FFFFFF")),
                     topLeft = Offset(0f, size.height / 2 - colorWidth / 2),
                     size = smallSize,
                     cornerRadius = CornerRadius(40f)

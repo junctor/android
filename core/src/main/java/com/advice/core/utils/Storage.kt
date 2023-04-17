@@ -1,4 +1,4 @@
-package com.advice.schedule.utilities
+package com.advice.core.utils
 
 import android.content.Context
 import android.content.SharedPreferences

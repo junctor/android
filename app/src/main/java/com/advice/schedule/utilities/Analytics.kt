@@ -3,6 +3,7 @@ package com.advice.schedule.utilities
 import com.advice.core.local.Conference
 import com.advice.core.local.Event
 import com.advice.core.local.Speaker
+import com.advice.core.utils.Storage
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent

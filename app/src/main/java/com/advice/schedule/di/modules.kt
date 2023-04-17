@@ -38,7 +38,7 @@ import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
 import com.advice.schedule.ui.tablet.TabletViewModel
 import com.advice.schedule.utilities.Analytics
-import com.advice.schedule.utilities.Storage
+import com.advice.core.utils.Storage
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
 import com.google.firebase.auth.FirebaseAuth
@@ -91,7 +91,7 @@ val appModule = module {
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
     single<BookmarkedElementDataSource> { InMemoryBookmarkedDataSourceImpl() }
 
-    single<UserSession> { FirebaseUserSession(get(), get()) }
+    single<UserSession> { FirebaseUserSession(get(), get(), get()) }
     single<ArticleDataSource> { FirebaseArticleDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(), get()) }

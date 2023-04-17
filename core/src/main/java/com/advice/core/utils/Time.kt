@@ -1,6 +1,5 @@
 package com.advice.core.utils
 
-import com.google.firebase.Timestamp
 import com.shortstack.core.BuildConfig
 import java.text.SimpleDateFormat
 import java.util.*
@@ -55,5 +54,3 @@ fun getLocalizedDate(date: Date): Date {
     }
     return apply.time
 }
-
-fun Date.toTimestamp() = Timestamp(this)
