@@ -13,7 +13,6 @@ import com.advice.firebase.datasource.FirebaseMapsDataSource
 import com.advice.firebase.datasource.FirebaseSpeakersDataSource
 import com.advice.firebase.datasource.FirebaseTagsDataSource
 import com.advice.firebase.datasource.FirebaseVendorsDataSource
-import com.advice.schedule.PreferenceViewModel
 import com.advice.schedule.reminder.ReminderManager
 import com.advice.schedule.repository.FAQRepository
 import com.advice.schedule.repository.FiltersRepository
@@ -104,7 +103,6 @@ val appModule = module {
     single<MerchDataSource> { LocalMerchDataSource() }
 
     viewModel { HomeViewModel() }
-    viewModel { PreferenceViewModel() }
     viewModel { ScheduleViewModel() }
     viewModel { SpeakerViewModel() }
     viewModel { SpeakersViewModel() }
