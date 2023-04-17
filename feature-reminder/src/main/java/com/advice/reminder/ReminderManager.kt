@@ -1,11 +1,11 @@
-package com.advice.schedule.reminder
+package com.advice.reminder
 
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.advice.core.local.Event
-import com.advice.schedule.utilities.Time
+import com.advice.core.utils.Time
 import java.util.concurrent.TimeUnit
 
 class ReminderManager(

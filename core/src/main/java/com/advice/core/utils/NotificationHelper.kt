@@ -1,4 +1,4 @@
-package com.advice.schedule.utilities
+package com.advice.core.utils
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -15,11 +15,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.advice.core.local.Event
-import com.advice.schedule.ui.activities.MainActivity
-import com.shortstack.hackertracker.R
-import org.koin.core.KoinComponent
+import com.shortstack.core.R
 
-class NotificationHelper(private val context: Context) : KoinComponent {
+class NotificationHelper(private val context: Context)  {
 
     private val manager = NotificationManagerCompat.from(context)
 
@@ -73,15 +71,15 @@ class NotificationHelper(private val context: Context) : KoinComponent {
     private val notificationBuilder: NotificationCompat.Builder
         get() {
             val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            val color = ContextCompat.getColor(context, R.color.colorPrimary)
+//            val color = ContextCompat.getColor(context, R.color.colorPrimary)
 
             val builder = NotificationCompat.Builder(context, CHANNEL_UPDATES)
             builder.setSound(soundUri)
             builder.setVibrate(longArrayOf(0, 250, 500, 250))
             builder.setLights(Color.MAGENTA, 3000, 1000)
 
-            builder.setSmallIcon(R.drawable.skull)
-            builder.color = color
+//            builder.setSmallIcon(R.drawable.skull)
+//            builder.color = color
             builder.setAutoCancel(true)
 
             return builder
@@ -89,17 +87,18 @@ class NotificationHelper(private val context: Context) : KoinComponent {
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun setItemPendingIntent(builder: NotificationCompat.Builder, item: Event? = null) {
-        val intent = Intent(context, MainActivity::class.java)
-
-        if (item != null) {
-            val bundle = Bundle()
-            bundle.putLong("target", item.id)
-            intent.putExtras(bundle)
-        }
-
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-
-        builder.setContentIntent(pendingIntent)
+        TODO()
+//        val intent = Intent(context, MainActivity::class.java)
+//
+//        if (item != null) {
+//            val bundle = Bundle()
+//            bundle.putLong("target", item.id)
+//            intent.putExtras(bundle)
+//        }
+//
+//        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+//
+//        builder.setContentIntent(pendingIntent)
     }
 
 

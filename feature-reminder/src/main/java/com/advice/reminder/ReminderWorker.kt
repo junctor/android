@@ -1,20 +1,16 @@
-package com.advice.schedule.reminder
+package com.advice.reminder
 
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.advice.schedule.utilities.NotificationHelper
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import com.advice.core.utils.NotificationHelper
 import timber.log.Timber
 
 class ReminderWorker(
     context: Context,
-    params: WorkerParameters
-) : CoroutineWorker(context, params),
-    KoinComponent {
-
-    private val notifications: NotificationHelper by inject()
+    params: WorkerParameters,
+    private val notificationHelper: NotificationHelper
+) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
         val conference = inputData.getString(INPUT_CONFERENCE)
@@ -40,7 +36,7 @@ class ReminderWorker(
 //            return Result.success()
 //        }
 
-        notifications.notifyStartingSoon(event)
+        notificationHelper.notifyStartingSoon(event)
 
         return Result.success()
     }

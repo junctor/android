@@ -13,7 +13,6 @@ import com.advice.firebase.datasource.FirebaseMapsDataSource
 import com.advice.firebase.datasource.FirebaseSpeakersDataSource
 import com.advice.firebase.datasource.FirebaseTagsDataSource
 import com.advice.firebase.datasource.FirebaseVendorsDataSource
-import com.advice.schedule.reminder.ReminderManager
 import com.advice.schedule.repository.FAQRepository
 import com.advice.schedule.repository.FiltersRepository
 import com.advice.schedule.repository.HomeRepository
@@ -39,7 +38,6 @@ import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
 import com.advice.schedule.ui.tablet.TabletViewModel
 import com.advice.schedule.utilities.Analytics
-import com.advice.schedule.utilities.NotificationHelper
 import com.advice.schedule.utilities.Storage
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
@@ -56,7 +54,7 @@ import org.koin.dsl.module
 val appModule = module {
 
     single { Storage(get(), get()) }
-    single { NotificationHelper(get()) }
+
     single {
         GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     }
@@ -68,7 +66,10 @@ val appModule = module {
 
     single { Analytics(get()) }
     single { WorkManager.getInstance() }
-    single { ReminderManager(get()) }
+
+    // todo: Reminder
+//    single { com.advice.reminder.NotificationHelper(get()) }
+//    single { com.advice.reminder.ReminderManager(get()) }
 
     // auth
 

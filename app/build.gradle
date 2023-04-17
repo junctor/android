@@ -90,8 +90,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'com.google.firebase:firebase-crashlytics:18.3.3'
 
-    // Work Manager
-    implementation "androidx.work:work-runtime-ktx:2.7.1"
+
 
     // UI
     implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
