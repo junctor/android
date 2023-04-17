@@ -35,9 +35,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
 import com.advice.ui.preview.LightDarkPreview
@@ -50,7 +52,11 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenView(state: HomeState?, onConferenceClick: (Conference) -> Unit, onMerchClick: () -> Unit) {
+fun HomeScreenView(
+    state: HomeState?,
+    onConferenceClick: (Conference) -> Unit,
+    onMerchClick: () -> Unit
+) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
         modifier = Modifier.clip(roundedCornerShape)
@@ -73,7 +79,7 @@ fun HomeScreenContent(state: HomeState?, onMerchClick: () -> Unit, modifier: Mod
                         MerchCardView(onMerchClick)
                     }
 
-                    val remainder = state.conference.startDate.time - Date().time
+                    val remainder = state.countdown
                     if (remainder > 0L) {
                         item {
                             CountdownView(remainder)
@@ -192,10 +198,26 @@ fun CountdownView(time: Long) {
             .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("$days days")
-            Text("${hours % 24} hours")
-            Text("${minutes % 60} minutes")
-            Text("${seconds % 60}seconds")
+            Text(
+                "$days days".uppercase(),
+                fontWeight = FontWeight.Black,
+                style = MaterialTheme.typography.displaySmall
+            )
+            Text(
+                "${hours % 24} hours".uppercase(),
+                fontWeight = FontWeight.Black,
+                style = MaterialTheme.typography.displaySmall
+            )
+            Text(
+                "${minutes % 60} minutes".uppercase(),
+                fontWeight = FontWeight.Black,
+                style = MaterialTheme.typography.displaySmall
+            )
+            Text(
+                "${seconds % 60} seconds".uppercase(),
+                fontWeight = FontWeight.Black,
+                style = MaterialTheme.typography.displaySmall
+            )
         }
     }
 }

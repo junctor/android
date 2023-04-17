@@ -50,7 +50,7 @@ fun WideHomeScreen(conference: Conference, articles: List<Article>, days: Map<St
 
     Row(modifier.fillMaxSize()) {
         AnimatedVisibility(isLeftPanelExpanded) {
-            val state = HomeState.Loaded(emptyList(), conference, articles)
+            val state = HomeState.Loaded(emptyList(), conference, articles, -1L)
             HomeScreenContent(
                 state = state,
                 onMerchClick = { TODO() },

@@ -5,6 +5,7 @@ import com.advice.core.ui.HomeState
 import com.advice.data.UserSession
 import com.advice.data.datasource.ArticleDataSource
 import com.advice.data.datasource.ConferencesDataSource
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
 class HomeRepository(
@@ -13,12 +14,22 @@ class HomeRepository(
     private val conferencesDataSource: ConferencesDataSource,
 ) {
 
+    private val _countdown = MutableStateFlow(-1L)
 
-    val contents = combine(userSession.getConference(), conferencesDataSource.get(), articleDataSource.get()) { conference, conferences, articles ->
-        HomeState.Loaded(conferences, conference, articles)
+    val contents = combine(
+        userSession.getConference(),
+        conferencesDataSource.get(),
+        articleDataSource.get(),
+        _countdown
+    ) { conference, conferences, articles, countdown ->
+        HomeState.Loaded(conferences, conference, articles, countdown)
     }
 
     fun setConference(conference: Conference) {
-        userSession.setConference( conference)
+        userSession.setConference(conference)
+    }
+
+    suspend fun setCountdown(remainder: Long) {
+        _countdown.emit(remainder)
     }
 }
