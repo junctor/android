@@ -1,21 +1,18 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import com.advice.core.local.MapFile
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.views.EmptyView
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.util.FitPolicy
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -39,12 +36,17 @@ fun MapsScreenView(maps: List<MapFile>, onBackPressed: () -> Unit) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MapsScreenContent(files: List<File>, modifier: Modifier = Modifier) {
-    HorizontalPager(
-        files.size,
-        modifier.fillMaxSize()
-    ) {
-        val file = files[it]
-        PDFView(file, Modifier.fillMaxSize())
+    Box(modifier.fillMaxSize()) {
+        if (files.isEmpty()) {
+            EmptyView("maps not found")
+        } else {
+            HorizontalPager(
+                files.size,
+            ) {
+                val file = files[it]
+                PDFView(file, Modifier.fillMaxSize())
+            }
+        }
     }
 }
 

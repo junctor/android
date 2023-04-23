@@ -1,30 +1,8 @@
 package com.advice.firebase
 
 import androidx.annotation.NonNull
-import com.advice.core.local.Action
-import com.advice.core.local.Article
-import com.advice.core.local.Bookmark
-import com.advice.core.local.Conference
-import com.advice.core.local.ConferenceMap
-import com.advice.core.local.Event
-import com.advice.core.local.FAQ
-import com.advice.core.local.Location
-import com.advice.core.local.Speaker
-import com.advice.core.local.Tag
-import com.advice.core.local.TagType
-import com.advice.core.local.Vendor
-import com.advice.firebase.models.FirebaseAction
-import com.advice.firebase.models.FirebaseArticle
-import com.advice.firebase.models.FirebaseBookmark
-import com.advice.firebase.models.FirebaseConference
-import com.advice.firebase.models.FirebaseEvent
-import com.advice.firebase.models.FirebaseFAQ
-import com.advice.firebase.models.FirebaseLocation
-import com.advice.firebase.models.FirebaseMap
-import com.advice.firebase.models.FirebaseSpeaker
-import com.advice.firebase.models.FirebaseTag
-import com.advice.firebase.models.FirebaseTagType
-import com.advice.firebase.models.FirebaseVendor
+import com.advice.core.local.*
+import com.advice.firebase.models.*
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -203,9 +181,8 @@ fun FirebaseArticle.toArticle(): Article? {
 fun FirebaseMap.toMap(): ConferenceMap? {
     return try {
         ConferenceMap(
-            name,
-            file,
-            description,
+            name_text,
+            filename,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Map: ${ex.message}")

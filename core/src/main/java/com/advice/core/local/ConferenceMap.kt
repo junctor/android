@@ -6,6 +6,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ConferenceMap(
     val name: String = "",
-    val file: String = "",
-    val description: String? = null
+    val filename: String = "",
 ) : Parcelable

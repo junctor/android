@@ -5,7 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class FirebaseMap(
-    val name: String = "",
-    val file: String = "",
-    val description: String? = null
+    val name_text: String = "",
+    val filename: String = "",
 ) : Parcelable
