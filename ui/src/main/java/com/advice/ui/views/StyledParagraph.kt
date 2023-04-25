@@ -1,35 +1,24 @@
 package com.advice.ui.views
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.HashTagParser
 import com.advice.core.utils.HtmlParser
 import com.advice.core.utils.Tag
 import com.advice.core.utils.UrlParser
 import com.advice.ui.preview.LightDarkPreview
-import com.advice.ui.theme.BoldStyle
-import com.advice.ui.theme.EmailStyle
-import com.advice.ui.theme.HashTagStyle
-import com.advice.ui.theme.PhoneNumberStyle
-import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.theme.UrlStyle
+import com.advice.ui.theme.*
+import com.halilibo.richtext.markdown.Markdown
+import com.halilibo.richtext.ui.material3.Material3RichText
 import timber.log.Timber
 
 
@@ -63,7 +52,7 @@ fun Paragraph(
                 end = url.end,
             )
         }
-        for(tag in hashTags) {
+        for (tag in hashTags) {
             addStyle(
                 HashTagStyle,
                 tag.start,
@@ -82,28 +71,25 @@ fun Paragraph(
             layoutResult.value?.let { layoutResult ->
                 //onClick(layoutResult.getOffsetForPosition(pos))
                 val it = layoutResult.getOffsetForPosition(pos)
-                Timber.e("Paragraph: $it", )
+                Timber.e("Paragraph: $it")
 
 
                 x
                     .getStringAnnotations("URL", it, it)
                     .firstOrNull()?.let { stringAnnotation ->
-                        Timber.e("Paragraph: ${stringAnnotation.item}", )
+                        Timber.e("Paragraph: ${stringAnnotation.item}")
                         onLinkClicked(stringAnnotation.item)
                     }
             }
         }
     }
 
-    Text(
-        x, modifier = modifier
+    Material3RichText(
+        modifier = modifier
             .padding(16.dp)
-            /*.verticalScroll(rememberScrollState())*/
-            .then(pressIndicator),
-        onTextLayout = {
-            layoutResult.value = it
-        }
-    )
+    ) {
+        Markdown(text)
+    }
 }
 
 fun replaceHtmlTags(input: String, tags: List<Tag>): AnnotatedString {
