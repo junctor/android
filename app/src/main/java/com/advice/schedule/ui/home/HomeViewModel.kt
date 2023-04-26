@@ -43,13 +43,14 @@ class HomeViewModel : ViewModel(), KoinComponent {
                 while (remainder > 0L) {
                     remainder = conference.startDate.time - Date().time
                     repository.setCountdown(remainder)
-                    delay(1000)
+                    delay(COUNTDOWN_DELAY)
                 }
             }
         }
     }
 
     fun setConference(conference: Conference) {
+        countdownJob?.cancel()
         countdownJob = null
         viewModelScope.launch {
             repository.setConference(conference)
@@ -58,4 +59,8 @@ class HomeViewModel : ViewModel(), KoinComponent {
     }
 
     fun getHomeState(): LiveData<HomeState> = state
+
+    companion object {
+        private const val COUNTDOWN_DELAY = 250L
+    }
 }
