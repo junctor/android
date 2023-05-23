@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.utils.Time
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import java.util.Date
+import java.util.*
 
 @Composable
 fun ConferenceSelectorView(

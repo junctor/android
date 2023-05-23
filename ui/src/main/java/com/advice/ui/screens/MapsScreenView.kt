@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import com.advice.core.local.MapFile
@@ -23,12 +24,27 @@ import java.io.File
 @Composable
 fun MapsScreenView(maps: List<MapFile>, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Maps") }, navigationIcon = {
-            IconButton(onClick = onBackPressed) {
-                Icon(Icons.Default.ArrowBack, null)
-            }
-        })
-    }) {
+        CenterAlignedTopAppBar(
+            title = { Text("Maps") },
+            navigationIcon = {
+                IconButton(onClick = onBackPressed) {
+                    Icon(Icons.Default.ArrowBack, null)
+                }
+            },
+        )
+    },
+        bottomBar = {
+            BottomAppBar(
+                actions = {
+                    maps.map {
+                        Button(onClick = { /*TODO*/ }) {
+                            Text(it.name)
+                        }
+                    }
+                },
+                containerColor = Color.Transparent
+            )
+        }) {
         MapsScreenContent(maps.mapNotNull { it.file }, Modifier.padding(it))
     }
 }

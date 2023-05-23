@@ -1,53 +1,21 @@
 package com.advice.ui.screens
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
-import com.advice.ui.views.ConferenceSelectorView
-import com.shortstack.hackertracker.R
-import java.util.Date
+import com.advice.ui.views.home.*
+import java.util.*
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,193 +67,16 @@ fun HomeScreenContent(state: HomeState?, onMerchClick: () -> Unit, modifier: Mod
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference) -> Unit) {
-    if (state == null) {
-        CenterAlignedTopAppBar(title = { Text("Home") })
-        return
-    }
-
-    var expanded by rememberSaveable {
-        mutableStateOf(value = false)
-    }
-
-    Box(modifier = Modifier
-        .clickable {
-            expanded = !expanded
-        }
-        .fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(16.dp), verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(state.conference.name)
-            Icon(Icons.Default.ArrowDropDown, null)
-        }
-    }
-    DropdownMenu(
-        expanded = expanded, onDismissRequest = {
-            expanded = false
-        },
-        Modifier,
-
-        offset = DpOffset(32.dp, 140.dp)
-    ) {
-        Column(Modifier.background(MaterialTheme.colorScheme.background)) {
-            for (conference in state.conferences) {
-                ConferenceSelectorView(
-                    conference.name,
-                    conference.startDate,
-                    conference.endDate,
-                    conference.hasFinished
-                ) {
-                    onConferenceClick(conference)
-                    expanded = false
-                }
-            }
-        }
-    }
-}
-
-@Preview
+@LightDarkPreview
 @Composable
 fun HomeScreenViewPreview() {
     ScheduleTheme {
-//        HomeScreenView(HomeState.Loaded(listOf("")))
+        HomeScreenView(
+            state = HomeState.Loaded(
+                conferences = listOf(Conference.Zero),
+                conference = Conference.Zero,
+                article = emptyList(),
+                countdown = Date().time / 1000L
+            ), onConferenceClick = {}, onMerchClick = {})
     }
 }
-
-@Composable
-fun ConferenceView(name: String) {
-    Surface(
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 140.dp)
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            Image(
-                painterResource(R.drawable.skull),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                colorFilter = ColorFilter.tint(Color.Black)
-            )
-            Text(name)
-        }
-    }
-}
-
-@Composable
-fun CountdownView(time: Long) {
-    val seconds: Long = time / 1000
-    val minutes = seconds / 60
-    val hours = minutes / 60
-    val days = hours / 24
-
-    Surface(
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                "$days days".uppercase(),
-                fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.displaySmall
-            )
-            Text(
-                "${hours % 24} hours".uppercase(),
-                fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.displaySmall
-            )
-            Text(
-                "${minutes % 60} minutes".uppercase(),
-                fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.displaySmall
-            )
-            Text(
-                "${seconds % 60} seconds".uppercase(),
-                fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.displaySmall
-            )
-        }
-    }
-}
-
-@Composable
-fun ArticleView(text: String) {
-    Surface(
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-    ) {
-        Text(text, modifier = Modifier.padding(16.dp))
-    }
-}
-
-@Composable
-fun MerchCardView(onMerchClick: () -> Unit) {
-    Surface(
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .clickable { onMerchClick() }
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-    ) {
-        Text("BROWSE MERCH", modifier = Modifier.padding(16.dp))
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun ConferenceViewPreview() {
-    ScheduleTheme {
-        ConferenceView("DEFCON")
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun CountdownViewPreview() {
-    ScheduleTheme {
-        CountdownView(152_352_123)
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun ArticleViewPreview() {
-    ScheduleTheme {
-        ArticleView("Welcome to DEFCON 28!")
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun MerchCardViewPreview() {
-    ScheduleTheme {
-        MerchCardView({})
-    }
-}
-
-//@LightDarkPreview
-//@Composable
-//fun ConferenceSelectorPreview() {
-//    ScheduleTheme {
-//        //ConferenceSelector(state = )
-//    }
-//}
-
