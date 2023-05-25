@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="colors">
-        <item>#2896ff</item>
-        <item>#5c74ff</item>
-        <item>#653fff</item>
-        <item>#42d2bc</item>
-        <item>#9a3290</item>
-        <item>#e4376a</item>
-        <item>#fc853f</item>
-        <item>#50d7e8</item>
-    </string-array>
-
 </resources>

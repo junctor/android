@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -104,7 +103,6 @@ class MainActivity :
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         setMainFragment(item.itemId, item.title.toString(), false)
-//        binding.drawerLayout.closeDrawers()
         return true
     }
 
@@ -114,11 +112,9 @@ class MainActivity :
 
         if (last is EventFragment || last is SpeakerFragment) {
             secondaryVisible = true
-            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             binding.main.container.visibility = View.INVISIBLE
         } else {
             secondaryVisible = false
-            binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             binding.main.container.visibility = View.VISIBLE
 
             val panels = fragments.get(PanelsFragment::class.java)

@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <com.discord.panels.OverlappingPanelsLayout
-        android:id="@+id/overlapping_panels"
+        android:id="@+id/overlappingPanels"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,7 +16,6 @@
 
         <!-- Set layout_gravity on the start panel to "start" -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/start_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
@@ -25,6 +24,7 @@
             app:cardElevation="0dp">
 
             <fragment
+                android:id="@+id/homeFragment"
                 android:name="com.advice.schedule.ui.home.HomeFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -33,13 +33,13 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/center_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardCornerRadius="0dp"
             app:cardElevation="0dp">
 
             <fragment
+                android:id="@+id/scheduleFragment"
                 android:name="com.advice.schedule.ui.schedule.ScheduleFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -50,7 +50,6 @@
 
         <!-- Set layout_gravity on the end panel to "end" -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/end_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="end"
@@ -58,6 +57,7 @@
             app:cardElevation="0dp">
 
             <fragment
+                android:id="@+id/filterFragment"
                 android:name="com.advice.schedule.ui.schedule.FilterFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -67,7 +67,7 @@
     </com.discord.panels.OverlappingPanelsLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
+        android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/navigation_color"
