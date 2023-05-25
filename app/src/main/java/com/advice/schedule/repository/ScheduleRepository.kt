@@ -38,6 +38,7 @@ class ScheduleRepository(
 
     suspend fun bookmark(event: Event) {
         eventsDataSource.bookmark(event)
+        // todo: check if we're bookmarking or removing it.
         reminderManager.setReminder(event)
     }
 
