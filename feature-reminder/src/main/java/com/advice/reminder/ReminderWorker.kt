@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.advice.core.utils.NotificationHelper
+import com.advice.data.datasource.EventsDataSource
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 class ReminderWorker(
     context: Context,
     params: WorkerParameters,
+    private val eventsDataSource: EventsDataSource,
     private val notificationHelper: NotificationHelper
 ) : CoroutineWorker(context, params) {
 
@@ -25,16 +28,16 @@ class ReminderWorker(
             return Result.failure()
         }
 
-        val event = TODO()
-//        if (event == null) {
-//            Timber.e("Could not find the target event.")
-//            return Result.failure()
-//        }
-//
-//        // Event has already happened, skip this notification
-//        if(event.hasStarted || event.hasFinished) {
-//            return Result.success()
-//        }
+        val event = eventsDataSource.get().first().find { it.id == id }
+        if (event == null) {
+            Timber.e("Could not find the target event.")
+            return Result.failure()
+        }
+
+        // Event has already happened, skip this notification
+        if(event.hasStarted || event.hasFinished) {
+            return Result.success()
+        }
 
         notificationHelper.notifyStartingSoon(event)
 

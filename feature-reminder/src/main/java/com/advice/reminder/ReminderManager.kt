@@ -9,7 +9,6 @@ import com.advice.core.utils.Time
 import java.util.concurrent.TimeUnit
 
 class ReminderManager(
-//    private val databaseManager: DatabaseManager,
     private val workManager: WorkManager
 ) {
 
@@ -18,10 +17,9 @@ class ReminderManager(
         private const val TAG = "reminder_"
     }
 
-    suspend fun getEvent(conference: String, id: Long): Event? {
-//        return databaseManager.getEventById(conference, id)
-        TODO()
-    }
+//    suspend fun getEvent(conference: String, id: Long): Event? {
+//        return eventsDataSource.get().first().find { it.id == id }
+//    }
 
     fun setReminder(event: Event) {
         val start = event.start

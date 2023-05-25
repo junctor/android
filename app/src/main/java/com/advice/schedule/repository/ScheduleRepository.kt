@@ -1,14 +1,16 @@
 package com.advice.schedule.repository
 
+import com.advice.core.local.Event
 import com.advice.core.local.Tag
 import com.advice.data.datasource.EventsDataSource
 import com.advice.data.datasource.TagsDataSource
-import com.advice.core.local.Event
+import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.combine
 
 class ScheduleRepository(
     private val eventsDataSource: EventsDataSource,
     private val tagsDataSource: TagsDataSource,
+    private val reminderManager: ReminderManager,
 ) {
 
     val list = combine(eventsDataSource.get(), tagsDataSource.get()) { events, tags ->
@@ -36,6 +38,7 @@ class ScheduleRepository(
 
     suspend fun bookmark(event: Event) {
         eventsDataSource.bookmark(event)
+        reminderManager.setReminder(event)
     }
 
 }
