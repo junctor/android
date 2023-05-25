@@ -21,7 +21,5 @@ data class FirebaseConference(
     val start_timestamp: Timestamp = Timestamp(Date()),
     val end_timestamp: Timestamp = Timestamp(Date()),
     val timezone: String = "",
-    val link: String? = null,
-    //val updated_at: String? = null,
     val hidden: Boolean = false
 ) : Parcelable
