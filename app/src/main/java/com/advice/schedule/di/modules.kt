@@ -1,16 +1,46 @@
 package com.advice.schedule.di
 
 import androidx.work.WorkManager
+import com.advice.core.utils.NotificationHelper
 import com.advice.core.utils.Storage
 import com.advice.data.UserSession
-import com.advice.data.datasource.*
+import com.advice.data.datasource.ArticleDataSource
+import com.advice.data.datasource.BookmarkedElementDataSource
+import com.advice.data.datasource.ConferencesDataSource
+import com.advice.data.datasource.EventsDataSource
+import com.advice.data.datasource.FAQDataSource
+import com.advice.data.datasource.InMemoryBookmarkedDataSourceImpl
+import com.advice.data.datasource.LocationsDataSource
+import com.advice.data.datasource.MapsDataSource
+import com.advice.data.datasource.MerchDataSource
+import com.advice.data.datasource.SpeakersDataSource
+import com.advice.data.datasource.TagsDataSource
+import com.advice.data.datasource.VendorsDataSource
 import com.advice.firebase.FirebaseUserSession
-import com.advice.firebase.datasource.*
+import com.advice.firebase.datasource.FirebaseConferencesDataSource
+import com.advice.firebase.datasource.FirebaseEventsDataSource
+import com.advice.firebase.datasource.FirebaseFAQDataSource
+import com.advice.firebase.datasource.FirebaseLocationsDataSource
+import com.advice.firebase.datasource.FirebaseMapsDataSource
+import com.advice.firebase.datasource.FirebaseSpeakersDataSource
+import com.advice.firebase.datasource.FirebaseTagsDataSource
+import com.advice.firebase.datasource.FirebaseVendorsDataSource
 import com.advice.locations.data.LocationRepository
 import com.advice.merch.MerchViewModel
 import com.advice.merch.data.LocalMerchDataSource
 import com.advice.merch.data.MerchRepository
-import com.advice.schedule.repository.*
+import com.advice.reminder.ReminderManager
+import com.advice.retrofit.datasource.RetrofitArticleDataSource
+import com.advice.schedule.repository.FAQRepository
+import com.advice.schedule.repository.FiltersRepository
+import com.advice.schedule.repository.HomeRepository
+import com.advice.schedule.repository.InformationRepository
+import com.advice.schedule.repository.MapRepository
+import com.advice.schedule.repository.ScheduleRepository
+import com.advice.schedule.repository.SettingsRepository
+import com.advice.schedule.repository.SpeakerRepository
+import com.advice.schedule.repository.SpeakersRepository
+import com.advice.schedule.repository.VendorsRepository
 import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
@@ -51,18 +81,17 @@ val appModule = module {
     single { FirebaseAuth.getInstance() }
     single { FirebaseStorage.getInstance() }
 
+    // work manager
+    single { WorkManager.getInstance(androidContext()) }
+
     single { Analytics(get()) }
-    single { WorkManager.getInstance() }
 
-    // todo: Reminder
-//    single { com.advice.reminder.NotificationHelper(get()) }
-//    single { com.advice.reminder.ReminderManager(get()) }
-
-    // auth
-
+    // reminder
+    single { NotificationHelper(get()) }
+    single { ReminderManager(get()) }
 
     // repo
-    single { ScheduleRepository(get(), get()) }
+    single { ScheduleRepository(get(), get(), get()) }
     single { HomeRepository(get(), get(), get()) }
     single { SpeakersRepository(get()) }
     single { SpeakerRepository(get()) }
