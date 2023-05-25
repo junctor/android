@@ -14,6 +14,7 @@ data class Conference(
     val support: String?,
     val code: String,
     val maps: List<ConferenceMap>,
+    val kickoffDate: Date,
     val startDate: Date,
     val endDate: Date,
     val timezone: String,
@@ -24,7 +25,7 @@ data class Conference(
         get() = Time.now().after(endDate)
 
     companion object {
-        val Zero = Conference(-1, "CACTUSCON2023", "", null, null, "CACTUSCON2023", ArrayList(), Date(), Date(), "", false)
+        val Zero = Conference(-1, "CACTUSCON2023", "", null, null, "CACTUSCON2023", ArrayList(), Date(), Date(), Date(), "", false)
     }
 }
 

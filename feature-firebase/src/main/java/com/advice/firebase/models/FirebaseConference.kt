@@ -17,6 +17,7 @@ data class FirebaseConference(
     val start_date: String = "",
     val end_date: String = "",
     val begin_timestamp: Timestamp? = null,
+    val kickoff_timestamp: Timestamp = Timestamp(Date()),
     val start_timestamp: Timestamp = Timestamp(Date()),
     val end_timestamp: Timestamp = Timestamp(Date()),
     val timezone: String = "",

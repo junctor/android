@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.util.*
+import java.util.Date
 
 class HomeViewModel : ViewModel(), KoinComponent {
 
@@ -41,7 +41,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
         if (remainder > 0L) {
             countdownJob = viewModelScope.launch {
                 while (remainder > 0L) {
-                    remainder = conference.startDate.time - Date().time
+                    remainder = conference.kickoffDate.time - Date().time
                     repository.setCountdown(remainder)
                     delay(COUNTDOWN_DELAY)
                 }
