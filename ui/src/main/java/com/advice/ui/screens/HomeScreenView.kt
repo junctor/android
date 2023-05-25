@@ -29,7 +29,13 @@ fun HomeScreenView(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
         modifier = Modifier.clip(roundedCornerShape)
     ) { contentPadding ->
-        HomeScreenContent(state, onMerchClick, modifier = Modifier.padding(contentPadding))
+        HomeScreenContent(
+            state,
+            onMerchClick,
+            modifier = Modifier
+                .padding(bottom = 64.dp)
+                .padding(contentPadding)
+        )
     }
 }
 
@@ -39,7 +45,7 @@ fun HomeScreenContent(state: HomeState?, onMerchClick: () -> Unit, modifier: Mod
         when (state) {
             is HomeState.Error -> {}
             is HomeState.Loaded -> {
-                LazyColumn(Modifier.padding(bottom = 30.dp)) {
+                LazyColumn {
                     item {
                         ConferenceView(state.conference.name)
                     }

@@ -1,12 +1,13 @@
 package com.advice.ui.views.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.ui.preview.LightDarkPreview
@@ -21,13 +22,13 @@ fun ConferenceDropdown(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = onDismiss,
-        modifier = modifier.background(Color.Green),
-        offset = DpOffset(32.dp, 140.dp)
+    AnimatedVisibility(
+        visible = expanded,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background),
     ) {
-        Column(Modifier.background(Color.Black)) {
+        Column(Modifier.padding(bottom = 64.dp)) {
             for (conference in conferences) {
                 ConferenceSelectorView(
                     conference.name,
