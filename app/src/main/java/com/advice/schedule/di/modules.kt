@@ -17,6 +17,7 @@ import com.advice.data.datasource.SpeakersDataSource
 import com.advice.data.datasource.TagsDataSource
 import com.advice.data.datasource.VendorsDataSource
 import com.advice.firebase.FirebaseUserSession
+import com.advice.firebase.datasource.FirebaseArticleDataSource
 import com.advice.firebase.datasource.FirebaseConferencesDataSource
 import com.advice.firebase.datasource.FirebaseEventsDataSource
 import com.advice.firebase.datasource.FirebaseFAQDataSource
@@ -30,7 +31,6 @@ import com.advice.merch.MerchViewModel
 import com.advice.merch.data.LocalMerchDataSource
 import com.advice.merch.data.MerchRepository
 import com.advice.reminder.ReminderManager
-import com.advice.retrofit.datasource.RetrofitArticleDataSource
 import com.advice.schedule.repository.FAQRepository
 import com.advice.schedule.repository.FiltersRepository
 import com.advice.schedule.repository.HomeRepository
@@ -119,6 +119,9 @@ val appModule = module {
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
     single<MerchDataSource> { LocalMerchDataSource() }
+
+    //    single<ArticleDataSource> { RetrofitArticleDataSource(get(), get()) }
+
 
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }
