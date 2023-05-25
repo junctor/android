@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.advice.schedule.di.appModule
 import com.google.firebase.FirebaseApp
-import com.orhanobut.logger.Logger
 import com.shortstack.hackertracker.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -28,11 +27,5 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-
-        initLogger()
-    }
-
-    private fun initLogger() {
-        Logger.init().methodCount(1).hideThreadInfo()
     }
 }

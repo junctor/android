@@ -120,7 +120,6 @@ dependencies {
 
 
     // Utils
-    implementation("com.orhanobut:logger:1.15")
     implementation("com.google.code.gson:gson:$gsonVersion")
     implementation("com.jakewharton.timber:timber:$timberVersion")
 
