@@ -8,12 +8,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.schedule.ui.activities.MainActivity
+import com.advice.schedule.ui.MainActivity
 import com.advice.schedule.ui.information.faq.FAQFragment
 import com.advice.schedule.ui.information.info.CodeOfConductFragment
 import com.advice.schedule.ui.information.info.SupportFragment
 import com.advice.schedule.ui.information.info.WiFiFragment
-import com.advice.locations.LocationsFragment
 import com.advice.schedule.ui.information.speakers.SpeakersFragment
 import com.advice.schedule.ui.information.vendors.VendorsFragment
 import com.advice.schedule.utilities.Analytics

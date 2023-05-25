@@ -8,7 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.advice.schedule.ui.activities.MainActivity
+import com.advice.schedule.ui.MainActivity
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel

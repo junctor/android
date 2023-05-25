@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.core.local.Speaker
-import com.advice.schedule.ui.activities.MainActivity
+import com.advice.schedule.ui.MainActivity
 import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.theme.ScheduleTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel

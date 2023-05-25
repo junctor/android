@@ -6,14 +6,17 @@ import androidx.work.WorkerParameters
 import com.advice.core.utils.NotificationHelper
 import com.advice.data.datasource.EventsDataSource
 import kotlinx.coroutines.flow.first
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 class ReminderWorker(
-    context: Context,
+    private val context: Context,
     params: WorkerParameters,
-    private val eventsDataSource: EventsDataSource,
-    private val notificationHelper: NotificationHelper
-) : CoroutineWorker(context, params) {
+) : CoroutineWorker(context, params), KoinComponent {
+
+    private val eventsDataSource by inject<EventsDataSource>()
+    private val notificationHelper by inject<NotificationHelper>()
 
     override suspend fun doWork(): Result {
         val conference = inputData.getString(INPUT_CONFERENCE)
@@ -35,11 +38,12 @@ class ReminderWorker(
         }
 
         // Event has already happened, skip this notification
-        if(event.hasStarted || event.hasFinished) {
+        if (event.hasStarted || event.hasFinished) {
+            Timber.e("Event has already finished.")
             return Result.success()
         }
 
-        notificationHelper.notifyStartingSoon(event)
+        notificationHelper.notifyStartingSoon(context, event)
 
         return Result.success()
     }

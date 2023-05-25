@@ -7,9 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.advice.schedule.get
-import com.advice.schedule.ui.activities.MainActivity
-import com.advice.schedule.ui.schedule.ScheduleFragment
 import com.advice.schedule.utilities.Analytics
 import com.discord.panels.OverlappingPanelsLayout
 import com.discord.panels.PanelState

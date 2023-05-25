@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.activities
+package com.advice.schedule.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -11,7 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.advice.core.Navigation
-import com.advice.core.local.*
+import com.advice.core.local.Event
+import com.advice.core.local.Merch
+import com.advice.core.local.Speaker
+import com.advice.core.local.Tag
+import com.advice.merch.MerchFragment
+import com.advice.merch.MerchItemFragment
+import com.advice.merch.MerchSummaryFragment
 import com.advice.schedule.get
 import com.advice.schedule.replaceFragment
 import com.advice.schedule.ui.PanelsFragment
@@ -22,10 +28,6 @@ import com.advice.schedule.ui.maps.MapsFragment
 import com.advice.schedule.ui.schedule.ScheduleFragment
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
-import com.advice.merch.MerchFragment
-import com.advice.merch.MerchItemFragment
-import com.advice.merch.MerchSummaryFragment
-import com.advice.locations.LocationsFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.shortstack.hackertracker.R

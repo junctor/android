@@ -1,21 +1,25 @@
 package com.advice.core.utils
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.advice.core.local.Event
 import com.shortstack.core.R
+import timber.log.Timber
 
 class NotificationHelper(private val context: Context)  {
 
@@ -52,7 +56,7 @@ class NotificationHelper(private val context: Context)  {
             )
         )
 
-        setItemPendingIntent(builder, item)
+//        setItemPendingIntent(builder, item)
 
         return builder.build()
     }
@@ -63,7 +67,7 @@ class NotificationHelper(private val context: Context)  {
         builder.setContentTitle(item.title)
         builder.setContentText(context.getString(R.string.notification_updated))
 
-        setItemPendingIntent(builder, item)
+//        setItemPendingIntent(builder, item)
 
         return builder.build()
     }
@@ -71,15 +75,15 @@ class NotificationHelper(private val context: Context)  {
     private val notificationBuilder: NotificationCompat.Builder
         get() {
             val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-//            val color = ContextCompat.getColor(context, R.color.colorPrimary)
+            val color = ContextCompat.getColor(context, R.color.colorPrimary)
 
             val builder = NotificationCompat.Builder(context, CHANNEL_UPDATES)
             builder.setSound(soundUri)
             builder.setVibrate(longArrayOf(0, 250, 500, 250))
             builder.setLights(Color.MAGENTA, 3000, 1000)
 
-//            builder.setSmallIcon(R.drawable.skull)
-//            builder.color = color
+            builder.setSmallIcon(R.drawable.skull)
+            builder.color = color
             builder.setAutoCancel(true)
 
             return builder
@@ -87,7 +91,6 @@ class NotificationHelper(private val context: Context)  {
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun setItemPendingIntent(builder: NotificationCompat.Builder, item: Event? = null) {
-        TODO()
 //        val intent = Intent(context, MainActivity::class.java)
 //
 //        if (item != null) {
@@ -106,7 +109,21 @@ class NotificationHelper(private val context: Context)  {
         manager.notify(id, notification)
     }
 
-    fun notifyStartingSoon(event: Event) {
+    fun notifyStartingSoon(context: Context, event: Event) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
         manager.notify(event.id.toInt(), getStartingSoonNotification(event))
     }
 
