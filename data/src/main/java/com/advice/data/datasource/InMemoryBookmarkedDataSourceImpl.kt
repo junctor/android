@@ -17,7 +17,11 @@ class InMemoryBookmarkedDataSourceImpl : BookmarkedElementDataSource {
     }
 
     override suspend fun bookmark(id: Long, isBookmarked: Boolean) {
-        map[id] = Bookmark(id.toString(), value = isBookmarked)
+        if(isBookmarked) {
+            map[id] = Bookmark(id.toString(), value = true)
+        } else {
+            map.remove(id)
+        }
         flow.emit(map.values.toList())
     }
 }
