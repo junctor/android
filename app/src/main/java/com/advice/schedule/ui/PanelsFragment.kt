@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.advice.core.utils.Storage
 import com.advice.schedule.utilities.Analytics
 import com.discord.panels.OverlappingPanelsLayout
 import com.discord.panels.PanelState
@@ -18,6 +19,7 @@ import org.koin.core.inject
 class PanelsFragment : Fragment(), KoinComponent {
 
     private val analytics by inject<Analytics>()
+    private val storage by inject<Storage>()
 
     private var _binding: PanelsFragmentBinding? = null
     private val binding get() = _binding!!
@@ -36,8 +38,15 @@ class PanelsFragment : Fragment(), KoinComponent {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // force hide the bottom navigation bar
-        binding.bottomNavigation.translationY = 300f
+        if (storage.showSchedule) {
+            // force hide the bottom navigation bar
+            binding.bottomNavigation.translationY = 300f
+            // to ensure the default screen is tracked
+            analytics.setScreen(Analytics.SCREEN_SCHEDULE)
+        } else {
+            binding.overlappingPanels.openStartPanel()
+            analytics.setScreen(Analytics.SCREEN_HOME)
+        }
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -45,10 +54,12 @@ class PanelsFragment : Fragment(), KoinComponent {
                     binding.overlappingPanels.closePanels()
                     false
                 }
+
                 R.id.nav_information -> {
                     showInformation()
                     false
                 }
+
                 R.id.nav_map -> {
                     showMap()
                     false
@@ -58,6 +69,7 @@ class PanelsFragment : Fragment(), KoinComponent {
                     showSettings()
                     false
                 }
+
                 else -> false
             }
         }
@@ -66,11 +78,13 @@ class PanelsFragment : Fragment(), KoinComponent {
             override fun handleOnBackPressed() {
                 when (binding.overlappingPanels.getSelectedPanel()) {
                     OverlappingPanelsLayout.Panel.START -> {
-                        requireActivity().onBackPressed()
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     }
+
                     OverlappingPanelsLayout.Panel.CENTER -> {
                         binding.overlappingPanels.openStartPanel()
                     }
+
                     OverlappingPanelsLayout.Panel.END -> {
                         binding.overlappingPanels.closePanels()
                     }
@@ -79,23 +93,25 @@ class PanelsFragment : Fragment(), KoinComponent {
         }
         requireActivity().onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
-        binding.overlappingPanels.registerStartPanelStateListeners(object : OverlappingPanelsLayout.PanelStateListener {
-
+        binding.overlappingPanels.registerStartPanelStateListeners(object :
+            OverlappingPanelsLayout.PanelStateListener {
             private var previousScreen: String? = null
 
             override fun onPanelStateChange(panelState: PanelState) {
                 when (panelState) {
                     PanelState.Opening,
                     PanelState.Opened -> showBottomNavigation()
+
                     PanelState.Closing,
                     PanelState.Closed -> hideBottomNavigation()
                 }
 
-                onBackPressedCallback.isEnabled = when (binding.overlappingPanels.getSelectedPanel()) {
-                    OverlappingPanelsLayout.Panel.START -> false
-                    OverlappingPanelsLayout.Panel.CENTER,
-                    OverlappingPanelsLayout.Panel.END -> true
-                }
+                onBackPressedCallback.isEnabled =
+                    when (binding.overlappingPanels.getSelectedPanel()) {
+                        OverlappingPanelsLayout.Panel.START -> false
+                        OverlappingPanelsLayout.Panel.CENTER,
+                        OverlappingPanelsLayout.Panel.END -> true
+                    }
 
                 val screen = when (binding.overlappingPanels.getSelectedPanel()) {
                     OverlappingPanelsLayout.Panel.START -> Analytics.SCREEN_HOME
@@ -108,9 +124,6 @@ class PanelsFragment : Fragment(), KoinComponent {
                 }
             }
         })
-
-        // to ensure the default screen is tracked
-        analytics.setScreen(Analytics.SCREEN_SCHEDULE)
     }
 
     private fun showInformation() {

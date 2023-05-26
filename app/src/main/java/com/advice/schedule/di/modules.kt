@@ -52,7 +52,6 @@ import com.advice.schedule.ui.maps.MapViewModel
 import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
-import com.advice.schedule.ui.tablet.TabletViewModel
 import com.advice.schedule.utilities.Analytics
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
@@ -135,8 +134,6 @@ val appModule = module {
     viewModel { SettingsViewModel() }
     viewModel { FiltersViewModel() }
     viewModel { ConferenceViewModel() }
-
-    viewModel { TabletViewModel() }
 
     viewModel { MerchViewModel() }
 

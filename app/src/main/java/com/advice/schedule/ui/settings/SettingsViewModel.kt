@@ -1,13 +1,10 @@
 package com.advice.schedule.ui.settings
 
 import androidx.lifecycle.ViewModel
-import com.advice.core.ui.SettingsScreenState
 import com.advice.schedule.repository.SettingsRepository
 import com.advice.schedule.utilities.Analytics
-import kotlinx.coroutines.flow.flow
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.util.concurrent.Flow
 
 class SettingsViewModel : ViewModel(), KoinComponent {
 
@@ -21,7 +18,7 @@ class SettingsViewModel : ViewModel(), KoinComponent {
         analytics.onDeveloperEvent(isFollow)
     }
 
-    fun onPreferenceChanged(id: Int, isChecked: Boolean) {
+    fun onPreferenceChanged(id: String, isChecked: Boolean) {
         repository.onPreferenceChanged(id, isChecked)
     }
 }

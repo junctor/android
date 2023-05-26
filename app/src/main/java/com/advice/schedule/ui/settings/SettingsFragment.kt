@@ -12,7 +12,6 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.advice.ui.screens.SettingScreenView
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.hackertracker.BuildConfig
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -37,6 +36,7 @@ class SettingsFragment : Fragment(), KoinComponent {
                             state.timezone,
                             state.version,
                             state.useConferenceTimeZone,
+                            state.showSchedule,
                             state.showFilterButton,
                             state.enableEasterEggs,
                             state.enableAnalytics,

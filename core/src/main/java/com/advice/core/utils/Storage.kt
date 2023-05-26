@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.google.gson.Gson
-import java.util.*
+import java.util.Calendar
 
 class Storage(context: Context, private val gson: Gson) {
 
@@ -18,6 +18,7 @@ class Storage(context: Context, private val gson: Gson) {
         const val NAV_DRAWER_ON_BACK_KEY = "nav_drawer_on_back"
         const val FILTER_BUTTON_SHOWN = "filter_button_shown"
         const val FORCE_TIME_ZONE_KEY = "force_time_zone"
+        const val SHOW_SCHEDULE_BY_DEFAULT = "show_schedule_by_default"
         const val USER_ANALYTICS_KEY = "user_analytics"
 
         const val TUTORIAL_FILTERS = "tutorial_filters"
@@ -49,6 +50,12 @@ class Storage(context: Context, private val gson: Gson) {
         get() = preferences.getBoolean(FORCE_TIME_ZONE_KEY, true)
         set(value) {
             preferences.edit().putBoolean(FORCE_TIME_ZONE_KEY, value).apply()
+        }
+
+    var showSchedule: Boolean
+        get() = preferences.getBoolean(SHOW_SCHEDULE_BY_DEFAULT, false)
+        set(value) {
+            preferences.edit().putBoolean(SHOW_SCHEDULE_BY_DEFAULT, value).apply()
         }
 
     var easterEggs: Boolean

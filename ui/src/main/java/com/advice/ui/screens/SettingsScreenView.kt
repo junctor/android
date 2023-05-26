@@ -44,11 +44,12 @@ fun SettingScreenView(
     timeZone: String,
     version: String,
     useConferenceTimeZone: Boolean,
+    showSchedule: Boolean,
     showFilterButton: Boolean,
     enableEasterEggs: Boolean,
     enableAnalytics: Boolean,
     showTwitterHandle: Boolean,
-    onPreferenceChanged: (Int, Boolean) -> Unit,
+    onPreferenceChanged: (String, Boolean) -> Unit,
     onBackPressed: () -> Unit
 ) {
     Scaffold(topBar = {
@@ -62,6 +63,7 @@ fun SettingScreenView(
             timeZone,
             version,
             useConferenceTimeZone,
+            showSchedule,
             showFilterButton,
             enableEasterEggs,
             enableAnalytics,
@@ -77,11 +79,12 @@ fun SettingsScreenContent(
     timeZone: String,
     version: String,
     useConferenceTimeZone: Boolean,
+    showSchedule: Boolean,
     showFilterButton: Boolean,
     enableEasterEggs: Boolean,
     enableAnalytics: Boolean,
     showTwitterHandle: Boolean,
-    onPreferenceChanged: (Int, Boolean) -> Unit,
+    onPreferenceChanged: (String, Boolean) -> Unit,
     modifier: Modifier
 ) {
     Column(modifier) {
@@ -91,16 +94,19 @@ fun SettingsScreenContent(
             summaryOn = "Using conference's timezone",
             summaryOff = "Using device's timezone"
         ) {
-            onPreferenceChanged(1, it)
+            onPreferenceChanged("force_time_zone", it)
+        }
+        SwitchPreference("Show Schedule by default", isChecked = showSchedule) {
+            onPreferenceChanged("show_schedule", it)
         }
         SwitchPreference("Show filter button", isChecked = showFilterButton) {
-            onPreferenceChanged(2, it)
-        }
-        SwitchPreference("Easter Eggs", summary = "???", isChecked = enableEasterEggs) {
-            onPreferenceChanged(3, it)
+            onPreferenceChanged("show_filter", it)
         }
         SwitchPreference("Send anonymous usage statistics", isChecked = enableAnalytics) {
-            onPreferenceChanged(4, it)
+            onPreferenceChanged("allow_analytics", it)
+        }
+        SwitchPreference("Easter Eggs", summary = "???", isChecked = enableEasterEggs) {
+            onPreferenceChanged("easter_eggs", it)
         }
         DeveloperSection()
         if (showTwitterHandle) {
@@ -246,6 +252,7 @@ fun SettingScreenViewDarkPreview() {
             timeZone = "Europe/Helsinki",
             version = "7.0.0 (1)",
             useConferenceTimeZone = true,
+            showSchedule = false,
             showFilterButton = true,
             enableEasterEggs = false,
             enableAnalytics = true,
