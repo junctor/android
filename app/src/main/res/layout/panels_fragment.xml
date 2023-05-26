@@ -13,56 +13,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <!-- Set layout_gravity on the start panel to "start" -->
-        <com.google.android.material.card.MaterialCardView
+        <fragment
+            android:id="@+id/homeFragment"
+            android:name="com.advice.schedule.ui.home.HomeFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:paddingBottom="52dp"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="0dp">
+            android:paddingBottom="52dp" />
 
-            <fragment
-                android:id="@+id/homeFragment"
-                android:name="com.advice.schedule.ui.home.HomeFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
+        <fragment
+            android:id="@+id/scheduleFragment"
+            android:name="com.advice.schedule.ui.schedule.ScheduleFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="0dp">
-
-            <fragment
-                android:id="@+id/scheduleFragment"
-                android:name="com.advice.schedule.ui.schedule.ScheduleFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                 />
-
-
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_height="match_parent" />
 
         <!-- Set layout_gravity on the end panel to "end" -->
-        <com.google.android.material.card.MaterialCardView
+        <fragment
+            android:id="@+id/filterFragment"
+            android:name="com.advice.schedule.ui.schedule.FilterFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="0dp">
-
-            <fragment
-                android:id="@+id/filterFragment"
-                android:name="com.advice.schedule.ui.schedule.FilterFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_gravity="end" />
 
     </com.discord.panels.OverlappingPanelsLayout>
 

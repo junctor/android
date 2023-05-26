@@ -14,7 +14,8 @@ private val DarkColorPalette = darkColorScheme(
     primary = HotPink,
     inversePrimary = SugarHearts,
     secondary = CertainFrogs,
-    onPrimary = Color.White
+    onPrimary = Color.White,
+    primaryContainer = HotPink,
 )
 
 private val LightColorPalette = lightColorScheme(

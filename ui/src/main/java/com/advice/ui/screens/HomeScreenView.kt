@@ -33,7 +33,6 @@ fun HomeScreenView(
             state,
             onMerchClick,
             modifier = Modifier
-                .padding(bottom = 64.dp)
                 .padding(contentPadding)
         )
     }
@@ -62,6 +61,9 @@ fun HomeScreenContent(state: HomeState?, onMerchClick: () -> Unit, modifier: Mod
 
                     items(state.article) {
                         ArticleView(text = it.text)
+                    }
+                    item {
+                        Spacer(Modifier.height(64.dp))
                     }
                 }
             }

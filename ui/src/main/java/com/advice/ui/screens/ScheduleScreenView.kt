@@ -1,7 +1,6 @@
 package com.advice.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,10 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -24,20 +21,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
+import com.advice.core.local.Location
+import com.advice.core.local.Tag
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.roundedCornerShape
 import com.advice.ui.views.DayHeaderView
 import com.advice.ui.views.DaySelectorView
 import com.advice.ui.views.EmptyView
 import com.advice.ui.views.EventRowView
 import com.advice.ui.views.SearchableTopAppBar
+import com.shortstack.hackertracker.R
 import kotlinx.coroutines.launch
+import java.util.Date
 
 sealed class ScheduleScreenState {
     object Init : ScheduleScreenState()
@@ -56,22 +58,22 @@ fun ScheduleScreenView(
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event) -> Unit,
 ) {
-    Scaffold(topBar = {
-        SearchableTopAppBar(title = { Text("Schedule") }, navigationIcon = {
-            IconButton(onClick = onMenuClicked) {
-                Icon(Icons.Default.Menu, null)
+    Scaffold(
+        topBar = {
+            SearchableTopAppBar(title = { Text("Schedule") }, navigationIcon = {
+                IconButton(onClick = onMenuClicked) {
+                    Icon(Icons.Default.Menu, null)
+                }
+            }) { query ->
+                onSearchQuery(query)
             }
-        }) { query ->
-            onSearchQuery(query)
-        }
-    }, floatingActionButton = {
-        FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
-            Icon(Icons.Default.Search, null)
-        }
+        }, floatingActionButton = {
+            FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
+                Icon(painterResource(R.drawable.baseline_filter_list_24), null)
+            }
 
-    }, modifier = Modifier
-        .background(Color.Transparent)
-        .clip(RoundedCornerShape(16.dp))
+        }, modifier = Modifier
+            .clip(roundedCornerShape)
     ) { contentPadding ->
         when (state) {
             is ScheduleScreenState.Error -> {
@@ -83,7 +85,12 @@ fun ScheduleScreenView(
 
             ScheduleScreenState.Loading -> {}
             is ScheduleScreenState.Success -> {
-                ScheduleScreenContent(state.days, onEventClick, onBookmarkClick, modifier = Modifier.padding(contentPadding))
+                ScheduleScreenContent(
+                    state.days,
+                    onEventClick,
+                    onBookmarkClick,
+                    modifier = Modifier.padding(contentPadding)
+                )
             }
         }
     }
@@ -92,7 +99,12 @@ fun ScheduleScreenView(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) -> Unit, onBookmarkClick: (Event) -> Unit, modifier: Modifier) {
+fun ScheduleScreenContent(
+    days: Map<String, List<Event>>,
+    onEventClick: (Event) -> Unit,
+    onBookmarkClick: (Event) -> Unit,
+    modifier: Modifier
+) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val scrollContext = rememberScrollContext(listState = listState)
@@ -100,7 +112,8 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
     val temp = remember {
         // todo: refactor, this is run too many times.
         val elements = days.flatMap { listOf(it.key) + it.value }
-        elements.mapIndexed { index, any -> index to any }.filter { it.second is String }.map { it.first }
+        elements.mapIndexed { index, any -> index to any }.filter { it.second is String }
+            .map { it.first }
     }
 
     val start = temp.indexOfLast { it <= scrollContext.start }
@@ -125,7 +138,8 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
                         if (previousTime == null || previousTime != it.startTime.time) {
                             previousTime = it.startTime.time
                             stickyHeader {
-                                val time = TimeUtil.getTimeStamp(it.startTime, is24HourFormat = false)
+                                val time =
+                                    TimeUtil.getTimeStamp(it.startTime, is24HourFormat = false)
                                 Text(
                                     time, textAlign = TextAlign.Center,
                                     modifier = Modifier
@@ -167,6 +181,41 @@ fun ScheduleScreenContent(days: Map<String, List<Event>>, onEventClick: (Event) 
 @Composable
 fun ScheduleScreenViewPreview() {
     ScheduleTheme {
-        ScheduleScreenView(null, {}, {}, {}, {}, {})
+        val state = ScheduleScreenState.Success(
+            mapOf(
+                "May 19" to listOf(
+                    Event(
+                        conference = "THOTCON 0xC",
+                        title = "DOORS OPEN 喝一杯",
+                        description = "",
+                        start = Date(2023, 5, 19, 8, 30),
+                        end = Date(),
+                        updated = "",
+                        speakers = emptyList(),
+                        types = listOf(
+                            Tag(
+                                -1L,
+                                "Misc",
+                                "",
+                                "#e73dd2",
+                                -1
+                            )
+                        ),
+                        location = Location(
+                            -1L,
+                            "LOC://AUD - Track 1 / Первый Трек",
+                            null,
+                            null,
+                            "THOCON 0xC"
+                        ),
+                        urls = emptyList(),
+
+                        )
+                )
+            )
+        )
+
+
+        ScheduleScreenView(state, {}, {}, {}, {}, {})
     }
 }
