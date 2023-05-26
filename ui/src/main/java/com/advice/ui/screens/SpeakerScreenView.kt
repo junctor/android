@@ -49,9 +49,7 @@ fun SpeakerScreenContent(title: String, description: String, events: List<Event>
             }
         }
         if (description.isNotBlank()) {
-            Paragraph(description, Modifier.padding(16.dp)) {
-                // todo: handle onClick
-            }
+            Paragraph(description, Modifier.padding(16.dp))
         } else {
             NoDetailsView()
         }

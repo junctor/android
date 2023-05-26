@@ -1,6 +1,8 @@
 package com.advice.ui.screens
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,8 +21,7 @@ import com.shortstack.hackertracker.R
 @Composable
 fun CodeOfConductScreenView(
     policy: String?,
-    onBackPressed: () -> Unit,
-    onLinkClicked: (String) -> Unit
+    onBackPressed: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -34,7 +35,12 @@ fun CodeOfConductScreenView(
             )
         }) {
         if (policy != null) {
-            Paragraph(policy, Modifier.padding(it), onLinkClicked)
+            Paragraph(
+                policy,
+                Modifier
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
+            )
         }
     }
 }
@@ -46,7 +52,7 @@ fun CodeOfConductScreenViewPreview() {
     ScheduleTheme {
         CodeOfConductScreenView(
             "If you have a \uD83D\uDE91 \uD83C\uDFE5 Medical or \uD83D\uDC6E Police Emergency: Call <a href=\"tel:911\">911</a> <br /><br /> If you have questions about what's happening in or around DEF CON, or otherwise need help answering a question: please visit one of the NFO (information) booths located in every DC30 venue. They're highlighted in yellow on the venue maps.  <br /><br /> If you prefer not to discuss your problem with a goon in-person (either at an Info Booth or walking around), you can reach DEF CON staff during normal hours of operation (8am to 4am) to anonymously report any behavior violating our code of conduct, or to find an empathic ear, by calling <a href=\"tel:+17252220934\">+1 (725) 222-0934</a>. <br /><br /> For relevant issues, we are collaborating with several organizations to provide expert resources for survivors, including dedicated support for LGBTQ+:<br /> - Kick at Darkness<br /> - The Rape Crisis Center Las Vegas<br /> - Nevada Coalition to End Domestic and Sexual Violence<br /> <br />",
-            {},
-            {})
+            {}
+        )
     }
 }
