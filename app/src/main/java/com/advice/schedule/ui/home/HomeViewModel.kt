@@ -37,7 +37,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
     }
 
     private fun startCountdown(conference: Conference) {
-        var remainder = conference.startDate.time - Date().time
+        var remainder = conference.kickoffDate.time - Date().time
         if (remainder > 0L) {
             countdownJob = viewModelScope.launch {
                 while (remainder > 0L) {

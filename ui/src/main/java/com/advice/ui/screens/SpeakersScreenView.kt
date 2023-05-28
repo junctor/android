@@ -38,7 +38,7 @@ fun SpeakersScreenView(speakers: List<Speaker>, onBackPressed: () -> Unit, onSpe
 fun SpeakersScreenContent(speakers: List<Speaker>, modifier: Modifier = Modifier, onSpeakerClicked: (Speaker) -> Unit) {
     LazyColumn(modifier) {
         items(speakers) {
-            SpeakerView(it.name, it.title) {
+            SpeakerView(it.name, title = it.title) {
                 onSpeakerClicked(it)
             }
         }

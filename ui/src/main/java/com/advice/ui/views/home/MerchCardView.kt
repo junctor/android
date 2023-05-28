@@ -21,9 +21,9 @@ fun MerchCardView(onMerchClick: () -> Unit) {
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
-            .clickable { onMerchClick() }
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp)
+            .clickable { onMerchClick() }
     ) {
         Text("BROWSE MERCH", modifier = Modifier.padding(16.dp))
     }
