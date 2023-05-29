@@ -5,28 +5,66 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.advice.core.Navigation
 import com.advice.core.local.Event
 import com.advice.core.local.Merch
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
+import com.advice.core.ui.FiltersScreenState
+import com.advice.core.ui.HomeState
 import com.advice.merch.MerchFragment
 import com.advice.merch.MerchItemFragment
 import com.advice.merch.MerchSummaryFragment
 import com.advice.schedule.get
 import com.advice.schedule.replaceFragment
-import com.advice.schedule.ui.PanelsFragment
 import com.advice.schedule.ui.events.EventFragment
+import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationFragment
 import com.advice.schedule.ui.information.speakers.SpeakerFragment
 import com.advice.schedule.ui.maps.MapsFragment
+import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.advice.schedule.ui.schedule.ScheduleFragment
+import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsFragment
 import com.advice.schedule.utilities.Analytics
+import com.advice.ui.screens.FilterScreenView
+import com.advice.ui.screens.HomeScreenView
+import com.advice.ui.screens.ScheduleScreenState
+import com.advice.ui.screens.ScheduleScreenView
+import com.advice.ui.theme.ScheduleTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.shortstack.hackertracker.R
@@ -36,6 +74,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
 
+@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity :
     AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
@@ -56,13 +95,105 @@ class MainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
-        if (savedInstanceState == null) {
-            setMainFragment(R.id.nav_home, getString(R.string.home), false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setContent {
+
+            // Remember a SystemUiController
+            val systemUiController = rememberSystemUiController()
+            //val useDarkIcons = MaterialTheme.colors.isLight
+
+            SideEffect {
+                // Update all of the system bar colors to be transparent, and use
+                // dark icons if the theme is light
+                systemUiController.setSystemBarsColor(
+                    color = Color.Transparent,
+                    darkIcons = false
+                )
+            }
+
+
+            ScheduleTheme {
+                Box() {
+
+                    var isShown by remember { mutableStateOf(false) }
+
+                    OverlappingPanelsView(
+                        leftPanel = {
+                            val viewModel = viewModel<HomeViewModel>()
+                            val state =
+                                viewModel.getHomeState().observeAsState().value ?: HomeState.Loading
+                            HomeScreenView(state = state, onConferenceClick = {}, onMerchClick = {})
+                        },
+                        rightPanel = {
+                            val viewModel = viewModel<FiltersViewModel>()
+                            val state =
+                                viewModel.state.collectAsState(initial = FiltersScreenState.Init).value
+                            FilterScreenView(state = state, onClick = {}, onClear = {})
+                        },
+                        mainPanel = {
+                            val viewModel = viewModel<ScheduleViewModel>()
+                            val state =
+                                viewModel.state.collectAsState(initial = ScheduleScreenState.Loading).value
+                            ScheduleScreenView(
+                                state = state,
+                                onMenuClicked = { /*TODO*/ },
+                                onSearchQuery = {},
+                                onFabClicked = { /*TODO*/ },
+                                onEventClick = {
+                                    //showEvent(it)
+                                },
+                                onBookmarkClick = {},
+                            )
+                        },
+                        onPanelChangedListener = { panel ->
+                            isShown = panel == Panel.Left
+                        }
+                    )
+                    DismissibleBottomAppBar(
+                        Modifier.align(Alignment.BottomCenter),
+                        isShown = isShown
+                    ) {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            IconButton(onClick = { /*TODO*/ }) {
+                                Icon(Icons.Default.Call, contentDescription = null)
+                            }
+                            IconButton(onClick = { /*TODO*/ }) {
+                                Icon(Icons.Default.Call, contentDescription = null)
+                            }
+                            IconButton(onClick = { /*TODO*/ }) {
+                                Icon(Icons.Default.Call, contentDescription = null)
+                            }
+                            IconButton(onClick = { /*TODO*/ }) {
+                                Icon(Icons.Default.Call, contentDescription = null)
+                            }
+                        }
+                    }
+                }
+            }
         }
-        supportFragmentManager.addOnBackStackChangedListener(this)
+    }
+
+    @Composable
+    private fun DismissibleBottomAppBar(
+        modifier: Modifier = Modifier,
+        isShown: Boolean,
+        content: @Composable RowScope.() -> Unit
+    ) {
+        var offsetY by remember { mutableStateOf(0.dp) }
+        offsetY = if (isShown) 0.dp else 120.dp
+        val animatedOffsetY by animateDpAsState(
+            targetValue = offsetY,
+        )
+
+        BottomAppBar(
+            modifier = modifier
+                .offset(0.dp, animatedOffsetY)
+        ) {
+            content()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -216,6 +347,7 @@ class MainActivity :
     override fun showMerchItem(merch: Merch) {
         setAboveFragment(MerchItemFragment.newInstance(merch))
     }
+
     override fun showMerchSummary() {
         setAboveFragment(MerchSummaryFragment.newInstance())
     }
