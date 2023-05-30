@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
@@ -105,7 +104,7 @@ class MainActivity :
                     composable("home") { HomeScreen(navController) }
                     composable("information") { InformationScreen(navController) }
                     composable("event/{id}") { backStackEntry ->
-                        EventScreen(backStackEntry.arguments?.getString("id"))
+                        EventScreen(navController, backStackEntry.arguments?.getString("id"))
                     }
                     composable("speaker/{id}") { backStackEntry ->
                         SpeakerScreen(navController, backStackEntry.arguments?.getString("id"))
@@ -237,16 +236,17 @@ class MainActivity :
     }
 
     @Composable
-    fun EventScreen(id: String?) {
+    fun EventScreen(navController: NavHostController, id: String?) {
         // todo: this should be another ViewModel
         val viewModel = viewModel<ScheduleViewModel>()
         val state = viewModel.state.collectAsState(initial = null).value ?: return
+        val event = state.days.values.flatten().find { it.id == id!!.toLong() }!!
         EventScreenView(
-            event = state.days.values.flatMap { it }.find { it.id == id!!.toLong() }!!,
-            onBookmark = { /*TODO*/ },
-            onBackPressed = { /*TODO*/ },
-            onLocationClicked = { /*TODO*/ },
-            onSpeakerClicked = { /*TODO*/ }
+            event = event,
+            onBookmark = { viewModel.bookmark(event) },
+            onBackPressed = { navController.popBackStack() },
+            onLocationClicked = { navController.navigate("location/${event.location.id}") },
+            onSpeakerClicked = { navController.navigate("speaker/${it.id}") }
         )
     }
 
@@ -288,15 +288,27 @@ class MainActivity :
                     val viewModel = viewModel<HomeViewModel>()
                     val state =
                         viewModel.getHomeState().observeAsState().value ?: HomeState.Loading
-                    HomeScreenView(state = state, onConferenceClick = {}, onMerchClick = {
-                        navController.navigate("merch")
-                    })
+                    HomeScreenView(
+                        state = state,
+                        onConferenceClick = {
+                            viewModel.setConference(it)
+                        }, onMerchClick = {
+                            navController.navigate("merch")
+                        }
+                    )
                 },
                 rightPanel = {
                     val viewModel = viewModel<FiltersViewModel>()
                     val state =
                         viewModel.state.collectAsState(initial = FiltersScreenState.Init).value
-                    FilterScreenView(state = state, onClick = {}, onClear = {})
+                    FilterScreenView(
+                        state = state,
+                        onClick = {
+                            viewModel.toggle(it)
+                        }, onClear = {
+                            viewModel.clearBookmarks()
+                        }
+                    )
                 },
                 mainPanel = {
                     val viewModel = viewModel<ScheduleViewModel>()
@@ -310,7 +322,9 @@ class MainActivity :
                         onEventClick = {
                             navController.navigate("event/${it.id}")
                         },
-                        onBookmarkClick = {},
+                        onBookmarkClick = {
+                            viewModel.bookmark(it)
+                        },
                     )
                 },
                 onPanelChangedListener = { panel ->
@@ -329,7 +343,10 @@ class MainActivity :
                         Icon(painterResource(id = R.drawable.skull), contentDescription = null)
                     }
                     IconButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Default.Call, contentDescription = null)
+                        Icon(
+                            painterResource(id = R.drawable.ic_map_white_24dp),
+                            contentDescription = null
+                        )
                     }
                     IconButton(onClick = { navController.navigate("information") }) {
                         Icon(Icons.Default.Info, contentDescription = null)
