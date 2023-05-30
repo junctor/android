@@ -1,32 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="wifi_instructions"><![CDATA[
-        wifireg.defcon.org/android.html<br/><br/>
-        In order to access the DEF CON 30 Wireless Network, you must have already registered.<br/>
-        If you have not done so, please register at https://wifireg.defcon.org and take care of that first.<br/><br/>
-        Once you have registered, download the DEF CON Wifi Certificate and install locally.<br/><br/>
-        You can obtain the certificate https://wifireg.defcon.org/certfigs/defcon30-wifi.crt.<br/><br/>
-        Note: Android comes in many versions, variants, flavors, shapes, sizes and smells. Please treat the following instructions as an approximate guide to this setup. Your experience may differ.<br/><br/>
-        <b>On your Android device, open Settings:</b><br/><br/>
-        -> Security<br/>
-        -> Certificate Management<br/>
-        -> Install from storage<br/>
-        -> Navigate to and select defcon30-wifi.crt<br/>
-        -> Enter "DEF CON Wifi Cert" for the certificate name<br/>
-        -> Select "Wi-Fi" for Credential Use<br/>
-        -> Answer <b>Yes</b> or <b>OK</b> if prompted to accept the certificate<br/><br/>
-        <b>Next, connect and verify DEF CON network and intermediary certificate.</b><br/><br/>
-        <b>On your Android device, open Settings:</b><br/>
-        -> Wi-Fi<br/>
-        -> Select the <b>DefCon</b> network<br/>
-        -> EAP method = PEAP<br/>
-        -> Phase 2 Authentication = MSCHAPv2<br/>
-        -> CA certificate = "Use system certificates"<br/>
-        -> Domain = <i>wifireg.defcon.org</i><br/>
-        -> Identity = YOUR_USERNAME<br/>
-        -> Anonymous Identity, leave this blank<br/>
-        -> Password = <i>YOUR_PASSWORD</i><br/>
-        -> Select Connect<br/><br/>
-        And now your are done!
-        ]]></string>
+
 </resources>

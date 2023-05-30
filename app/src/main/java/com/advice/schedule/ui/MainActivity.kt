@@ -69,8 +69,9 @@ import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.ui.screens.SupportScreenView
 import com.advice.ui.screens.VendorsScreenView
-import com.advice.ui.screens.WifiScreenView
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.wifi.WifiScreenView
+import com.advice.wifi.suggestNetwork
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.shortstack.hackertracker.R
 import org.koin.core.KoinComponent
@@ -147,7 +148,7 @@ class MainActivity :
     private fun WifiScreen(navController: NavHostController) {
         WifiScreenView(
             onBackPressed = { navController.popBackStack() },
-            onLinkClicked = { /*TODO*/ },
+            onLinkClicked = { suggestNetwork(this) },
         )
     }
 
@@ -228,7 +229,7 @@ class MainActivity :
         InformationScreenView(
             hasCodeOfConduct = state.conduct != null,
             hasSupport = state.support != null,
-            hasWifi = state.code.contains("DEFCON"),
+            hasWifi = state.code.contains("DEFCON") || state.code.contains("TEST"),
             onClick = { navController.navigate(it) },
             onBackPressed = {
                 navController.popBackStack()
@@ -375,7 +376,7 @@ class MainActivity :
         BottomAppBar(
             modifier = modifier
                 .offset(y = animatedOffsetY.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.background,
         ) {
             content()
         }

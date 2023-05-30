@@ -1,6 +1,8 @@
-package com.advice.ui.screens
+package com.advice.wifi
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -14,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.Paragraph
-import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,7 +24,10 @@ fun WifiScreenView(onBackPressed: () -> Unit, onLinkClicked: (String) -> Unit) {
         CenterAlignedTopAppBar(title = { Text("WiFi") }, navigationIcon =
         {
             IconButton(onClick = onBackPressed) {
-                Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
+                Icon(
+                    painterResource(com.shortstack.hackertracker.R.drawable.baseline_arrow_back_ios_new_24),
+                    contentDescription = null
+                )
             }
         })
     }) {
@@ -33,11 +37,17 @@ fun WifiScreenView(onBackPressed: () -> Unit, onLinkClicked: (String) -> Unit) {
 
 @Composable
 fun WifiScreenContent(modifier: Modifier, onLinkClicked: (String) -> Unit) {
-    val text = stringResource(R.string.wifi_instructions)
-    Paragraph(
-        text,
+    Column(
         modifier
-    )
+    ) {
+        Button(onClick = { onLinkClicked("https://www.google.com") }) {
+            Text("Connect to WiFi")
+        }
+        val text = stringResource(R.string.wifi_instructions)
+        Paragraph(
+            text,
+        )
+    }
 }
 
 @Preview(showBackground = true)

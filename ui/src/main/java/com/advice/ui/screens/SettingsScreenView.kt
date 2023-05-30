@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,7 +53,7 @@ fun SettingScreenView(
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("Settings") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
-                Icon(Icons.Default.ArrowBack, null)
+                Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null)
             }
         })
     }) {
