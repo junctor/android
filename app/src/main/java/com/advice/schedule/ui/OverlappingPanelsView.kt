@@ -50,10 +50,6 @@ sealed class SwipeDirection {
     object Right : SwipeDirection()
 }
 
-interface OnPanelChangedListener {
-    fun onPanelChanged(panel: Panel)
-}
-
 @Composable
 fun OverlappingPanelsView(
     leftPanel: @Composable () -> Unit,

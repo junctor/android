@@ -11,7 +11,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +22,13 @@ import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InformationScreenView(hasCodeOfConduct: Boolean, hasSupport: Boolean, hasWifi: Boolean, onClick: (Int) -> Unit, onBackPressed: () -> Unit) {
+fun InformationScreenView(
+    hasCodeOfConduct: Boolean,
+    hasSupport: Boolean,
+    hasWifi: Boolean,
+    onClick: (String) -> Unit,
+    onBackPressed: () -> Unit
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -42,30 +47,30 @@ fun InformationScreenView(hasCodeOfConduct: Boolean, hasSupport: Boolean, hasWif
         Column(Modifier.padding(it)) {
             if (hasWifi) {
                 Navigation("WiFi") {
-                    onClick(-1)
+                    onClick("wifi")
                 }
             }
             if (hasCodeOfConduct) {
                 Navigation("Code of Conduct") {
-                    onClick(-2)
+                    onClick("code_of_conduct")
                 }
             }
             if (hasSupport) {
                 Navigation("Help & Support") {
-                    onClick(-3)
+                    onClick("help_and_support")
                 }
             }
             Navigation("FAQ") {
-                onClick(0)
+                onClick("faq")
             }
             Navigation("Locations") {
-                onClick(1)
+                onClick("locations")
             }
             Navigation("Speakers") {
-                onClick(2)
+                onClick("speakers")
             }
             Navigation("Partners & Vendors") {
-                onClick(3)
+                onClick("partners_and_vendors")
             }
         }
     }
