@@ -46,6 +46,7 @@ import com.advice.locations.LocationsViewModel
 import com.advice.locations.ui.LocationsScreenView
 import com.advice.merch.MerchViewModel
 import com.advice.merch.screens.MerchScreenView
+import com.advice.schedule.ui.home.DismissibleBottomAppBar
 import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
@@ -358,27 +359,6 @@ class MainActivity :
                     }
                 }
             }
-        }
-    }
-
-    @Composable
-    private fun DismissibleBottomAppBar(
-        modifier: Modifier = Modifier,
-        isShown: Boolean,
-        content: @Composable RowScope.() -> Unit
-    ) {
-        var offsetY by rememberSaveable { mutableStateOf(0f) }
-        offsetY = if (isShown) 0f else with(LocalDensity.current) { 48.dp.toPx() }
-        val animatedOffsetY by animateFloatAsState(
-            targetValue = offsetY,
-        )
-
-        BottomAppBar(
-            modifier = modifier
-                .offset(y = animatedOffsetY.dp),
-            containerColor = MaterialTheme.colorScheme.background,
-        ) {
-            content()
         }
     }
 
