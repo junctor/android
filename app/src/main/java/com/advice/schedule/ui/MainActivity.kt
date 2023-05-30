@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -25,11 +25,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -281,7 +282,7 @@ class MainActivity :
     @Composable
     private fun HomeScreen(navController: NavHostController) {
         Box {
-            var isShown by remember { mutableStateOf(false) }
+            var isShown by rememberSaveable { mutableStateOf(false) }
 
             OverlappingPanelsView(
                 leftPanel = {
@@ -365,15 +366,15 @@ class MainActivity :
         isShown: Boolean,
         content: @Composable RowScope.() -> Unit
     ) {
-        var offsetY by remember { mutableStateOf(0.dp) }
-        offsetY = if (isShown) 0.dp else 120.dp
-        val animatedOffsetY by animateDpAsState(
+        var offsetY by rememberSaveable { mutableStateOf(0f) }
+        offsetY = if (isShown) 0f else with(LocalDensity.current) { 48.dp.toPx() }
+        val animatedOffsetY by animateFloatAsState(
             targetValue = offsetY,
         )
 
         BottomAppBar(
             modifier = modifier
-                .offset(0.dp, animatedOffsetY),
+                .offset(y = animatedOffsetY.dp),
             containerColor = MaterialTheme.colorScheme.surface,
         ) {
             content()

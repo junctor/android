@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -58,15 +59,15 @@ fun OverlappingPanelsView(
     modifier: Modifier = Modifier,
     onPanelChangedListener: ((Panel) -> Unit)? = null,
 ) {
-    var size by remember { mutableStateOf(IntSize.Zero) }
+    var size by remember  { mutableStateOf(IntSize.Zero) }
 
-    var selectedPanel by remember { mutableStateOf<Panel>(Panel.Main) }
+    var selectedPanel by remember  { mutableStateOf<Panel>(Panel.Main) }
 
     var isDragging by remember { mutableStateOf(false) }
-    var offsetX by remember { mutableStateOf(0f) }
+    var offsetX by rememberSaveable  { mutableStateOf(0f) }
     val animatedOffset by animateFloatAsState(offsetX)
 
-    var alpha by remember { mutableStateOf(1f) }
+    var alpha by rememberSaveable  { mutableStateOf(1f) }
     val animatedAlpha by animateFloatAsState(alpha)
 
     val gutterSize = with(LocalDensity.current) { GUTTER_SIZE.dp.toPx() }
