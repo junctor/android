@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,12 +42,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
+import com.advice.locations.LocationsViewModel
 import com.advice.locations.ui.LocationsScreenView
 import com.advice.merch.MerchViewModel
 import com.advice.merch.screens.MerchScreenView
 import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationViewModel
+import com.advice.schedule.ui.information.faq.FAQViewModel
+import com.advice.schedule.ui.information.info.ConferenceViewModel
 import com.advice.schedule.ui.information.speakers.SpeakerViewModel
+import com.advice.schedule.ui.information.speakers.SpeakersViewModel
+import com.advice.schedule.ui.information.vendors.VendorsViewModel
 import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
@@ -63,6 +67,7 @@ import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.screens.SettingScreenView
 import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
+import com.advice.ui.screens.SupportScreenView
 import com.advice.ui.screens.VendorsScreenView
 import com.advice.ui.screens.WifiScreenView
 import com.advice.ui.theme.ScheduleTheme
@@ -129,40 +134,91 @@ class MainActivity :
     }
 
     private fun NavGraphBuilder.informationScreens(navController: NavHostController) {
-        composable("wifi") {
-            WifiScreenView(
-                onBackPressed = { /*TODO*/ },
-                onLinkClicked = {}
-            )
-        }
-        composable("code_of_conduct") {
-            CodeOfConductScreenView(policy = "") {
-                navController.popBackStack()
-            }
-        }
-        composable("help_and_support") {
-            CodeOfConductScreenView(policy = "") {
-                navController.popBackStack()
-            }
-        }
-        composable("locations") {
-            LocationsScreenView(containers = emptyList(), onScheduleClicked = {}) {
+        composable("wifi") { WifiScreen(navController) }
+        composable("code_of_conduct") { CodeOfCoductScreen(navController) }
+        composable("help_and_support") { SupportScreen(navController) }
+        composable("locations") { LocationsScreen(navController) }
+        composable("faq") { FAQScreen(navController) }
+        composable("partners_and_vendors") { VendorsScreen(navController) }
+        composable("speakers") { SpeakersScreen(navController) }
+    }
 
+    @Composable
+    private fun WifiScreen(navController: NavHostController) {
+        WifiScreenView(
+            onBackPressed = { navController.popBackStack() },
+            onLinkClicked = { /*TODO*/ },
+        )
+    }
+
+    @Composable
+    private fun SupportScreen(navController: NavHostController) {
+        val viewModel = viewModel<ConferenceViewModel>()
+        val state = viewModel.conference.collectAsState(initial = null).value ?: return
+        SupportScreenView(
+            message = state.support,
+            onBackPressed = { navController.popBackStack() },
+            onLinkClicked = { /*TODO*/ }
+        )
+    }
+
+    @Composable
+    private fun CodeOfCoductScreen(navController: NavHostController) {
+        val viewModel = viewModel<ConferenceViewModel>()
+        val state = viewModel.conference.collectAsState(initial = null).value ?: return
+        CodeOfConductScreenView(policy = state.conduct) {
+            navController.popBackStack()
+        }
+    }
+
+    @Composable
+    private fun LocationsScreen(navController: NavHostController) {
+        val viewModel = viewModel<LocationsViewModel>()
+        val state = viewModel.state.collectAsState(initial = null).value ?: return
+        LocationsScreenView(
+            containers = state.list,
+            onScheduleClicked = {
+                // todo: navController.navigate("location/$it")
+            },
+            onBackPressed = {
+                navController.popBackStack()
             }
-        }
-        composable("faq") {
-            FAQScreenView(faqs = emptyList(), onBackPressed = {})
-        }
-        composable("partners_and_vendors") {
-            VendorsScreenView(vendors = emptyList(), onBackPressed = {})
-        }
-        composable("speakers") {
-            SpeakersScreenView(
-                speakers = emptyList(),
-                onBackPressed = { /*TODO*/ },
-                onSpeakerClicked = {},
-            )
-        }
+        )
+    }
+
+    @Composable
+    private fun SpeakersScreen(navController: NavHostController) {
+        val viewModel = viewModel<SpeakersViewModel>()
+        val state = viewModel.speakers.collectAsState(initial = null).value ?: return
+        SpeakersScreenView(
+            speakers = state,
+            onBackPressed = { navController.popBackStack() },
+            onSpeakerClicked = { navController.navigate("speaker/$it") },
+        )
+    }
+
+    @Composable
+    private fun VendorsScreen(navController: NavHostController) {
+        val viewModel = viewModel<VendorsViewModel>()
+        val state = viewModel.vendors.collectAsState(initial = null).value ?: return
+        VendorsScreenView(
+            vendors = state,
+            onBackPressed = {
+                navController.popBackStack()
+            }
+        )
+    }
+
+    @Composable
+    private fun FAQScreen(navController: NavHostController) {
+        val viewModel = viewModel<FAQViewModel>()
+        val state = viewModel.faqs.collectAsState(initial = null).value ?: return
+        FAQScreenView(
+            faqs = state,
+            onBackPressed = {
+                navController.popBackStack()
+            }
+        )
     }
 
     @Composable
@@ -170,9 +226,9 @@ class MainActivity :
         val viewModel = viewModel<InformationViewModel>()
         val state = viewModel.conference.collectAsState(initial = null).value ?: return
         InformationScreenView(
-            hasCodeOfConduct = state?.conduct != null,
-            hasSupport = state?.support != null,
-            hasWifi = state?.code?.contains("DEFCON") == true,
+            hasCodeOfConduct = state.conduct != null,
+            hasSupport = state.support != null,
+            hasWifi = state.code.contains("DEFCON"),
             onClick = { navController.navigate(it) },
             onBackPressed = {
                 navController.popBackStack()
