@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -53,6 +54,7 @@ import com.advice.core.local.Tag
 import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.utils.parseColor
 import com.advice.ui.views.ActionView
 import com.advice.ui.views.BookmarkButton
 import com.advice.ui.views.CategoryView
@@ -109,17 +111,19 @@ fun EventScreenContent(
         mutableStateOf(0f)
     }
 
-    // gradient background
-    val brush = Brush.radialGradient(
-        colors = listOf(
-            Color(0xFFad52f7),
-            Color(0xFFb63eff),
-            Color(0xFFf47f92),
-            Color(0xFFfccd78),
+    val statusBarHeight = with(LocalDensity.current) { 48.dp.toPx() }
 
-            ),
-        center = Offset(0f, 500f),
-        radius = 1200f,
+    // gradient background
+    val brush = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.background,
+            parseColor(event.types.first().color),
+            parseColor(event.types.first().color)
+        ),
+        start = Offset(0f, 0f),
+        end = Offset(0f, Float.POSITIVE_INFINITY)
+
+
     )
 
     Box(
@@ -147,7 +151,7 @@ fun EventScreenContent(
                 onLocationClicked,
                 modifier = Modifier
                     .onGloballyPositioned {
-                        topHeight.value = it.size.height.toFloat()
+                        topHeight.value = it.size.height.toFloat() + statusBarHeight
                     }
             )
             if (event.description.isNotBlank()) {
@@ -156,7 +160,7 @@ fun EventScreenContent(
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
             }
-            if(event.urls.isNotEmpty()) {
+            if (event.urls.isNotEmpty()) {
                 Spacer(Modifier.height(16.dp))
                 for (action in event.urls) {
                     ActionView(action.label)
