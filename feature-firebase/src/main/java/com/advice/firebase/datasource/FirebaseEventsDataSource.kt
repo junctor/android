@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 
 class FirebaseEventsDataSource(
     private val userSession: UserSession,
@@ -38,16 +37,13 @@ class FirebaseEventsDataSource(
         // todo: fix issue when switching between conferences (concurrency = 1?)
         return userSession.getConference().flatMapMerge { conference ->
             combine(getEvents(conference.code), tagsDataSource.get(), bookmarkedEventsDataSource.get()) { events, tags, bookmarks ->
-                Timber.e("firebase events: ${events.size}, tags: ${tags.size}")
                 val events = events.mapNotNull { it.toEvent(tags) }
 
                 for (bookmark in bookmarks) {
                     events.find { it.id.toString() == bookmark.id }?.isBookmarked = bookmark.value
                 }
 
-                events.also {
-                    Timber.e("events: ${it.size}")
-                }
+                events
             }
         }
     }

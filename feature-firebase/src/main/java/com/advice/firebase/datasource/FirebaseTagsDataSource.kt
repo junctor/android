@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 
 
 class FirebaseTagsDataSource(
@@ -33,7 +32,6 @@ class FirebaseTagsDataSource(
                 it.isSelected = false
             }
 
-            Timber.e("Bookmarks: $bookmarks")
             for (bookmark in bookmarks) {
                 temp.flatMap { it.tags }.find { it.id.toString() == bookmark.id }?.isSelected = bookmark.value
             }

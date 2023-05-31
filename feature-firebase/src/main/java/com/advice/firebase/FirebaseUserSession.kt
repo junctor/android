@@ -36,16 +36,18 @@ class FirebaseUserSession(
         CoroutineScope(Job()).launch {
             conferencesDataSource.get().collect {
                 _conference.value = getConference(preferences.preferredConference, it)
-                Timber.e("Conference is: ${_conference.value}")
+                Timber.e("Conference is: ${_conference.value?.code}")
             }
         }
 
         CoroutineScope(Job()).launch {
             val it = auth.signInAnonymously().await()
             val user = it.user
-            Timber.e("User is now: $user")
             if (user != null) {
+                Timber.e("User uid: ${user.uid}")
                 _user.value = User(user.uid)
+            } else {
+                Timber.e("User could not be signed in")
             }
         }
     }
