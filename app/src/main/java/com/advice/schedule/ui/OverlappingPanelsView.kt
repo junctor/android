@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -26,8 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.core.math.MathUtils.clamp
 import com.advice.ui.theme.ScheduleTheme
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 private const val GUTTER_SIZE = 56
@@ -59,62 +58,58 @@ fun OverlappingPanelsView(
     modifier: Modifier = Modifier,
     onPanelChangedListener: ((Panel) -> Unit)? = null,
 ) {
-    var size by remember  { mutableStateOf(IntSize.Zero) }
+    var size by remember { mutableStateOf(IntSize.Zero) }
 
-    var selectedPanel by remember  { mutableStateOf<Panel>(Panel.Main) }
+    var selectedPanel by remember { mutableStateOf<Panel>(Panel.Main) }
 
     var isDragging by remember { mutableStateOf(false) }
-    var offsetX by rememberSaveable  { mutableStateOf(0f) }
+    var offsetX by rememberSaveable { mutableStateOf(0f) }
     val animatedOffset by animateFloatAsState(offsetX)
 
-    var alpha by rememberSaveable  { mutableStateOf(1f) }
+    var alpha by rememberSaveable { mutableStateOf(1f) }
     val animatedAlpha by animateFloatAsState(alpha)
 
     val gutterSize = with(LocalDensity.current) { GUTTER_SIZE.dp.toPx() }
 
+    var dragStartX by remember { mutableStateOf(0f) }
+    var dragStartTime by remember { mutableStateOf(0L) }
+    var dragEndX by remember { mutableStateOf(0f) }
 
 
     // A container that has 3 children, the first is the left panel, the second is the main content, and the the third is the right panel. The middle panel can slide to the left or right to reveal the left or right panel.
     Box(
         modifier
-//            .background(Color.Yellow)
             .fillMaxSize()
             .onSizeChanged { newSize ->
                 size = newSize
             }
-//            .pointerInput(Unit) {
-//                forEachGesture {
-//                    awaitPointerEventScope {
-//                        val velocityTracker = VelocityTracker()
-//                        val down = awaitFirstDown()
-//                        var change = down
-//                        var overSlop = false
-//                        while (change.pressed) {
-//                            if (!overSlop && change.positionChange().getManhattanDistance() >
-//                                viewConfiguration.touchSlop) {
-//                                overSlop = true
-//                            }
-//                            if (overSlop) {
-//                                velocityTracker.addPosition(
-//                                    change.uptimeMillis,
-//                                    change.position
-//                                )
-//                                offsetX += change.positionChange().x
-//                            }
-//                            change = awaitPointerEvent()
-//                        }
-//                        val velocity = velocityTracker.calculateVelocity().x
-//                        if (abs(velocity) > 1000f) {
-//                            // It's a fling!
-//                            // Use the velocity to animate the box...
-//                        }
-//                    }
-//                }
-//            }
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
+                    onDragStart = { start ->
+                        isDragging = true
+                        dragStartX = start.x
+                        dragEndX = start.x
+                        dragStartTime = System.currentTimeMillis()
+                    },
+                    onHorizontalDrag = { change, dragAmount ->
+                        alpha = setAlphaState(isDragging, selectedPanel)
+                        change.consume()
+                        offsetX += dragAmount
+                        dragEndX += dragAmount
+                        offsetX = clamp(
+                            offsetX,
+                            -size.width + gutterSize,
+                            size.width - gutterSize
+                        )
+                    },
                     onDragEnd = {
                         isDragging = false
+
+                        val dragEndTime = System.currentTimeMillis()
+                        val dragDuration = dragEndTime - dragStartTime
+                        val dragDistance = dragEndX - dragStartX
+                        val velocity = dragDistance / dragDuration * 1000
+
                         when {
                             offsetX > size.width / 2 -> {
                                 selectedPanel = Panel.Left
@@ -128,25 +123,68 @@ fun OverlappingPanelsView(
                                 onPanelChangedListener?.invoke(selectedPanel)
                             }
 
-                            else -> {
+                            selectedPanel != Panel.Main -> {
                                 selectedPanel = Panel.Main
                                 offsetX = 0f
                                 onPanelChangedListener?.invoke(selectedPanel)
+                                return@detectHorizontalDragGestures
+                            }
+                        }
+
+
+                        val swipeDirection = when {
+                            velocity > 1000f -> SwipeDirection.Right
+                            velocity < -1000f -> SwipeDirection.Left
+                            else -> return@detectHorizontalDragGestures
+                        }
+
+                        when (selectedPanel) {
+                            Panel.Left -> when (swipeDirection) {
+                                SwipeDirection.Left -> {
+                                    selectedPanel = Panel.Main
+                                    offsetX = 0f
+                                    onPanelChangedListener?.invoke(selectedPanel)
+                                }
+
+                                SwipeDirection.Right -> {
+                                    // no-op
+                                }
+                            }
+
+                            Panel.Main -> {
+                                when (swipeDirection) {
+                                    SwipeDirection.Left -> {
+                                        selectedPanel = Panel.Right
+                                        offsetX = -size.width + gutterSize
+                                        onPanelChangedListener?.invoke(selectedPanel)
+                                    }
+
+                                    SwipeDirection.Right -> {
+                                        selectedPanel = Panel.Left
+                                        offsetX = size.width - gutterSize
+                                        onPanelChangedListener?.invoke(selectedPanel)
+                                    }
+                                }
+                            }
+
+                            Panel.Right -> when (swipeDirection) {
+                                SwipeDirection.Right -> {
+                                    selectedPanel = Panel.Main
+                                    offsetX = 0f
+                                    onPanelChangedListener?.invoke(selectedPanel)
+                                }
+
+                                SwipeDirection.Left -> {
+                                    // no-op
+                                }
                             }
                         }
                         alpha = setAlphaState(isDragging, selectedPanel)
                     },
-                    onHorizontalDrag = { change, dragAmount ->
-                        Timber.e("onDrag: $dragAmount")
-                        isDragging = true
-                        alpha = setAlphaState(isDragging, selectedPanel)
-                        change.consumeAllChanges()
-                        offsetX += dragAmount
-                    })
+                )
             }
             .pointerInput(Unit) {
                 detectTapGestures(onTap = { offset ->
-                    Timber.e("onPress: $selectedPanel, $offset")
                     //tryAwaitRelease()
                     when (selectedPanel) {
                         Panel.Left -> {
@@ -172,13 +210,13 @@ fun OverlappingPanelsView(
                         }
                     }
                 })
-            }) {
+            }
+    ) {
         // The left panel
         if (animatedOffset > 0) {
             Box(
                 Modifier
                     .systemBarsPadding()
-//                    .background(Color.Green)
                     .padding(start = GUTTER_PADDING.dp, end = (GUTTER_SIZE + GUTTER_PADDING).dp)
             ) {
                 leftPanel()
@@ -190,26 +228,16 @@ fun OverlappingPanelsView(
             Box(
                 Modifier
                     .systemBarsPadding()
-//                    .background(Color.Red)
                     .padding(start = (GUTTER_SIZE + GUTTER_PADDING).dp, end = GUTTER_PADDING.dp)
             ) {
                 rightPanel()
             }
-
         }
 
         // The main content should be draggable horizontally to reveal the left and right panels.
         Box(
             Modifier
                 .offset { IntOffset(animatedOffset.roundToInt(), 0) }
-//                .pointerInput(Unit) {
-//                    this.detectDragGestures { change, dragAmount ->
-//                        Timber.e("onDrag: $selectedPanel")
-//                        if(selectedPanel != Panel.Main) {
-//                            change.consume()
-//                        }
-//                    }
-//                }
                 .alpha(animatedAlpha)
         ) {
             mainPanel()
