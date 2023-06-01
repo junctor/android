@@ -107,7 +107,8 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime-livedata")
 
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
+
 
     // Optional - Integration with activities
     implementation("androidx.activity:activity-compose:1.6.1")

@@ -58,6 +58,8 @@ dependencies {
     // Image loading
     implementation("io.coil-kt:coil-compose:2.3.0")
 
+    implementation("com.jakewharton.timber:timber:$timberVersion")
+
 
     // Gson for JSON parsing
     implementation("com.google.code.gson:gson:$gsonVersion")

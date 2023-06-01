@@ -20,10 +20,10 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Merch
 import com.advice.core.ui.MerchState
 import com.advice.merch.R
+import com.advice.merch.views.MerchView
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.MerchProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.merch.views.MerchView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

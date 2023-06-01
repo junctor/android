@@ -9,6 +9,9 @@ import com.advice.core.local.ConferenceMap
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Location
+import com.advice.core.local.Merch
+import com.advice.core.local.MerchOption
+import com.advice.core.local.ProductMedia
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
@@ -21,6 +24,9 @@ import com.advice.firebase.models.FirebaseEvent
 import com.advice.firebase.models.FirebaseFAQ
 import com.advice.firebase.models.FirebaseLocation
 import com.advice.firebase.models.FirebaseMap
+import com.advice.firebase.models.FirebaseMerch
+import com.advice.firebase.models.FirebaseProductMedia
+import com.advice.firebase.models.FirebaseProductVariant
 import com.advice.firebase.models.FirebaseSpeaker
 import com.advice.firebase.models.FirebaseTag
 import com.advice.firebase.models.FirebaseTagType
@@ -236,3 +242,33 @@ fun FirebaseTagType.toTagType(): TagType? {
 }
 
 fun FirebaseFAQ.toFAQ() = FAQ(question, answer)
+
+fun FirebaseMerch.toMerch(): Merch? {
+    return try {
+        Merch(
+            id = id,
+            label = title,
+            baseCost = (price_min.toFloat() * 100).toLong(), // todo: this is currently a float, fix!
+            options = variants.map { it.toMerchOption() },
+            media = media.map { it.toProductMedia() }
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Merch: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseProductVariant.toMerchOption(): MerchOption {
+    return MerchOption(
+        label = title,
+        inStock = stock_status == "IN",
+        extraCost = (price.toFloat() * 100).toLong(), // todo: this is currently a float, fix!
+    )
+}
+
+fun FirebaseProductMedia.toProductMedia(): ProductMedia {
+    return ProductMedia(
+        url = url,
+        sortOrder = sort_order,
+    )
+}

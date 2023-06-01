@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class MerchDataModel(
     val label: String,
-    val baseCost: Int,
+    val baseCost: Long,
     val options: List<MerchOption>,
     val image: String? = null,
 ) : Parcelable
@@ -15,25 +15,15 @@ data class MerchDataModel(
 data class MerchOption(
     val label: String,
     val inStock: Boolean,
-    val extraCost: Int,
-): Parcelable
+    val extraCost: Long,
+) : Parcelable
 
 fun MerchDataModel.toMerch(
     quantity: Int = 0,
     selectedOption: String? = null,
-    discount: Float? = null
+    discount: Float? = null,
 ): Merch {
-    return Merch(
-        label,
-        label,
-        baseCost,
-        options,
-        image,
-        quantity,
-        baseCost * quantity,
-        discount?.let { baseCost * quantity * (1 - it) }?.toInt(),
-        selectedOption
-    )
+    TODO()
 }
 
 data class MerchSelection(
@@ -42,16 +32,22 @@ data class MerchSelection(
     val selectionOption: String?,
 )
 
+@Parcelize
+data class ProductMedia(
+    val url: String,
+    val sortOrder: Int,
+) : Parcelable
+
 // in-cart merch
 @Parcelize
 data class Merch(
-    val id: String,
+    val id: Long,
     val label: String,
-    val baseCost: Int,
+    val baseCost: Long,
     val options: List<MerchOption>,
-    val image: String? = null,
+    val media: List<ProductMedia>,
     val quantity: Int = 0,
-    val cost: Int = baseCost * quantity,
+    val cost: Long = baseCost * quantity,
     val discountedPrice: Int? = null,
     val selectedOption: String? = null,
 ) : Parcelable {
@@ -60,7 +56,7 @@ data class Merch(
 
     fun update(
         selection: MerchSelection,
-        discount: Float?
+        discount: Float?,
     ): Merch {
         val extraCost = if (selection.selectionOption != null) {
             options.find { it.label == selection.selectionOption }?.extraCost ?: 0

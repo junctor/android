@@ -5,20 +5,15 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -30,9 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
@@ -45,7 +38,9 @@ import com.advice.core.ui.HomeState
 import com.advice.locations.LocationsViewModel
 import com.advice.locations.ui.LocationsScreenView
 import com.advice.merch.MerchViewModel
+import com.advice.merch.screens.MerchItemScreenView
 import com.advice.merch.screens.MerchScreenView
+import com.advice.merch.screens.MerchSummaryScreenView
 import com.advice.schedule.ui.home.DismissibleBottomAppBar
 import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationViewModel
@@ -119,9 +114,45 @@ class MainActivity :
                     composable("merch") {
                         MerchScreen(navController)
                     }
+                    composable("merch/{id}") { backStackEntry ->
+                        MerchItemScreen(navController, backStackEntry.arguments?.getString("id")?.toLong())
+                    }
+                    composable("merch/summary") {
+                        MerchSummary(navController)
+                    }
                 }
             }
         }
+    }
+
+    @Composable
+    private fun MerchItemScreen(navController: NavHostController, id: Long?) {
+        val viewModel = viewModel<MerchViewModel>()
+        val state = viewModel.state.collectAsState(null).value ?: return
+        val merch = state.elements.find { it.id == id } ?: return
+        MerchItemScreenView(
+            merch = merch,
+            onAddClicked = {
+                viewModel.addToCart(it)
+            },
+            onBackPressed = {
+                navController.popBackStack()
+            }
+        )
+    }
+
+    @Composable
+    private fun MerchSummary(navController: NavHostController) {
+        val viewModel = viewModel<MerchViewModel>()
+        val state = viewModel.state.collectAsState(null).value ?: return
+        MerchSummaryScreenView(
+            state = state,
+            onQuantityChanged = { id, quantity, variant ->
+                viewModel.setQuantity(id, quantity, variant)
+            },
+            onBackPressed = { navController.popBackStack() },
+            onDiscountApplied = {},
+        )
     }
 
     @Composable
@@ -130,8 +161,12 @@ class MainActivity :
         val state = viewModel.state.collectAsState(null).value ?: return
         MerchScreenView(
             state = state,
-            onSummaryClicked = { /*TODO*/ },
-            onMerchClicked = { /*TODO*/ },
+            onSummaryClicked = {
+                navController.navigate("merch/summary")
+            },
+            onMerchClicked = {
+                navController.navigate("merch/${it.id}")
+            },
         )
     }
 

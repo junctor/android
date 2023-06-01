@@ -23,12 +23,12 @@ import com.advice.firebase.datasource.FirebaseEventsDataSource
 import com.advice.firebase.datasource.FirebaseFAQDataSource
 import com.advice.firebase.datasource.FirebaseLocationsDataSource
 import com.advice.firebase.datasource.FirebaseMapsDataSource
+import com.advice.firebase.datasource.FirebaseMerchDataSource
 import com.advice.firebase.datasource.FirebaseSpeakersDataSource
 import com.advice.firebase.datasource.FirebaseTagsDataSource
 import com.advice.firebase.datasource.FirebaseVendorsDataSource
 import com.advice.locations.data.LocationRepository
 import com.advice.merch.MerchViewModel
-import com.advice.merch.data.LocalMerchDataSource
 import com.advice.merch.data.MerchRepository
 import com.advice.reminder.ReminderManager
 import com.advice.schedule.repository.FAQRepository
@@ -117,7 +117,7 @@ val appModule = module {
     single<MapsDataSource> { FirebaseMapsDataSource(get(), androidContext().applicationContext.getExternalFilesDir(null), get(), ) }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
-    single<MerchDataSource> { LocalMerchDataSource() }
+    single<MerchDataSource> { FirebaseMerchDataSource(get(), get()) }
 
     //    single<ArticleDataSource> { RetrofitArticleDataSource(get(), get()) }
 

@@ -16,9 +16,18 @@ import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun MerchOption(text: String, inStock: Boolean = true) {
+    val label = when (text) {
+        "Extra-Small" -> "XS"
+        "Small" -> "S"
+        "Medium" -> "M"
+        "Large" -> "L"
+        else -> text
+    }
+
     Text(
-        text,
+        label,
         Modifier
+            .padding(4.dp)
             .alpha(if (inStock) 1.0f else 0.60f)
             .border(1.dp, HotPink, RoundedCornerShape(16.dp))
             .padding(horizontal = 16.dp, vertical = 2.dp),

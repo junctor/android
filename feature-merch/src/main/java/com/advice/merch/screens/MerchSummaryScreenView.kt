@@ -25,7 +25,6 @@ import com.advice.merch.views.EditableMerchItem
 import com.advice.merch.views.PromoSwitch
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.MerchProvider
-import com.advice.ui.screens.ErrorScreenView
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.EmptyView
 
@@ -33,7 +32,7 @@ import com.advice.ui.views.EmptyView
 @Composable
 fun MerchSummaryScreenView(
     state: MerchState,
-    onQuantityChanged: (String, Int, String?) -> Unit,
+    onQuantityChanged: (Long, Int, String?) -> Unit,
     onBackPressed: () -> Unit,
     onDiscountApplied: (Boolean) -> Unit,
 ) {
@@ -65,7 +64,7 @@ fun MerchSummaryContents(
     list: List<Merch>,
     hasDiscount: Boolean,
     modifier: Modifier,
-    onQuantityChanged: (String, Int, String?) -> Unit,
+    onQuantityChanged: (Long, Int, String?) -> Unit,
     onDiscountApplied: (Boolean) -> Unit,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
@@ -105,9 +104,10 @@ fun MerchSummaryContents(
 }
 
 fun getSubtotal(list: List<Merch>): Float {
-    return list.sumOf { element ->
-        element.discountedPrice ?: element.cost
-    } / 100f
+//    return list.sumOf { element ->
+//        element.discountedPrice ?: element.cost
+//    } / 100f
+    return -1f
 }
 
 
