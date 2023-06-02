@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -325,7 +324,7 @@ class MainActivity :
                 leftPanel = {
                     val viewModel = viewModel<HomeViewModel>()
                     val state =
-                        viewModel.getHomeState().observeAsState().value ?: HomeState.Loading
+                        viewModel.getHomeState().collectAsState(initial = null).value ?: HomeState.Loading
                     HomeScreenView(
                         state = state,
                         onConferenceClick = {

@@ -1,7 +1,5 @@
 package com.advice.schedule.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Conference
@@ -10,6 +8,8 @@ import com.advice.schedule.repository.HomeRepository
 import com.advice.schedule.utilities.Analytics
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -20,7 +20,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
     private val repository by inject<HomeRepository>()
     private val analytics by inject<Analytics>()
 
-    private val state = MutableLiveData<HomeState>()
+    private val state = MutableStateFlow<HomeState>(HomeState.Loading)
 
     private var countdownJob: Job? = null
 
@@ -58,7 +58,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
         analytics.onConferenceChangeEvent(conference)
     }
 
-    fun getHomeState(): LiveData<HomeState> = state
+    fun getHomeState(): Flow<HomeState> = state
 
     companion object {
         private const val COUNTDOWN_DELAY = 250L

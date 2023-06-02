@@ -37,7 +37,8 @@ android {
 }
 
 dependencies {
-    implementation project(":core")
+    implementation project(':core')
+    implementation project(':feature-glitch')
 
     def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
     implementation composeBom

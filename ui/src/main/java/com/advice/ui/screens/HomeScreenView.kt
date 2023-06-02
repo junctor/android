@@ -23,7 +23,7 @@ import java.util.*
 fun HomeScreenView(
     state: HomeState?,
     onConferenceClick: (Conference) -> Unit,
-    onMerchClick: () -> Unit
+    onMerchClick: () -> Unit,
 ) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },

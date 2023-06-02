@@ -40,7 +40,6 @@ dependencies {
     implementation project(":core")
     implementation project(":ui")
     implementation project(path: ':data')
-    implementation project(path: ':data')
 
     def composeBom = platform('androidx.compose:compose-bom:$composeVersion')
     implementation composeBom
