@@ -1,6 +1,5 @@
-package com.advice.merch.views
+package com.advice.products.views
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
@@ -17,13 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.advice.merch.R
+import com.advice.products.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.HotPink
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun QuantityView(
+fun QuantityAdjuster(
     quantity: Int,
     onQuantityChanged: (Int) -> Unit,
     canDelete: Boolean,
@@ -66,6 +65,6 @@ fun QuantityView(
 @Composable
 fun QuantityViewPreview() {
     ScheduleTheme {
-        QuantityView(1, {}, canDelete = true)
+        QuantityAdjuster(1, {}, canDelete = true)
     }
 }

@@ -9,8 +9,8 @@ import com.advice.core.local.ConferenceMap
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Location
-import com.advice.core.local.Merch
-import com.advice.core.local.MerchOption
+import com.advice.core.local.Product
+import com.advice.core.local.ProductVariant
 import com.advice.core.local.ProductMedia
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
@@ -243,13 +243,13 @@ fun FirebaseTagType.toTagType(): TagType? {
 
 fun FirebaseFAQ.toFAQ() = FAQ(question, answer)
 
-fun FirebaseMerch.toMerch(): Merch? {
+fun FirebaseMerch.toMerch(): Product? {
     return try {
-        Merch(
+        Product(
             id = id,
             label = title,
             baseCost = (price_min.toFloat() * 100).toLong(), // todo: this is currently a float, fix!
-            options = variants.map { it.toMerchOption() },
+            variants = variants.map { it.toMerchOption() },
             media = media.map { it.toProductMedia() }
         )
     } catch (ex: Exception) {
@@ -258,8 +258,8 @@ fun FirebaseMerch.toMerch(): Merch? {
     }
 }
 
-fun FirebaseProductVariant.toMerchOption(): MerchOption {
-    return MerchOption(
+fun FirebaseProductVariant.toMerchOption(): ProductVariant {
+    return ProductVariant(
         label = title,
         inStock = stock_status == "IN",
         extraCost = (price.toFloat() * 100).toLong(), // todo: this is currently a float, fix!

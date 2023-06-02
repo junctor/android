@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalLayoutApi::class, ExperimentalLayoutApi::class)
 
-package com.advice.merch.views
+package com.advice.products.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,25 +29,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.advice.core.local.Merch
+import com.advice.core.local.Product
 import com.advice.core.local.ProductMedia
+import com.advice.core.local.ProductVariant
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun MerchView(merch: Merch, onMerchClicked: (Merch) -> Unit) {
+fun ProductView(product: Product, onMerchClicked: (Product) -> Unit) {
     Row(
         Modifier
-            .clickable { onMerchClicked(merch) }
+            .clickable { onMerchClicked(product) }
             .defaultMinSize(minHeight = 86.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Column(Modifier.weight(1.0f)) {
-            Text(merch.label, style = MaterialTheme.typography.labelLarge)
+            Text(product.label, style = MaterialTheme.typography.labelLarge)
             Text(
-                "$${String.format("%.2f", merch.baseCost / 100f)} USD",
+                "$${String.format("%.2f", product.baseCost / 100f)} USD",
                 style = MaterialTheme.typography.bodyMedium
             )
 
@@ -55,14 +56,14 @@ fun MerchView(merch: Merch, onMerchClicked: (Merch) -> Unit) {
             FlowRow(
                 Modifier.fillMaxWidth(),
             ) {
-                for ((index, option) in merch.options.withIndex()) {
-                    MerchOption(option.label, inStock = option.inStock)
+                for ((index, option) in product.variants.withIndex()) {
+                    ProductVariantTag(option.label, inStock = option.inStock)
                 }
             }
         }
         BadgedBox(
             badge = {
-                if (merch.quantity > 0) {
+                if (product.quantity > 0) {
                     Badge(
                         containerColor = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
@@ -70,7 +71,7 @@ fun MerchView(merch: Merch, onMerchClicked: (Merch) -> Unit) {
                             .offset(x = -12.dp, y = 12.dp)
                     ) {
                         Text(
-                            "${merch.quantity}",
+                            "${product.quantity}",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 16.sp,
                             style = MaterialTheme.typography.labelLarge,
@@ -81,13 +82,13 @@ fun MerchView(merch: Merch, onMerchClicked: (Merch) -> Unit) {
             Modifier
                 .size(64.dp)
         ) {
-            if (merch.media.isNotEmpty()) {
+            if (product.media.isNotEmpty()) {
                 Box(
                     Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.Black)
                 ) {
-                    AsyncImage(model = merch.media.first().url, contentDescription = null)
+                    AsyncImage(model = product.media.first().url, contentDescription = null)
                 }
             }
         }
@@ -96,17 +97,17 @@ fun MerchView(merch: Merch, onMerchClicked: (Merch) -> Unit) {
 
 @LightDarkPreview
 @Composable
-fun MerchItemPreview() {
-    val options = listOf(
-        com.advice.core.local.MerchOption("S", true, 0),
-        com.advice.core.local.MerchOption("4XL", true, 0),
-        com.advice.core.local.MerchOption("5XL", false, 1000)
+fun ProductViewPreview() {
+    val variants = listOf(
+        ProductVariant("S", true, 0),
+        ProductVariant("4XL", true, 0),
+        ProductVariant("5XL", false, 1000)
     )
-    val element = Merch(
+    val element = Product(
         1L,
         "DC30 Homecoming Men's T-Shirt",
         3500,
-        options,
+        variants,
         quantity = 3,
         media = listOf(
             ProductMedia(
@@ -116,6 +117,6 @@ fun MerchItemPreview() {
         )
     )
     ScheduleTheme {
-        MerchView(element) {}
+        ProductView(element) {}
     }
 }

@@ -1,4 +1,4 @@
-package com.advice.merch.screens
+package com.advice.products.screens
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -8,25 +8,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.advice.core.local.Merch
-import com.advice.core.local.MerchSelection
-import com.advice.core.ui.MerchState
-import com.advice.merch.views.QuantityView
+import com.advice.core.local.Product
+import com.advice.core.local.ProductSelection
+import com.advice.core.ui.ProductsState
+import com.advice.products.views.QuantityAdjuster
 import com.advice.ui.preview.LightDarkPreview
-import com.advice.ui.preview.MerchProvider
+import com.advice.ui.preview.ProductsProvider
 import com.advice.ui.theme.ScheduleTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MerchItemScreenView(
-    merch: Merch,
-    onAddClicked: (MerchSelection) -> Unit,
+fun ProductScreen(
+    product: Product,
+    onAddClicked: (ProductSelection) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     var quantity by remember {
@@ -54,10 +55,10 @@ fun MerchItemScreenView(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    if (selection != null || !merch.requiresSelection) {
+                    if (selection != null || !product.requiresSelection) {
                         onAddClicked(
-                            MerchSelection(
-                                id = merch.label,
+                            ProductSelection(
+                                id = product.label,
                                 quantity = quantity,
                                 selectionOption = selection,
                             )
@@ -70,15 +71,15 @@ fun MerchItemScreenView(
                 shape = FloatingActionButtonDefaults.extendedFabShape
             ) {
                 val optionCost =
-                    if (merch.selectedOption != null) merch.options.find { it.label == merch.selectedOption }?.extraCost
+                    if (product.selectedOption != null) product.variants.find { it.label == product.selectedOption }?.extraCost
                         ?: 0 else 0
-                val cost = (merch.baseCost + optionCost) * quantity
+                val cost = (product.baseCost + optionCost) * quantity
                 Text("Add $quantity to cart ∙ US$${String.format("%.2f", cost / 100f)}")
             }
         },
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        MerchItem(merch, quantity, selection, {
+        Product(product, quantity, selection, {
             selection = it
         }, {
             quantity = it
@@ -87,8 +88,8 @@ fun MerchItemScreenView(
 }
 
 @Composable
-fun MerchItem(
-    merch: Merch,
+fun Product(
+    product: Product,
     quantity: Int,
     selection: String?,
     onSelectionChanged: (String) -> Unit,
@@ -96,39 +97,49 @@ fun MerchItem(
     modifier: Modifier,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-        if (merch.media.isNotEmpty()) {
+        val hasMedia = product.media.isNotEmpty()
+        if (hasMedia) {
             Box(
                 Modifier
-                    .background(Color.White)
+                    .background(Color.Black)
                     .fillMaxWidth()
             ) {
+
                 AsyncImage(
-                    model = merch.media.first().url,
+                    model = product.media.first().url,
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+//                        .height(300.dp)
+                        .alpha(0.65f),
                     contentScale = ContentScale.FillWidth
+                )
+                Box(
+                    Modifier
+                        .background(Color.Black)
+                        .fillMaxWidth()
+                        .height(120.dp)
                 )
             }
         }
 
-        Column(modifier) {
+        Column(if (hasMedia) Modifier else modifier) {
             Column(
                 Modifier.padding(16.dp)
             ) {
-                Text(merch.label, style = MaterialTheme.typography.labelLarge)
-                val cost = String.format("%.2f", merch.baseCost / 100f)
+                Text(product.label, style = MaterialTheme.typography.labelLarge)
+                val cost = String.format("%.2f", product.baseCost / 100f)
                 Text("$$cost USD", style = MaterialTheme.typography.bodyMedium)
             }
 
 
-            if (merch.requiresSelection) {
+            if (product.requiresSelection) {
                 Row(Modifier.padding(16.dp)) {
                     Text("Options", Modifier.weight(1.0f))
                     Text("Required")
                 }
             }
-            for (option in merch.options) {
+            for (option in product.variants) {
                 Row(
                     Modifier
                         .clickable {
@@ -153,7 +164,7 @@ fun MerchItem(
                 }
             }
 
-            QuantityView(
+            QuantityAdjuster(
                 quantity = quantity,
                 onQuantityChanged = onQuantityChanged,
                 canDelete = false,
@@ -167,8 +178,8 @@ fun MerchItem(
 
 @LightDarkPreview
 @Composable
-fun MerchItemScreenViewPreview(@PreviewParameter(MerchProvider::class) state: MerchState) {
+fun ProductScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
-        MerchItemScreenView(state.elements.first(), {}) {}
+        ProductScreen(state.elements.first(), {}) {}
     }
 }

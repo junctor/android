@@ -37,10 +37,10 @@ import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.locations.LocationsViewModel
 import com.advice.locations.ui.LocationsScreenView
-import com.advice.merch.MerchViewModel
-import com.advice.merch.screens.MerchItemScreenView
-import com.advice.merch.screens.MerchScreenView
-import com.advice.merch.screens.MerchSummaryScreenView
+import com.advice.products.ProductsViewModel
+import com.advice.products.screens.ProductScreen
+import com.advice.products.screens.ProductsScreen
+import com.advice.products.screens.ProductsSummaryScreen
 import com.advice.schedule.ui.home.DismissibleBottomAppBar
 import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationViewModel
@@ -127,11 +127,11 @@ class MainActivity :
 
     @Composable
     private fun MerchItemScreen(navController: NavHostController, id: Long?) {
-        val viewModel = viewModel<MerchViewModel>()
+        val viewModel = viewModel<ProductsViewModel>()
         val state = viewModel.state.collectAsState(null).value ?: return
         val merch = state.elements.find { it.id == id } ?: return
-        MerchItemScreenView(
-            merch = merch,
+        ProductScreen(
+            product = merch,
             onAddClicked = {
                 viewModel.addToCart(it)
             },
@@ -143,9 +143,9 @@ class MainActivity :
 
     @Composable
     private fun MerchSummary(navController: NavHostController) {
-        val viewModel = viewModel<MerchViewModel>()
+        val viewModel = viewModel<ProductsViewModel>()
         val state = viewModel.state.collectAsState(null).value ?: return
-        MerchSummaryScreenView(
+        ProductsSummaryScreen(
             state = state,
             onQuantityChanged = { id, quantity, variant ->
                 viewModel.setQuantity(id, quantity, variant)
@@ -157,14 +157,14 @@ class MainActivity :
 
     @Composable
     private fun MerchScreen(navController: NavHostController) {
-        val viewModel = viewModel<MerchViewModel>()
+        val viewModel = viewModel<ProductsViewModel>()
         val state = viewModel.state.collectAsState(null).value ?: return
-        MerchScreenView(
+        ProductsScreen(
             state = state,
             onSummaryClicked = {
                 navController.navigate("merch/summary")
             },
-            onMerchClicked = {
+            onProductClicked = {
                 navController.navigate("merch/${it.id}")
             },
         )

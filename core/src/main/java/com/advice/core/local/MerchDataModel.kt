@@ -4,29 +4,13 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MerchDataModel(
-    val label: String,
-    val baseCost: Long,
-    val options: List<MerchOption>,
-    val image: String? = null,
-) : Parcelable
-
-@Parcelize
-data class MerchOption(
+data class ProductVariant(
     val label: String,
     val inStock: Boolean,
     val extraCost: Long,
 ) : Parcelable
 
-fun MerchDataModel.toMerch(
-    quantity: Int = 0,
-    selectedOption: String? = null,
-    discount: Float? = null,
-): Merch {
-    TODO()
-}
-
-data class MerchSelection(
+data class ProductSelection(
     val id: String,
     val quantity: Int,
     val selectionOption: String?,
@@ -38,13 +22,13 @@ data class ProductMedia(
     val sortOrder: Int,
 ) : Parcelable
 
-// in-cart merch
+// in-cart Product
 @Parcelize
-data class Merch(
+data class Product(
     val id: Long,
     val label: String,
     val baseCost: Long,
-    val options: List<MerchOption>,
+    val variants: List<ProductVariant>,
     val media: List<ProductMedia>,
     val quantity: Int = 0,
     val cost: Long = baseCost * quantity,
@@ -52,26 +36,24 @@ data class Merch(
     val selectedOption: String? = null,
 ) : Parcelable {
 
-    val requiresSelection: Boolean = options.isNotEmpty()
+    val requiresSelection: Boolean = variants.isNotEmpty()
 
     fun update(
-        selection: MerchSelection,
+        selection: ProductSelection,
         discount: Float?,
-    ): Merch {
+    ): Product {
         val extraCost = if (selection.selectionOption != null) {
-            options.find { it.label == selection.selectionOption }?.extraCost ?: 0
+            variants.find { it.label == selection.selectionOption }?.extraCost ?: 0
         } else {
             0
         }
 
         val cost = (baseCost + extraCost) * selection.quantity
-        val discountedPrice1 = if (discount != null) (cost * (1 - discount)).toInt() else null
         return copy(
             quantity = selection.quantity,
             selectedOption = selection.selectionOption,
             cost = cost,
-            discountedPrice = discountedPrice1
+            discountedPrice = if (discount != null) (cost * (1 - discount)).toInt() else null
         )
     }
-
 }

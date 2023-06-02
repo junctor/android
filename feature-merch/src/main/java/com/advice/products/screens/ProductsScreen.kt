@@ -1,4 +1,4 @@
-package com.advice.merch.screens
+package com.advice.products.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,19 +17,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.advice.core.local.Merch
-import com.advice.core.ui.MerchState
-import com.advice.merch.R
-import com.advice.merch.views.MerchView
+import com.advice.core.local.Product
+import com.advice.core.ui.ProductsState
+import com.advice.products.views.ProductView
 import com.advice.ui.preview.LightDarkPreview
-import com.advice.ui.preview.MerchProvider
+import com.advice.ui.preview.ProductsProvider
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.products.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MerchScreenView(
-    state: MerchState,
-    onSummaryClicked: () -> Unit, onMerchClicked: (Merch) -> Unit,
+fun ProductsScreen(
+    state: ProductsState,
+    onSummaryClicked: () -> Unit, onProductClicked: (Product) -> Unit,
 ) {
     val list = state.elements
 
@@ -60,15 +60,19 @@ fun MerchScreenView(
         },
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        MerchList(list, onMerchClicked, Modifier.padding(it))
+        ProductsScreenContent(list, onProductClicked, Modifier.padding(it))
     }
 }
 
 @Composable
-fun MerchList(list: List<Merch>, onMerchClicked: (Merch) -> Unit, modifier: Modifier) {
+fun ProductsScreenContent(
+    list: List<Product>,
+    onProductClicked: (Product) -> Unit,
+    modifier: Modifier,
+) {
     LazyColumn(modifier, contentPadding = PaddingValues(vertical = 16.dp)) {
         items(list) {
-            MerchView(it, onMerchClicked)
+            ProductView(it, onProductClicked)
         }
         item {
             Spacer(Modifier.height(64.dp))
@@ -78,8 +82,8 @@ fun MerchList(list: List<Merch>, onMerchClicked: (Merch) -> Unit, modifier: Modi
 
 @LightDarkPreview
 @Composable
-fun MerchScreenViewPreview(@PreviewParameter(MerchProvider::class) state: MerchState) {
+fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
-        MerchScreenView(state, {}, {})
+        ProductsScreen(state, {}, {})
     }
 }

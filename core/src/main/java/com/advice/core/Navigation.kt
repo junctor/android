@@ -1,7 +1,6 @@
 package com.advice.core
 
-import com.advice.core.local.LocationRow
-import com.advice.core.local.Merch
+import com.advice.core.local.Product
 
 interface Navigation {
 
@@ -9,6 +8,6 @@ interface Navigation {
 
     fun showMerch()
     fun showMerchSummary()
-    fun showMerchItem(merch: Merch)
+    fun showMerchItem(product: Product)
 
 }

@@ -1,4 +1,4 @@
-package com.advice.merch.views
+package com.advice.products.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.advice.core.local.Merch
-
+import com.advice.core.local.Product
 
 @Composable
-fun EditableMerchItem(
-    merch: Merch,
+fun EditableProduct(
+    product: Product,
     onQuantityChanged: (Int) -> Unit,
 ) {
     Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
@@ -32,7 +31,7 @@ fun EditableMerchItem(
         ) {
             Column(Modifier.weight(1.0f)) {
                 val title =
-                    merch.label + if (merch.selectedOption != null) " (${merch.selectedOption})" else ""
+                    product.label + if (product.selectedOption != null) " (${product.selectedOption})" else ""
 
                 Text(
                     title,
@@ -40,13 +39,13 @@ fun EditableMerchItem(
                 )
             }
 
-            if (merch.media.isNotEmpty()) {
+            if (product.media.isNotEmpty()) {
                 Box(
                     Modifier
                         .background(Color.White)
                         .size(48.dp)
                 ) {
-                    AsyncImage(model = merch.media.first().url, contentDescription = null)
+                    AsyncImage(model = product.media.first().url, contentDescription = null)
                 }
             }
         }
@@ -54,17 +53,17 @@ fun EditableMerchItem(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            QuantityView(merch.quantity, onQuantityChanged, canDelete = true)
+            QuantityAdjuster(product.quantity, onQuantityChanged, canDelete = true)
             Column {
-                val hasDiscount = merch.discountedPrice != null
+                val hasDiscount = product.discountedPrice != null
                 Text(
-                    "$${String.format("%.2f", merch.cost / 100f)} USD",
+                    "$${String.format("%.2f", product.cost / 100f)} USD",
                     style = MaterialTheme.typography.bodyMedium,
                     textDecoration = if (hasDiscount) TextDecoration.LineThrough else TextDecoration.None
                 )
                 if (hasDiscount) {
                     Text(
-                        "$${String.format("%.2f", merch.discountedPrice!! / 100f)} USD",
+                        "$${String.format("%.2f", product.discountedPrice!! / 100f)} USD",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

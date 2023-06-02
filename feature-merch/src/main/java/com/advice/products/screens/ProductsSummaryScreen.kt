@@ -1,4 +1,4 @@
-package com.advice.merch.screens
+package com.advice.products.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,20 +18,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.advice.core.local.Merch
-import com.advice.core.ui.MerchState
-import com.advice.merch.R
-import com.advice.merch.views.EditableMerchItem
-import com.advice.merch.views.PromoSwitch
+import com.advice.core.local.Product
+import com.advice.core.ui.ProductsState
+import com.advice.products.views.EditableProduct
+import com.advice.products.views.PromoSwitch
 import com.advice.ui.preview.LightDarkPreview
-import com.advice.ui.preview.MerchProvider
+import com.advice.ui.preview.ProductsProvider
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.EmptyView
+import com.advice.products.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MerchSummaryScreenView(
-    state: MerchState,
+fun ProductsSummaryScreen(
+    state: ProductsState,
     onQuantityChanged: (Long, Int, String?) -> Unit,
     onBackPressed: () -> Unit,
     onDiscountApplied: (Boolean) -> Unit,
@@ -48,7 +48,7 @@ fun MerchSummaryScreenView(
         if (list.isEmpty()) {
             EmptyView(message = "Merch not found",modifier = Modifier.padding(it))
         } else {
-            MerchSummaryContents(
+            ProductsSummaryContent(
                 list,
                 state.hasDiscount,
                 Modifier.padding(it),
@@ -60,8 +60,8 @@ fun MerchSummaryScreenView(
 }
 
 @Composable
-fun MerchSummaryContents(
-    list: List<Merch>,
+fun ProductsSummaryContent(
+    list: List<Product>,
     hasDiscount: Boolean,
     modifier: Modifier,
     onQuantityChanged: (Long, Int, String?) -> Unit,
@@ -78,7 +78,7 @@ fun MerchSummaryContents(
         }
 
         for (merch in list) {
-            EditableMerchItem(merch, onQuantityChanged = {
+            EditableProduct(merch, onQuantityChanged = {
                 onQuantityChanged(merch.id, it, merch.selectedOption)
             })
         }
@@ -103,7 +103,7 @@ fun MerchSummaryContents(
     }
 }
 
-fun getSubtotal(list: List<Merch>): Float {
+fun getSubtotal(list: List<Product>): Float {
 //    return list.sumOf { element ->
 //        element.discountedPrice ?: element.cost
 //    } / 100f
@@ -113,8 +113,8 @@ fun getSubtotal(list: List<Merch>): Float {
 
 @LightDarkPreview
 @Composable
-fun MerchSummaryScreenViewPreview(@PreviewParameter(MerchProvider::class) state: MerchState) {
+fun ProductsSummaryScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
-        MerchSummaryScreenView(state, { _, _, _ -> }, {}, {})
+        ProductsSummaryScreen(state, { _, _, _ -> }, {}, {})
     }
 }

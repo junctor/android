@@ -1,4 +1,4 @@
-package com.advice.merch.views
+package com.advice.products.views
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
@@ -15,7 +15,7 @@ import com.advice.ui.theme.HotPink
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun MerchOption(text: String, inStock: Boolean = true) {
+fun ProductVariantTag(text: String, inStock: Boolean = true) {
     val label = when (text) {
         "Extra-Small" -> "XS"
         "Small" -> "S"
@@ -40,6 +40,6 @@ fun MerchOption(text: String, inStock: Boolean = true) {
 @Composable
 fun MerchOptionPreview() {
     ScheduleTheme {
-        MerchOption(text = "4XL")
+        ProductVariantTag(text = "4XL")
     }
 }

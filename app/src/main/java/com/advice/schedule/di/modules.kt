@@ -12,7 +12,7 @@ import com.advice.data.datasource.FAQDataSource
 import com.advice.data.datasource.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.datasource.LocationsDataSource
 import com.advice.data.datasource.MapsDataSource
-import com.advice.data.datasource.MerchDataSource
+import com.advice.data.datasource.ProductsDataSource
 import com.advice.data.datasource.SpeakersDataSource
 import com.advice.data.datasource.TagsDataSource
 import com.advice.data.datasource.VendorsDataSource
@@ -23,13 +23,13 @@ import com.advice.firebase.datasource.FirebaseEventsDataSource
 import com.advice.firebase.datasource.FirebaseFAQDataSource
 import com.advice.firebase.datasource.FirebaseLocationsDataSource
 import com.advice.firebase.datasource.FirebaseMapsDataSource
-import com.advice.firebase.datasource.FirebaseMerchDataSource
+import com.advice.firebase.datasource.FirebaseProductsDataSource
 import com.advice.firebase.datasource.FirebaseSpeakersDataSource
 import com.advice.firebase.datasource.FirebaseTagsDataSource
 import com.advice.firebase.datasource.FirebaseVendorsDataSource
 import com.advice.locations.data.LocationRepository
-import com.advice.merch.MerchViewModel
-import com.advice.merch.data.MerchRepository
+import com.advice.products.ProductsViewModel
+import com.advice.products.data.ProductsRepository
 import com.advice.reminder.ReminderManager
 import com.advice.schedule.repository.FAQRepository
 import com.advice.schedule.repository.FiltersRepository
@@ -101,7 +101,7 @@ val appModule = module {
     single { LocationRepository(get()) }
     single { VendorsRepository(get()) }
     single { InformationRepository(get()) }
-    single { MerchRepository(androidContext(), get()) }
+    single { ProductsRepository(androidContext(), get()) }
 
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
@@ -117,7 +117,7 @@ val appModule = module {
     single<MapsDataSource> { FirebaseMapsDataSource(get(), androidContext().applicationContext.getExternalFilesDir(null), get(), ) }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
-    single<MerchDataSource> { FirebaseMerchDataSource(get(), get()) }
+    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get()) }
 
     //    single<ArticleDataSource> { RetrofitArticleDataSource(get(), get()) }
 
@@ -135,6 +135,6 @@ val appModule = module {
     viewModel { FiltersViewModel() }
     viewModel { ConferenceViewModel() }
 
-    viewModel { MerchViewModel() }
+    viewModel { ProductsViewModel() }
 
 }

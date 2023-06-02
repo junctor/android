@@ -1,40 +1,40 @@
-package com.advice.merch
+package com.advice.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.advice.core.local.MerchSelection
-import com.advice.core.ui.MerchState
-import com.advice.merch.data.MerchRepository
+import com.advice.core.local.ProductSelection
+import com.advice.core.ui.ProductsState
+import com.advice.products.data.ProductsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class MerchViewModel : ViewModel(), KoinComponent {
+class ProductsViewModel : ViewModel(), KoinComponent {
 
-    private val repository by inject<MerchRepository>()
+    private val repository by inject<ProductsRepository>()
 
-    private val selections = mutableListOf<MerchSelection>()
+    private val selections = mutableListOf<ProductSelection>()
 
-    private val _state = MutableStateFlow(MerchState(emptyList()))
-    val state: Flow<MerchState> = _state
+    private val _state = MutableStateFlow(ProductsState(emptyList()))
+    val state: Flow<ProductsState> = _state
 
-    private val _summary = MutableStateFlow(MerchState(emptyList()))
-    val summary: Flow<MerchState> = _summary
+    private val _summary = MutableStateFlow(ProductsState(emptyList()))
+    val summary: Flow<ProductsState> = _summary
 
     var hasDiscount = false
     private val goonDiscount = 0.10f
 
     init {
         viewModelScope.launch {
-            repository.merch.collect {
-                _state.value = MerchState(it)
+            repository.products.collect {
+                _state.value = ProductsState(it)
             }
         }
     }
 
-    fun addToCart(selection: MerchSelection) {
+    fun addToCart(selection: ProductSelection) {
         viewModelScope.launch {
             // Look to see if it already exists in our selection
             val indexOf =
@@ -60,7 +60,7 @@ class MerchViewModel : ViewModel(), KoinComponent {
             model.copy(quantity = quantity)
         }
 
-        _state.emit(MerchState(list))
+        _state.emit(ProductsState(list))
     }
 
     private suspend fun updateSummary() {
@@ -71,21 +71,21 @@ class MerchViewModel : ViewModel(), KoinComponent {
             element.update(selection, discount)
         }
 
-        _summary.emit(MerchState(summary, hasDiscount = hasDiscount))
+        _summary.emit(ProductsState(summary, hasDiscount = hasDiscount))
     }
 
     fun setQuantity(id: Long, quantity: Int, selectedOption: String?) {
         viewModelScope.launch {
-//            val indexOf =
-//                selections.indexOfFirst { it.id == id && it.selectionOption == selectedOption }
-//            if (indexOf != -1) {
-//                val element = selections[indexOf]
-//                if (quantity == 0) {
-//                    selections.removeAt(indexOf)
-//                } else {
-//                    selections[indexOf] = element.copy(quantity = quantity)
-//                }
-//            }
+            val indexOf =
+                selections.indexOfFirst { it.id == id.toString() && it.selectionOption == selectedOption }
+            if (indexOf != -1) {
+                val element = selections[indexOf]
+                if (quantity == 0) {
+                    selections.removeAt(indexOf)
+                } else {
+                    selections[indexOf] = element.copy(quantity = quantity)
+                }
+            }
 
             updateList()
             updateSummary()
