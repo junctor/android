@@ -9,5 +9,6 @@ data class Vendor(
     val name: String,
     val summary: String?,
     val link: String?,
-    val partner: Boolean
+    val partner: Boolean,
+    val image: String? = null,
 ) : Parcelable

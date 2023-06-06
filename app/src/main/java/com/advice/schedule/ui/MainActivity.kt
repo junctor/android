@@ -114,7 +114,10 @@ class MainActivity :
                         MerchScreen(navController)
                     }
                     composable("merch/{id}") { backStackEntry ->
-                        MerchItemScreen(navController, backStackEntry.arguments?.getString("id")?.toLong())
+                        MerchItemScreen(
+                            navController,
+                            backStackEntry.arguments?.getString("id")?.toLong()
+                        )
                     }
                     composable("merch/summary") {
                         MerchSummary(navController)
@@ -229,7 +232,7 @@ class MainActivity :
         SpeakersScreenView(
             speakers = state,
             onBackPressed = { navController.popBackStack() },
-            onSpeakerClicked = { navController.navigate("speaker/$it") },
+            onSpeakerClicked = { navController.navigate("speaker/${it.id}") },
         )
     }
 
@@ -289,9 +292,18 @@ class MainActivity :
 
     @Composable
     fun SpeakerScreen(navController: NavHostController, id: String?) {
-        val viewModel = viewModel<SpeakerViewModel>()
-        //val state = viewModel.state.collectAsState(initial = null).value ?: return
-        SpeakerScreenView(name = "", "", "", emptyList(), onBackPressed = { /*TODO*/ }) { event ->
+        val viewModel = viewModel<SpeakersViewModel>()
+        val state =
+            viewModel.speakers.collectAsState(initial = null).value?.find { it.id.toString() == id }
+                ?: return
+        SpeakerScreenView(
+            state.name,
+            state.title,
+            state.description,
+            emptyList(),
+            onBackPressed = {
+                navController.popBackStack()
+            }) { event ->
         }
     }
 
@@ -324,7 +336,8 @@ class MainActivity :
                 leftPanel = {
                     val viewModel = viewModel<HomeViewModel>()
                     val state =
-                        viewModel.getHomeState().collectAsState(initial = null).value ?: HomeState.Loading
+                        viewModel.getHomeState().collectAsState(initial = null).value
+                            ?: HomeState.Loading
                     HomeScreenView(
                         state = state,
                         onConferenceClick = {

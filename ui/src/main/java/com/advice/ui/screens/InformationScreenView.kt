@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -29,7 +30,7 @@ fun InformationScreenView(
     hasSupport: Boolean,
     hasWifi: Boolean,
     onClick: (String) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -83,9 +84,16 @@ fun Navigation(label: String, modifier: Modifier = Modifier, onClick: () -> Unit
     Row(
         modifier
             .clickable { onClick() }
-            .padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            .padding(horizontal = 16.dp, vertical = 24.dp),
+        verticalAlignment = Alignment.CenterVertically) {
         Text(label, Modifier.weight(1f))
-        Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null, modifier = Modifier.rotate(180f))
+        Icon(
+            painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
+            null,
+            modifier = Modifier
+                .size(16.dp)
+                .rotate(180f)
+        )
     }
 }
 

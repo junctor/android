@@ -12,7 +12,6 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -46,7 +44,7 @@ fun ChromaticAberrationComposeView(modifier: Modifier = Modifier) {
     ) {
         AndroidView(
             modifier = Modifier
-                .background(Color.Black)
+//                .background(Color.Black)
                 .fillMaxSize(),
             factory = { ctx ->
                 // Initialization of your custom Android View goes here
@@ -167,12 +165,12 @@ class ChromaticAberrationView @JvmOverloads constructor(
         // Reset xfermode
         paint.xfermode = null
 
-        // Add scan lines
-        val scanLineSpacing = 10  // Adjust this value to change the spacing between scan lines
-        paint.color = android.graphics.Color.WHITE
-        for (i in 0 until height step scanLineSpacing) {
-            canvas.drawLine(0f, i.toFloat(), width.toFloat(), i.toFloat(), paint)
-        }
+//        // Add scan lines
+//        val scanLineSpacing = 10  // Adjust this value to change the spacing between scan lines
+//        paint.color = android.graphics.Color.WHITE
+//        for (i in 0 until height step scanLineSpacing) {
+//            canvas.drawLine(0f, i.toFloat(), width.toFloat(), i.toFloat(), paint)
+//        }
 
 //        // Add periodic glitch effect
 //        val glitchPeriod = 20  // Adjust this value to change the period of the glitch effect
