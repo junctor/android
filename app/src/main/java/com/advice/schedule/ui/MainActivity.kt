@@ -45,9 +45,8 @@ import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
 import com.advice.schedule.ui.information.info.ConferenceViewModel
-import com.advice.schedule.ui.information.speakers.SpeakerViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
-import com.advice.schedule.ui.information.vendors.VendorsViewModel
+import com.advice.schedule.ui.information.vendors.OrganizationsViewModel
 import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
@@ -56,14 +55,14 @@ import com.advice.ui.screens.EventScreenView
 import com.advice.ui.screens.FAQScreenView
 import com.advice.ui.screens.FilterScreenView
 import com.advice.ui.screens.HomeScreenView
-import com.advice.ui.screens.InformationScreenView
+import com.advice.ui.screens.InformationScreen
 import com.advice.ui.screens.ScheduleScreenState
 import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.screens.SettingScreenView
 import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.ui.screens.SupportScreenView
-import com.advice.ui.screens.VendorsScreenView
+import com.advice.core.ui.InformationState
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.wifi.WifiScreenView
 import com.advice.wifi.suggestNetwork
@@ -178,7 +177,8 @@ class MainActivity :
         composable("help_and_support") { SupportScreen(navController) }
         composable("locations") { LocationsScreen(navController) }
         composable("faq") { FAQScreen(navController) }
-        composable("partners_and_vendors") { VendorsScreen(navController) }
+        composable("vendors") { VendorsScreen(navController) }
+        composable("villages") { VillagesScreen(navController) }
         composable("speakers") { SpeakersScreen(navController) }
     }
 
@@ -205,7 +205,7 @@ class MainActivity :
     private fun CodeOfCoductScreen(navController: NavHostController) {
         val viewModel = viewModel<ConferenceViewModel>()
         val state = viewModel.conference.collectAsState(initial = null).value ?: return
-        CodeOfConductScreenView(policy = state.conduct) {
+        CodeOfConductScreenView(policy = state.codeOfConduct) {
             navController.popBackStack()
         }
     }
@@ -238,10 +238,22 @@ class MainActivity :
 
     @Composable
     private fun VendorsScreen(navController: NavHostController) {
-        val viewModel = viewModel<VendorsViewModel>()
+        val viewModel = viewModel<OrganizationsViewModel>()
         val state = viewModel.vendors.collectAsState(initial = null).value ?: return
-        VendorsScreenView(
-            vendors = state,
+        com.advice.organizations.ui.VendorsScreen(
+            organizations = state,
+            onBackPressed = {
+                navController.popBackStack()
+            }
+        )
+    }
+
+    @Composable
+    private fun VillagesScreen(navController: NavHostController) {
+        val viewModel = viewModel<OrganizationsViewModel>()
+        val state = viewModel.villages.collectAsState(initial = null).value ?: return
+        com.advice.organizations.ui.VillagesScreen(
+            organizations = state,
             onBackPressed = {
                 navController.popBackStack()
             }
@@ -263,11 +275,9 @@ class MainActivity :
     @Composable
     private fun InformationScreen(navController: NavHostController) {
         val viewModel = viewModel<InformationViewModel>()
-        val state = viewModel.conference.collectAsState(initial = null).value ?: return
-        InformationScreenView(
-            hasCodeOfConduct = state.conduct != null,
-            hasSupport = state.support != null,
-            hasWifi = state.code.contains("DEFCON") || state.code.contains("TEST"),
+        val state = viewModel.state.collectAsState(initial = InformationState()).value
+        InformationScreen(
+            state = state,
             onClick = { navController.navigate(it) },
             onBackPressed = {
                 navController.popBackStack()

@@ -1,6 +1,7 @@
-package com.advice.data.datasource
+package com.advice.data
 
 import com.advice.core.local.Bookmark
+import com.advice.data.datasource.BookmarkedElementDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class InMemoryBookmarkedDataSourceImpl : BookmarkedElementDataSource {

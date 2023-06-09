@@ -1,10 +1,7 @@
 package com.advice.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -14,21 +11,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.advice.core.ui.InformationState
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.hackertracker.R
+import com.advice.ui.views.Navigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InformationScreenView(
-    hasCodeOfConduct: Boolean,
-    hasSupport: Boolean,
-    hasWifi: Boolean,
+fun InformationScreen(
+    state: InformationState,
     onClick: (String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -48,17 +40,17 @@ fun InformationScreenView(
     ) {
 
         Column(Modifier.padding(it)) {
-            if (hasWifi) {
+            if (state.hasWifi) {
                 Navigation("WiFi") {
                     onClick("wifi")
                 }
             }
-            if (hasCodeOfConduct) {
+            if (state.hasCodeOfConduct) {
                 Navigation("Code of Conduct") {
                     onClick("code_of_conduct")
                 }
             }
-            if (hasSupport) {
+            if (state.hasSupport) {
                 Navigation("Help & Support") {
                     onClick("help_and_support")
                 }
@@ -72,44 +64,35 @@ fun InformationScreenView(
             Navigation("Speakers") {
                 onClick("speakers")
             }
-            Navigation("Partners & Vendors") {
-                onClick("partners_and_vendors")
+            if (state.hasVendors) {
+                Navigation("Vendors") {
+                    onClick("vendors")
+                }
             }
+            if (state.hasVillages) {
+                Navigation("Villages") {
+                    onClick("villages")
+                }
+            }
+
         }
     }
 }
 
-@Composable
-fun Navigation(label: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Row(
-        modifier
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 24.dp),
-        verticalAlignment = Alignment.CenterVertically) {
-        Text(label, Modifier.weight(1f))
-        Icon(
-            painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
-            null,
-            modifier = Modifier
-                .size(16.dp)
-                .rotate(180f)
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
-fun NavigationPreview() {
-    ScheduleTheme {
-        Navigation("Help & Support") {}
-    }
-}
+private fun InformationScreenViewPreview() {
+    val state = InformationState(
+        hasCodeOfConduct = true,
+        hasWifi = true,
+        hasSupport = true,
+        hasVillages = true,
+        hasVendors = true
+    )
 
-@Preview(showBackground = true)
-@Composable
-fun InformationScreenViewPreview() {
     ScheduleTheme {
-        InformationScreenView(hasCodeOfConduct = true, hasSupport = true, hasWifi = true, {
+        InformationScreen(state, {
 
         }, {})
     }

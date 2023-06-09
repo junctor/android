@@ -9,9 +9,12 @@ import com.advice.core.local.ConferenceMap
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Location
+import com.advice.core.local.Organization
+import com.advice.core.local.OrganizationLink
+import com.advice.core.local.OrganizationLocation
 import com.advice.core.local.Product
-import com.advice.core.local.ProductVariant
 import com.advice.core.local.ProductMedia
+import com.advice.core.local.ProductVariant
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
@@ -22,9 +25,12 @@ import com.advice.firebase.models.FirebaseBookmark
 import com.advice.firebase.models.FirebaseConference
 import com.advice.firebase.models.FirebaseEvent
 import com.advice.firebase.models.FirebaseFAQ
+import com.advice.firebase.models.FirebaseLink
 import com.advice.firebase.models.FirebaseLocation
 import com.advice.firebase.models.FirebaseMap
 import com.advice.firebase.models.FirebaseMerch
+import com.advice.firebase.models.FirebaseOrganization
+import com.advice.firebase.models.FirebaseOrganizationLocation
 import com.advice.firebase.models.FirebaseProductMedia
 import com.advice.firebase.models.FirebaseProductVariant
 import com.advice.firebase.models.FirebaseSpeaker
@@ -190,6 +196,46 @@ fun FirebaseVendor.toVendor(): Vendor? {
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Vendor: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseOrganization.toOrganization(): Organization? {
+    return try {
+        Organization(
+            id,
+            name,
+            description,
+            locations.mapNotNull { it.toLocation() },
+            links.mapNotNull { it.toLink() },
+            tag_ids,
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Organization: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseOrganizationLocation.toLocation(): OrganizationLocation? {
+    return try {
+        OrganizationLocation(
+            location_id,
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to OrganizationLocation: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseLink.toLink(): OrganizationLink? {
+    return try {
+        OrganizationLink(
+            label,
+            type,
+            url,
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Link: ${ex.message}")
         null
     }
 }

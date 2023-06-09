@@ -23,7 +23,7 @@ class FirebaseTagsDataSource(
     override fun get(): Flow<List<TagType>> {
         return combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
             val temp = /*listOf(TagType(tags = listOf(Tag.bookmark))) +*/ tags.toMutableList()
-                .filter { it.isBrowsable }
+//                .filter { it.isBrowsable }
 
             // clearing any previous set selections
             temp.flatMap {

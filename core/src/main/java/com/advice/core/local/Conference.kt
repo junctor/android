@@ -10,7 +10,7 @@ data class Conference(
     val id: Long,
     val name: String,
     val description: String,
-    val conduct: String?,
+    val codeOfConduct: String?,
     val support: String?,
     val code: String,
     val maps: List<ConferenceMap>,
