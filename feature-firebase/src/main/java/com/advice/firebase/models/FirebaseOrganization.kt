@@ -13,6 +13,7 @@ data class FirebaseOrganization(
     val description: String? = null,
     val links: List<FirebaseLink> = emptyList(),
     val locations: List<FirebaseOrganizationLocation> = emptyList(),
+    val media: List<FirebaseOrganizationMedia> = emptyList(),
     val tag_ids: List<Long> = emptyList(),
 ) : Parcelable
 
@@ -27,3 +28,9 @@ data class FirebaseLink(
     val type: String = "link",
     val url: String = "",
 ) : Parcelable
+
+@Parcelize
+data class FirebaseOrganizationMedia(
+    val asset_id: Long = -1L,
+    val url: String = "",
+): Parcelable

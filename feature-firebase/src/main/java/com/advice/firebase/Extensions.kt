@@ -12,6 +12,7 @@ import com.advice.core.local.Location
 import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
 import com.advice.core.local.OrganizationLocation
+import com.advice.core.local.OrganizationMedia
 import com.advice.core.local.Product
 import com.advice.core.local.ProductMedia
 import com.advice.core.local.ProductVariant
@@ -31,6 +32,7 @@ import com.advice.firebase.models.FirebaseMap
 import com.advice.firebase.models.FirebaseMerch
 import com.advice.firebase.models.FirebaseOrganization
 import com.advice.firebase.models.FirebaseOrganizationLocation
+import com.advice.firebase.models.FirebaseOrganizationMedia
 import com.advice.firebase.models.FirebaseProductMedia
 import com.advice.firebase.models.FirebaseProductVariant
 import com.advice.firebase.models.FirebaseSpeaker
@@ -208,6 +210,7 @@ fun FirebaseOrganization.toOrganization(): Organization? {
             description,
             locations.mapNotNull { it.toLocation() },
             links.mapNotNull { it.toLink() },
+            media.mapNotNull { it.toMedia() },
             tag_ids,
         )
     } catch (ex: Exception) {
@@ -239,6 +242,19 @@ fun FirebaseLink.toLink(): OrganizationLink? {
         null
     }
 }
+
+fun FirebaseOrganizationMedia.toMedia(): OrganizationMedia? {
+    return try {
+        OrganizationMedia(
+            asset_id,
+            url,
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Media: ${ex.message}")
+        null
+    }
+}
+
 
 fun FirebaseArticle.toArticle(): Article? {
     return try {

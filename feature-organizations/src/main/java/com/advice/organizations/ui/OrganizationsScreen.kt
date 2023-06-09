@@ -34,12 +34,13 @@ private fun OrganizationRow(organizations: List<Organization>) {
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        for (vendor in organizations) {
+        for (organization in organizations) {
             OrganizationCard(
-                vendor.name,
+                organization.name,
+                organization.media.firstOrNull()?.url,
                 modifier = Modifier.weight(1f)
             ) {
-                // todo: open vendor details
+                // todo: open organization details
             }
         }
         if (organizations.size == 1) Box(modifier = Modifier.weight(1f))
@@ -59,6 +60,7 @@ private fun OrganizationsScreenViewPreview() {
                     description = "360 Unicorn Team consists of a large team of self talk hackers that are really good at like, hacking and stuff.",
                     locations = emptyList(),
                     links = emptyList(),
+                    media = emptyList(),
                     tags = emptyList(),
                 ),
                 Organization(
@@ -67,6 +69,7 @@ private fun OrganizationsScreenViewPreview() {
                     description = "360 Unicorn Team consists of a large team of self talk hackers that are really good at like, hacking and stuff.",
                     locations = emptyList(),
                     links = emptyList(),
+                    media = emptyList(),
                     tags = emptyList(),
                 )
             )

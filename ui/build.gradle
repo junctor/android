@@ -56,7 +56,6 @@ dependencies {
     implementation "com.halilibo.compose-richtext:richtext-commonmark:0.16.0"
     implementation "com.halilibo.compose-richtext:richtext-ui-material3:0.16.0"
 
-
     // accompanist
     implementation "com.google.accompanist:accompanist-pager:$accompanistVersion"
     implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")

@@ -1,7 +1,6 @@
 package com.advice.organizations.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,14 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.shortstack.hackertracker.R
+import coil.compose.AsyncImage
 
 
 @Composable
 internal fun OrganizationCard(
     title: String,
+    media: String?,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
@@ -39,13 +38,13 @@ internal fun OrganizationCard(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
             ) {
-                Image(
-                    painterResource(id = R.drawable.logo_eff),
-                    null,
-                    modifier = Modifier
-                        .background(Color.White)
-                        .aspectRatio(1.333f)
-                )
+                if (media != null) {
+                    AsyncImage(
+                        model = media, contentDescription = "logo", modifier = Modifier
+                            .background(Color.White)
+                            .aspectRatio(1.333f)
+                    )
+                }
             }
 
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {

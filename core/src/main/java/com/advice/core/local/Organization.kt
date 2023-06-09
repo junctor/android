@@ -6,6 +6,7 @@ data class Organization(
     val description: String?,
     val locations: List<OrganizationLocation>,
     val links: List<OrganizationLink>,
+    val media: List<OrganizationMedia>,
     val tags: List<Long>,
 )
 
@@ -16,5 +17,10 @@ data class OrganizationLocation(
 data class OrganizationLink(
     val label: String,
     val type: String,
+    val url: String,
+)
+
+data class OrganizationMedia(
+    val id: Long,
     val url: String,
 )
