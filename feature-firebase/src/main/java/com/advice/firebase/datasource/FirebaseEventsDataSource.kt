@@ -10,43 +10,50 @@ import com.advice.firebase.snapshotFlow
 import com.advice.firebase.toEvent
 import com.advice.firebase.toObjectsOrEmpty
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 
+@OptIn(FlowPreview::class)
 class FirebaseEventsDataSource(
     private val userSession: UserSession,
     private val tagsDataSource: TagsDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
 ) : EventsDataSource {
 
-    private fun getEvents(conference: String): Flow<List<FirebaseEvent>> {
-        return firestore.collection("conferences")
-            .document(conference)
+    private val _eventsFlow = combine(
+        userSession.getConference(),
+        tagsDataSource.get(),
+        bookmarkedEventsDataSource.get()
+    ) { conference, tags, bookmarkedEvents ->
+        firestore.collection("conferences")
+            .document(conference.code)
             .collection("events")
             .snapshotFlow()
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseEvent::class.java)
                     .filter { (!it.hidden || userSession.isDeveloper) }
+                    .mapNotNull {
+                        it.toEvent(
+                            tags = tags,
+                            isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == it.id.toString() })
+                    }
             }
-    }
+    }.flattenMerge()
+        .shareIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            replay = 1
+        )
 
-    override fun get(): Flow<List<Event>> {
-        // todo: fix issue when switching between conferences (concurrency = 1?)
-        return userSession.getConference().flatMapMerge { conference ->
-            combine(getEvents(conference.code), tagsDataSource.get(), bookmarkedEventsDataSource.get()) { events, tags, bookmarks ->
-                val events = events.mapNotNull { it.toEvent(tags) }
-
-                for (bookmark in bookmarks) {
-                    events.find { it.id.toString() == bookmark.id }?.isBookmarked = bookmark.value
-                }
-
-                events
-            }
-        }
-    }
+    override fun get(): Flow<List<Event>> = _eventsFlow
 
 
     override suspend fun bookmark(event: Event) {

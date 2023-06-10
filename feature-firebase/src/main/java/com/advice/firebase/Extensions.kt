@@ -124,7 +124,7 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
     }
 }
 
-fun FirebaseEvent.toEvent(tags: List<TagType>): Event? {
+fun FirebaseEvent.toEvent(tags: List<TagType>, isBookmarked: Boolean = false): Event? {
     try {
         val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
 
@@ -145,7 +145,8 @@ fun FirebaseEvent.toEvent(tags: List<TagType>): Event? {
             speakers.mapNotNull { it.toSpeaker() },
             types,
             location.toLocation()!!,
-            links
+            links,
+            isBookmarked
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Event: ${ex.message}")
