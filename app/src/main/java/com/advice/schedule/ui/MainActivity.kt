@@ -109,7 +109,6 @@ class MainActivity :
 
                     informationScreens(navController)
 
-
                     composable("merch") {
                         ProductsScreen(navController, productsViewModel)
                     }
