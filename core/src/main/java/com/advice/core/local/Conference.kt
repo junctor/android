@@ -10,8 +10,6 @@ data class Conference(
     val id: Long,
     val name: String,
     val description: String,
-    val codeOfConduct: String?,
-    val support: String?,
     val code: String,
     val maps: List<ConferenceMap>,
     val kickoffDate: Date,
@@ -25,7 +23,7 @@ data class Conference(
         get() = Time.now().after(endDate)
 
     companion object {
-        val Zero = Conference(-1, "CACTUSCON2023", "", null, null, "CACTUSCON2023", ArrayList(), Date(), Date(), Date(), "", false)
+        val Zero = Conference(-1, "CACTUSCON2023", "", "CACTUSCON2023", ArrayList(), Date(), Date(), Date(), "", false)
     }
 }
 

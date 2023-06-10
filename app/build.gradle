@@ -52,6 +52,7 @@ dependencies {
     implementation project(':feature-reminder')
     implementation project(':feature-wifi')
     implementation project(":feature-organizations")
+    implementation project(":feature-documents")
 
     def composeBom = platform('androidx.compose:compose-bom:$composeVersion')
     implementation composeBom

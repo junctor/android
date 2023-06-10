@@ -8,6 +8,7 @@ import com.advice.data.UserSession
 import com.advice.data.datasource.ArticleDataSource
 import com.advice.data.datasource.BookmarkedElementDataSource
 import com.advice.data.datasource.ConferencesDataSource
+import com.advice.data.datasource.DocumentsDataSource
 import com.advice.data.datasource.EventsDataSource
 import com.advice.data.datasource.FAQDataSource
 import com.advice.data.datasource.LocationsDataSource
@@ -18,9 +19,11 @@ import com.advice.data.datasource.SpeakersDataSource
 import com.advice.data.datasource.TagsDataSource
 import com.advice.data.datasource.VendorsDataSource
 import com.advice.data.datasource.VillagesDataSource
+import com.advice.documents.DocumentsRepository
 import com.advice.firebase.FirebaseUserSession
 import com.advice.firebase.datasource.FirebaseArticleDataSource
 import com.advice.firebase.datasource.FirebaseConferencesDataSource
+import com.advice.firebase.datasource.FirebaseDocumentsDataSource
 import com.advice.firebase.datasource.FirebaseEventsDataSource
 import com.advice.firebase.datasource.FirebaseFAQDataSource
 import com.advice.firebase.datasource.FirebaseLocationsDataSource
@@ -104,8 +107,9 @@ val appModule = module {
     single { MapRepository(get()) }
     single { LocationRepository(get()) }
     single { OrganizationsRepository(get(), get()) }
-    single { InformationRepository(get(), get(), get()) }
+    single { InformationRepository(get(), get(), get(), get()) }
     single { ProductsRepository(androidContext(), get()) }
+    single { DocumentsRepository(get()) }
 
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
@@ -127,6 +131,9 @@ val appModule = module {
     single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get())}
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<VillagesDataSource>{ FirebaseVillagesDataSource(get(), get()) }
+
+    // Documents
+    single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get()) }
 
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }

@@ -44,13 +44,11 @@ import com.advice.schedule.ui.home.DismissibleBottomAppBar
 import com.advice.schedule.ui.home.HomeViewModel
 import com.advice.schedule.ui.information.InformationViewModel
 import com.advice.schedule.ui.information.faq.FAQViewModel
-import com.advice.schedule.ui.information.info.ConferenceViewModel
 import com.advice.schedule.ui.information.speakers.SpeakersViewModel
 import com.advice.schedule.ui.information.vendors.OrganizationsViewModel
 import com.advice.schedule.ui.schedule.FiltersViewModel
 import com.advice.schedule.ui.schedule.ScheduleViewModel
 import com.advice.schedule.ui.settings.SettingsViewModel
-import com.advice.ui.screens.CodeOfConductScreenView
 import com.advice.ui.screens.EventScreenView
 import com.advice.ui.screens.FAQScreenView
 import com.advice.ui.screens.FilterScreenView
@@ -61,8 +59,8 @@ import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.screens.SettingScreenView
 import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
-import com.advice.ui.screens.SupportScreenView
 import com.advice.core.ui.InformationState
+import com.advice.documents.DocumentsViewModel
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.wifi.WifiScreenView
 import com.advice.wifi.suggestNetwork
@@ -173,8 +171,9 @@ class MainActivity :
 
     private fun NavGraphBuilder.informationScreens(navController: NavHostController) {
         composable("wifi") { WifiScreen(navController) }
-        composable("code_of_conduct") { CodeOfCoductScreen(navController) }
-        composable("help_and_support") { SupportScreen(navController) }
+        composable("document/{id}") { backStackEntry ->
+            DocumentScreen(navController, backStackEntry.arguments?.getString("id"))
+        }
         composable("locations") { LocationsScreen(navController) }
         composable("faq") { FAQScreen(navController) }
         composable("vendors") { VendorsScreen(navController) }
@@ -191,23 +190,15 @@ class MainActivity :
     }
 
     @Composable
-    private fun SupportScreen(navController: NavHostController) {
-        val viewModel = viewModel<ConferenceViewModel>()
-        val state = viewModel.conference.collectAsState(initial = null).value ?: return
-        SupportScreenView(
-            message = state.support,
+    private fun DocumentScreen(navController: NavHostController, id: String? = null) {
+        val viewModel = viewModel<DocumentsViewModel>()
+        val documents = viewModel.documents.collectAsState(initial = null).value ?: return
+        val document = documents.find { it.id == id?.toLong() } ?: return
+        com.advice.documents.ui.DocumentScreen(
+            document = document,
             onBackPressed = { navController.popBackStack() },
             onLinkClicked = { /*TODO*/ }
         )
-    }
-
-    @Composable
-    private fun CodeOfCoductScreen(navController: NavHostController) {
-        val viewModel = viewModel<ConferenceViewModel>()
-        val state = viewModel.conference.collectAsState(initial = null).value ?: return
-        CodeOfConductScreenView(policy = state.codeOfConduct) {
-            navController.popBackStack()
-        }
     }
 
     @Composable

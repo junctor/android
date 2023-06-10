@@ -1,6 +1,8 @@
-package com.advice.ui.screens
+package com.advice.documents.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -11,21 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.advice.core.local.Document
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.Paragraph
 import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SupportScreenView(
-    message: String?,
+fun DocumentScreen(
+    document: Document,
     onBackPressed: () -> Unit,
-    onLinkClicked: (String) -> Unit
+    onLinkClicked: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Help & Support") },
+                title = { Text(document.title) },
                 navigationIcon = {
                     IconButton(onClick = { onBackPressed() }) {
                         Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
@@ -33,12 +36,12 @@ fun SupportScreenView(
                 }
             )
         }) {
-        if (message != null) {
-            Paragraph(
-                message,
-                Modifier.padding(it)
-            )
-        }
+        Paragraph(
+            document.description,
+            Modifier
+                .padding(it)
+                .verticalScroll(rememberScrollState())
+        )
     }
 }
 
@@ -46,6 +49,14 @@ fun SupportScreenView(
 @Composable
 fun SupportScreenViewPreview() {
     ScheduleTheme {
-        SupportScreenView("If you need support, please call us 555-555-0000", {}, {})
+        DocumentScreen(
+            document = Document(
+                -1L,
+                "Code of Conduct",
+                "If you need support, please call us 555-555-0000"
+            ),
+            onBackPressed = {},
+            onLinkClicked = {}
+        )
     }
 }

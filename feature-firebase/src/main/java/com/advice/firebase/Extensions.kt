@@ -6,6 +6,7 @@ import com.advice.core.local.Article
 import com.advice.core.local.Bookmark
 import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceMap
+import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Location
@@ -24,6 +25,7 @@ import com.advice.firebase.models.FirebaseAction
 import com.advice.firebase.models.FirebaseArticle
 import com.advice.firebase.models.FirebaseBookmark
 import com.advice.firebase.models.FirebaseConference
+import com.advice.firebase.models.FirebaseDocument
 import com.advice.firebase.models.FirebaseEvent
 import com.advice.firebase.models.FirebaseFAQ
 import com.advice.firebase.models.FirebaseLink
@@ -86,8 +88,6 @@ fun FirebaseConference.toConference(): Conference? {
             id,
             name,
             description,
-            codeofconduct,
-            supportdoc,
             code,
             maps.mapNotNull { it.toMap() },
             kickoff_timestamp.toDate(),
@@ -255,6 +255,18 @@ fun FirebaseOrganizationMedia.toMedia(): OrganizationMedia? {
     }
 }
 
+fun FirebaseDocument.toDocument(): Document? {
+    return try {
+        Document(
+            id,
+            title_text,
+            body_text,
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Document: ${ex.message}")
+        null
+    }
+}
 
 fun FirebaseArticle.toArticle(): Article? {
     return try {

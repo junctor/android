@@ -45,14 +45,9 @@ fun InformationScreen(
                     onClick("wifi")
                 }
             }
-            if (state.hasCodeOfConduct) {
-                Navigation("Code of Conduct") {
-                    onClick("code_of_conduct")
-                }
-            }
-            if (state.hasSupport) {
-                Navigation("Help & Support") {
-                    onClick("help_and_support")
+            state.documents.forEach {
+                Navigation(it.title) {
+                    onClick("document/${it.id}")
                 }
             }
             Navigation("FAQ") {
@@ -84,9 +79,7 @@ fun InformationScreen(
 @Composable
 private fun InformationScreenViewPreview() {
     val state = InformationState(
-        hasCodeOfConduct = true,
         hasWifi = true,
-        hasSupport = true,
         hasVillages = true,
         hasVendors = true
     )

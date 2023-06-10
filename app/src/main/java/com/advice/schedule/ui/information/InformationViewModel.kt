@@ -13,12 +13,12 @@ class InformationViewModel : ViewModel(), KoinComponent {
 
     val state = combine(
         repository.conference,
+        repository.documents,
         repository.villages,
-        repository.vendors
-    ) { conference, villages, vendors ->
+        repository.vendors,
+    ) { conference, documents, villages, vendors ->
         InformationState(
-            hasCodeOfConduct = conference.codeOfConduct != null,
-            hasSupport = conference.support != null,
+            documents = documents,
             hasWifi = conference.code.contains("DEFCON") || conference.code.contains("TEST"),
             hasVillages = villages.isNotEmpty(),
             hasVendors = vendors.isNotEmpty(),
