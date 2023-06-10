@@ -31,10 +31,10 @@ import com.advice.firebase.models.FirebaseFAQ
 import com.advice.firebase.models.FirebaseLink
 import com.advice.firebase.models.FirebaseLocation
 import com.advice.firebase.models.FirebaseMap
-import com.advice.firebase.models.FirebaseMerch
 import com.advice.firebase.models.FirebaseOrganization
 import com.advice.firebase.models.FirebaseOrganizationLocation
 import com.advice.firebase.models.FirebaseOrganizationMedia
+import com.advice.firebase.models.FirebaseProduct
 import com.advice.firebase.models.FirebaseProductMedia
 import com.advice.firebase.models.FirebaseProductVariant
 import com.advice.firebase.models.FirebaseSpeaker
@@ -317,13 +317,13 @@ fun FirebaseTagType.toTagType(): TagType? {
 
 fun FirebaseFAQ.toFAQ() = FAQ(question, answer)
 
-fun FirebaseMerch.toMerch(): Product? {
+fun FirebaseProduct.toMerch(): Product? {
     return try {
         Product(
             id = id,
             label = title,
-            baseCost = (price_min.toFloat() * 100).toLong(), // todo: this is currently a float, fix!
-            variants = variants.map { it.toMerchOption() },
+            baseCost = price_min,
+            variants = variants.map { it.toMerchOption(price_min) },
             media = media.map { it.toProductMedia() }
         )
     } catch (ex: Exception) {
@@ -332,11 +332,11 @@ fun FirebaseMerch.toMerch(): Product? {
     }
 }
 
-fun FirebaseProductVariant.toMerchOption(): ProductVariant {
+fun FirebaseProductVariant.toMerchOption(basePrice: Long): ProductVariant {
     return ProductVariant(
         label = title,
-        inStock = stock_status == "IN",
-        extraCost = (price.toFloat() * 100).toLong(), // todo: this is currently a float, fix!
+        tags = tags,
+        extraCost = price - basePrice,
     )
 }
 

@@ -108,7 +108,7 @@ val appModule = module {
     single { LocationRepository(get()) }
     single { OrganizationsRepository(get(), get()) }
     single { InformationRepository(get(), get(), get(), get()) }
-    single { ProductsRepository(androidContext(), get()) }
+    single { ProductsRepository(get()) }
     single { DocumentsRepository(get()) }
 
 

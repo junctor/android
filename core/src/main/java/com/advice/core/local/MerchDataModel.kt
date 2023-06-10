@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ProductVariant(
     val label: String,
-    val inStock: Boolean,
+    val tags: List<Long>,
     val extraCost: Long,
 ) : Parcelable
 

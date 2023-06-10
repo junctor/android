@@ -23,7 +23,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     private val _summary = MutableStateFlow(ProductsState(emptyList()))
     val summary: Flow<ProductsState> = _summary
 
-    var hasDiscount = false
+    private var hasDiscount = false
     private val goonDiscount = 0.10f
 
     init {

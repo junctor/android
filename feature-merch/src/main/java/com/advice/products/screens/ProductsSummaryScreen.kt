@@ -20,13 +20,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Product
 import com.advice.core.ui.ProductsState
+import com.advice.products.R
 import com.advice.products.views.EditableProduct
 import com.advice.products.views.PromoSwitch
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.ProductsProvider
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.views.EmptyView
-import com.advice.products.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,10 +104,9 @@ fun ProductsSummaryContent(
 }
 
 fun getSubtotal(list: List<Product>): Float {
-//    return list.sumOf { element ->
-//        element.discountedPrice ?: element.cost
-//    } / 100f
-    return -1f
+    return list.sumOf { element ->
+        element.discountedPrice ?: element.cost.toInt()
+    } / 100f
 }
 
 

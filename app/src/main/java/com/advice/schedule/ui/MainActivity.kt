@@ -94,6 +94,8 @@ class MainActivity :
             val navController = rememberNavController()
 
             ScheduleTheme {
+                val productsViewModel = viewModel<ProductsViewModel>()
+
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") { HomeScreen(navController) }
                     composable("information") { InformationScreen(navController) }
@@ -107,17 +109,19 @@ class MainActivity :
 
                     informationScreens(navController)
 
+
                     composable("merch") {
-                        MerchScreen(navController)
+                        ProductsScreen(navController, productsViewModel)
                     }
                     composable("merch/{id}") { backStackEntry ->
                         MerchItemScreen(
                             navController,
+                            productsViewModel,
                             backStackEntry.arguments?.getString("id")?.toLong()
                         )
                     }
                     composable("merch/summary") {
-                        MerchSummary(navController)
+                        ProductsSummary(navController, productsViewModel)
                     }
                 }
             }
@@ -125,14 +129,18 @@ class MainActivity :
     }
 
     @Composable
-    private fun MerchItemScreen(navController: NavHostController, id: Long?) {
-        val viewModel = viewModel<ProductsViewModel>()
+    private fun MerchItemScreen(
+        navController: NavHostController,
+        viewModel: ProductsViewModel,
+        id: Long?
+    ) {
         val state = viewModel.state.collectAsState(null).value ?: return
         val merch = state.elements.find { it.id == id } ?: return
         ProductScreen(
             product = merch,
             onAddClicked = {
                 viewModel.addToCart(it)
+                navController.popBackStack()
             },
             onBackPressed = {
                 navController.popBackStack()
@@ -141,22 +149,22 @@ class MainActivity :
     }
 
     @Composable
-    private fun MerchSummary(navController: NavHostController) {
-        val viewModel = viewModel<ProductsViewModel>()
-        val state = viewModel.state.collectAsState(null).value ?: return
+    private fun ProductsSummary(navController: NavHostController, viewModel: ProductsViewModel) {
+        val state = viewModel.summary.collectAsState(null).value ?: return
         ProductsSummaryScreen(
             state = state,
             onQuantityChanged = { id, quantity, variant ->
                 viewModel.setQuantity(id, quantity, variant)
             },
             onBackPressed = { navController.popBackStack() },
-            onDiscountApplied = {},
+            onDiscountApplied = {
+                viewModel.applyDiscount(it)
+            },
         )
     }
 
     @Composable
-    private fun MerchScreen(navController: NavHostController) {
-        val viewModel = viewModel<ProductsViewModel>()
+    private fun ProductsScreen(navController: NavHostController, viewModel: ProductsViewModel) {
         val state = viewModel.state.collectAsState(null).value ?: return
         ProductsScreen(
             state = state,

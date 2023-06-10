@@ -1,12 +1,12 @@
 package com.advice.firebase.models
 
-data class FirebaseMerch(
+data class FirebaseProduct(
     val id: Long = -1L,
     val code: String = "",
     val title: String = "",
     val description: String = "",
-    val price_min: String = "",
-    val price_max: String = "",
+    val price_min: Long = -1L,
+    val price_max: Long = -1L,
     val product_id: Long = -1,
     val sort_order: Int = -1,
     val is_eligibility_restricted: String = "N",
@@ -27,7 +27,6 @@ data class FirebaseProductVariant(
     val sort_order: Int = -1,
     val title: String = "",
     val code: String = "",
-    val stock_status: String = "IN",
-    val price: String = "",
+    val price: Long = -1L,
     val tags: List<Long> = emptyList()
 )

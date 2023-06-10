@@ -57,7 +57,8 @@ fun ProductView(product: Product, onMerchClicked: (Product) -> Unit) {
                 Modifier.fillMaxWidth(),
             ) {
                 for ((index, option) in product.variants.withIndex()) {
-                    ProductVariantTag(option.label, inStock = option.inStock)
+                    // TODO: Add inStock
+                    ProductVariantTag(option.label, inStock = true)
                 }
             }
         }
@@ -99,9 +100,9 @@ fun ProductView(product: Product, onMerchClicked: (Product) -> Unit) {
 @Composable
 fun ProductViewPreview() {
     val variants = listOf(
-        ProductVariant("S", true, 0),
-        ProductVariant("4XL", true, 0),
-        ProductVariant("5XL", false, 1000)
+        ProductVariant("S", emptyList(), 0),
+        ProductVariant("4XL", emptyList(), 0),
+        ProductVariant("5XL", emptyList(), 1000)
     )
     val element = Product(
         1L,
