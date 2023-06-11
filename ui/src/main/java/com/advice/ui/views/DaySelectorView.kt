@@ -15,8 +15,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
@@ -33,11 +37,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (String) -> Unit) {
-    val coroutineScope = rememberCoroutineScope()
-
-    val alpha = remember {
-        Animatable(0f)
+    var hasSetup by rememberSaveable {
+        mutableStateOf(false)
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
     val startPosition = remember {
         Animatable(-1f)
@@ -51,8 +55,12 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
         Array(12) { IntSize.Zero }
     }
 
+    val alpha = remember {
+        Animatable(if(hasSetup) 1f else 0f)
+    }
     LaunchedEffect(key1 = "alpha", block = {
         alpha.animateTo(1f)
+        hasSetup = true
     })
 
     if (positions[start] != IntSize.Zero) {
