@@ -20,7 +20,6 @@ import com.advice.data.sources.TagsDataSource
 import com.advice.data.sources.VendorsDataSource
 import com.advice.data.sources.VillagesDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
-import com.advice.firebase.session.FirebaseUserSession
 import com.advice.firebase.data.sources.FirebaseArticleDataSource
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
@@ -34,10 +33,11 @@ import com.advice.firebase.data.sources.FirebaseSpeakersDataSource
 import com.advice.firebase.data.sources.FirebaseTagsDataSource
 import com.advice.firebase.data.sources.FirebaseVendorsDataSource
 import com.advice.firebase.data.sources.FirebaseVillagesDataSource
+import com.advice.firebase.session.FirebaseUserSession
 import com.advice.locations.data.repositories.LocationRepository
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
-import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.products.data.repositories.ProductsRepository
+import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.reminder.ReminderManager
 import com.advice.schedule.repository.FAQRepository
 import com.advice.schedule.repository.FiltersRepository
@@ -104,7 +104,13 @@ val appModule = module {
     single { SpeakerRepository(get()) }
     single { FiltersRepository(get(), get()) }
     single { FAQRepository(get()) }
-    single { SettingsRepository(get(), get(), "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})") }
+    single {
+        SettingsRepository(
+            get(),
+            get(),
+            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+        )
+    }
     single { MapRepository(get()) }
     single { LocationRepository(get()) }
     single { OrganizationsRepository(get(), get()) }
@@ -123,7 +129,13 @@ val appModule = module {
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get()) }
     single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
     single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
-    single<MapsDataSource> { FirebaseMapsDataSource(get(), androidContext().applicationContext.getExternalFilesDir(null), get(), ) }
+    single<MapsDataSource> {
+        FirebaseMapsDataSource(
+            get(),
+            androidContext().applicationContext.getExternalFilesDir(null),
+            get(),
+        )
+    }
 
     single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
     single<ProductsDataSource> { FirebaseProductsDataSource(get(), get()) }
@@ -131,7 +143,7 @@ val appModule = module {
     // Organizations
     single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get()) }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
-    single<VillagesDataSource>{ FirebaseVillagesDataSource(get(), get()) }
+    single<VillagesDataSource> { FirebaseVillagesDataSource(get(), get()) }
 
     // Documents
     single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get()) }

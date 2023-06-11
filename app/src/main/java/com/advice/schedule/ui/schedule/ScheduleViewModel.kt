@@ -21,7 +21,8 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     val state = combine(
         repository.list, query
     ) { events, query ->
-        val elements = events.filter { query == null || it.title.contains(query, ignoreCase = true) }
+        val elements =
+            events.filter { query == null || it.title.contains(query, ignoreCase = true) }
         val days = elements.groupBy { TimeUtil.getDateStamp(it.start) }
         return@combine ScheduleScreenState.Success(days)
     }

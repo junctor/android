@@ -7,7 +7,7 @@ import com.advice.data.sources.TagsDataSource
 
 class FiltersRepository(
     private val tagsDataSource: TagsDataSource,
-    private val bookmarksDataSource: BookmarkedElementDataSource
+    private val bookmarksDataSource: BookmarkedElementDataSource,
 ) {
 
     val tags = tagsDataSource.get()

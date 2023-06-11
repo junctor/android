@@ -36,6 +36,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
+import com.advice.core.ui.InformationState
+import com.advice.documents.presentation.viewmodel.DocumentsViewModel
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.locations.ui.screens.LocationsScreen
 import com.advice.products.presentation.viewmodel.ProductsViewModel
@@ -61,11 +63,9 @@ import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.screens.SettingScreenView
 import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
-import com.advice.core.ui.InformationState
-import com.advice.documents.presentation.viewmodel.DocumentsViewModel
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.wifi.ui.screens.WifiScreen
 import com.advice.wifi.suggestNetwork
+import com.advice.wifi.ui.screens.WifiScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.shortstack.hackertracker.R
 import org.koin.core.KoinComponent
@@ -133,7 +133,7 @@ class MainActivity :
     private fun MerchItemScreen(
         navController: NavHostController,
         viewModel: ProductsViewModel,
-        id: Long?
+        id: Long?,
     ) {
         val state = viewModel.state.collectAsState(null).value ?: return
         val merch = state.elements.find { it.id == id } ?: return
@@ -447,9 +447,8 @@ class MainActivity :
         val navBackStackEntry by currentBackStackEntryAsState()
         return navBackStackEntry?.let {
             viewModel(viewModelStoreOwner = it)
-        } ?:
-            viewModel<VM>().also {
-                Timber.e("Creating new ViewModel: ${VM::class.java.simpleName}")
-            }
+        } ?: viewModel<VM>().also {
+            Timber.e("Creating new ViewModel: ${VM::class.java.simpleName}")
+        }
     }
 }

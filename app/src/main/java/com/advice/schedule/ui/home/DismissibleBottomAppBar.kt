@@ -30,7 +30,7 @@ import com.shortstack.hackertracker.R
 fun DismissibleBottomAppBar(
     modifier: Modifier = Modifier,
     isShown: Boolean,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     var offsetY by rememberSaveable { mutableStateOf(0f) }
     offsetY = if (isShown) 0f else with(LocalDensity.current) { 48.dp.toPx() }
@@ -66,7 +66,7 @@ fun DismissibleBottomAppBarPreview() {
                         contentDescription = null
                     )
                 }
-                IconButton(onClick = {  }) {
+                IconButton(onClick = { }) {
                     Icon(Icons.Default.Info, contentDescription = null)
                 }
                 IconButton(onClick = { }) {

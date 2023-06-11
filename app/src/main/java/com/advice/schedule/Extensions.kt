@@ -66,7 +66,7 @@ fun AppCompatActivity.replaceFragment(
     fragment: Fragment,
     frameId: Int,
     hasAnimation: Boolean = false,
-    backStack: Boolean = true
+    backStack: Boolean = true,
 ) {
     supportFragmentManager.inTransaction {
 

@@ -27,7 +27,7 @@ class ScheduleRepository(
 
     private fun filter(
         events: List<Event>,
-        filter: List<Tag>
+        filter: List<Tag>,
     ): List<Event> {
         val bookmarksOnly = filter.any { it.isBookmark && it.isSelected }
         val ids = filter.filter { !it.isBookmark }.map { it.id }
