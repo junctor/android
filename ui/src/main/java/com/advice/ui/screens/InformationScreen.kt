@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.advice.core.ui.InformationState
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.views.Navigation
+import com.advice.ui.components.Navigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -17,9 +17,9 @@ import com.advice.core.local.Speaker
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.preview.SpeakerProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.views.EventRowView
-import com.advice.ui.views.NoDetailsView
-import com.advice.ui.views.Paragraph
+import com.advice.ui.components.EventRowView
+import com.advice.ui.components.NoDetailsView
+import com.advice.ui.components.Paragraph
 import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -22,8 +22,8 @@ import com.advice.core.ui.FiltersScreenState
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.TagTypeProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.views.FilterHeaderView
-import com.advice.ui.views.FilterView
+import com.advice.ui.components.FilterHeaderView
+import com.advice.ui.components.FilterView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

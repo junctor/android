@@ -1,6 +1,6 @@
 package com.advice.schedule.repository
 
-import com.advice.data.datasource.FAQDataSource
+import com.advice.data.sources.FAQDataSource
 
 
 class FAQRepository(private val faqDataSource: FAQDataSource) {

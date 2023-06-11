@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import com.advice.core.local.MapFile
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.views.EmptyView
+import com.advice.ui.components.EmptyView
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.util.FitPolicy
 import com.google.accompanist.pager.ExperimentalPagerApi

@@ -1,7 +1,7 @@
 package com.advice.schedule.repository
 
 import com.advice.core.local.Speaker
-import com.advice.data.datasource.EventsDataSource
+import com.advice.data.sources.EventsDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 

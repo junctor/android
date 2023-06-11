@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.advice.core.utils.NotificationHelper
-import com.advice.data.datasource.EventsDataSource
+import com.advice.data.sources.EventsDataSource
 import kotlinx.coroutines.flow.first
 import org.koin.core.KoinComponent
 import org.koin.core.inject

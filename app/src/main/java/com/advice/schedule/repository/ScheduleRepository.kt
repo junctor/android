@@ -2,8 +2,8 @@ package com.advice.schedule.repository
 
 import com.advice.core.local.Event
 import com.advice.core.local.Tag
-import com.advice.data.datasource.EventsDataSource
-import com.advice.data.datasource.TagsDataSource
+import com.advice.data.sources.EventsDataSource
+import com.advice.data.sources.TagsDataSource
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.combine
 

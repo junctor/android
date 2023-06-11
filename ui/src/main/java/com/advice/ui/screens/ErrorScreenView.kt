@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.views.EmptyView
+import com.advice.ui.components.EmptyView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

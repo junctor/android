@@ -2,9 +2,9 @@ package com.advice.schedule.repository
 
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
-import com.advice.data.UserSession
-import com.advice.data.datasource.ArticleDataSource
-import com.advice.data.datasource.ConferencesDataSource
+import com.advice.data.session.UserSession
+import com.advice.data.sources.ArticleDataSource
+import com.advice.data.sources.ConferencesDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 

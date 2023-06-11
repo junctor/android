@@ -4,39 +4,40 @@ import androidx.work.WorkManager
 import com.advice.core.utils.NotificationHelper
 import com.advice.core.utils.Storage
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
-import com.advice.data.UserSession
-import com.advice.data.datasource.ArticleDataSource
-import com.advice.data.datasource.BookmarkedElementDataSource
-import com.advice.data.datasource.ConferencesDataSource
-import com.advice.data.datasource.DocumentsDataSource
-import com.advice.data.datasource.EventsDataSource
-import com.advice.data.datasource.FAQDataSource
-import com.advice.data.datasource.LocationsDataSource
-import com.advice.data.datasource.MapsDataSource
-import com.advice.data.datasource.OrganizationsDataSource
-import com.advice.data.datasource.ProductsDataSource
-import com.advice.data.datasource.SpeakersDataSource
-import com.advice.data.datasource.TagsDataSource
-import com.advice.data.datasource.VendorsDataSource
-import com.advice.data.datasource.VillagesDataSource
-import com.advice.documents.DocumentsRepository
-import com.advice.firebase.FirebaseUserSession
-import com.advice.firebase.datasource.FirebaseArticleDataSource
-import com.advice.firebase.datasource.FirebaseConferencesDataSource
-import com.advice.firebase.datasource.FirebaseDocumentsDataSource
-import com.advice.firebase.datasource.FirebaseEventsDataSource
-import com.advice.firebase.datasource.FirebaseFAQDataSource
-import com.advice.firebase.datasource.FirebaseLocationsDataSource
-import com.advice.firebase.datasource.FirebaseMapsDataSource
-import com.advice.firebase.datasource.FirebaseOrganizationDataSource
-import com.advice.firebase.datasource.FirebaseProductsDataSource
-import com.advice.firebase.datasource.FirebaseSpeakersDataSource
-import com.advice.firebase.datasource.FirebaseTagsDataSource
-import com.advice.firebase.datasource.FirebaseVendorsDataSource
-import com.advice.firebase.datasource.FirebaseVillagesDataSource
-import com.advice.locations.data.LocationRepository
-import com.advice.products.ProductsViewModel
-import com.advice.products.data.ProductsRepository
+import com.advice.data.session.UserSession
+import com.advice.data.sources.ArticleDataSource
+import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.data.sources.ConferencesDataSource
+import com.advice.data.sources.DocumentsDataSource
+import com.advice.data.sources.EventsDataSource
+import com.advice.data.sources.FAQDataSource
+import com.advice.data.sources.LocationsDataSource
+import com.advice.data.sources.MapsDataSource
+import com.advice.data.sources.OrganizationsDataSource
+import com.advice.data.sources.ProductsDataSource
+import com.advice.data.sources.SpeakersDataSource
+import com.advice.data.sources.TagsDataSource
+import com.advice.data.sources.VendorsDataSource
+import com.advice.data.sources.VillagesDataSource
+import com.advice.documents.data.repositories.DocumentsRepository
+import com.advice.firebase.session.FirebaseUserSession
+import com.advice.firebase.data.sources.FirebaseArticleDataSource
+import com.advice.firebase.data.sources.FirebaseConferencesDataSource
+import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
+import com.advice.firebase.data.sources.FirebaseEventsDataSource
+import com.advice.firebase.data.sources.FirebaseFAQDataSource
+import com.advice.firebase.data.sources.FirebaseLocationsDataSource
+import com.advice.firebase.data.sources.FirebaseMapsDataSource
+import com.advice.firebase.data.sources.FirebaseOrganizationDataSource
+import com.advice.firebase.data.sources.FirebaseProductsDataSource
+import com.advice.firebase.data.sources.FirebaseSpeakersDataSource
+import com.advice.firebase.data.sources.FirebaseTagsDataSource
+import com.advice.firebase.data.sources.FirebaseVendorsDataSource
+import com.advice.firebase.data.sources.FirebaseVillagesDataSource
+import com.advice.locations.data.repositories.LocationRepository
+import com.advice.locations.presentation.viewmodel.LocationsViewModel
+import com.advice.products.presentation.viewmodel.ProductsViewModel
+import com.advice.products.data.repositories.ProductsRepository
 import com.advice.reminder.ReminderManager
 import com.advice.schedule.repository.FAQRepository
 import com.advice.schedule.repository.FiltersRepository
@@ -128,7 +129,7 @@ val appModule = module {
     single<ProductsDataSource> { FirebaseProductsDataSource(get(), get()) }
 
     // Organizations
-    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get())}
+    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get()) }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<VillagesDataSource>{ FirebaseVillagesDataSource(get(), get()) }
 
@@ -141,7 +142,7 @@ val appModule = module {
     viewModel { SpeakersViewModel() }
     viewModel { MapViewModel() }
     viewModel { InformationViewModel() }
-    viewModel { com.advice.locations.LocationsViewModel() }
+    viewModel { LocationsViewModel() }
     viewModel { OrganizationsViewModel() }
     viewModel { FAQViewModel() }
     viewModel { SettingsViewModel() }

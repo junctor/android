@@ -2,7 +2,8 @@ package com.advice.locations.data
 
 import com.advice.core.local.Location
 import com.advice.core.local.LocationRow
-import com.advice.data.datasource.LocationsDataSource
+import com.advice.data.sources.LocationsDataSource
+import com.advice.locations.data.repositories.LocationRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

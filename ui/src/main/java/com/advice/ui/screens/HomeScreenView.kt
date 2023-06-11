@@ -14,7 +14,7 @@ import com.advice.core.ui.HomeState
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
-import com.advice.ui.views.home.*
+import com.advice.ui.components.home.*
 import java.util.*
 
 

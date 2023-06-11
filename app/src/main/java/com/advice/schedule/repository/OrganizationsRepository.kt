@@ -1,7 +1,7 @@
 package com.advice.schedule.repository
 
-import com.advice.data.datasource.VendorsDataSource
-import com.advice.data.datasource.VillagesDataSource
+import com.advice.data.sources.VendorsDataSource
+import com.advice.data.sources.VillagesDataSource
 
 class OrganizationsRepository(
     private val vendorsDataSource: VendorsDataSource,

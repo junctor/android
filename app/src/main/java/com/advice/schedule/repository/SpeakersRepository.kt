@@ -1,6 +1,6 @@
 package com.advice.schedule.repository
 
-import com.advice.data.datasource.SpeakersDataSource
+import com.advice.data.sources.SpeakersDataSource
 
 class SpeakersRepository(
     private val speakersDataSource: SpeakersDataSource,

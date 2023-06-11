@@ -14,8 +14,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.advice.core.local.Speaker
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.views.SearchableTopAppBar
-import com.advice.ui.views.SpeakerView
+import com.advice.ui.components.SearchableTopAppBar
+import com.advice.ui.components.SpeakerView
 import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)

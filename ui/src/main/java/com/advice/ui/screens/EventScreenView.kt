@@ -55,12 +55,12 @@ import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
-import com.advice.ui.views.ActionView
-import com.advice.ui.views.BookmarkButton
-import com.advice.ui.views.CategoryView
-import com.advice.ui.views.NoDetailsView
-import com.advice.ui.views.Paragraph
-import com.advice.ui.views.SpeakerView
+import com.advice.ui.components.ActionView
+import com.advice.ui.components.BookmarkButton
+import com.advice.ui.components.CategoryView
+import com.advice.ui.components.NoDetailsView
+import com.advice.ui.components.Paragraph
+import com.advice.ui.components.SpeakerView
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -71,7 +71,7 @@ fun EventScreenView(
     onBookmark: () -> Unit,
     onBackPressed: () -> Unit,
     onLocationClicked: () -> Unit,
-    onSpeakerClicked: (Speaker) -> Unit
+    onSpeakerClicked: (Speaker) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -105,7 +105,7 @@ fun EventScreenContent(
     event: Event,
     onLocationClicked: () -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val topHeight: MutableState<Float> = remember {
         mutableStateOf(0f)
@@ -114,16 +114,20 @@ fun EventScreenContent(
     val statusBarHeight = with(LocalDensity.current) { 48.dp.toPx() }
 
     // gradient background
+    val colors = mutableListOf(
+        MaterialTheme.colorScheme.background,
+    )
+    if (event.types.isNotEmpty()) {
+        colors.add(parseColor(event.types.first().color))
+        colors.add(parseColor(event.types.first().color))
+    } else {
+        colors.add(Color.Black)
+    }
+
     val brush = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.background,
-            parseColor(event.types.first().color),
-            parseColor(event.types.first().color)
-        ),
+        colors = colors,
         start = Offset(0f, 0f),
         end = Offset(0f, Float.POSITIVE_INFINITY)
-
-
     )
 
     Box(
@@ -207,7 +211,7 @@ fun HeaderSection(
     date: String,
     location: String,
     onLocationClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier) {
         Text(title, style = MaterialTheme.typography.headlineLarge)
@@ -232,7 +236,7 @@ private fun DetailsCard(
     icon: ImageVector,
     text: String,
     modifier: Modifier = Modifier,
-    onDismiss: (() -> Unit)? = null
+    onDismiss: (() -> Unit)? = null,
 ) {
     var isVisible by remember {
         mutableStateOf(true)
@@ -269,7 +273,7 @@ private fun DetailsCard(
 @LightDarkPreview
 @Composable
 fun EventScreenPreview(
-    @PreviewParameter(FakeEventProvider::class) event: Event
+    @PreviewParameter(FakeEventProvider::class) event: Event,
 ) {
     ScheduleTheme {
         EventScreenView(event, {}, {}, {}, {})

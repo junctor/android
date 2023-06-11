@@ -1,8 +1,8 @@
 package com.advice.schedule.repository
 
 import com.advice.core.local.Tag
-import com.advice.data.datasource.BookmarkedElementDataSource
-import com.advice.data.datasource.TagsDataSource
+import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.data.sources.TagsDataSource
 
 
 class FiltersRepository(

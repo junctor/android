@@ -1,9 +1,9 @@
 package com.advice.schedule.repository
 
-import com.advice.data.UserSession
-import com.advice.data.datasource.DocumentsDataSource
-import com.advice.data.datasource.VendorsDataSource
-import com.advice.data.datasource.VillagesDataSource
+import com.advice.data.session.UserSession
+import com.advice.data.sources.DocumentsDataSource
+import com.advice.data.sources.VendorsDataSource
+import com.advice.data.sources.VillagesDataSource
 
 class InformationRepository(
     private val userSession: UserSession,

@@ -1,8 +1,8 @@
 package com.advice.retrofit.datasource
 
 import com.advice.core.local.Article
-import com.advice.data.UserSession
-import com.advice.data.datasource.ArticleDataSource
+import com.advice.data.session.UserSession
+import com.advice.data.sources.ArticleDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
