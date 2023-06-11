@@ -49,7 +49,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:$coreKtxVersion")
 
-    implementation("com.jakewharton.timber:timber:$timberVersion")
+    
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

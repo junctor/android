@@ -41,7 +41,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:+")
 
     // Timber
-    implementation("com.jakewharton.timber:timber:$timberVersion")
+    
     implementation("androidx.core:core-ktx:$coreKtxVersion")
 
     testImplementation("junit:junit:$junitVersion")

@@ -19,7 +19,7 @@
         android:theme="@style/Theme.Schedule">
 
         <activity
-            android:name="com.advice.schedule.ui.MainActivity"
+            android:name="com.advice.schedule.ui.activity.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:launchMode="singleTop">

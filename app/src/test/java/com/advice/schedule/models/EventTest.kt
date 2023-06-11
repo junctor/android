@@ -6,7 +6,7 @@ import com.advice.core.local.Event
 import com.advice.schedule.parse
 import com.advice.schedule.setCurrentClock
 import com.advice.schedule.toEvent
-import com.advice.schedule.utilities.getDateMidnight
+import com.advice.schedule.utils.getDateMidnight
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

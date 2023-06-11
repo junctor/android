@@ -61,7 +61,7 @@ dependencies {
     implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
 
     // Logging
-    implementation("com.jakewharton.timber:timber:$timberVersion")
+    
 
     testImplementation("junit:junit:$junitVersion")
     testImplementation "io.mockk:mockk:1.13.5"

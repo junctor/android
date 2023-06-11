@@ -53,6 +53,7 @@ dependencies {
     implementation project(':feature-wifi')
     implementation project(":feature-organizations")
     implementation project(":feature-documents")
+    implementation project(":feature-analytics")
 
     def composeBom = platform('androidx.compose:compose-bom:$composeVersion')
     implementation composeBom
@@ -113,7 +114,7 @@ dependencies {
 
     // Utils
     implementation("com.google.code.gson:gson:$gsonVersion")
-    implementation("com.jakewharton.timber:timber:$timberVersion")
+    
 
 
     // Testing

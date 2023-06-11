@@ -35,7 +35,7 @@ dependencies {
     implementation project(":data")
 
     // Logging
-    implementation("com.jakewharton.timber:timber:$timberVersion")
+    
 
     // Work Manager
     implementation "androidx.work:work-runtime-ktx:2.7.1"

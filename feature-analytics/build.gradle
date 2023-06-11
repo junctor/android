@@ -1,16 +1,17 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-parcelize'
 }
 
 android {
-    namespace 'com.advice.firebase'
+    namespace 'com.advice.analytics'
     compileSdk 33
 
     defaultConfig {
         minSdk 21
         targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -30,19 +31,11 @@ android {
 }
 
 dependencies {
+    implementation project(':core')
 
-    implementation project(path: ':data')
-    implementation project(path: ':core')
-
-    // Firebase
     implementation("com.google.firebase:firebase-analytics-ktx:$firebaseAnalyticsVersion")
-    implementation("com.google.firebase:firebase-firestore:$firebaseFirestoreVersion")
-    implementation("com.google.firebase:firebase-storage:$firebaseStorageVersion")
-    implementation("com.google.firebase:firebase-auth:$firebaseAuthVersion")
-    implementation("com.google.firebase:firebase-crashlytics:$firebaseCrashlyticsVersion")
 
-    // Timber
-    
-
-    testImplementation("junit:junit:$junitVersion")
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
