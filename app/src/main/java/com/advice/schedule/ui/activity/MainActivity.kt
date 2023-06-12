@@ -105,11 +105,7 @@ class MainActivity :
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") { HomeScreen(navController) }
                     composable("maps") {
-                        val viewModel = navController.navGraphViewModel<MapsViewModel>()
-                        val maps = viewModel.maps.collectAsState(initial = emptyList()).value
-                        MapsScreen(maps = maps) {
-                            navController.popBackStack()
-                        }
+                        MapsScreen(navController)
                     }
                     composable("information") { InformationScreen(navController) }
                     composable("event/{id}") { backStackEntry ->
@@ -137,6 +133,15 @@ class MainActivity :
                     }
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun MapsScreen(navController: NavHostController) {
+        val viewModel = navController.navGraphViewModel<MapsViewModel>()
+        val maps = viewModel.maps.collectAsState(initial = emptyList()).value
+        MapsScreen(maps = maps) {
+            navController.popBackStack()
         }
     }
 
