@@ -54,7 +54,7 @@ import com.advice.schedule.presentation.viewmodel.FAQViewModel
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
 import com.advice.schedule.presentation.viewmodel.InformationViewModel
-import com.advice.schedule.presentation.viewmodel.MapViewModel
+import com.advice.schedule.presentation.viewmodel.MapsViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
@@ -152,7 +152,7 @@ val appModule = module {
     viewModel { ScheduleViewModel() }
     viewModel { SpeakerViewModel() }
     viewModel { SpeakersViewModel() }
-    viewModel { MapViewModel() }
+    viewModel { MapsViewModel() }
     viewModel { InformationViewModel() }
     viewModel { LocationsViewModel() }
     viewModel { OrganizationsViewModel() }

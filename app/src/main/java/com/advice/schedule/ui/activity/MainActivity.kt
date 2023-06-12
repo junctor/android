@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -44,15 +45,16 @@ import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.products.ui.screens.ProductScreen
 import com.advice.products.ui.screens.ProductsScreen
 import com.advice.products.ui.screens.ProductsSummaryScreen
-import com.advice.schedule.ui.components.DismissibleBottomAppBar
+import com.advice.schedule.presentation.viewmodel.FAQViewModel
+import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
 import com.advice.schedule.presentation.viewmodel.InformationViewModel
-import com.advice.schedule.presentation.viewmodel.FAQViewModel
-import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
+import com.advice.schedule.presentation.viewmodel.MapsViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
-import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
+import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
+import com.advice.schedule.ui.components.DismissibleBottomAppBar
 import com.advice.schedule.ui.components.OverlappingPanelsView
 import com.advice.schedule.ui.components.Panel
 import com.advice.ui.screens.EventScreenView
@@ -60,6 +62,7 @@ import com.advice.ui.screens.FAQScreenView
 import com.advice.ui.screens.FilterScreenView
 import com.advice.ui.screens.HomeScreenView
 import com.advice.ui.screens.InformationScreen
+import com.advice.ui.screens.MapsScreen
 import com.advice.ui.screens.ScheduleScreenState
 import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.screens.SettingScreenView
@@ -102,6 +105,13 @@ class MainActivity :
 
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") { HomeScreen(navController) }
+                    composable("maps") {
+                        val viewModel = navController.navGraphViewModel<MapsViewModel>()
+                        val maps = viewModel.maps.collectAsState(initial = emptyList()).value
+                        MapsScreen(maps = maps) {
+                            navController.popBackStack()
+                        }
+                    }
                     composable("information") { InformationScreen(navController) }
                     composable("event/{id}") { backStackEntry ->
                         EventScreen(navController, backStackEntry.arguments?.getString("id"))
@@ -401,10 +411,14 @@ class MainActivity :
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+
+                    }) {
                         Icon(painterResource(id = R.drawable.skull), contentDescription = null)
                     }
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        navController.navigate("maps")
+                    }) {
                         Icon(
                             painterResource(id = R.drawable.ic_map_white_24dp),
                             contentDescription = null
