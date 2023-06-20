@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.advice.core.local.ProductSelection
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.state.ProductsState
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.advice.products.utils.toJson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -65,18 +64,11 @@ class ProductsViewModel : ViewModel(), KoinComponent {
             val element = _state.value.elements.find { it.id == selection.id }!!
             element.update(selection)
         }
-
-        val simplifiedProducts = summary.map { mapOf("id" to it.id, "quantity" to it.quantity) }
-
-        val gson = Gson()
-        val type = object : TypeToken<List<Map<String, Any>>>() {}.type
-
-        val json = gson.toJson(simplifiedProducts, type)
-
+        
         _state.emit(
             _state.value.copy(
                 cart = summary,
-                json = json,
+                json = summary.toJson(),
             )
         )
     }
