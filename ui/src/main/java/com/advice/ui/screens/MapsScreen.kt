@@ -58,9 +58,7 @@ fun MapsScreen(maps: List<MapFile>, onBackPressed: () -> Unit) {
             )
         }
     }
-
-    Timber.e("maps: $maps")
-
+    
     if (maps.isEmpty()) {
         EmptyScreen(onBackPressed)
         return

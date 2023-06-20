@@ -20,6 +20,7 @@ import com.advice.products.ui.components.QuantityAdjuster
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,8 +34,26 @@ fun ProductScreen(
         mutableStateOf(1)
     }
 
+    val systemUiController = rememberSystemUiController()
+
     var selection by remember {
-        mutableStateOf<String?>(null)
+        mutableStateOf(if (!product.requiresSelection) product.variants.first().label else null)
+    }
+
+    val hasMedia = product.media.isNotEmpty()
+
+    if (hasMedia) {
+        DisposableEffect(Unit) {
+            systemUiController.setSystemBarsColor(
+                color = Color.Black.copy(0.40f),
+            )
+
+            onDispose {
+                systemUiController.setSystemBarsColor(
+                    color = Color.Transparent,
+                )
+            }
+        }
     }
 
     Scaffold(
@@ -47,7 +66,7 @@ fun ProductScreen(
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
+                    containerColor = if (hasMedia) Color.Transparent else MaterialTheme.colorScheme.surface,
                 )
             )
         },
@@ -111,7 +130,7 @@ fun Product(
                         .fillMaxWidth()
 //                        .height(300.dp)
 //                        .alpha(0.65f),
-                            ,
+                    ,
                     contentScale = ContentScale.FillWidth
                 )
                 Box(
