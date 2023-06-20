@@ -9,14 +9,21 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.transition.Fade
 import com.advice.schedule.utils.TimeUtils
 import com.google.firebase.Timestamp
+import timber.log.Timber
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -139,5 +146,15 @@ val Number.toPx
 fun Context.getTintedDrawable(resource: Int, tint: Int): Drawable? {
     return ContextCompat.getDrawable(this, resource)?.mutate()?.apply {
         setTint(tint)
+    }
+}
+
+@Composable
+inline fun <reified VM : ViewModel> NavHostController.navGraphViewModel(): VM {
+    val navBackStackEntry by currentBackStackEntryAsState()
+    return navBackStackEntry?.let {
+        viewModel(viewModelStoreOwner = it)
+    } ?: viewModel<VM>().also {
+        Timber.e("Creating new ViewModel: ${VM::class.java.simpleName}")
     }
 }

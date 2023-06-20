@@ -26,6 +26,7 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                 ProductsState(
                     elements = listOf(product),
                     hasDiscount = true,
+                    json = "{...}"
                 )
             ).asSequence()
         }

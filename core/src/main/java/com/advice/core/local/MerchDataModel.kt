@@ -11,7 +11,7 @@ data class ProductVariant(
 ) : Parcelable
 
 data class ProductSelection(
-    val id: String,
+    val id: Long,
     val quantity: Int,
     val selectionOption: String?,
 )
@@ -32,15 +32,14 @@ data class Product(
     val media: List<ProductMedia>,
     val quantity: Int = 0,
     val cost: Long = baseCost * quantity,
-    val discountedPrice: Int? = null,
     val selectedOption: String? = null,
 ) : Parcelable {
 
-    val requiresSelection: Boolean = variants.isNotEmpty()
+    val requiresSelection: Boolean
+        get() = variants.size > 1
 
     fun update(
         selection: ProductSelection,
-        discount: Float?,
     ): Product {
         val extraCost = if (selection.selectionOption != null) {
             variants.find { it.label == selection.selectionOption }?.extraCost ?: 0
@@ -53,7 +52,6 @@ data class Product(
             quantity = selection.quantity,
             selectedOption = selection.selectionOption,
             cost = cost,
-            discountedPrice = if (discount != null) (cost * (1 - discount)).toInt() else null
         )
     }
 }

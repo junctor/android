@@ -17,8 +17,8 @@ import com.advice.core.local.Product
 import com.advice.core.local.ProductSelection
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.QuantityAdjuster
-import com.advice.ui.preview.LightDarkPreview
 import com.advice.products.ui.preview.ProductsProvider
+import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
 
@@ -57,7 +57,7 @@ fun ProductScreen(
                     if (selection != null || !product.requiresSelection) {
                         onAddClicked(
                             ProductSelection(
-                                id = product.label,
+                                id = product.id,
                                 quantity = quantity,
                                 selectionOption = selection,
                             )

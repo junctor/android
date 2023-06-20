@@ -4,5 +4,7 @@ import com.advice.core.local.Product
 
 data class ProductsState(
     val elements: List<Product>,
-    val hasDiscount: Boolean = false
+    val cart: List<Product> = emptyList(),
+    val hasDiscount: Boolean = false,
+    val json: String? = null,
 )

@@ -58,18 +58,10 @@ fun EditableProduct(
         ) {
             QuantityAdjuster(product.quantity, onQuantityChanged, canDelete = true)
             Column {
-                val hasDiscount = product.discountedPrice != null
                 Text(
                     "$${String.format("%.2f", product.cost / 100f)} USD",
                     style = MaterialTheme.typography.bodyMedium,
-                    textDecoration = if (hasDiscount) TextDecoration.LineThrough else TextDecoration.None
                 )
-                if (hasDiscount) {
-                    Text(
-                        "$${String.format("%.2f", product.discountedPrice!! / 100f)} USD",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
             }
         }
     }
