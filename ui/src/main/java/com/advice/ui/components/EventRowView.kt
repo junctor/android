@@ -3,10 +3,10 @@ package com.advice.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +25,7 @@ import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.createTag
 import com.advice.ui.utils.parseColor
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun EventRowView(
     title: String,
@@ -38,7 +39,7 @@ internal fun EventRowView(
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+            //.height(IntrinsicSize.Min)
     ) {
         if (tags.isNotEmpty()) {
             // Category
@@ -46,7 +47,7 @@ internal fun EventRowView(
                 modifier = Modifier
                     .width(8.dp)
                     .padding(start = 4.dp, top = 4.dp, bottom = 4.dp)
-                    .fillMaxHeight()
+                    //.fillMaxHeight()
                     .clip(RoundedCornerShape(4.dp))
                     .background(parseColor(tags.first().color))
             )
@@ -63,7 +64,7 @@ internal fun EventRowView(
             Text(title, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(location, style = MaterialTheme.typography.bodyMedium)
-            Row {
+            FlowRow {
                 for (tag in tags) {
                     CategoryView(tag)
                 }

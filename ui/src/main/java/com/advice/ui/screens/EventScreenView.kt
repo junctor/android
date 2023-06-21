@@ -5,6 +5,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,13 +17,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -29,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,29 +39,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
-import com.advice.ui.preview.FakeEventProvider
-import com.advice.ui.preview.LightDarkPreview
-import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.utils.parseColor
 import com.advice.ui.components.ActionView
 import com.advice.ui.components.BookmarkButton
+import com.advice.ui.components.CategorySize
 import com.advice.ui.components.CategoryView
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.components.SpeakerView
+import com.advice.ui.preview.FakeEventProvider
+import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.utils.parseColor
+import com.shortstack.hackertracker.R
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -79,7 +78,7 @@ fun EventScreenView(
                 title = { /*Text(event.title, maxLines = 2, overflow = TextOverflow.Ellipsis)*/ },
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
-                        Icon(Icons.Default.ArrowBack, null)
+                        Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null)
                     }
                 },
                 actions = {
@@ -100,6 +99,7 @@ fun EventScreenView(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EventScreenContent(
     event: Event,
@@ -107,45 +107,16 @@ fun EventScreenContent(
     onSpeakerClicked: (Speaker) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val topHeight: MutableState<Float> = remember {
-        mutableStateOf(0f)
-    }
-
-    val statusBarHeight = with(LocalDensity.current) { 48.dp.toPx() }
-
-    // gradient background
-    val colors = mutableListOf(
-        MaterialTheme.colorScheme.background,
-    )
-    if (event.types.isNotEmpty()) {
-        colors.add(parseColor(event.types.first().color))
-        colors.add(parseColor(event.types.first().color))
-    } else {
-        colors.add(Color.Black)
-    }
-
-    val brush = Brush.linearGradient(
-        colors = colors,
-        start = Offset(0f, 0f),
-        end = Offset(0f, Float.POSITIVE_INFINITY)
-    )
 
     Box(
         Modifier
             .verticalScroll(rememberScrollState())
-            .drawBehind {
-                drawRoundRect(
-                    brush,
-                    // need to add extra height for padding
-                    size = Size(size.width, topHeight.value + 64.dp.toPx() + 32.dp.toPx()),
-                    cornerRadius = CornerRadius(16.dp.toPx())
-                )
-            }
+
 
     ) {
         Column(
-            modifier
-                .padding(16.dp)
+            Modifier
+            //.padding(16.dp)
         ) {
             HeaderSection(
                 event.title,
@@ -153,15 +124,23 @@ fun EventScreenContent(
                 getDateTimestamp(event),
                 event.location.name,
                 onLocationClicked,
-                modifier = Modifier
-                    .onGloballyPositioned {
-                        topHeight.value = it.size.height.toFloat() + statusBarHeight
-                    }
+                modifier,
             )
+            FlowRow(
+                Modifier
+                    //.background(Color.Black)
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                for (tag in event.types.subList(1, event.types.size - 1)) {
+                    CategoryView(tag, size = CategorySize.Medium)
+                }
+            }
+
             if (event.description.isNotBlank()) {
                 Paragraph(
                     event.description,
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }
             if (event.urls.isNotEmpty()) {
@@ -198,7 +177,8 @@ private fun getDateTimestamp(event: Event): String {
     val prefix = if (x == now) {
         "Today"
     } else {
-        event.startTime.toString().split(" ").take(3).joinToString(" ")
+        val format = SimpleDateFormat("EEEE, MMMM d")
+        format.format(event.startTime)
     }
     val format = SimpleDateFormat("h:mm a")
     return prefix + " - " + format.format(event.startTime) + " to " + format.format(event.end)
@@ -213,27 +193,46 @@ fun HeaderSection(
     onLocationClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier) {
-        Text(title, style = MaterialTheme.typography.headlineLarge)
+    val color = parseColor(categories.first().color)
+    val color2 = color.copy(alpha = 0.65f)
+    Column(
+        Modifier
+            .drawBehind {
+                drawRoundRect(
+                    color2,
+                    // need to add extra height for padding
+                    cornerRadius = CornerRadius(16.dp.toPx())
+                )
+            }) {
+        val statusBarHeight = 48.dp
+        val toolbarHeight = 48.dp
+        Spacer(Modifier.height(statusBarHeight + toolbarHeight))
 
-        Row(Modifier.padding(vertical = 16.dp)) {
-            for (tag in categories) {
-                CategoryView(tag)
+        Column(Modifier.padding(16.dp)) {
+
+            Text(title, style = MaterialTheme.typography.headlineLarge)
+
+            Box(Modifier.padding(vertical = 8.dp)) {
+                CategoryView(categories.first(), size = CategorySize.Large, hasIcon = false)
             }
+
+            DetailsCard(Icons.Default.DateRange, null, date.replace(" -", "\n"))
+
+            DetailsCard(
+                Icons.Default.LocationOn,
+                parseColor(categories.last().color),
+                location.replace(" - ", "\n"),
+                modifier = Modifier.clickable {
+                    onLocationClicked()
+                })
         }
-        DetailsCard(Icons.Default.DateRange, date)
-//        DetailsCard(Icons.Default.Info, "Tap the location to show all events from this location") {
-//            // dismiss
-//        }
-        DetailsCard(Icons.Default.LocationOn, location, modifier = Modifier.clickable {
-            onLocationClicked()
-        })
     }
 }
 
 @Composable
 private fun DetailsCard(
     icon: ImageVector,
+    tint: Color? = null,
     text: String,
     modifier: Modifier = Modifier,
     onDismiss: (() -> Unit)? = null,
@@ -254,7 +253,7 @@ private fun DetailsCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Icon(icon, null)
+                Icon(icon, null, tint = tint ?: LocalContentColor.current)
                 Spacer(Modifier.width(8.dp))
                 Text(text, modifier = Modifier.weight(1f))
                 if (onDismiss != null) {
