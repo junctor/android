@@ -35,14 +35,12 @@ dependencies {
     implementation project(path: ':core')
 
     // Firebase
-    implementation("com.google.firebase:firebase-analytics-ktx:$firebaseAnalyticsVersion")
-    implementation("com.google.firebase:firebase-firestore:$firebaseFirestoreVersion")
-    implementation("com.google.firebase:firebase-storage:$firebaseStorageVersion")
-    implementation("com.google.firebase:firebase-auth:$firebaseAuthVersion")
-    implementation("com.google.firebase:firebase-crashlytics:$firebaseCrashlyticsVersion")
-
-    // Timber
-    
+    implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-crashlytics")
 
     testImplementation("junit:junit:$junitVersion")
 }

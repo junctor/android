@@ -1,11 +1,11 @@
 package com.advice.schedule.di
 
 import androidx.work.WorkManager
+import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.utils.NotificationHelper
 import com.advice.core.utils.Storage
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.session.UserSession
-import com.advice.data.sources.NewsDataSource
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.DocumentsDataSource
@@ -13,6 +13,7 @@ import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.FAQDataSource
 import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.MapsDataSource
+import com.advice.data.sources.NewsDataSource
 import com.advice.data.sources.OrganizationsDataSource
 import com.advice.data.sources.ProductsDataSource
 import com.advice.data.sources.SpeakersDataSource
@@ -20,13 +21,13 @@ import com.advice.data.sources.TagsDataSource
 import com.advice.data.sources.VendorsDataSource
 import com.advice.data.sources.VillagesDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
-import com.advice.firebase.data.sources.FirebaseNewsDataSource
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
 import com.advice.firebase.data.sources.FirebaseEventsDataSource
 import com.advice.firebase.data.sources.FirebaseFAQDataSource
 import com.advice.firebase.data.sources.FirebaseLocationsDataSource
 import com.advice.firebase.data.sources.FirebaseMapsDataSource
+import com.advice.firebase.data.sources.FirebaseNewsDataSource
 import com.advice.firebase.data.sources.FirebaseOrganizationDataSource
 import com.advice.firebase.data.sources.FirebaseProductsDataSource
 import com.advice.firebase.data.sources.FirebaseSpeakersDataSource
@@ -60,9 +61,6 @@ import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
-import com.advice.analytics.core.AnalyticsProvider
-import com.firebase.jobdispatcher.FirebaseJobDispatcher
-import com.firebase.jobdispatcher.GooglePlayDriver
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
@@ -81,7 +79,6 @@ val appModule = module {
     single {
         GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     }
-    single { FirebaseJobDispatcher(GooglePlayDriver(get())) }
 
     single { FirebaseCrashlytics.getInstance() }
     single { FirebaseFirestore.getInstance() }

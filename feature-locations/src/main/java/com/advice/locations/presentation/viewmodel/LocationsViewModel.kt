@@ -7,8 +7,8 @@ import com.advice.core.ui.LocationsScreenState
 import com.advice.locations.data.repositories.LocationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class LocationsViewModel : ViewModel(), KoinComponent {
 

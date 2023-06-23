@@ -55,7 +55,7 @@ dependencies {
     implementation project(":feature-documents")
     implementation project(":feature-analytics")
 
-    def composeBom = platform('androidx.compose:compose-bom:$composeVersion')
+    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
     implementation composeBom
     androidTestImplementation composeBom
 
@@ -72,28 +72,28 @@ dependencies {
     implementation("com.google.android.material:material:1.6.1")
 
     // Koin
-    implementation("org.koin:koin-android:$koinVersion")
-    implementation("org.koin:koin-androidx-scope:$koinVersion")
-    implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
+    implementation("io.insert-koin:koin-android:$koinVersion")
+    implementation "io.insert-koin:koin-androidx-compose:3.4.5"
+    //implementation("org.koin:koin-androidx-scope:$koinVersion")
+    //implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
 
     // Arch
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc01"
     implementation("androidx.work:work-runtime-ktx:2.7.1")
-    implementation "android.arch.work:work-firebase:1.0.0-alpha11"
+    //implementation "android.arch.work:work-firebase:1.0.0-alpha11"
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
     // Firebase
-    implementation("com.google.firebase:firebase-analytics-ktx:$firebaseAnalyticsVersion")
-    implementation("com.google.firebase:firebase-firestore:$firebaseFirestoreVersion")
-    implementation("com.google.firebase:firebase-storage:$firebaseStorageVersion")
-    implementation("com.google.firebase:firebase-auth:$firebaseAuthVersion")
-    implementation("com.google.firebase:firebase-crashlytics:$firebaseCrashlyticsVersion")
+    implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-crashlytics")
 
-    // UI
-    implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
 
     // Optional - Integration with activities
     implementation("androidx.activity:activity-compose:1.6.1")

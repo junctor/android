@@ -9,8 +9,8 @@ import com.advice.ui.screens.ScheduleScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class ScheduleViewModel : ViewModel(), KoinComponent {
 

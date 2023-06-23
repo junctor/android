@@ -7,8 +7,8 @@ import com.advice.core.ui.FiltersScreenState
 import com.advice.schedule.data.repositories.FiltersRepository
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class FiltersViewModel : ViewModel(), KoinComponent {

@@ -56,9 +56,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
 
     // Koin
-    implementation("org.koin:koin-android:$koinVersion")
-    implementation("org.koin:koin-androidx-scope:$koinVersion")
-    implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
+    implementation("io.insert-koin:koin-android:$koinVersion")
+//    implementation("org.koin:koin-androidx-scope:$koinVersion")
+//    implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
 
     // Logging
     

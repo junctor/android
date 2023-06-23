@@ -11,7 +11,7 @@ import androidx.core.view.WindowCompat
 import com.advice.schedule.ui.navigation.NavHost
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import timber.log.Timber
 
 class MainActivity :

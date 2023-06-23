@@ -6,8 +6,8 @@ import androidx.work.WorkerParameters
 import com.advice.core.utils.NotificationHelper
 import com.advice.data.sources.EventsDataSource
 import kotlinx.coroutines.flow.first
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class ReminderWorker(

@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Speaker
 import com.advice.schedule.data.repositories.SpeakerRepository
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class SpeakerViewModel : ViewModel(), KoinComponent {
 
