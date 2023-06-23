@@ -2,7 +2,6 @@ package com.advice.firebase.extensions
 
 import androidx.annotation.NonNull
 import com.advice.core.local.Action
-import com.advice.core.local.Article
 import com.advice.core.local.Bookmark
 import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceMap
@@ -10,6 +9,7 @@ import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Location
+import com.advice.core.local.NewsArticle
 import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
 import com.advice.core.local.OrganizationLocation
@@ -269,12 +269,13 @@ fun FirebaseDocument.toDocument(): Document? {
     }
 }
 
-fun FirebaseArticle.toArticle(): Article? {
+fun FirebaseArticle.toArticle(): NewsArticle? {
     return try {
-        Article(
+        NewsArticle(
             id,
             name,
-            text
+            text,
+            updated_at?.toDate(),
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Article: ${ex.message}")

@@ -39,15 +39,18 @@ internal fun EventRowView(
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier
             .fillMaxWidth()
-            //.height(IntrinsicSize.Min)
+            //
     ) {
         if (tags.isNotEmpty()) {
             // Category
             Box(
                 modifier = Modifier
+
                     .width(8.dp)
                     .padding(start = 4.dp, top = 4.dp, bottom = 4.dp)
-                    //.fillMaxHeight()
+                    .height(80.dp)
+//                    .fillMaxHeight()
+//                    .height(IntrinsicSize.Min)
                     .clip(RoundedCornerShape(4.dp))
                     .background(parseColor(tags.first().color))
             )

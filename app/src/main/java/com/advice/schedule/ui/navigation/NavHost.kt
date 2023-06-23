@@ -55,7 +55,6 @@ import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.shortstack.hackertracker.R
-import timber.log.Timber
 
 @Composable
 internal fun NavHost() {
@@ -322,12 +321,12 @@ private fun HomeScreen(navController: NavHostController) {
                         ?: HomeState.Loading
                 HomeScreenView(
                     state = state,
-                    onConferenceClick = {
+                    {
                         viewModel.setConference(it)
-                    }, onMerchClick = {
-                        navController.navigate("merch")
-                    }
-                )
+                    },
+                    {
+                        navController.navigate(it)
+                    })
             },
             rightPanel = {
                 val viewModel = viewModel<FiltersViewModel>()

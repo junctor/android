@@ -3,6 +3,8 @@ package com.advice.products.utils
 import android.graphics.Bitmap
 import android.graphics.Color
 import com.advice.core.local.Product
+import com.advice.products.models.QRCodeData
+import com.advice.products.models.QRCodeProduct
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.zxing.BarcodeFormat
@@ -12,17 +14,11 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import java.util.EnumMap
 
 fun List<Product>.toJson(): String {
-    val simplifiedProducts = map {
-        mapOf(
-            "id" to it.id,
-            "quantity" to it.quantity,
-            "variant" to it.selectedOption,
-        )
-    }
+    val data = QRCodeData(map { QRCodeProduct(it.id, it.quantity, it.selectedOption) })
 
     val gson = Gson()
-    val type = object : TypeToken<List<Map<String, Any>>>() {}.type
-    return gson.toJson(simplifiedProducts, type)
+    val type = object : TypeToken<QRCodeData>() {}.type
+    return gson.toJson(data, type)
 }
 
 fun generateQRCode(json: String): Bitmap {

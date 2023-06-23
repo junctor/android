@@ -1,6 +1,7 @@
 package com.advice.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -81,9 +82,12 @@ fun ScheduleScreenView(
             }
 
             null, ScheduleScreenState.Init -> {
+                Image(painter = painterResource(id = R.drawable.skull), contentDescription = null)
             }
 
-            ScheduleScreenState.Loading -> {}
+            ScheduleScreenState.Loading -> {
+                Image(painter = painterResource(id = R.drawable.skull), contentDescription = null)
+            }
             is ScheduleScreenState.Success -> {
                 ScheduleScreenContent(
                     state.days,

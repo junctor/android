@@ -1,17 +1,17 @@
 package com.advice.retrofit.datasource
 
-import com.advice.core.local.Article
+import com.advice.core.local.NewsArticle
 import com.advice.data.session.UserSession
-import com.advice.data.sources.ArticleDataSource
+import com.advice.data.sources.NewsDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class RetrofitArticleDataSource(
+class RetrofitNewsDataSource(
     private val userSession: UserSession,
     private val retrofitClient: RetrofitClient,
-) : ArticleDataSource {
+) : NewsDataSource {
 
-    override fun get(): Flow<List<Article>> {
+    override fun get(): Flow<List<NewsArticle>> {
         return userSession.getConference().map { conference ->
             retrofitClient.get(conference.code).documents.map {
                 it.fields.toArticle()
@@ -20,10 +20,11 @@ class RetrofitArticleDataSource(
     }
 }
 
-private fun com.advice.retrofit.datasource.Article.toArticle(): com.advice.core.local.Article {
-    return Article(
+private fun com.advice.retrofit.datasource.Article.toArticle(): com.advice.core.local.NewsArticle {
+    return NewsArticle(
         -1,
         name.stringValue,
         text.stringValue,
+        null,
     )
 }

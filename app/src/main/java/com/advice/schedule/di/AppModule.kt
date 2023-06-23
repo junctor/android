@@ -5,7 +5,7 @@ import com.advice.core.utils.NotificationHelper
 import com.advice.core.utils.Storage
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.session.UserSession
-import com.advice.data.sources.ArticleDataSource
+import com.advice.data.sources.NewsDataSource
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.DocumentsDataSource
@@ -20,7 +20,7 @@ import com.advice.data.sources.TagsDataSource
 import com.advice.data.sources.VendorsDataSource
 import com.advice.data.sources.VillagesDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
-import com.advice.firebase.data.sources.FirebaseArticleDataSource
+import com.advice.firebase.data.sources.FirebaseNewsDataSource
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
 import com.advice.firebase.data.sources.FirebaseEventsDataSource
@@ -123,7 +123,7 @@ val appModule = module {
     single<BookmarkedElementDataSource> { InMemoryBookmarkedDataSourceImpl() }
 
     single<UserSession> { FirebaseUserSession(get(), get(), get()) }
-    single<ArticleDataSource> { FirebaseArticleDataSource(get(), get()) }
+    single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(), get()) }
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get()) }

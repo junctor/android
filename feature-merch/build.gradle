@@ -54,9 +54,6 @@ dependencies {
     implementation("androidx.core:core-ktx:$coreKtxVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
 
-    // Image loading
-    implementation("io.coil-kt:coil-compose:2.3.0")
-
     // QR Codes
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.google.zxing:android-core:3.3.0'

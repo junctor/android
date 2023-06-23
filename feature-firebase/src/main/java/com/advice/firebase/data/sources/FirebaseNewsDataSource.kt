@@ -1,8 +1,8 @@
 package com.advice.firebase.data.sources
 
-import com.advice.core.local.Article
+import com.advice.core.local.NewsArticle
 import com.advice.data.session.UserSession
-import com.advice.data.sources.ArticleDataSource
+import com.advice.data.sources.NewsDataSource
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toArticle
 import com.advice.firebase.extensions.toObjectsOrEmpty
@@ -15,12 +15,12 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 
 @OptIn(FlowPreview::class)
-class FirebaseArticleDataSource(
+class FirebaseNewsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-) : ArticleDataSource {
+) : NewsDataSource {
 
-    override fun get(): Flow<List<Article>> {
+    override fun get(): Flow<List<NewsArticle>> {
         return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
