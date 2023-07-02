@@ -1,6 +1,7 @@
 package com.advice.core.ui
 
 import com.advice.core.local.Conference
+import com.advice.core.local.Document
 import com.advice.core.local.NewsArticle
 
 sealed class HomeState {
@@ -10,6 +11,7 @@ sealed class HomeState {
         val conference: Conference,
         val hasWifi: Boolean = false,
         val hasProducts: Boolean = false,
+        val documents: List<Document>,
         val news: List<NewsArticle>,
         val countdown: Long
     ) : HomeState()

@@ -4,14 +4,16 @@ import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
+import com.advice.data.sources.DocumentsDataSource
 import com.advice.data.sources.NewsDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
 class HomeRepository(
     private val userSession: UserSession,
-    private val newsDataSource: NewsDataSource,
-    private val conferencesDataSource: ConferencesDataSource,
+    newsDataSource: NewsDataSource,
+    conferencesDataSource: ConferencesDataSource,
+    documentsDataSource: DocumentsDataSource,
 ) {
 
     private val _countdown = MutableStateFlow(-1L)
@@ -19,11 +21,12 @@ class HomeRepository(
     val contents = combine(
         userSession.getConference(),
         conferencesDataSource.get(),
+        documentsDataSource.get(),
         newsDataSource.get(),
         _countdown
-    ) { conference, conferences, news, countdown ->
+    ) { conference, conferences, documents, news, countdown ->
         val isDefCon = conference.code.contains("DEFCON")
-        HomeState.Loaded(conferences, conference, isDefCon, isDefCon, news, countdown)
+        HomeState.Loaded(conferences, conference, isDefCon, isDefCon, documents, news, countdown)
     }
 
     fun setConference(conference: Conference) {

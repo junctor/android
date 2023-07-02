@@ -99,27 +99,24 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
             ArticleView(text = it.text, date = it.date)
         }
 
-        Text(
-            "Documents",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp)
-        )
-
-        // todo: replace with actual id
-        HomeCard(Modifier.clickable {
-            onNavigationClick("document/76")
-        }) {
-            Text("Code of Conduct", Modifier.padding(16.dp))
+        if (state.documents.isNotEmpty()) {
+            Text(
+                "Documents",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(16.dp)
+            )
         }
-        // todo: replace with actual id
-        HomeCard(Modifier.clickable {
-            onNavigationClick("document/77")
-        }) {
-            Text("Help & Support", Modifier.padding(16.dp))
+
+        state.documents.forEach {
+            HomeCard(Modifier.clickable {
+                onNavigationClick("document/${it.id}")
+            }) {
+                Text(it.title, Modifier.padding(16.dp))
+            }
         }
 
         Text(
-            "Documents",
+            "Other",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(16.dp)
         )
@@ -161,6 +158,7 @@ fun HomeScreenViewPreview() {
             state = HomeState.Loaded(
                 conferences = listOf(Conference.Zero),
                 conference = Conference.Zero,
+                documents = emptyList(),
                 news = emptyList(),
                 countdown = Date().time / 1000L
             ), {}, {})
