@@ -24,7 +24,7 @@ fun SpeakerView(
     name: String,
     modifier: Modifier = Modifier,
     title: String? = null,
-    onSpeakerClicked: () -> Unit
+    onSpeakerClicked: (() -> Unit) = {}
 ) {
     Surface(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),

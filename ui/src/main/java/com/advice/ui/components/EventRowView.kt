@@ -27,14 +27,14 @@ import com.advice.ui.utils.parseColor
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun EventRowView(
+fun EventRowView(
     title: String,
     time: String,
     location: String,
     tags: List<Tag>,
     isBookmarked: Boolean,
     modifier: Modifier = Modifier,
-    onBookmark: (Boolean) -> Unit
+    onBookmark: ((Boolean) -> Unit) = {},
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier

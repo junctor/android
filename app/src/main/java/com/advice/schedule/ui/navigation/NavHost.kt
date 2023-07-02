@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,11 +39,13 @@ import com.advice.schedule.presentation.viewmodel.InformationViewModel
 import com.advice.schedule.presentation.viewmodel.MapsViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
+import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.schedule.ui.components.DismissibleBottomAppBar
 import com.advice.schedule.ui.components.OverlappingPanelsView
 import com.advice.schedule.ui.components.Panel
+import com.advice.schedule.ui.screens.SearchScreen
 import com.advice.ui.screens.EventScreenView
 import com.advice.ui.screens.FAQScreenView
 import com.advice.ui.screens.FilterScreenView
@@ -66,6 +68,9 @@ internal fun NavHost() {
         composable("home") { HomeScreen(navController) }
         composable("maps") {
             MapsScreen(navController)
+        }
+        composable("search") {
+            Search(navController)
         }
         composable("information") { InformationScreen(navController) }
         composable("event/{id}") { backStackEntry ->
@@ -257,6 +262,17 @@ private fun InformationScreen(navController: NavHostController) {
 }
 
 @Composable
+private fun Search(navController: NavHostController) {
+    val viewModel = navController.navGraphViewModel<SearchViewModel>()
+    val state = viewModel.state.collectAsState(initial = null).value ?: return
+    SearchScreen(state, onQueryChanged = {
+        viewModel.search(it)
+    }, onBackPressed = {
+        navController.popBackStack()
+    })
+}
+
+@Composable
 fun EventScreen(navController: NavHostController, id: String?) {
     // todo: this should be another ViewModel
     val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
@@ -383,8 +399,8 @@ private fun HomeScreen(navController: NavHostController) {
                         contentDescription = null
                     )
                 }
-                IconButton(onClick = { navController.navigate("information") }) {
-                    Icon(Icons.Default.Info, contentDescription = null)
+                IconButton(onClick = { navController.navigate("search") }) {
+                    Icon(Icons.Default.Search, contentDescription = null)
                 }
                 IconButton(onClick = { navController.navigate("settings") }) {
                     Icon(Icons.Default.Settings, contentDescription = null)

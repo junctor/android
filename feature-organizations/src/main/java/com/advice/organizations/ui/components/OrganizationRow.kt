@@ -12,7 +12,7 @@ import com.advice.core.local.Organization
 
 
 @Composable
-internal fun OrganizationRow(organizations: List<Organization>) {
+fun OrganizationRow(organizations: List<Organization>) {
     Row(
         Modifier
             .fillMaxWidth()

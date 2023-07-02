@@ -47,6 +47,7 @@ import com.advice.schedule.data.repositories.InformationRepository
 import com.advice.schedule.data.repositories.MapRepository
 import com.advice.schedule.data.repositories.OrganizationsRepository
 import com.advice.schedule.data.repositories.ScheduleRepository
+import com.advice.schedule.data.repositories.SearchRepository
 import com.advice.schedule.data.repositories.SettingsRepository
 import com.advice.schedule.data.repositories.SpeakerRepository
 import com.advice.schedule.data.repositories.SpeakersRepository
@@ -58,6 +59,7 @@ import com.advice.schedule.presentation.viewmodel.InformationViewModel
 import com.advice.schedule.presentation.viewmodel.MapsViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
+import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
@@ -114,6 +116,7 @@ val appModule = module {
     single { InformationRepository(get(), get(), get(), get()) }
     single { ProductsRepository(get()) }
     single { DocumentsRepository(get()) }
+    single { SearchRepository(get(), get(), get(), get(), get()) }
 
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
@@ -157,6 +160,7 @@ val appModule = module {
     viewModel { SettingsViewModel() }
     viewModel { FiltersViewModel() }
     viewModel { ConferenceViewModel() }
+    viewModel { SearchViewModel() }
 
     viewModel { ProductsViewModel() }
 
