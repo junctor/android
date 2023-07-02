@@ -30,6 +30,7 @@ class HomeRepository(
     }
 
     fun setConference(conference: Conference) {
+        _countdown.value = -1L
         userSession.setConference(conference)
     }
 
