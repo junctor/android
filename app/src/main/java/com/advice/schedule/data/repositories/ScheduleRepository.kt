@@ -2,9 +2,11 @@ package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Event
 import com.advice.core.local.Tag
+import com.advice.core.ui.ScheduleFilter
 import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.reminder.ReminderManager
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 class ScheduleRepository(
@@ -13,17 +15,40 @@ class ScheduleRepository(
     private val reminderManager: ReminderManager,
 ) {
 
-    val list = combine(eventsDataSource.get(), tagsDataSource.get()) { events, tags ->
-        val filter = tags.flatMap { it.tags }.filter { it.isSelected }
+    fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
+        return combine(eventsDataSource.get(), tagsDataSource.get()) { events, tags ->
 
-        val sortedEvents = events.sortedBy { it.start }
+            val sortedEvents = events.sortedBy { it.start }
 
-        if (filter.isEmpty()) {
-            return@combine sortedEvents
+            return@combine when (filter) {
+                ScheduleFilter.Default -> {
+                    val tags = tags.flatMap { it.tags }.filter { it.isSelected }
+                    filter(sortedEvents, tags)
+                }
+
+                is ScheduleFilter.Location -> {
+                    sortedEvents.filter { it.location.id.toString() == filter.id }
+                }
+
+                is ScheduleFilter.Tag -> {
+                    TODO()
+                }
+            }
         }
-
-        filter(sortedEvents, filter)
     }
+
+    val list =
+        combine(eventsDataSource.get(), tagsDataSource.get()) { events, tags ->
+            val filter = tags.flatMap { it.tags }.filter { it.isSelected }
+
+            val sortedEvents = events.sortedBy { it.start }
+
+            if (filter.isEmpty()) {
+                return@combine sortedEvents
+            }
+
+            filter(sortedEvents, filter)
+        }
 
     private fun filter(
         events: List<Event>,
@@ -35,6 +60,7 @@ class ScheduleRepository(
             .filter { !bookmarksOnly || it.isBookmarked }
             .filter { ids.isEmpty() || it.types.any { it.id in ids } }
     }
+
 
     suspend fun bookmark(event: Event) {
         eventsDataSource.bookmark(event)

@@ -132,8 +132,10 @@ fun EventScreenContent(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                for (tag in event.types.subList(1, event.types.size - 1)) {
-                    CategoryView(tag, size = CategorySize.Medium)
+                if (event.types.size > 2) {
+                    for (tag in event.types.subList(1, event.types.size - 1)) {
+                        CategoryView(tag, size = CategorySize.Medium)
+                    }
                 }
             }
 

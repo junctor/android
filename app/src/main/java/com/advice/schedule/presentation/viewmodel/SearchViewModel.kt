@@ -11,7 +11,7 @@ class SearchViewModel : ViewModel(), KoinComponent {
 
     private val searchRepository: SearchRepository by inject()
 
-    val state = searchRepository.result
+    val state = searchRepository.state
 
     fun search(query: String) {
         viewModelScope.launch {

@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -29,12 +30,12 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Location
 import com.advice.core.local.Tag
+import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.components.DayHeaderView
 import com.advice.ui.components.DaySelectorView
 import com.advice.ui.components.EmptyView
 import com.advice.ui.components.EventRowView
-import com.advice.ui.components.SearchableTopAppBar
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
@@ -45,7 +46,11 @@ import java.util.Date
 sealed class ScheduleScreenState {
     object Init : ScheduleScreenState()
     object Loading : ScheduleScreenState()
-    data class Success(val days: Map<String, List<Event>>) : ScheduleScreenState()
+    data class Success(
+        val filter: ScheduleFilter,
+        val days: Map<String, List<Event>>,
+    ) : ScheduleScreenState()
+
     data class Error(val error: String) : ScheduleScreenState()
 }
 
@@ -54,20 +59,17 @@ sealed class ScheduleScreenState {
 fun ScheduleScreenView(
     state: ScheduleScreenState?,
     onMenuClicked: () -> Unit,
-    onSearchQuery: (String) -> Unit,
     onFabClicked: () -> Unit,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event) -> Unit,
 ) {
     Scaffold(
         topBar = {
-            SearchableTopAppBar(title = { Text("Schedule") }, navigationIcon = {
+            CenterAlignedTopAppBar(title = { Text("Schedule") }, navigationIcon = {
                 IconButton(onClick = onMenuClicked) {
                     Icon(Icons.Default.Menu, null)
                 }
-            }) { query ->
-                onSearchQuery(query)
-            }
+            })
         }, floatingActionButton = {
             FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
                 Icon(painterResource(R.drawable.baseline_filter_list_24), null)
@@ -88,6 +90,7 @@ fun ScheduleScreenView(
             ScheduleScreenState.Loading -> {
                 Image(painter = painterResource(id = R.drawable.skull), contentDescription = null)
             }
+
             is ScheduleScreenState.Success -> {
                 ScheduleScreenContent(
                     state.days,
@@ -107,7 +110,7 @@ fun ScheduleScreenContent(
     days: Map<String, List<Event>>,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -186,6 +189,7 @@ fun ScheduleScreenContent(
 fun ScheduleScreenViewPreview() {
     ScheduleTheme {
         val state = ScheduleScreenState.Success(
+            ScheduleFilter.Default,
             mapOf(
                 "May 19" to listOf(
                     Event(
@@ -220,6 +224,6 @@ fun ScheduleScreenViewPreview() {
         )
 
 
-        ScheduleScreenView(state, {}, {}, {}, {}, {})
+        ScheduleScreenView(state, {}, {}, {}, {})
     }
 }

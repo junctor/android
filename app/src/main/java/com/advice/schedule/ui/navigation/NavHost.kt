@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.core.ui.InformationState
+import com.advice.core.ui.ScheduleFilter
 import com.advice.documents.presentation.viewmodel.DocumentsViewModel
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.products.presentation.viewmodel.ProductsViewModel
@@ -57,6 +58,7 @@ import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.shortstack.hackertracker.R
+import kotlin.time.Duration.Companion.days
 
 @Composable
 internal fun NavHost() {
@@ -75,6 +77,9 @@ internal fun NavHost() {
         composable("information") { InformationScreen(navController) }
         composable("event/{id}") { backStackEntry ->
             EventScreen(navController, backStackEntry.arguments?.getString("id"))
+        }
+        composable("location/{id}") { backStackEntry ->
+            LocationScreen(navController, backStackEntry.arguments?.getString("id"))
         }
         composable("speaker/{id}") { backStackEntry ->
             SpeakerScreen(navController, backStackEntry.arguments?.getString("id"))
@@ -268,6 +273,7 @@ private fun Search(navController: NavHostController) {
     SearchScreen(state, onQueryChanged = {
         viewModel.search(it)
     }, onBackPressed = {
+        viewModel.search("")
         navController.popBackStack()
     })
 }
@@ -276,7 +282,7 @@ private fun Search(navController: NavHostController) {
 fun EventScreen(navController: NavHostController, id: String?) {
     // todo: this should be another ViewModel
     val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
-    val state = viewModel.state.collectAsState(initial = null).value ?: return
+    val state = viewModel.getState().collectAsState(initial = null).value as? ScheduleScreenState.Success ?: return
     val event = state.days.values.flatten().find { it.id == id!!.toLong() }!!
     EventScreenView(
         event = event,
@@ -302,6 +308,24 @@ fun SpeakerScreen(navController: NavHostController, id: String?) {
             navController.popBackStack()
         }) { event ->
     }
+}
+
+@Composable
+fun LocationScreen(navController: NavHostController, id: String?) {
+    val viewModel = viewModel<ScheduleViewModel>()
+    val state =
+        viewModel.getState(ScheduleFilter.Location(id)).collectAsState(initial = ScheduleScreenState.Loading).value
+    ScheduleScreenView(
+        state = state,
+        onMenuClicked = { /*TODO*/ },
+        onFabClicked = { /*TODO*/ },
+        onEventClick = {
+            navController.navigate("event/${it.id}")
+        },
+        onBookmarkClick = {
+            viewModel.bookmark(it)
+        },
+    )
 }
 
 @Composable
@@ -360,11 +384,10 @@ private fun HomeScreen(navController: NavHostController) {
             mainPanel = {
                 val viewModel = viewModel<ScheduleViewModel>()
                 val state =
-                    viewModel.state.collectAsState(initial = ScheduleScreenState.Loading).value
+                    viewModel.getState().collectAsState(initial = ScheduleScreenState.Loading).value
                 ScheduleScreenView(
                     state = state,
                     onMenuClicked = { /*TODO*/ },
-                    onSearchQuery = {},
                     onFabClicked = { /*TODO*/ },
                     onEventClick = {
                         navController.navigate("event/${it.id}")

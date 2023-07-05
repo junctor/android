@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
@@ -39,7 +40,7 @@ internal fun ConferenceView(
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            Text(name, style = MaterialTheme.typography.headlineLarge)
+            Text(name, textAlign = TextAlign.Center, style = MaterialTheme.typography.headlineLarge)
             Text(date, style = MaterialTheme.typography.bodyMedium)
             Text(location, style = MaterialTheme.typography.bodyMedium)
             Spacer(Modifier.height(8.dp))

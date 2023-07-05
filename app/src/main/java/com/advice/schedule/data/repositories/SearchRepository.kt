@@ -12,6 +12,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
+sealed class SearchState {
+    object Idle : SearchState()
+    data class Results(val results: SearchResults) : SearchState()
+}
+
 data class SearchResults(
     val query: String,
     val events: List<Event>,
@@ -28,7 +33,7 @@ class SearchRepository(
 ) {
     private var query = MutableStateFlow("")
 
-    val result: Flow<SearchResults> = combine(
+    val state: Flow<SearchState> = combine(
         query,
         eventsDataSource.get(),
         speakersDataSource.get(),
@@ -38,26 +43,23 @@ class SearchRepository(
     ) { values ->
         val query = values[0] as String
         if (query.length < 3) {
-            return@combine SearchResults(
-                query = query,
-                events = emptyList(),
-                speakers = emptyList(),
-                organizations = emptyList(),
-            )
+            return@combine SearchState.Idle
         }
 
-        SearchResults(
-            query = query,
-            events = (values[1] as List<Event>).filter { event ->
-                event.title.contains(query, ignoreCase = true) ||
-                        event.description.contains(query, ignoreCase = true)
-            },
-            speakers = (values[2] as List<Speaker>).filter { speaker ->
-                speaker.name.contains(query, ignoreCase = true)
-            },
-            organizations = (values[3] as List<Organization>).filter { organization ->
-                organization.name.contains(query, ignoreCase = true)
-            },
+        SearchState.Results(
+            SearchResults(
+                query = query,
+                events = (values[1] as List<Event>).filter { event ->
+                    event.title.contains(query, ignoreCase = true) ||
+                            event.description.contains(query, ignoreCase = true)
+                },
+                speakers = (values[2] as List<Speaker>).filter { speaker ->
+                    speaker.name.contains(query, ignoreCase = true)
+                },
+                organizations = (values[3] as List<Organization>).filter { organization ->
+                    organization.name.contains(query, ignoreCase = true)
+                },
+            )
         )
     }
 

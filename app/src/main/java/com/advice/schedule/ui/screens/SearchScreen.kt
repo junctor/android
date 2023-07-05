@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.organizations.ui.components.OrganizationRow
-import com.advice.schedule.data.repositories.SearchResults
+import com.advice.schedule.data.repositories.SearchState
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.SearchBar
 import com.advice.ui.components.SpeakerView
@@ -28,7 +28,7 @@ import com.advice.ui.preview.LightDarkPreview
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 internal fun SearchScreen(
-    searchResults: SearchResults,
+    state: SearchState,
     onQueryChanged: (String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -49,40 +49,52 @@ internal fun SearchScreen(
                     }
                 }
             }
-            if (searchResults.events.isNotEmpty()) {
-                item {
-                    HeaderRow("Events")
+            when (state) {
+                SearchState.Idle -> {
+                    // todo: show logo or something
+                }
+
+                is SearchState.Results -> {
+                    if (state.results.events.isNotEmpty()) {
+                        item {
+                            HeaderRow("Events")
+                        }
+                    }
+                    items(state.results.events) {
+                        EventRowView(it.title, "", it.location.name, it.types, it.isBookmarked)
+                    }
+                    if (state.results.speakers.isNotEmpty()) {
+                        item {
+                            HeaderRow("Speakers")
+                        }
+                    }
+                    items(state.results.speakers) {
+                        SpeakerView(it.name)
+                    }
+                    if (state.results.organizations.isNotEmpty()) {
+                        item {
+                            HeaderRow("Organizations")
+                        }
+                    }
+                    items(state.results.organizations) {
+                        // todo: fix this hacky solution
+                        OrganizationRow(listOf(it))
+                    }
                 }
             }
-            items(searchResults.events) {
-                EventRowView(it.title, "", it.location.name, it.types, it.isBookmarked)
-            }
-            if (searchResults.speakers.isNotEmpty()) {
-                item {
-                    HeaderRow("Speakers")
-                }
-            }
-            items(searchResults.speakers) {
-                SpeakerView(it.name)
-            }
-            if (searchResults.organizations.isNotEmpty()) {
-                item {
-                    HeaderRow("Organizations")
-                }
-            }
-            items(searchResults.organizations) {
-                // todo: fix this hacky solution
-                OrganizationRow(listOf(it))
-            }
+
+
         }
     }
 }
 
 @Composable
 private fun HeaderRow(label: String) {
-    Text(label, modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp), textAlign = TextAlign.Center)
+    Text(
+        label, modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp), textAlign = TextAlign.Center
+    )
 }
 
 @LightDarkPreview
