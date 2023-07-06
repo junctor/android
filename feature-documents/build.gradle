@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.advice.documents'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 21

@@ -44,9 +44,10 @@ import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.schedule.ui.components.DismissibleBottomAppBar
+import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
-import com.advice.schedule.ui.components.Panel
 import com.advice.schedule.ui.screens.SearchScreen
+import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.screens.EventScreenView
 import com.advice.ui.screens.FAQScreenView
 import com.advice.ui.screens.FilterScreenView
@@ -58,7 +59,6 @@ import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.shortstack.hackertracker.R
-import kotlin.time.Duration.Companion.days
 
 @Composable
 internal fun NavHost() {
@@ -282,7 +282,9 @@ private fun Search(navController: NavHostController) {
 fun EventScreen(navController: NavHostController, id: String?) {
     // todo: this should be another ViewModel
     val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
-    val state = viewModel.getState().collectAsState(initial = null).value as? ScheduleScreenState.Success ?: return
+    val state =
+        viewModel.getState().collectAsState(initial = null).value as? ScheduleScreenState.Success
+            ?: return
     val event = state.days.values.flatten().find { it.id == id!!.toLong() }!!
     EventScreenView(
         event = event,
@@ -314,7 +316,8 @@ fun SpeakerScreen(navController: NavHostController, id: String?) {
 fun LocationScreen(navController: NavHostController, id: String?) {
     val viewModel = viewModel<ScheduleViewModel>()
     val state =
-        viewModel.getState(ScheduleFilter.Location(id)).collectAsState(initial = ScheduleScreenState.Loading).value
+        viewModel.getState(ScheduleFilter.Location(id))
+            .collectAsState(initial = ScheduleScreenState.Loading).value
     ScheduleScreenView(
         state = state,
         onMenuClicked = { /*TODO*/ },
@@ -350,10 +353,15 @@ fun SettingsScreen(navController: NavHostController) {
 
 @Composable
 private fun HomeScreen(navController: NavHostController) {
+    val mainViewModel = viewModel<MainViewModel>()
+    val currentAnchor by mainViewModel.currentAnchor.collectAsState()
+
     Box {
         var isShown by rememberSaveable { mutableStateOf(false) }
 
+
         OverlappingPanelsView(
+            currentAnchor,
             leftPanel = {
                 val viewModel = viewModel<HomeViewModel>()
                 val state =
@@ -387,8 +395,12 @@ private fun HomeScreen(navController: NavHostController) {
                     viewModel.getState().collectAsState(initial = ScheduleScreenState.Loading).value
                 ScheduleScreenView(
                     state = state,
-                    onMenuClicked = { /*TODO*/ },
-                    onFabClicked = { /*TODO*/ },
+                    onMenuClicked = {
+                        mainViewModel.setAnchor(DragAnchors.Start)
+                    },
+                    onFabClicked = {
+                        mainViewModel.setAnchor(DragAnchors.End)
+                    },
                     onEventClick = {
                         navController.navigate("event/${it.id}")
                     },
@@ -398,7 +410,8 @@ private fun HomeScreen(navController: NavHostController) {
                 )
             },
             onPanelChangedListener = { panel ->
-                isShown = panel == Panel.Left
+                mainViewModel.setAnchor(panel)
+                isShown = panel == DragAnchors.Start
             }
         )
         DismissibleBottomAppBar(
