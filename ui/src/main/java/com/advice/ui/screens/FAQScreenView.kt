@@ -22,7 +22,7 @@ import com.advice.ui.preview.FAQProvider
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.QuestionView
 import com.advice.ui.components.SearchBar
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -18,7 +18,7 @@ import com.advice.locations.ui.preview.LocationRowProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.SearchableTopAppBar
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

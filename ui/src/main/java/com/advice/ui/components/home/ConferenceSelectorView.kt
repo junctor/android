@@ -17,9 +17,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.advice.core.utils.Time
+import com.advice.ui.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.hackertracker.R
 import java.text.SimpleDateFormat
 import java.util.Date
 

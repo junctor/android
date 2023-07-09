@@ -59,7 +59,7 @@ import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 import java.text.SimpleDateFormat
 import java.util.Date
 

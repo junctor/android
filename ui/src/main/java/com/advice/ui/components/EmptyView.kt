@@ -15,9 +15,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.advice.ui.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.hackertracker.R
+
 
 @Composable
 fun EmptyView(message: String? = null, modifier: Modifier = Modifier) {

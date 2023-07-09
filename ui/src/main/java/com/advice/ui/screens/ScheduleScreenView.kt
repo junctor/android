@@ -39,7 +39,7 @@ import com.advice.ui.components.EventRowView
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 import kotlinx.coroutines.launch
 import java.util.Date
 

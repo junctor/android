@@ -34,7 +34,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

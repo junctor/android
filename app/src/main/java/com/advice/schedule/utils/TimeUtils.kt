@@ -3,7 +3,6 @@ package com.advice.schedule.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import com.shortstack.hackertracker.BuildConfig
-import com.shortstack.hackertracker.R
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -21,7 +20,7 @@ object TimeUtils {
     fun getTimeStamp(context: Context, date: Date?): String {
         // No start time, return TBA.
         if (date == null)
-            return context.getString(R.string.tba)
+            return context.getString(com.shortstack.hackertracker.R.string.tba)
 
 
         val s = if (android.text.format.DateFormat.is24HourFormat(context)) {

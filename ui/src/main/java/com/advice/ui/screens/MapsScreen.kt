@@ -34,7 +34,7 @@ import com.advice.ui.components.EmptyView
 import com.advice.ui.components.PdfDisplay
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File

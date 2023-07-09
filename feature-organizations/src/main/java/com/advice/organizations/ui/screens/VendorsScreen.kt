@@ -13,7 +13,7 @@ import com.advice.core.local.Organization
 import com.advice.organizations.ui.components.OrganizationsScreenContent
 import com.advice.ui.components.EmptyView
 import com.advice.ui.components.SearchableTopAppBar
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

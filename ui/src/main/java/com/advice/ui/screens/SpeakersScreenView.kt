@@ -16,7 +16,7 @@ import com.advice.core.local.Speaker
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.SearchableTopAppBar
 import com.advice.ui.components.SpeakerView
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

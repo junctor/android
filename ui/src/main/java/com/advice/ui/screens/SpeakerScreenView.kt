@@ -20,7 +20,7 @@ import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

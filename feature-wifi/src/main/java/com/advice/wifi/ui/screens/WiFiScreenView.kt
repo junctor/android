@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.Paragraph
+import com.advice.ui.theme.ScheduleTheme
 import com.advice.wifi.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +26,7 @@ fun WifiScreen(onBackPressed: () -> Unit, onLinkClicked: (String) -> Unit) {
         {
             IconButton(onClick = onBackPressed) {
                 Icon(
-                    painterResource(com.shortstack.hackertracker.R.drawable.baseline_arrow_back_ios_new_24),
+                    painterResource(com.advice.ui.R.drawable.baseline_arrow_back_ios_new_24),
                     contentDescription = null
                 )
             }

@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @Composable
 internal fun Navigation(label: String, modifier: Modifier = Modifier, onClick: () -> Unit) {

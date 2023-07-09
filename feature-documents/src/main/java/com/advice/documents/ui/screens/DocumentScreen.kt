@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.advice.core.local.Document
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.Paragraph
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -58,7 +58,7 @@ import com.advice.ui.screens.SettingScreenView
 import com.advice.ui.screens.SpeakerScreenView
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
 
 @Composable
 internal fun NavHost() {
@@ -431,7 +431,7 @@ private fun HomeScreen(navController: NavHostController) {
                     navController.navigate("maps")
                 }) {
                     Icon(
-                        painterResource(id = R.drawable.ic_map_white_24dp),
+                        painterResource(id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp),
                         contentDescription = null
                     )
                 }

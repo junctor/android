@@ -27,7 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
-import com.shortstack.hackertracker.R
+import com.advice.ui.R
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
