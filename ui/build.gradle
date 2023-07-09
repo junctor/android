@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.shortstack.hackertracker'
+    namespace 'com.shortstack.ui'
     compileSdk 34
 
     defaultConfig {
