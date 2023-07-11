@@ -5,6 +5,7 @@ import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.utils.NotificationHelper
 import com.advice.core.utils.Storage
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
+import com.advice.data.SharedPreferencesBookmarkDataSource
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ConferencesDataSource
@@ -72,6 +73,7 @@ import com.google.gson.GsonBuilder
 import com.shortstack.hackertracker.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
@@ -101,7 +103,7 @@ val appModule = module {
     single { HomeRepository(get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
     single { SpeakerRepository(get()) }
-    single { FiltersRepository(get(), get()) }
+    single { FiltersRepository(get(), get(named("tags"))) }
     single { FAQRepository(get()) }
     single {
         SettingsRepository(
@@ -120,13 +122,14 @@ val appModule = module {
 
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
-    single<BookmarkedElementDataSource> { InMemoryBookmarkedDataSourceImpl() }
+    single<BookmarkedElementDataSource>(named("tags")){ InMemoryBookmarkedDataSourceImpl() }
+    single<BookmarkedElementDataSource>(named("events")) { SharedPreferencesBookmarkDataSource(androidContext()) }
 
     single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
-    single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(), get()) }
-    single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get()) }
+    single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(named("events")), get()) }
+    single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
     single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
     single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
     single<MapsDataSource> {
