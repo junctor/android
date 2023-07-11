@@ -12,9 +12,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -186,8 +183,7 @@ private fun DocumentScreen(navController: NavHostController, id: String? = null)
     val document = documents.find { it.id == id?.toLong() } ?: return
     com.advice.documents.ui.screens.DocumentScreen(
         document = document,
-        onBackPressed = { navController.popBackStack() },
-        onLinkClicked = { /*TODO*/ }
+        onBackPressed = { navController.popBackStack() }
     )
 }
 
