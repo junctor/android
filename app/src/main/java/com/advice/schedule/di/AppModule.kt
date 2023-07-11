@@ -122,7 +122,7 @@ val appModule = module {
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
     single<BookmarkedElementDataSource> { InMemoryBookmarkedDataSourceImpl() }
 
-    single<UserSession> { FirebaseUserSession(get(), get(), get()) }
+    single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(), get()) }

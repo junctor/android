@@ -8,6 +8,7 @@ import com.advice.data.sources.ConferencesDataSource
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
@@ -22,8 +23,9 @@ import timber.log.Timber
 
 class FirebaseUserSession(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val crashlytics: FirebaseCrashlytics,
     conferencesDataSource: ConferencesDataSource,
-    private val preferences: Storage
+    private val preferences: Storage,
 ) : UserSession {
 
     private val _user = MutableStateFlow<User?>(null)
@@ -49,6 +51,7 @@ class FirebaseUserSession(
                 Timber.e("User uid: ${user.uid}")
                 _user.value = User(user.uid)
             } else {
+                crashlytics.log("user cannot be signed in")
                 Timber.e("User could not be signed in")
             }
         }

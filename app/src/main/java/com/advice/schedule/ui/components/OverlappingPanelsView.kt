@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
 import kotlinx.parcelize.Parcelize
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 private const val GUTTER_SIZE = 56
@@ -110,12 +109,7 @@ fun OverlappingPanelsView(
         )
     }
 
-    Timber.e("currentAnchor: $currentAnchor")
-
-//    val currentAnchor by viewModel.currentAnchor.collectAsState()
-
     LaunchedEffect(currentAnchor) {
-        Timber.e("Triggered!")
         when (currentAnchor) {
             DragAnchors.Start -> dragState.animateTo(DragAnchors.Start)
             DragAnchors.Center -> dragState.animateTo(DragAnchors.Center)
