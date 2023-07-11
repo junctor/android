@@ -25,7 +25,7 @@ class HomeRepository(
         newsDataSource.get(),
         _countdown
     ) { conference, conferences, documents, news, countdown ->
-        val isDefCon = conference.code.contains("DEFCON")
+        val isDefCon = conference.code.contains("DEFCON30")
         HomeState.Loaded(conferences, conference, isDefCon, isDefCon, documents, news, countdown)
     }
 
