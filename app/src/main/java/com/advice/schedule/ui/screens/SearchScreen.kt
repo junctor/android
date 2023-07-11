@@ -16,10 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.organizations.ui.components.OrganizationRow
 import com.advice.schedule.data.repositories.SearchState
+import com.advice.schedule.utils.TimeUtils
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.SearchBar
 import com.advice.ui.components.SpeakerView
@@ -32,6 +34,8 @@ internal fun SearchScreen(
     onQueryChanged: (String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Search") }, navigationIcon = {
@@ -61,7 +65,7 @@ internal fun SearchScreen(
                         }
                     }
                     items(state.results.events) {
-                        EventRowView(it.title, "", it.location.name, it.types, it.isBookmarked)
+                        EventRowView(it.title, TimeUtils.getTimeStamp(context, it.start), it.location.name, it.types, it.isBookmarked)
                     }
                     if (state.results.speakers.isNotEmpty()) {
                         item {

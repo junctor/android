@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
@@ -56,8 +57,7 @@ fun EventRowView(
             )
         }
 
-//        Text("", textAlign = TextAlign.Center, modifier = Modifier.width(85.dp))
-        Spacer(modifier = Modifier.width(16.dp))
+        Text(time.replace(" ", "\n"), textAlign = TextAlign.Center, modifier = Modifier.width(85.dp))
 
         Column(
             Modifier

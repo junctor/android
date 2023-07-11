@@ -32,6 +32,7 @@ import com.advice.core.local.Location
 import com.advice.core.local.Tag
 import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.TimeUtil
+import com.advice.ui.R
 import com.advice.ui.components.DayHeaderView
 import com.advice.ui.components.DaySelectorView
 import com.advice.ui.components.EmptyView
@@ -39,7 +40,6 @@ import com.advice.ui.components.EventRowView
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
-import com.advice.ui.R
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -139,22 +139,8 @@ fun ScheduleScreenContent(
                     item {
                         DayHeaderView(day.key)
                     }
-                    var previousTime: Long? = null
                     // Events
                     for (it in day.value) {
-                        if (previousTime == null || previousTime != it.startTime.time) {
-                            previousTime = it.startTime.time
-                            stickyHeader {
-                                val time =
-                                    TimeUtil.getTimeStamp(it.startTime, is24HourFormat = false)
-                                Text(
-                                    time, textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(4.dp),
-                                )
-                            }
-                        }
                         item {
                             EventRowView(it.title,
                                 TimeUtil.getTimeStamp(it.startTime, is24HourFormat = false),
