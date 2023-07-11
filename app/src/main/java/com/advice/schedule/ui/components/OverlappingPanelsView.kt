@@ -1,7 +1,5 @@
 package com.advice.schedule.ui.components
 
-import android.os.Parcelable
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -20,11 +18,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,43 +33,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
-import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 private const val GUTTER_SIZE = 56
 private const val GUTTER_PADDING = 8
-
-@Parcelize
-sealed class Panel : Parcelable {
-    object Left : Panel()
-    object Right : Panel()
-    object Main : Panel()
-}
-
-@Parcelize
-sealed class LockState : Parcelable {
-    object Open : LockState()
-    object Close : LockState()
-    object Unlocked : LockState()
-}
-
-@Parcelize
-sealed class SwipeDirection : Parcelable {
-    object Left : SwipeDirection()
-    object Right : SwipeDirection()
-    object None : SwipeDirection()
-}
-
-@Parcelize
-data class PanelState(
-    val panel: Panel = Panel.Main,
-    val lockState: LockState = LockState.Unlocked,
-    val swipeDirection: SwipeDirection = SwipeDirection.None,
-
-    val isDragging: Boolean = false,
-    val offsetX: Float = 0f,
-    val alpha: Float = 1f,
-) : Parcelable
 
 enum class DragAnchors {
     Start,
@@ -86,17 +55,49 @@ fun OverlappingPanelsView(
     modifier: Modifier = Modifier,
     onPanelChangedListener: ((DragAnchors) -> Unit)? = null,
 ) {
-    val density = LocalDensity.current
+    Timber.e("OverlappingPanelsView: $currentAnchor")
 
-    var state by rememberSaveable { mutableStateOf(PanelState()) }
+    val isComposableReady = remember { mutableStateOf(false) }
+
+
+    val density = LocalDensity.current
 
     var size by remember { mutableStateOf(IntSize.Zero) }
 
     val gutterSize = with(density) { GUTTER_SIZE.dp.toPx() }
 
-    val animatedAlpha by animateFloatAsState(state.alpha)
+    val dragState = rememberSaveable(saver = object : Saver<AnchoredDraggableState<DragAnchors>, Any> {
+        override fun restore(value: Any): AnchoredDraggableState<DragAnchors> {
+            // Your logic for restoring the state from the saved value
+            val restoredAnchor = when (value as String) {
+                "start" -> DragAnchors.Start
+                "center" -> DragAnchors.Center
+                "end" -> DragAnchors.End
+                else -> DragAnchors.Center // Default value
+            }
 
-    val dragState = remember {
+            return AnchoredDraggableState(
+                initialValue = restoredAnchor,
+                positionalThreshold = { distance: Float -> distance * 0.5f },
+                velocityThreshold = { with(density) { 100.dp.toPx() } },
+                animationSpec = tween(),
+                confirmValueChange = { anchor ->
+                    onPanelChangedListener?.invoke(anchor)
+                    true
+                }
+            )
+        }
+
+        override fun SaverScope.save(value: AnchoredDraggableState<DragAnchors>): Any {
+            // Your logic for saving the state to a persistent value
+            return when (value.currentValue) {
+                DragAnchors.Start -> "start"
+                DragAnchors.Center -> "center"
+                DragAnchors.End -> "end"
+                else -> "center" // Default value
+            }
+        }
+    }) {
         AnchoredDraggableState(
             initialValue = DragAnchors.Start,
             positionalThreshold = { distance: Float -> distance * 0.5f },
@@ -109,13 +110,7 @@ fun OverlappingPanelsView(
         )
     }
 
-    LaunchedEffect(currentAnchor) {
-        when (currentAnchor) {
-            DragAnchors.Start -> dragState.animateTo(DragAnchors.Start)
-            DragAnchors.Center -> dragState.animateTo(DragAnchors.Center)
-            DragAnchors.End -> dragState.animateTo(DragAnchors.End)
-        }
-    }
+
 
     dragState.updateAnchors(
         DraggableAnchors {
@@ -125,10 +120,21 @@ fun OverlappingPanelsView(
         }
     )
 
+    LaunchedEffect(currentAnchor,  isComposableReady.value) {
+        if (isComposableReady.value) {
+
+            when (currentAnchor) {
+                DragAnchors.Start -> dragState.animateTo(DragAnchors.Start)
+                DragAnchors.Center -> dragState.animateTo(DragAnchors.Center)
+                DragAnchors.End -> dragState.animateTo(DragAnchors.End)
+            }
+        }
+    }
 
     // A container that has 3 children, the first is the left panel, the second is the main content, and the the third is the right panel. The middle panel can slide to the left or right to reveal the left or right panel.
     Box(
         modifier
+            .onGloballyPositioned { isComposableReady.value = true }
             .fillMaxSize()
             .anchoredDraggable(
                 dragState, Orientation.Horizontal,
@@ -169,26 +175,81 @@ fun OverlappingPanelsView(
                             .roundToInt(), 0
                     )
                 }
-                .alpha(animatedAlpha)
+                .alpha(1.0f)
         ) {
             mainPanel()
         }
     }
 }
 
-private fun setAlphaState(
-    isDragging: Boolean,
-    selectedPanel: Panel,
-): Float {
-    return if (isDragging || selectedPanel == Panel.Main) 1.0f else 0.65f
+@Preview
+@Composable
+fun OverlappingPanelsViewStartPreview() {
+    ScheduleTheme {
+        OverlappingPanelsView(
+            currentAnchor = DragAnchors.Start,
+            leftPanel = {
+                Box(
+                    Modifier
+                        .background(Color.Blue)
+                        .fillMaxSize()
+                )
+            },
+            rightPanel = {
+                Box(
+                    Modifier
+                        .background(Color.Red)
+                        .fillMaxSize()
+                )
+            },
+            mainPanel = {
+                Box(
+                    Modifier
+                        .background(Color.Green)
+                        .fillMaxSize()
+                )
+            }
+        )
+    }
 }
 
 @Preview
 @Composable
-fun OverlappingPanelsViewPreview() {
+fun OverlappingPanelsViewCenterPreview() {
     ScheduleTheme {
         OverlappingPanelsView(
-            currentAnchor = DragAnchors.Start,
+            currentAnchor = DragAnchors.Center,
+            leftPanel = {
+                Box(
+                    Modifier
+                        .background(Color.Blue)
+                        .fillMaxSize()
+                )
+            },
+            rightPanel = {
+                Box(
+                    Modifier
+                        .background(Color.Red)
+                        .fillMaxSize()
+                )
+            },
+            mainPanel = {
+                Box(
+                    Modifier
+                        .background(Color.Green)
+                        .fillMaxSize()
+                )
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun OverlappingPanelsViewEndPreview() {
+    ScheduleTheme {
+        OverlappingPanelsView(
+            currentAnchor = DragAnchors.End,
             leftPanel = {
                 Box(
                     Modifier

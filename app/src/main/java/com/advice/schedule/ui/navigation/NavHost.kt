@@ -354,14 +354,11 @@ fun SettingsScreen(navController: NavHostController) {
 @Composable
 private fun HomeScreen(navController: NavHostController) {
     val mainViewModel = viewModel<MainViewModel>()
-    val currentAnchor by mainViewModel.currentAnchor.collectAsState()
+    val viewState by mainViewModel.state.collectAsState()
 
     Box {
-        var isShown by rememberSaveable { mutableStateOf(false) }
-
-
         OverlappingPanelsView(
-            currentAnchor,
+            viewState.currentAnchor,
             leftPanel = {
                 val viewModel = viewModel<HomeViewModel>()
                 val state =
@@ -411,12 +408,11 @@ private fun HomeScreen(navController: NavHostController) {
             },
             onPanelChangedListener = { panel ->
                 mainViewModel.setAnchor(panel)
-                isShown = panel == DragAnchors.Start
             }
         )
         DismissibleBottomAppBar(
             Modifier.align(Alignment.BottomCenter),
-            isShown = isShown
+            isShown = viewState.isShown,
         ) {
             Row(
                 Modifier.fillMaxWidth(),
