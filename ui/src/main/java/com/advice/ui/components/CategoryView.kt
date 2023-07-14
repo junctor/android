@@ -28,7 +28,11 @@ sealed class CategorySize {
 }
 
 @Composable
-internal fun CategoryView(tag: Tag, size: CategorySize = CategorySize.Small, hasIcon: Boolean = true) {
+internal fun CategoryView(
+    tag: Tag,
+    size: CategorySize = CategorySize.Small,
+    hasIcon: Boolean = true
+) {
     val style = when (size) {
         CategorySize.Large -> MaterialTheme.typography.bodyLarge
         CategorySize.Medium -> MaterialTheme.typography.bodyMedium
@@ -49,7 +53,10 @@ internal fun CategoryView(tag: Tag, size: CategorySize = CategorySize.Small, has
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(horizontal = padding, vertical = padding / 2),
+        modifier = Modifier.padding(
+            horizontal = if (hasIcon) padding else 0.dp,
+            vertical = padding / 2
+        ),
         horizontalArrangement = Arrangement.spacedBy(padding)
     ) {
         if (hasIcon) {

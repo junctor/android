@@ -1,6 +1,7 @@
 package com.advice.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,18 +33,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
@@ -60,6 +69,8 @@ import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
 import com.advice.ui.R
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -72,10 +83,23 @@ fun EventScreenView(
     onLocationClicked: () -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
+    val alpha = remember {
+        Animatable(0f)
+    }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { /*Text(event.title, maxLines = 2, overflow = TextOverflow.Ellipsis)*/ },
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        event.title,
+                        modifier = Modifier.alpha(alpha.value),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
                         Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null)
@@ -86,16 +110,33 @@ fun EventScreenView(
                         onBookmark()
                     }
                 }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = parseColor(event.types.first().color).copy(alpha = alpha.value),
                 )
             )
         }) { contentPadding ->
-        EventScreenContent(
-            event,
-            onLocationClicked,
-            onSpeakerClicked,
-            modifier = Modifier.padding(contentPadding)
-        )
+        Box(
+            Modifier
+                .verticalScroll(scrollState)
+        ) {
+            EventScreenContent(
+                event,
+                onLocationClicked,
+                onSpeakerClicked,
+                modifier = Modifier.padding(contentPadding)
+            )
+        }
+    }
+
+    LaunchedEffect(scrollState) {
+        snapshotFlow { scrollState.value }.collect { scrollPosition ->
+            Timber.d("Scroll position: $scrollPosition")
+            val temp = if (scrollPosition > 0) {
+                1f
+            } else {
+                0f
+            }
+            alpha.animateTo(temp)
+        }
     }
 }
 
@@ -108,69 +149,62 @@ fun EventScreenContent(
     modifier: Modifier = Modifier,
 ) {
 
-    Box(
+    Column(
         Modifier
-            .verticalScroll(rememberScrollState())
-
-
+        //.padding(16.dp)
     ) {
-        Column(
+        HeaderSection(
+            event.title,
+            event.types,
+            getDateTimestamp(event),
+            event.location.name,
+            onLocationClicked,
+            modifier,
+        )
+        FlowRow(
             Modifier
-            //.padding(16.dp)
+                //.background(Color.Black)
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            HeaderSection(
-                event.title,
-                event.types,
-                getDateTimestamp(event),
-                event.location.name,
-                onLocationClicked,
-                modifier,
-            )
-            FlowRow(
-                Modifier
-                    //.background(Color.Black)
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                if (event.types.size > 2) {
-                    for (tag in event.types.subList(1, event.types.size - 1)) {
-                        CategoryView(tag, size = CategorySize.Medium)
-                    }
+            if (event.types.size > 2) {
+                for (tag in event.types.subList(1, event.types.size - 1)) {
+                    CategoryView(tag, size = CategorySize.Medium)
                 }
             }
-
-            if (event.description.isNotBlank()) {
-                Paragraph(
-                    event.description,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-            }
-            if (event.urls.isNotEmpty()) {
-                Spacer(Modifier.height(16.dp))
-                for (action in event.urls) {
-                    ActionView(action.label)
-                }
-            }
-            if (event.speakers.isNotEmpty()) {
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    "Speakers", textAlign = TextAlign.Center, modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                )
-                for (speaker in event.speakers) {
-                    SpeakerView(speaker.name, title = speaker.title) {
-                        onSpeakerClicked(speaker)
-                    }
-                }
-            }
-
-            if (event.description.isBlank() && event.urls.isEmpty() && event.speakers.isEmpty()) {
-                Spacer(Modifier.height(32.dp))
-                NoDetailsView()
-            }
-            Spacer(modifier = Modifier.height(64.dp))
         }
+
+        if (event.description.isNotBlank()) {
+            Paragraph(
+                event.description,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+        }
+        if (event.urls.isNotEmpty()) {
+            Spacer(Modifier.height(16.dp))
+            for (action in event.urls) {
+                ActionView(action.label)
+            }
+        }
+        if (event.speakers.isNotEmpty()) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "Speakers", textAlign = TextAlign.Center, modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            )
+            for (speaker in event.speakers) {
+                SpeakerView(speaker.name, title = speaker.title) {
+                    onSpeakerClicked(speaker)
+                }
+            }
+        }
+
+        if (event.description.isBlank() && event.urls.isEmpty() && event.speakers.isEmpty()) {
+            Spacer(Modifier.height(32.dp))
+            NoDetailsView()
+        }
+        Spacer(modifier = Modifier.height(64.dp))
     }
 }
 
@@ -197,7 +231,7 @@ fun HeaderSection(
     modifier: Modifier = Modifier,
 ) {
     val color = parseColor(categories.first().color)
-    val color2 = color.copy(alpha = 0.65f)
+    val color2 = color.copy(alpha = 1.0f)
     Column(
         Modifier
             .drawBehind {
@@ -213,13 +247,18 @@ fun HeaderSection(
 
         Column(Modifier.padding(16.dp)) {
 
-            Text(title, style = MaterialTheme.typography.headlineLarge)
+            Text(
+                title,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineLarge
+            )
 
             Box(Modifier.padding(vertical = 8.dp)) {
                 CategoryView(categories.first(), size = CategorySize.Large, hasIcon = false)
             }
 
-            DetailsCard(Icons.Default.DateRange, null, date.replace(" -", "\n"))
+            DetailsCard(Icons.Default.DateRange, null, date.replace(" - ", "\n"))
 
             DetailsCard(
                 Icons.Default.LocationOn,

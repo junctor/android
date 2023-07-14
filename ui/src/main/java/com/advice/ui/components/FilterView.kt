@@ -32,7 +32,6 @@ internal fun FilterView(tag: Tag, onClick: () -> Unit) {
         alpha.animateTo(if (tag.isSelected) 1f else 0f)
     })
 
-
     val tagColor = parseColor(tag.color)
     Surface(
         border = BorderStroke(1.dp, tagColor.copy(alpha = (if (tag.isSelected) 1.0f else .85f))),
