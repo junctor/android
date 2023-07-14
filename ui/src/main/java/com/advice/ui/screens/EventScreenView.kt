@@ -169,6 +169,7 @@ fun EventScreenContent(
                 Spacer(Modifier.height(32.dp))
                 NoDetailsView()
             }
+            Spacer(modifier = Modifier.height(64.dp))
         }
     }
 }
