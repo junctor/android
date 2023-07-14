@@ -108,10 +108,10 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
         }
 
         state.documents.forEach {
-            HomeCard(Modifier.clickable {
-                onNavigationClick("document/${it.id}")
-            }) {
-                Text(it.title, Modifier.padding(16.dp))
+            HomeCard {
+                Text(it.title, Modifier.clickable {
+                    onNavigationClick("document/${it.id}")
+                }.padding(16.dp))
             }
         }
 
@@ -121,27 +121,27 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
             modifier = Modifier.padding(16.dp)
         )
 
-        HomeCard(Modifier.clickable {
-            onNavigationClick("speakers")
-        }) {
-            Text("Speakers", Modifier.padding(16.dp))
+        HomeCard {
+            Text("Speakers", Modifier.clickable {
+                onNavigationClick("speakers")
+            }.padding(16.dp))
         }
-        HomeCard(Modifier.clickable {
-            onNavigationClick("vendors")
-        }) {
-            Text("Vendors", Modifier.padding(16.dp))
+        HomeCard {
+            Text("Vendors", Modifier.clickable {
+                onNavigationClick("vendors")
+            }.padding(16.dp))
         }
 
 
-        HomeCard(Modifier.clickable {
-            onNavigationClick("villages")
-        }) {
-            Text("Villages", Modifier.padding(16.dp))
+        HomeCard {
+            Text("Villages", Modifier.clickable {
+                onNavigationClick("villages")
+            }.padding(16.dp))
         }
-        HomeCard(Modifier.clickable {
-            onNavigationClick("faq")
-        }) {
-            Text("FAQ", Modifier.padding(16.dp))
+        HomeCard {
+            Text("FAQ", Modifier.clickable {
+                onNavigationClick("faq")
+            }.padding(16.dp))
         }
 
 
