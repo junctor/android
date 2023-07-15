@@ -32,7 +32,7 @@ fun BookmarkButton(isBookmarked: Boolean, onCheckChanged: (Boolean) -> Unit) {
         },
         colors = IconButtonDefaults.iconToggleButtonColors(
             checkedContentColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.White,
+            contentColor = MaterialTheme.colorScheme.onSurface,
         )
     ) {
         Icon(icon, contentDescription = null)

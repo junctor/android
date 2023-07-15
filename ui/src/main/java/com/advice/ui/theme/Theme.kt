@@ -13,6 +13,7 @@ private val DarkColorPalette = darkColorScheme(
     secondary = CertainFrogs,
     onPrimary = Color.White,
     primaryContainer = HotPink,
+    onSurface = Color.White,
     outline = Color.White.copy(alpha = 0.12f),
 )
 
