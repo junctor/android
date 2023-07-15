@@ -75,8 +75,8 @@ internal fun NavHost() {
         composable("event/{id}") { backStackEntry ->
             EventScreen(navController, backStackEntry.arguments?.getString("id"))
         }
-        composable("location/{id}") { backStackEntry ->
-            LocationScreen(navController, backStackEntry.arguments?.getString("id"))
+        composable("location/{id}/{label}") { backStackEntry ->
+            LocationScreen(navController, backStackEntry.arguments?.getString("id"), backStackEntry.arguments?.getString("label"))
         }
         composable("speaker/{id}") { backStackEntry ->
             SpeakerScreen(navController, backStackEntry.arguments?.getString("id"))
@@ -290,7 +290,7 @@ fun EventScreen(navController: NavHostController, id: String?) {
         event = event,
         onBookmark = { viewModel.bookmark(event) },
         onBackPressed = { navController.popBackStack() },
-        onLocationClicked = { navController.navigate("location/${event.location.id}") },
+        onLocationClicked = { navController.navigate("location/${event.location.id}/${event.location.shortName?.replace("/", "\\")}") },
         onSpeakerClicked = { navController.navigate("speaker/${it.id}") }
     )
 }
@@ -313,15 +313,18 @@ fun SpeakerScreen(navController: NavHostController, id: String?) {
 }
 
 @Composable
-fun LocationScreen(navController: NavHostController, id: String?) {
+fun LocationScreen(navController: NavHostController, id: String?, label: String?) {
     val viewModel = viewModel<ScheduleViewModel>()
     val state =
         viewModel.getState(ScheduleFilter.Location(id))
             .collectAsState(initial = ScheduleScreenState.Loading).value
+    // todo: this could be another function - only passing in onBackPressed to update the state
     ScheduleScreenView(
         state = state,
-        onMenuClicked = { /*TODO*/ },
-        onFabClicked = { /*TODO*/ },
+        label = label,
+        onBackPressed = {
+            navController.popBackStack()
+        },
         onEventClick = {
             navController.navigate("event/${it.id}")
         },

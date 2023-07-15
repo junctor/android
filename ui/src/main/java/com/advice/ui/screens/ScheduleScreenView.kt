@@ -1,10 +1,13 @@
 package com.advice.ui.screens
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -37,6 +40,7 @@ import com.advice.ui.components.DayHeaderView
 import com.advice.ui.components.DaySelectorView
 import com.advice.ui.components.EmptyView
 import com.advice.ui.components.EventRowView
+import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
@@ -65,30 +69,79 @@ fun ScheduleScreenView(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(title = { Text("Schedule") }, navigationIcon = {
-                IconButton(onClick = onMenuClicked) {
-                    Icon(Icons.Default.Menu, null)
-                }
-            })
-        }, floatingActionButton = {
-            FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
-                Icon(painterResource(R.drawable.baseline_filter_list_24), null)
-            }
+            CenterAlignedTopAppBar(
+                title = {
+                    Text("Schedule")
+                },
+                navigationIcon = {
 
+                    IconButton(onClick = onMenuClicked) {
+                        Icon(Icons.Default.Menu, "Menu")
+                    }
+                })
+        },
+        floatingActionButton = {
+            FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
+                Icon(painterResource(R.drawable.baseline_filter_list_24), "Filter Schedule")
+            }
         }, modifier = Modifier
             .clip(roundedCornerShape)
-    ) { contentPadding ->
+    ) {
+        ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScheduleScreenView(
+    state: ScheduleScreenState?,
+    label: String?,
+    onBackPressed: () -> Unit,
+    onEventClick: (Event) -> Unit,
+    onBookmarkClick: (Event) -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(label?.replace("\\", "/") ?: "Schedule")
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(
+                            painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
+                            "Back"
+                        )
+                    }
+                })
+        },
+    ) {
+        ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
+    }
+}
+
+@Composable
+private fun ScheduleScreenContent(
+    state: ScheduleScreenState?,
+    onEventClick: (Event) -> Unit,
+    onBookmarkClick: (Event) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier) {
         when (state) {
             is ScheduleScreenState.Error -> {
                 EmptyView()
             }
 
             null, ScheduleScreenState.Init -> {
-                Image(painter = painterResource(id = R.drawable.skull), contentDescription = null)
+                Image(
+                    painter = painterResource(id = R.drawable.skull),
+                    contentDescription = "Skull"
+                )
             }
 
             ScheduleScreenState.Loading -> {
-                Image(painter = painterResource(id = R.drawable.skull), contentDescription = null)
+                ProgressSpinner()
             }
 
             is ScheduleScreenState.Success -> {
@@ -96,21 +149,18 @@ fun ScheduleScreenView(
                     state.days,
                     onEventClick,
                     onBookmarkClick,
-                    modifier = Modifier.padding(contentPadding)
                 )
             }
         }
     }
 }
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScheduleScreenContent(
     days: Map<String, List<Event>>,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event) -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     val elements = remember {
         days.flatMap { listOf(it.key) + it.value }
@@ -157,13 +207,8 @@ fun ScheduleScreenContent(
                         }
                     }
                 }
-
                 item {
-                    Text(
-                        "--- EOF ---", textAlign = TextAlign.Center, modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    )
+                    Spacer(modifier = Modifier.height(32.dp))
                 }
             }
         }
