@@ -352,42 +352,40 @@ private fun HomeScreen(navController: NavHostController) {
     val mainViewModel = viewModel<MainViewModel>()
     val viewState by mainViewModel.state.collectAsState()
 
+    val homeViewModel = viewModel<HomeViewModel>()
+    val filtersViewModel = viewModel<FiltersViewModel>()
+    val scheduleViewModel = viewModel<ScheduleViewModel>()
+
+    val homeState = homeViewModel.getHomeState().collectAsState(initial = HomeState.Loading).value
+    val filtersScreenState = filtersViewModel.state.collectAsState(initial = FiltersScreenState.Init).value
+    val scheduleScreenState = scheduleViewModel.getState().collectAsState(initial = ScheduleScreenState.Loading).value
+
     Box {
         OverlappingPanelsView(
             viewState.currentAnchor,
             leftPanel = {
-                val viewModel = viewModel<HomeViewModel>()
-                val state =
-                    viewModel.getHomeState().collectAsState(initial = null).value
-                        ?: HomeState.Loading
                 HomeScreenView(
-                    state = state,
+                    state = homeState,
                     {
-                        viewModel.setConference(it)
+                        homeViewModel.setConference(it)
                     },
                     {
                         navController.navigate(it)
                     })
             },
             rightPanel = {
-                val viewModel = viewModel<FiltersViewModel>()
-                val state =
-                    viewModel.state.collectAsState(initial = FiltersScreenState.Init).value
                 FilterScreenView(
-                    state = state,
+                    state = filtersScreenState,
                     onClick = {
-                        viewModel.toggle(it)
+                        filtersViewModel.toggle(it)
                     }, onClear = {
-                        viewModel.clearBookmarks()
+                        filtersViewModel.clearBookmarks()
                     }
                 )
             },
             mainPanel = {
-                val viewModel = viewModel<ScheduleViewModel>()
-                val state =
-                    viewModel.getState().collectAsState(initial = ScheduleScreenState.Loading).value
                 ScheduleScreenView(
-                    state = state,
+                    state = scheduleScreenState,
                     onMenuClicked = {
                         mainViewModel.setAnchor(DragAnchors.Start)
                     },
@@ -398,7 +396,7 @@ private fun HomeScreen(navController: NavHostController) {
                         navController.navigate("event/${it.id}")
                     },
                     onBookmarkClick = {
-                        viewModel.bookmark(it)
+                        scheduleViewModel.bookmark(it)
                     },
                 )
             },
