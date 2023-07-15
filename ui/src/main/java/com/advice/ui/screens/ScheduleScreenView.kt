@@ -112,13 +112,15 @@ fun ScheduleScreenContent(
     onBookmarkClick: (Event) -> Unit,
     modifier: Modifier,
 ) {
+    val elements = remember {
+        days.flatMap { listOf(it.key) + it.value }
+    }
+
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val scrollContext = rememberScrollContext(listState = listState)
 
     val temp = remember {
-        // todo: refactor, this is run too many times.
-        val elements = days.flatMap { listOf(it.key) + it.value }
         elements.mapIndexed { index, any -> index to any }.filter { it.second is String }
             .map { it.first }
     }
@@ -130,7 +132,7 @@ fun ScheduleScreenContent(
         Column(modifier = modifier) {
             DaySelectorView(days = days.map { it.key }, start = start, end = end) {
                 coroutineScope.launch {
-                    //todo: listState.scrollToItem(temp.indexOf(it))
+                    listState.scrollToItem(elements.indexOf(it))
                 }
             }
             LazyColumn(state = listState) {
