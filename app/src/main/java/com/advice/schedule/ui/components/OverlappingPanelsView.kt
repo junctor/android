@@ -3,6 +3,7 @@ package com.advice.schedule.ui.components
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,6 +24,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -178,6 +181,23 @@ fun OverlappingPanelsView(
                 .alpha(1.0f)
         ) {
             mainPanel()
+        }
+
+        if(currentAnchor != DragAnchors.Center) {
+            val alignment = when (currentAnchor) {
+                DragAnchors.Start -> Alignment.CenterEnd
+                DragAnchors.Center -> Alignment.Center
+                DragAnchors.End -> Alignment.CenterStart
+            }
+            Box(
+                modifier = Modifier
+                    .width(GUTTER_SIZE.dp)
+                    .fillMaxHeight()
+                    .align(alignment)
+                    .clickable {
+                        onPanelChangedListener?.invoke(DragAnchors.Center)
+                    }
+            )
         }
     }
 }
