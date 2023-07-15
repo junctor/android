@@ -37,11 +37,16 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (String) -> Unit) {
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+
     var hasSetup by rememberSaveable {
         mutableStateOf(false)
     }
 
-    val coroutineScope = rememberCoroutineScope()
+    var size by remember {
+        mutableStateOf(IntSize.Zero)
+    }
 
     val startPosition = remember {
         Animatable(-1f)
@@ -63,6 +68,14 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
         hasSetup = true
     })
 
+    // Scrolling the container as the selected range changes
+    LaunchedEffect(key1 = start, key2 = end) {
+        val start = positions.take(start).sumOf { it.width }
+        val end = positions.take(end).sumOf { it.width } + positions[end].width
+        val targetScrollPosition = start + ((end - start) / 2) - size.width / 2
+        scrollState.animateScrollTo(targetScrollPosition)
+    }
+
     if (positions[start] != IntSize.Zero) {
         val x = positions.take(start).sumOf { it.width }
 
@@ -81,11 +94,14 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
         Modifier
             .height(IntrinsicSize.Min)
             .alpha(alpha.value)
+            .onGloballyPositioned {
+                size = it.size
+            }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
+                .horizontalScroll(scrollState)
                 .drawBehind {
                     val verticalPadding = size.height * 0.25f
                     translate(left = startPosition.value + 8.dp.toPx(), top = verticalPadding) {
