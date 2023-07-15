@@ -23,14 +23,15 @@ import com.advice.organizations.ui.components.OrganizationRow
 import com.advice.schedule.data.repositories.SearchState
 import com.advice.schedule.utils.TimeUtils
 import com.advice.ui.components.EventRowView
+import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
 import com.advice.ui.components.SpeakerView
 import com.advice.ui.preview.LightDarkPreview
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SearchScreen(
-    state: SearchState,
+    state: SearchState?,
     onQueryChanged: (String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -45,49 +46,59 @@ internal fun SearchScreen(
             })
         }
     ) {
-        LazyColumn(Modifier.padding(it)) {
-            item {
-                Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-                    SearchBar(modifier = Modifier) {
-                        onQueryChanged(it)
+        Box(Modifier.padding(it)) {
+            if (state == null) {
+                ProgressSpinner()
+            } else {
+                LazyColumn() {
+                    item {
+                        Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+                            SearchBar(modifier = Modifier) {
+                                onQueryChanged(it)
+                            }
+                        }
+                    }
+                    when (state) {
+                        SearchState.Idle -> {
+                            // todo: show logo or something
+                        }
+
+                        is SearchState.Results -> {
+                            if (state.results.events.isNotEmpty()) {
+                                item {
+                                    HeaderRow("Events")
+                                }
+                            }
+                            items(state.results.events) {
+                                EventRowView(
+                                    it.title,
+                                    TimeUtils.getTimeStamp(context, it.start),
+                                    it.location.name,
+                                    it.types,
+                                    it.isBookmarked
+                                )
+                            }
+                            if (state.results.speakers.isNotEmpty()) {
+                                item {
+                                    HeaderRow("Speakers")
+                                }
+                            }
+                            items(state.results.speakers) {
+                                SpeakerView(it.name)
+                            }
+                            if (state.results.organizations.isNotEmpty()) {
+                                item {
+                                    HeaderRow("Organizations")
+                                }
+                            }
+                            items(state.results.organizations) {
+                                // todo: fix this hacky solution
+                                OrganizationRow(listOf(it))
+                            }
+                        }
                     }
                 }
             }
-            when (state) {
-                SearchState.Idle -> {
-                    // todo: show logo or something
-                }
-
-                is SearchState.Results -> {
-                    if (state.results.events.isNotEmpty()) {
-                        item {
-                            HeaderRow("Events")
-                        }
-                    }
-                    items(state.results.events) {
-                        EventRowView(it.title, TimeUtils.getTimeStamp(context, it.start), it.location.name, it.types, it.isBookmarked)
-                    }
-                    if (state.results.speakers.isNotEmpty()) {
-                        item {
-                            HeaderRow("Speakers")
-                        }
-                    }
-                    items(state.results.speakers) {
-                        SpeakerView(it.name)
-                    }
-                    if (state.results.organizations.isNotEmpty()) {
-                        item {
-                            HeaderRow("Organizations")
-                        }
-                    }
-                    items(state.results.organizations) {
-                        // todo: fix this hacky solution
-                        OrganizationRow(listOf(it))
-                    }
-                }
-            }
-
-
         }
     }
 }

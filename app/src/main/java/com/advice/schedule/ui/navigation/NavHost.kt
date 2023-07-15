@@ -268,7 +268,7 @@ private fun InformationScreen(navController: NavHostController) {
 @Composable
 private fun Search(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<SearchViewModel>()
-    val state = viewModel.state.collectAsState(initial = null).value ?: return
+    val state = viewModel.state.collectAsState(initial = null).value
     SearchScreen(state, onQueryChanged = {
         viewModel.search(it)
     }, onBackPressed = {
