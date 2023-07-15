@@ -1,5 +1,6 @@
 package com.advice.organizations.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -14,10 +15,10 @@ import com.advice.organizations.ui.components.OrganizationsScreenContent
 import com.advice.ui.components.EmptyView
 import com.advice.ui.components.SearchableTopAppBar
 import com.advice.ui.R
+import com.advice.ui.components.ProgressSpinner
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VendorsScreen(organizations: List<Organization>, onBackPressed: () -> Unit) {
+fun VendorsScreen(organizations: List<Organization>?, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         SearchableTopAppBar(title = { Text("Vendors") }, navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
@@ -27,10 +28,20 @@ fun VendorsScreen(organizations: List<Organization>, onBackPressed: () -> Unit) 
 
         }
     }) {
-        if (organizations.isNotEmpty()) {
-            OrganizationsScreenContent(organizations, modifier = Modifier.padding(it))
-        } else {
-            EmptyView("Vendors not found")
+        Box(Modifier.padding(it)) {
+            when {
+                organizations == null -> {
+                    ProgressSpinner()
+                }
+
+                organizations.isEmpty() -> {
+                    EmptyView("Vendors not found")
+                }
+
+                else -> {
+                    OrganizationsScreenContent(organizations)
+                }
+            }
         }
     }
 }

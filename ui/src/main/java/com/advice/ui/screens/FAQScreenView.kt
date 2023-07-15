@@ -23,10 +23,12 @@ import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.QuestionView
 import com.advice.ui.components.SearchBar
 import com.advice.ui.R
+import com.advice.ui.components.EmptyView
+import com.advice.ui.components.ProgressSpinner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FAQScreenView(faqs: List<FAQ>, onBackPressed: () -> Unit) {
+fun FAQScreenView(faqs: List<FAQ>?, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("FAQ") }, navigationIcon =
         {
@@ -35,7 +37,21 @@ fun FAQScreenView(faqs: List<FAQ>, onBackPressed: () -> Unit) {
             }
         })
     }) {
-        FAQScreenContent(faqs, modifier = Modifier.padding(it))
+        Box(Modifier.padding(it)) {
+            when {
+                faqs == null -> {
+                    ProgressSpinner()
+                }
+
+                faqs.isEmpty() -> {
+                    EmptyView("FAQ not found")
+                }
+
+                else -> {
+                    FAQScreenContent(faqs)
+                }
+            }
+        }
     }
 }
 

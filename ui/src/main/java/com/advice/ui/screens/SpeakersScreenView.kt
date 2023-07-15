@@ -1,5 +1,6 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,10 +18,15 @@ import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.SearchableTopAppBar
 import com.advice.ui.components.SpeakerView
 import com.advice.ui.R
+import com.advice.ui.components.EmptyView
+import com.advice.ui.components.ProgressSpinner
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpeakersScreenView(speakers: List<Speaker>, onBackPressed: () -> Unit, onSpeakerClicked: (Speaker) -> Unit) {
+fun SpeakersScreenView(
+    speakers: List<Speaker>?,
+    onBackPressed: () -> Unit,
+    onSpeakerClicked: (Speaker) -> Unit
+) {
     Scaffold(topBar = {
         SearchableTopAppBar(title = { Text("Speakers") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
@@ -30,16 +36,35 @@ fun SpeakersScreenView(speakers: List<Speaker>, onBackPressed: () -> Unit, onSpe
 
         }
     }) {
-        SpeakersScreenContent(speakers, modifier = Modifier.padding(it), onSpeakerClicked)
+        Box(Modifier.padding(it)) {
+            when {
+                speakers == null -> {
+                    ProgressSpinner()
+                }
+
+                speakers.isEmpty() -> {
+                    EmptyView("Speakers not found")
+                }
+
+                else -> {
+                    SpeakersScreenContent(speakers, onSpeakerClicked)
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun SpeakersScreenContent(speakers: List<Speaker>, modifier: Modifier = Modifier, onSpeakerClicked: (Speaker) -> Unit) {
-    LazyColumn(modifier) {
-        items(speakers) {
-            SpeakerView(it.name, title = it.title) {
-                onSpeakerClicked(it)
+fun SpeakersScreenContent(
+    speakers: List<Speaker>?,
+    onSpeakerClicked: (Speaker) -> Unit
+) {
+    LazyColumn() {
+        if (speakers != null) {
+            items(speakers) {
+                SpeakerView(it.name, title = it.title) {
+                    onSpeakerClicked(it)
+                }
             }
         }
     }

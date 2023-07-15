@@ -1,5 +1,6 @@
 package com.advice.organizations.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,10 +17,10 @@ import com.advice.ui.components.SearchableTopAppBar
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.R
+import com.advice.ui.components.ProgressSpinner
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VillagesScreen(organizations: List<Organization>, onBackPressed: () -> Unit) {
+fun VillagesScreen(organizations: List<Organization>?, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         SearchableTopAppBar(title = { Text("Villages") }, navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
@@ -29,11 +30,22 @@ fun VillagesScreen(organizations: List<Organization>, onBackPressed: () -> Unit)
 
         }
     }) {
-        if (organizations.isNotEmpty()) {
-            OrganizationsScreenContent(organizations, modifier = Modifier.padding(it))
-        } else {
-            EmptyView("Villages not found")
+        Box(Modifier.padding(it)) {
+            when {
+                organizations == null -> {
+                    ProgressSpinner()
+                }
+
+                organizations.isEmpty() -> {
+                    EmptyView("Villages not found")
+                }
+
+                else -> {
+                    OrganizationsScreenContent(organizations)
+                }
+            }
         }
+
     }
 }
 

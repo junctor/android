@@ -144,7 +144,7 @@ private fun ProductsSummary(navController: NavHostController, viewModel: Product
 
 @Composable
 private fun ProductsScreen(navController: NavHostController, viewModel: ProductsViewModel) {
-    val state = viewModel.state.collectAsState(null).value ?: return
+    val state = viewModel.state.collectAsState(null).value
     com.advice.products.ui.screens.ProductsScreen(
         state = state,
         onSummaryClicked = {
@@ -153,6 +153,9 @@ private fun ProductsScreen(navController: NavHostController, viewModel: Products
         onProductClicked = {
             navController.navigate("merch/${it.id}")
         },
+        onBackPressed = {
+            navController.popBackStack()
+        }
     )
 }
 
@@ -205,7 +208,7 @@ private fun LocationsScreen(navController: NavHostController) {
 @Composable
 private fun SpeakersScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<SpeakersViewModel>()
-    val state = viewModel.speakers.collectAsState(initial = null).value ?: return
+    val state = viewModel.speakers.collectAsState(initial = null).value
     SpeakersScreenView(
         speakers = state,
         onBackPressed = { navController.popBackStack() },
@@ -216,7 +219,7 @@ private fun SpeakersScreen(navController: NavHostController) {
 @Composable
 private fun VendorsScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
-    val state = viewModel.vendors.collectAsState(initial = null).value ?: return
+    val state = viewModel.vendors.collectAsState(initial = null).value
     com.advice.organizations.ui.screens.VendorsScreen(
         organizations = state,
         onBackPressed = {
@@ -228,7 +231,7 @@ private fun VendorsScreen(navController: NavHostController) {
 @Composable
 private fun VillagesScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
-    val state = viewModel.villages.collectAsState(initial = null).value ?: return
+    val state = viewModel.villages.collectAsState(initial = null).value
     com.advice.organizations.ui.screens.VillagesScreen(
         organizations = state,
         onBackPressed = {
@@ -240,7 +243,7 @@ private fun VillagesScreen(navController: NavHostController) {
 @Composable
 private fun FAQScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<FAQViewModel>()
-    val state = viewModel.faqs.collectAsState(initial = null).value ?: return
+    val state = viewModel.faqs.collectAsState(initial = null).value
     FAQScreenView(
         faqs = state,
         onBackPressed = {
@@ -357,8 +360,10 @@ private fun HomeScreen(navController: NavHostController) {
     val scheduleViewModel = viewModel<ScheduleViewModel>()
 
     val homeState = homeViewModel.getHomeState().collectAsState(initial = HomeState.Loading).value
-    val filtersScreenState = filtersViewModel.state.collectAsState(initial = FiltersScreenState.Init).value
-    val scheduleScreenState = scheduleViewModel.getState().collectAsState(initial = ScheduleScreenState.Loading).value
+    val filtersScreenState =
+        filtersViewModel.state.collectAsState(initial = FiltersScreenState.Init).value
+    val scheduleScreenState =
+        scheduleViewModel.getState().collectAsState(initial = ScheduleScreenState.Loading).value
 
     Box {
         OverlappingPanelsView(
