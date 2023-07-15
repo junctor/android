@@ -1,8 +1,10 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,26 +26,41 @@ import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpeakerScreenView(name: String, title: String, description: String, events: List<Event>, onBackPressed: () -> Unit, onEventClicked: (Event) -> Unit) {
+fun SpeakerScreen(
+    name: String,
+    title: String,
+    description: String,
+    events: List<Event>,
+    onBackPressed: () -> Unit,
+    onEventClicked: (Event) -> Unit
+) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text(name) }, navigationIcon = {
+        CenterAlignedTopAppBar(title = { Text(name) }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null)
             }
         })
     }) {
-        SpeakerScreenContent(title, description, events,onEventClicked, Modifier.padding(it))
+        SpeakerScreenContent(title, description, events, onEventClicked, Modifier.padding(it))
     }
 }
 
 @Composable
-fun SpeakerScreenContent(title: String, description: String, events: List<Event>, onEventClicked: (Event) -> Unit, modifier: Modifier) {
+fun SpeakerScreenContent(
+    title: String,
+    description: String,
+    events: List<Event>,
+    onEventClicked: (Event) -> Unit,
+    modifier: Modifier
+) {
     Column(modifier.verticalScroll(rememberScrollState())) {
         if (title.isNotBlank()) {
-            Card(
+            Surface(
                 Modifier
                     .padding(16.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                shape = RoundedCornerShape(12.dp),
             ) {
                 Text(title, Modifier.padding(16.dp))
             }
@@ -86,7 +103,7 @@ fun SpeakerScreenViewPreview(
     @PreviewParameter(SpeakerProvider::class) speaker: Speaker,
 ) {
     ScheduleTheme {
-        SpeakerScreenView(speaker.name, speaker.title, speaker.description, emptyList(), {}) {
+        SpeakerScreen(speaker.name, speaker.title, speaker.description, emptyList(), {}) {
 
         }
     }

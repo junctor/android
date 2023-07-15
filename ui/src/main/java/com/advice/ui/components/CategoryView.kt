@@ -54,8 +54,10 @@ internal fun CategoryView(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(
-            horizontal = if (hasIcon) padding else 0.dp,
-            vertical = padding / 2
+            start = 0.dp,
+            end = if (hasIcon) padding else 0.dp,
+            top = padding / 2,
+            bottom = padding / 2,
         ),
         horizontalArrangement = Arrangement.spacedBy(padding)
     ) {

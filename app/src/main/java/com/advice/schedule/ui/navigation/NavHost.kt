@@ -45,14 +45,14 @@ import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
 import com.advice.schedule.ui.screens.SearchScreen
 import com.advice.schedule.ui.viewmodels.MainViewModel
-import com.advice.ui.screens.EventScreenView
+import com.advice.ui.screens.EventScreen
 import com.advice.ui.screens.FAQScreenView
 import com.advice.ui.screens.FilterScreenView
 import com.advice.ui.screens.HomeScreenView
 import com.advice.ui.screens.ScheduleScreenState
 import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.screens.SettingScreenView
-import com.advice.ui.screens.SpeakerScreenView
+import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.advice.ui.R
@@ -285,7 +285,7 @@ fun EventScreen(navController: NavHostController, id: String?) {
         viewModel.getState().collectAsState(initial = null).value as? ScheduleScreenState.Success
             ?: return
     val event = state.days.values.flatten().find { it.id == id!!.toLong() }!!
-    EventScreenView(
+    EventScreen(
         event = event,
         onBookmark = { viewModel.bookmark(event) },
         onBackPressed = { navController.popBackStack() },
@@ -300,7 +300,7 @@ fun SpeakerScreen(navController: NavHostController, id: String?) {
     val state =
         viewModel.speakers.collectAsState(initial = null).value?.find { it.id.toString() == id }
             ?: return
-    SpeakerScreenView(
+    SpeakerScreen(
         state.name,
         state.title,
         state.description,

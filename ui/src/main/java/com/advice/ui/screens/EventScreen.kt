@@ -30,15 +30,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -69,14 +66,13 @@ import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
 import com.advice.ui.R
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventScreenView(
+fun EventScreen(
     event: Event,
     onBookmark: () -> Unit,
     onBackPressed: () -> Unit,
@@ -140,9 +136,98 @@ fun EventScreenView(
     }
 }
 
+@Composable
+private fun HeaderSection(
+    title: String,
+    categories: List<Tag>,
+    date: String,
+    location: String,
+    onLocationClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val color = parseColor(categories.first().color)
+    Column(
+        Modifier
+            .drawBehind {
+                drawRoundRect(
+                    color,
+                    // need to add extra height for padding
+                    cornerRadius = CornerRadius(16.dp.toPx())
+                )
+            }) {
+        val statusBarHeight = 48.dp
+        val toolbarHeight = 48.dp
+        Spacer(Modifier.height(statusBarHeight + toolbarHeight))
+
+        Column(Modifier.padding(16.dp)) {
+
+            Text(
+                title,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineLarge
+            )
+
+            Box(Modifier.padding(vertical = 8.dp)) {
+                CategoryView(categories.first(), size = CategorySize.Large, hasIcon = false)
+            }
+
+            DetailsCard(Icons.Default.DateRange, null, date.replace(" - ", "\n"))
+
+            DetailsCard(
+                Icons.Default.LocationOn,
+                null,
+                location.replace(" - ", "\n"),
+                modifier = Modifier.clickable {
+                    onLocationClicked()
+                })
+        }
+    }
+}
+
+@Composable
+private fun DetailsCard(
+    icon: ImageVector,
+    tint: Color?,
+    text: String,
+    modifier: Modifier = Modifier,
+    onDismiss: (() -> Unit)? = null,
+) {
+    var isVisible by remember {
+        mutableStateOf(true)
+    }
+
+    AnimatedVisibility(isVisible) {
+        Surface(
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
+            shape = RoundedCornerShape(8.dp),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 0.dp, vertical = 4.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Icon(icon, null, tint = tint ?: LocalContentColor.current)
+                Spacer(Modifier.width(8.dp))
+                Text(text, modifier = Modifier.weight(1f))
+                if (onDismiss != null) {
+                    IconButton(onClick = {
+                        onDismiss()
+                        isVisible = false
+                    }) {
+                        Icon(Icons.Default.Close, null)
+                    }
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun EventScreenContent(
+private fun EventScreenContent(
     event: Event,
     onLocationClicked: () -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
@@ -161,14 +246,13 @@ fun EventScreenContent(
             onLocationClicked,
             modifier,
         )
-        FlowRow(
-            Modifier
-                //.background(Color.Black)
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            if (event.types.size > 2) {
-                for (tag in event.types.subList(1, event.types.size - 1)) {
+        if (event.types.size > 1) {
+            FlowRow(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp, vertical = 16.dp)
+            ) {
+                for (tag in event.types.subList(1, event.types.size)) {
                     CategoryView(tag, size = CategorySize.Medium)
                 }
             }
@@ -221,102 +305,12 @@ private fun getDateTimestamp(event: Event): String {
     return prefix + " - " + format.format(event.startTime) + " to " + format.format(event.end)
 }
 
-@Composable
-fun HeaderSection(
-    title: String,
-    categories: List<Tag>,
-    date: String,
-    location: String,
-    onLocationClicked: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val color = parseColor(categories.first().color)
-    val color2 = color.copy(alpha = 1.0f)
-    Column(
-        Modifier
-            .drawBehind {
-                drawRoundRect(
-                    color2,
-                    // need to add extra height for padding
-                    cornerRadius = CornerRadius(16.dp.toPx())
-                )
-            }) {
-        val statusBarHeight = 48.dp
-        val toolbarHeight = 48.dp
-        Spacer(Modifier.height(statusBarHeight + toolbarHeight))
-
-        Column(Modifier.padding(16.dp)) {
-
-            Text(
-                title,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineLarge
-            )
-
-            Box(Modifier.padding(vertical = 8.dp)) {
-                CategoryView(categories.first(), size = CategorySize.Large, hasIcon = false)
-            }
-
-            DetailsCard(Icons.Default.DateRange, null, date.replace(" - ", "\n"))
-
-            DetailsCard(
-                Icons.Default.LocationOn,
-                parseColor(categories.last().color),
-                location.replace(" - ", "\n"),
-                modifier = Modifier.clickable {
-                    onLocationClicked()
-                })
-        }
-    }
-}
-
-@Composable
-private fun DetailsCard(
-    icon: ImageVector,
-    tint: Color? = null,
-    text: String,
-    modifier: Modifier = Modifier,
-    onDismiss: (() -> Unit)? = null,
-) {
-    var isVisible by remember {
-        mutableStateOf(true)
-    }
-
-    AnimatedVisibility(isVisible) {
-        Surface(
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
-            shape = RoundedCornerShape(8.dp),
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 0.dp, vertical = 4.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Icon(icon, null, tint = tint ?: LocalContentColor.current)
-                Spacer(Modifier.width(8.dp))
-                Text(text, modifier = Modifier.weight(1f))
-                if (onDismiss != null) {
-                    IconButton(onClick = {
-                        onDismiss()
-                        isVisible = false
-                    }) {
-                        Icon(Icons.Default.Close, null)
-                    }
-                }
-            }
-        }
-    }
-}
-
 @LightDarkPreview
 @Composable
-fun EventScreenPreview(
+private fun EventScreenPreview(
     @PreviewParameter(FakeEventProvider::class) event: Event,
 ) {
     ScheduleTheme {
-        EventScreenView(event, {}, {}, {}, {})
+        EventScreen(event, {}, {}, {}, {})
     }
 }
