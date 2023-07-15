@@ -58,7 +58,7 @@ fun MapsScreen(maps: List<MapFile>, onBackPressed: () -> Unit) {
             )
         }
     }
-    
+
     if (maps.isEmpty()) {
         EmptyScreen(onBackPressed)
         return
@@ -89,10 +89,16 @@ fun MapsScreen(maps: List<MapFile>, onBackPressed: () -> Unit) {
                 CenterAlignedTopAppBar(
                     title = { },
                     navigationIcon = {
-                        IconButton(onClick = onBackPressed) {
+                        IconButton(
+                            onClick = onBackPressed,
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = Color.Black.copy(0.40f),
+                                contentColor = Color.White,
+                            ),
+                        ) {
                             Icon(
                                 painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
-                                null
+                                "Back",
                             )
                         }
                     },

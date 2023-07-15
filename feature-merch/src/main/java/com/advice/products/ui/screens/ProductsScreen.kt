@@ -39,11 +39,6 @@ fun ProductsScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Merch") },
-                actions = {
-//                    IconButton(onClick = { /*TODO*/ }) {
-//                        Icon(painterResource(id = R.drawable.ic_filter), null)
-//                    }
-                },
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
                         Icon(Icons.Default.ArrowBack, "Back")

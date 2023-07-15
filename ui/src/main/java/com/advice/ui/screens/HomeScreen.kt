@@ -19,12 +19,11 @@ import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 import com.advice.ui.R
+import com.advice.ui.components.ProgressSpinner
 import java.util.*
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenView(
+fun HomeScreen(
     state: HomeState?,
     onConferenceClick: (Conference) -> Unit,
     onNavigationClick: (String) -> Unit,
@@ -58,7 +57,7 @@ fun HomeScreenContent(
             }
 
             HomeState.Loading -> {
-                Image(painter = painterResource(id = R.drawable.skull), contentDescription = null)
+                ProgressSpinner()
             }
 
             null -> {
@@ -74,9 +73,10 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
         val conference = state.conference
         ConferenceView(
             conference.name,
-            conference.startDate.toString(),
+            conference.startDate,
+            conference.endDate,
             conference.timezone,
-            conference.description
+            conference.tagline,
         )
 
         if (state.hasWifi) {
@@ -109,9 +109,12 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
 
         state.documents.forEach {
             HomeCard {
-                Text(it.title, Modifier.clickable {
-                    onNavigationClick("document/${it.id}")
-                }.padding(16.dp))
+                Text(it.title,
+                    Modifier
+                        .clickable {
+                            onNavigationClick("document/${it.id}")
+                        }
+                        .padding(16.dp))
             }
         }
 
@@ -122,26 +125,38 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
         )
 
         HomeCard {
-            Text("Speakers", Modifier.clickable {
-                onNavigationClick("speakers")
-            }.padding(16.dp))
+            Text("Speakers",
+                Modifier
+                    .clickable {
+                        onNavigationClick("speakers")
+                    }
+                    .padding(16.dp))
         }
         HomeCard {
-            Text("Vendors", Modifier.clickable {
-                onNavigationClick("vendors")
-            }.padding(16.dp))
+            Text("Vendors",
+                Modifier
+                    .clickable {
+                        onNavigationClick("vendors")
+                    }
+                    .padding(16.dp))
         }
 
 
         HomeCard {
-            Text("Villages", Modifier.clickable {
-                onNavigationClick("villages")
-            }.padding(16.dp))
+            Text("Villages",
+                Modifier
+                    .clickable {
+                        onNavigationClick("villages")
+                    }
+                    .padding(16.dp))
         }
         HomeCard {
-            Text("FAQ", Modifier.clickable {
-                onNavigationClick("faq")
-            }.padding(16.dp))
+            Text("FAQ",
+                Modifier
+                    .clickable {
+                        onNavigationClick("faq")
+                    }
+                    .padding(16.dp))
         }
 
 
@@ -154,7 +169,7 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
 @Composable
 fun HomeScreenViewPreview() {
     ScheduleTheme {
-        HomeScreenView(
+        HomeScreen(
             state = HomeState.Loaded(
                 conferences = listOf(Conference.Zero),
                 conference = Conference.Zero,

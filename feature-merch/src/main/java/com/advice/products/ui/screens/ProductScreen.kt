@@ -27,6 +27,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun ProductScreen(
     product: Product,
+    canAdd: Boolean,
     onAddClicked: (ProductSelection) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -61,8 +62,13 @@ fun ProductScreen(
             CenterAlignedTopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(Icons.Default.Close, null)
+                    IconButton(
+                        onClick = onBackPressed,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Black.copy(0.40f),
+                        ),
+                    ) {
+                        Icon(Icons.Default.Close, "Close")
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -71,43 +77,54 @@ fun ProductScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    if (selection != null || !product.requiresSelection) {
-                        onAddClicked(
-                            ProductSelection(
-                                id = product.id,
-                                quantity = quantity,
-                                selectionOption = selection,
+            if (canAdd) {
+                FloatingActionButton(
+                    onClick = {
+                        if (selection != null || !product.requiresSelection) {
+                            onAddClicked(
+                                ProductSelection(
+                                    id = product.id,
+                                    quantity = quantity,
+                                    selectionOption = selection,
+                                )
                             )
-                        )
-                    }
-                },
-                Modifier
-                    .padding(horizontal = 32.dp)
-                    .fillMaxWidth(),
-                shape = FloatingActionButtonDefaults.extendedFabShape
-            ) {
-                val optionCost =
-                    if (product.selectedOption != null) product.variants.find { it.label == product.selectedOption }?.extraCost
-                        ?: 0 else 0
-                val cost = (product.baseCost + optionCost) * quantity
-                Text("Add $quantity to cart ∙ US$${String.format("%.2f", cost / 100f)}")
+                        }
+                    },
+                    Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth(),
+                    shape = FloatingActionButtonDefaults.extendedFabShape
+                ) {
+                    val optionCost =
+                        if (product.selectedOption != null) product.variants.find { it.label == product.selectedOption }?.extraCost
+                            ?: 0 else 0
+                    val cost = (product.baseCost + optionCost) * quantity
+                    Text("Add $quantity to cart ∙ US$${String.format("%.2f", cost / 100f)}")
+                }
             }
         },
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        Product(product, quantity, selection, {
-            selection = it
-        }, {
-            quantity = it
-        }, Modifier.padding(it))
+        Product(
+            product = product,
+            canAdd = canAdd,
+            quantity = quantity,
+            selection = selection,
+            onSelectionChanged = {
+                selection = it
+            },
+            onQuantityChanged = {
+                quantity = it
+            },
+            modifier = Modifier.padding(it)
+        )
     }
 }
 
 @Composable
 fun Product(
     product: Product,
+    canAdd: Boolean,
     quantity: Int,
     selection: String?,
     onSelectionChanged: (String) -> Unit,
@@ -122,20 +139,17 @@ fun Product(
                     .background(Color.Black)
                     .fillMaxWidth()
             ) {
-
                 AsyncImage(
                     model = product.media.first().url,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-//                        .height(300.dp)
-//                        .alpha(0.65f),
-                    ,
+                        .height(400.dp),
                     contentScale = ContentScale.FillWidth
                 )
                 Box(
                     Modifier
-                        .background(Color.Black)
+                        .background(Color.White)
 
                 )
             }
@@ -154,7 +168,9 @@ fun Product(
             if (product.requiresSelection) {
                 Row(Modifier.padding(16.dp)) {
                     Text("Options", Modifier.weight(1.0f))
-                    Text("Required")
+                    if (canAdd) {
+                        Text("Required")
+                    }
                 }
             }
             for (option in product.variants) {
@@ -176,18 +192,22 @@ fun Product(
                             )
                             .padding(16.dp)
                     )
-                    RadioButton(
-                        selected = option.label == selection,
-                        onClick = { onSelectionChanged(option.label) })
+                    if (canAdd) {
+                        RadioButton(
+                            selected = option.label == selection,
+                            onClick = { onSelectionChanged(option.label) })
+                    }
                 }
             }
 
-            QuantityAdjuster(
-                quantity = quantity,
-                onQuantityChanged = onQuantityChanged,
-                canDelete = false,
-                Modifier.padding(16.dp)
-            )
+            if (canAdd) {
+                QuantityAdjuster(
+                    quantity = quantity,
+                    onQuantityChanged = onQuantityChanged,
+                    canDelete = false,
+                    Modifier.padding(16.dp)
+                )
+            }
 
             Spacer(Modifier.height(64.dp + 8.dp))
         }
@@ -198,6 +218,6 @@ fun Product(
 @Composable
 fun ProductScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
-        ProductScreen(state.elements.first(), {}) {}
+        ProductScreen(state.elements.first(), true, {}) {}
     }
 }

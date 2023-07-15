@@ -1,11 +1,14 @@
 package com.advice.products.data.repositories
 
+import com.advice.data.session.UserSession
 import com.advice.data.sources.ProductsDataSource
 
 class ProductsRepository(
-    private val dataSource: ProductsDataSource,
+    userSession: UserSession,
+    productsDataSource: ProductsDataSource,
 ) {
 
-    val products = dataSource.get()
+    val conference = userSession.getConference()
+    val products = productsDataSource.get()
 
 }

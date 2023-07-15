@@ -9,13 +9,14 @@ import java.util.Date
 data class Conference(
     val id: Long,
     val name: String,
-    val description: String,
+    val tagline: String,
     val code: String,
     val maps: List<ConferenceMap>,
     val kickoffDate: Date,
     val startDate: Date,
     val endDate: Date,
     val timezone: String,
+    val flags: Map<String, Boolean>,
     var isSelected: Boolean = false
 ) : Parcelable {
 
@@ -23,7 +24,19 @@ data class Conference(
         get() = Time.now().after(endDate)
 
     companion object {
-        val Zero = Conference(-1, "CACTUSCON2023", "", "CACTUSCON2023", ArrayList(), Date(), Date(), Date(), "", false)
+        val Zero = Conference(
+            -1,
+            "CACTUSCON2023",
+            "",
+            "CACTUSCON2023",
+            ArrayList(),
+            Date(),
+            Date(),
+            Date(),
+            "",
+            emptyMap(),
+            false
+        )
     }
 }
 

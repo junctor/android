@@ -23,6 +23,11 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     init {
         viewModelScope.launch {
+            repository.conference.collect {
+                _state.value = _state.value.copy(canAdd = it.flags["enable_merch_cart"] ?: false)
+            }
+        }
+        viewModelScope.launch {
             repository.products.collect {
                 _state.value = _state.value.copy(elements = it)
             }
@@ -64,7 +69,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
             val element = _state.value.elements.find { it.id == selection.id }!!
             element.update(selection)
         }
-        
+
         _state.emit(
             _state.value.copy(
                 cart = summary,

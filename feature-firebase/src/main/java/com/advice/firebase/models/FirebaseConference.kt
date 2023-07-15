@@ -9,7 +9,7 @@ import java.util.Date
 data class FirebaseConference(
     val id: Long = 0,
     val name: String = "",
-    val description: String = "",
+    val tagline_text: String = "",
     val codeofconduct: String? = null,
     val supportdoc: String? = null,
     val code: String = "",
@@ -23,4 +23,5 @@ data class FirebaseConference(
     val timezone: String = "",
     val hidden: Boolean = false,
     val developer: Boolean = false,
+    val enable_merch: Boolean = false,
 ) : Parcelable

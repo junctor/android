@@ -87,13 +87,16 @@ fun FirebaseConference.toConference(): Conference? {
         Conference(
             id,
             name,
-            description,
+            tagline_text,
             code,
             maps.mapNotNull { it.toMap() },
             kickoff_timestamp.toDate(),
             start_timestamp.toDate(),
             end_timestamp.toDate(),
-            timezone
+            timezone,
+            mapOf(
+                "enable_merch" to enable_merch,
+            )
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Conference: ${ex.message}")

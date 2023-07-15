@@ -26,7 +26,8 @@ class HomeRepository(
         _countdown
     ) { conference, conferences, documents, news, countdown ->
         val isDefCon = conference.code.contains("DEFCON30")
-        HomeState.Loaded(conferences, conference, isDefCon, isDefCon, documents, news, countdown)
+        val hasProducts = conference.flags["enable_merch"] ?: false
+        HomeState.Loaded(conferences, conference, isDefCon, hasProducts, documents, news, countdown)
     }
 
     fun setConference(conference: Conference) {

@@ -60,8 +60,6 @@ fun OverlappingPanelsView(
     modifier: Modifier = Modifier,
     onPanelChangedListener: ((DragAnchors) -> Unit)? = null,
 ) {
-    Timber.e("OverlappingPanelsView: $currentAnchor")
-
     val isComposableReady = remember { mutableStateOf(false) }
 
 

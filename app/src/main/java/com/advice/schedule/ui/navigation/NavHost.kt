@@ -48,7 +48,7 @@ import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.screens.EventScreen
 import com.advice.ui.screens.FAQScreenView
 import com.advice.ui.screens.FilterScreenView
-import com.advice.ui.screens.HomeScreenView
+import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreenState
 import com.advice.ui.screens.ScheduleScreenView
 import com.advice.ui.screens.SettingScreenView
@@ -120,6 +120,7 @@ private fun ProductScreen(
     val product = state.elements.find { it.id == id } ?: return
     ProductScreen(
         product = product,
+        canAdd = state.canAdd,
         onAddClicked = {
             viewModel.addToCart(it)
             navController.popBackStack()
@@ -369,7 +370,7 @@ private fun HomeScreen(navController: NavHostController) {
         OverlappingPanelsView(
             viewState.currentAnchor,
             leftPanel = {
-                HomeScreenView(
+                HomeScreen(
                     state = homeState,
                     {
                         homeViewModel.setConference(it)
@@ -418,23 +419,23 @@ private fun HomeScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 IconButton(onClick = {
-
+                    mainViewModel.setAnchor(DragAnchors.Center)
                 }) {
-                    Icon(painterResource(id = R.drawable.skull), contentDescription = null)
+                    Icon(painterResource(id = R.drawable.skull), contentDescription = "Logo")
                 }
                 IconButton(onClick = {
                     navController.navigate("maps")
                 }) {
                     Icon(
                         painterResource(id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp),
-                        contentDescription = null
+                        contentDescription = "Maps"
                     )
                 }
                 IconButton(onClick = { navController.navigate("search") }) {
-                    Icon(Icons.Default.Search, contentDescription = null)
+                    Icon(Icons.Default.Search, contentDescription = "Search")
                 }
                 IconButton(onClick = { navController.navigate("settings") }) {
-                    Icon(Icons.Default.Settings, contentDescription = null)
+                    Icon(Icons.Default.Settings, contentDescription = "Settings")
                 }
             }
         }
