@@ -20,7 +20,6 @@ import com.advice.core.utils.TimeUtil
 import com.advice.ui.preview.SpeakerProvider
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.EventRowView
-import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.R
 
@@ -72,6 +71,15 @@ fun SpeakerScreenContent(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
+        val pronouns = speaker.pronouns
+        if (pronouns != null) {
+            Text(
+                pronouns,
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
         if (speaker.title.isNotBlank()) {
             Surface(
                 Modifier
@@ -166,7 +174,7 @@ fun SpeakerScreenContent(
 
 @Preview(showBackground = true)
 @Composable
-fun SpeakerScreenViewPreview(
+fun SpeakerScreenPreview(
     @PreviewParameter(SpeakerProvider::class) speaker: Speaker,
 ) {
     ScheduleTheme {

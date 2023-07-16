@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class Speaker(
     val id: Long,
     val name: String,
+    val pronouns: String?,
     val title: String,
     val description: String,
     val affiliations: List<Affiliation>,

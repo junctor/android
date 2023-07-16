@@ -15,10 +15,11 @@ class SpeakerProvider : PreviewParameterProvider<Speaker> {
             Speaker(
                 id = -1,
                 name = "John Doe",
-                "CTO",
-                "/john",
-                listOf(Affiliation("DEF CON", "CTO")),
-                listOf(Link("twitter", "www.twitter.com")),
+                pronouns = "He/Him",
+                title = "CTO",
+                description = "/john",
+                affiliations = listOf(Affiliation("DEF CON", "CTO")),
+                links = listOf(Link("twitter", "www.twitter.com")),
             )
         )
     }
