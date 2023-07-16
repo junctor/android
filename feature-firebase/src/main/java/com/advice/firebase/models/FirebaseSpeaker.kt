@@ -9,7 +9,6 @@ data class FirebaseSpeaker(
     val id: Long = -1,
     val name: String = "",
     val pronouns: String? = null,
-    val title: String = "",
     val description: String = "",
     val affiliations: List<FirebaseAffiliation> = emptyList(),
     val links: List<FirebaseSpeakerLink> = emptyList(),

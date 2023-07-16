@@ -278,7 +278,10 @@ private fun EventScreenContent(
                     .fillMaxWidth()
             )
             for (speaker in event.speakers) {
-                SpeakerView(speaker.name, title = speaker.title) {
+                SpeakerView(
+                    name = speaker.name,
+                    title = speaker.title,
+                ) {
                     onSpeakerClicked(speaker)
                 }
             }

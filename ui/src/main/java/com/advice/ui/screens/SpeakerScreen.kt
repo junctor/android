@@ -79,18 +79,6 @@ fun SpeakerScreenContent(
                 style = MaterialTheme.typography.bodyMedium
             )
         }
-
-        if (speaker.title.isNotBlank()) {
-            Surface(
-                Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Text(speaker.title, Modifier.padding(16.dp))
-            }
-        }
         if (speaker.affiliations.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             Text(

@@ -185,7 +185,6 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? {
             id = id,
             name = name,
             pronouns = pronouns,
-            title = title,
             description = description,
             affiliations = affiliations.mapNotNull { it.toAffiliation() },
             links = links
