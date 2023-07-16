@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,6 +40,7 @@ import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
+import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.schedule.ui.components.DismissibleBottomAppBar
 import com.advice.schedule.ui.components.DragAnchors
@@ -56,6 +58,7 @@ import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.advice.ui.R
+import com.advice.ui.screens.SpeakerState
 
 @Composable
 internal fun NavHost() {
@@ -76,10 +79,18 @@ internal fun NavHost() {
             EventScreen(navController, backStackEntry.arguments?.getString("id"))
         }
         composable("location/{id}/{label}") { backStackEntry ->
-            LocationScreen(navController, backStackEntry.arguments?.getString("id"), backStackEntry.arguments?.getString("label"))
+            LocationScreen(
+                navController = navController,
+                id = backStackEntry.arguments?.getString("id"),
+                label = backStackEntry.arguments?.getString("label")
+            )
         }
-        composable("speaker/{id}") { backStackEntry ->
-            SpeakerScreen(navController, backStackEntry.arguments?.getString("id"))
+        composable("speaker/{id}/{name}") { backStackEntry ->
+            SpeakerScreen(
+                navController = navController,
+                id = backStackEntry.arguments?.getString("id"),
+                name = backStackEntry.arguments?.getString("name")
+            )
         }
         composable("settings") { SettingsScreen(navController) }
 
@@ -290,26 +301,39 @@ fun EventScreen(navController: NavHostController, id: String?) {
         event = event,
         onBookmark = { viewModel.bookmark(event) },
         onBackPressed = { navController.popBackStack() },
-        onLocationClicked = { navController.navigate("location/${event.location.id}/${event.location.shortName?.replace("/", "\\")}") },
-        onSpeakerClicked = { navController.navigate("speaker/${it.id}") }
+        onLocationClicked = {
+            navController.navigate(
+                "location/${event.location.id}/${
+                    event.location.shortName?.replace(
+                        "/",
+                        "\\"
+                    )
+                }"
+            )
+        },
+        onSpeakerClicked = { navController.navigate("speaker/${it.id}/${it.name}") }
     )
 }
 
 @Composable
-fun SpeakerScreen(navController: NavHostController, id: String?) {
-    val viewModel = navController.navGraphViewModel<SpeakersViewModel>()
-    val state =
-        viewModel.speakers.collectAsState(initial = null).value?.find { it.id.toString() == id }
-            ?: return
+fun SpeakerScreen(navController: NavHostController, id: String?, name: String?) {
+    val viewModel = navController.navGraphViewModel<SpeakerViewModel>()
+    val speakerDetails by viewModel.speakerDetails.collectAsState(SpeakerState.Loading)
+
+    LaunchedEffect(id) {
+        viewModel.fetchSpeakerDetails(id)
+    }
+
     SpeakerScreen(
-        state.name,
-        state.title,
-        state.description,
-        emptyList(),
+        name = name ?: "",
+        state = speakerDetails,
         onBackPressed = {
             navController.popBackStack()
-        }) { event ->
-    }
+        },
+        onEventClicked = {
+            navController.navigate("event/${it.id}")
+        }
+    )
 }
 
 @Composable
@@ -318,7 +342,6 @@ fun LocationScreen(navController: NavHostController, id: String?, label: String?
     val state =
         viewModel.getState(ScheduleFilter.Location(id))
             .collectAsState(initial = ScheduleScreenState.Loading).value
-    // todo: this could be another function - only passing in onBackPressed to update the state
     ScheduleScreenView(
         state = state,
         label = label,

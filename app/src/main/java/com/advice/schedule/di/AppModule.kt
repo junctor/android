@@ -102,7 +102,7 @@ val appModule = module {
     single { ScheduleRepository(get(), get(), get()) }
     single { HomeRepository(get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
-    single { SpeakerRepository(get()) }
+    single { SpeakerRepository(get(), get()) }
     single { FiltersRepository(get(), get(named("tags"))) }
     single { FAQRepository(get()) }
     single {

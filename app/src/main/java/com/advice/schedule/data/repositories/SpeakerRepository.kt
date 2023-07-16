@@ -1,25 +1,19 @@
 package com.advice.schedule.data.repositories
 
-import com.advice.core.local.Speaker
 import com.advice.data.sources.EventsDataSource
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import com.advice.data.sources.SpeakersDataSource
+import com.advice.ui.screens.SpeakerState
+import kotlinx.coroutines.flow.first
 
 class SpeakerRepository(
+    private val speakersDataSource: SpeakersDataSource,
     private val eventsDataSource: EventsDataSource,
 ) {
-
-    private var _speaker = MutableStateFlow<Speaker?>(null)
-
-    val events = combine(_speaker, eventsDataSource.get()) { speaker, events ->
-        if (speaker != null) {
-            events.filter { it.speakers.any { it.id == speaker.id } }
-        } else {
-            emptyList()
+    suspend fun getSpeakerDetails(id: Long): SpeakerState {
+        val speaker = speakersDataSource.get().first().find { it.id == id }!!
+        val events = eventsDataSource.get().first().filter {
+            it.speakers.any { it.id == id }
         }
-    }
-
-    suspend fun setSpeaker(speaker: Speaker) {
-        _speaker.emit(speaker)
+        return SpeakerState.Success(speaker, events)
     }
 }

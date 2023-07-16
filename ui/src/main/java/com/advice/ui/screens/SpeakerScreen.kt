@@ -24,13 +24,17 @@ import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.R
 
+sealed class SpeakerState {
+    object Loading : SpeakerState()
+    data class Success(val speaker: Speaker, val events: List<Event>) : SpeakerState()
+    object Error : SpeakerState()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakerScreen(
     name: String,
-    title: String,
-    description: String,
-    events: List<Event>,
+    state: SpeakerState,
     onBackPressed: () -> Unit,
     onEventClicked: (Event) -> Unit
 ) {
@@ -41,20 +45,31 @@ fun SpeakerScreen(
             }
         })
     }) {
-        SpeakerScreenContent(title, description, events, onEventClicked, Modifier.padding(it))
+        Box(Modifier.padding(it)) {
+            when (state) {
+                SpeakerState.Error -> {}
+                SpeakerState.Loading -> {}
+                is SpeakerState.Success -> {
+                    SpeakerScreenContent(
+                        state.speaker,
+                        state.events,
+                        onEventClicked,
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
 fun SpeakerScreenContent(
-    title: String,
-    description: String,
+    speaker: Speaker,
     events: List<Event>,
     onEventClicked: (Event) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
-        if (title.isNotBlank()) {
+        if (speaker.title.isNotBlank()) {
             Surface(
                 Modifier
                     .padding(16.dp)
@@ -62,11 +77,11 @@ fun SpeakerScreenContent(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 shape = RoundedCornerShape(12.dp),
             ) {
-                Text(title, Modifier.padding(16.dp))
+                Text(speaker.title, Modifier.padding(16.dp))
             }
         }
-        if (description.isNotBlank()) {
-            Paragraph(description, Modifier.padding(16.dp))
+        if (speaker.description.isNotBlank()) {
+            Paragraph(speaker.description, Modifier.padding(16.dp))
         } else {
             NoDetailsView()
         }
@@ -103,8 +118,14 @@ fun SpeakerScreenViewPreview(
     @PreviewParameter(SpeakerProvider::class) speaker: Speaker,
 ) {
     ScheduleTheme {
-        SpeakerScreen(speaker.name, speaker.title, speaker.description, emptyList(), {}) {
+        val state = SpeakerState.Success(speaker, emptyList())
+        SpeakerScreen(
+            name = speaker.name,
+            state = state,
+            onBackPressed = {},
+            onEventClicked = {
 
-        }
+            }
+        )
     }
 }
