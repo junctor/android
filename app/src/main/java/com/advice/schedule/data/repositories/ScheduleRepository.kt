@@ -37,19 +37,6 @@ class ScheduleRepository(
         }
     }
 
-    val list =
-        combine(eventsDataSource.get(), tagsDataSource.get()) { events, tags ->
-            val filter = tags.flatMap { it.tags }.filter { it.isSelected }
-
-            val sortedEvents = events.sortedBy { it.start }
-
-            if (filter.isEmpty()) {
-                return@combine sortedEvents
-            }
-
-            filter(sortedEvents, filter)
-        }
-
     private fun filter(
         events: List<Event>,
         filter: List<Tag>,
@@ -67,5 +54,4 @@ class ScheduleRepository(
         // todo: check if we're bookmarking or removing it.
         reminderManager.setReminder(event)
     }
-
 }

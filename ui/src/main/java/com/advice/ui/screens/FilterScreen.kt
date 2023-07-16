@@ -1,5 +1,6 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,11 +28,13 @@ import com.advice.ui.components.FilterView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreenView(state: FiltersScreenState, onClick: (Tag) -> Unit, onClear: () -> Unit) {
+fun FilterScreen(state: FiltersScreenState, onClick: (Tag) -> Unit, onClear: () -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Filter") }, actions = {
-                val showClearButton = state is FiltersScreenState.Success && state.filters.flatMap { it.tags }.any { it.isSelected }
+                val showClearButton =
+                    state is FiltersScreenState.Success && state.filters.flatMap { it.tags }
+                        .any { it.isSelected }
                 if (showClearButton) {
                     IconButton(onClear) {
                         Icon(Icons.Default.Close, null)
@@ -40,21 +43,27 @@ fun FilterScreenView(state: FiltersScreenState, onClick: (Tag) -> Unit, onClear:
             })
         },
         modifier = Modifier.clip(RoundedCornerShape(16.dp))
-    ) { contentPadding ->
-        when (state) {
-            FiltersScreenState.Init -> {
+    ) {
+        Box(Modifier.padding(it)) {
+            when (state) {
+                FiltersScreenState.Init -> {
 
-            }
+                }
 
-            is FiltersScreenState.Success -> {
-                FilterScreenContent(state.filters, Modifier.padding(contentPadding), onClick)
+                is FiltersScreenState.Success -> {
+                    FilterScreenContent(state.filters, onClick = onClick)
+                }
             }
         }
     }
 }
 
 @Composable
-fun FilterScreenContent(tags: List<TagType>, modifier: Modifier = Modifier, onClick: (Tag) -> Unit) {
+fun FilterScreenContent(
+    tags: List<TagType>,
+    modifier: Modifier = Modifier,
+    onClick: (Tag) -> Unit
+) {
     LazyColumn(modifier = modifier) {
         for (tag in tags) {
             item {
@@ -74,11 +83,11 @@ fun FilterScreenContent(tags: List<TagType>, modifier: Modifier = Modifier, onCl
 
 @LightDarkPreview()
 @Composable
-fun FilterScreenViewPreview(
+private fun FilterScreenViewPreview(
     @PreviewParameter(TagTypeProvider::class) tagType: TagType
 ) {
     ScheduleTheme {
         val state = FiltersScreenState.Success(listOf(tagType))
-        FilterScreenView(state, {}, {})
+        FilterScreen(state, {}, {})
     }
 }

@@ -24,7 +24,7 @@ class FiltersViewModel : ViewModel(), KoinComponent {
     }
 
     fun toggle(tag: Tag) {
-        Timber.e("tag: $tag")
+        Timber.i("User toggled the tag: $tag")
         viewModelScope.launch {
             repository.toggle(tag)
         }

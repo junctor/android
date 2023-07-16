@@ -47,7 +47,7 @@ import com.advice.schedule.ui.screens.SearchScreen
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.screens.EventScreen
 import com.advice.ui.screens.FAQScreenView
-import com.advice.ui.screens.FilterScreenView
+import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreenState
 import com.advice.ui.screens.ScheduleScreenView
@@ -383,7 +383,7 @@ private fun HomeScreen(navController: NavHostController) {
                     })
             },
             rightPanel = {
-                FilterScreenView(
+                FilterScreen(
                     state = filtersScreenState,
                     onClick = {
                         filtersViewModel.toggle(it)
