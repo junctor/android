@@ -1,7 +1,7 @@
 package com.advice.core.local
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Speaker(
@@ -9,5 +9,6 @@ data class Speaker(
     val name: String,
     val title: String,
     val description: String,
+    val affiliations: List<Affiliation>,
     val links: List<Link>,
 ) : Parcelable

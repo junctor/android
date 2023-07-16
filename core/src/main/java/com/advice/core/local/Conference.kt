@@ -2,14 +2,14 @@ package com.advice.core.local
 
 import android.os.Parcelable
 import com.advice.core.utils.Time
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 @Parcelize
 data class Conference(
     val id: Long,
     val name: String,
-    val tagline: String,
+    val tagline: String?,
     val code: String,
     val maps: List<ConferenceMap>,
     val kickoffDate: Date,

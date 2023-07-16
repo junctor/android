@@ -2,7 +2,7 @@ package com.advice.firebase.models
 
 import android.os.Parcelable
 import com.advice.core.local.LocationSchedule
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirebaseLocation(

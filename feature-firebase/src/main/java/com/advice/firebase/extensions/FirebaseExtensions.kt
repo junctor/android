@@ -2,6 +2,7 @@ package com.advice.firebase.extensions
 
 import androidx.annotation.NonNull
 import com.advice.core.local.Action
+import com.advice.core.local.Affiliation
 import com.advice.core.local.Bookmark
 import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceMap
@@ -23,6 +24,7 @@ import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.Vendor
 import com.advice.firebase.models.FirebaseAction
+import com.advice.firebase.models.FirebaseAffiliation
 import com.advice.firebase.models.FirebaseArticle
 import com.advice.firebase.models.FirebaseBookmark
 import com.advice.firebase.models.FirebaseConference
@@ -184,12 +186,22 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? {
             name = name,
             title = title,
             description = description,
+            affiliations = affiliations.mapNotNull { it.toAffiliation() },
             links = links
                 .sortedBy { it.sort_order }
                 .mapNotNull { it.toLink() }
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Speaker: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseAffiliation.toAffiliation(): Affiliation? {
+    return try {
+        Affiliation(organization, title)
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Affiliation: ${ex.message}")
         null
     }
 }

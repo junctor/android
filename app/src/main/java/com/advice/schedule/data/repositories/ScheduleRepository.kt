@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 class ScheduleRepository(
-    private val eventsDataSource: EventsDataSource,
+    private val eventsRepository: EventsRepository,
     private val tagsDataSource: TagsDataSource,
     private val reminderManager: ReminderManager,
 ) {
 
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
-        return combine(eventsDataSource.get(), tagsDataSource.get()) { events, tags ->
+        return combine(eventsRepository.events, tagsDataSource.get()) { events, tags ->
 
             val sortedEvents = events.sortedBy { it.start }
 
@@ -50,7 +50,7 @@ class ScheduleRepository(
 
 
     suspend fun bookmark(event: Event) {
-        eventsDataSource.bookmark(event)
+        eventsRepository.bookmark(event)
         // todo: check if we're bookmarking or removing it.
         reminderManager.setReminder(event)
     }

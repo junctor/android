@@ -2,14 +2,14 @@ package com.advice.firebase.models
 
 import android.os.Parcelable
 import com.google.firebase.Timestamp
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 @Parcelize
 data class FirebaseConference(
     val id: Long = 0,
     val name: String = "",
-    val tagline_text: String = "",
+    val tagline_text: String? = null,
     val codeofconduct: String? = null,
     val supportdoc: String? = null,
     val code: String = "",

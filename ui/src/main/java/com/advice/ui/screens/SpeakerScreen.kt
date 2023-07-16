@@ -83,6 +83,29 @@ fun SpeakerScreenContent(
                 Text(speaker.title, Modifier.padding(16.dp))
             }
         }
+        if (speaker.affiliations.isNotEmpty()) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "Affiliations", textAlign = TextAlign.Center, modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            )
+            speaker.affiliations.forEach {
+                Surface(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    shape = RoundedCornerShape(12.dp),
+                ) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(it.organization)
+                        Text(it.title)
+                    }
+                }
+            }
+        }
+
         if (speaker.description.isNotBlank()) {
             Paragraph(speaker.description, Modifier.padding(16.dp))
         }
@@ -102,10 +125,14 @@ fun SpeakerScreenContent(
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                     shape = RoundedCornerShape(12.dp),
                 ) {
-                    Text(it.title, Modifier
+                    Column(Modifier
                         .clickable {
                             onLinkClicked(it.url)
-                        }.padding(16.dp))
+                        }
+                        .padding(16.dp)) {
+                        Text(it.title)
+                        Text(it.url)
+                    }
                 }
             }
         }

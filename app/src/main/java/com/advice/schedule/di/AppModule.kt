@@ -41,6 +41,7 @@ import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.reminder.ReminderManager
+import com.advice.schedule.data.repositories.EventsRepository
 import com.advice.schedule.data.repositories.FAQRepository
 import com.advice.schedule.data.repositories.FiltersRepository
 import com.advice.schedule.data.repositories.HomeRepository
@@ -52,6 +53,7 @@ import com.advice.schedule.data.repositories.SearchRepository
 import com.advice.schedule.data.repositories.SettingsRepository
 import com.advice.schedule.data.repositories.SpeakerRepository
 import com.advice.schedule.data.repositories.SpeakersRepository
+import com.advice.schedule.data.repositories.TagsRepository
 import com.advice.schedule.presentation.viewmodel.ConferenceViewModel
 import com.advice.schedule.presentation.viewmodel.FAQViewModel
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
@@ -71,6 +73,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.shortstack.hackertracker.BuildConfig
+import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -102,6 +105,7 @@ val appModule = module {
     single { ScheduleRepository(get(), get(), get()) }
     single { HomeRepository(get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
+    single { EventsRepository(get()) }
     single { SpeakerRepository(get(), get()) }
     single { FiltersRepository(get(), get(named("tags"))) }
     single { FAQRepository(get()) }
@@ -114,16 +118,21 @@ val appModule = module {
     }
     single { MapRepository(get()) }
     single { LocationRepository(get()) }
-    single { OrganizationsRepository(get(), get()) }
+    single { OrganizationsRepository(get(), get(), get()) }
     single { InformationRepository(get(), get(), get(), get()) }
     single { ProductsRepository(get(), get()) }
     single { DocumentsRepository(get()) }
+    single { TagsRepository(get()) }
     single { SearchRepository(get(), get(), get(), get(), get()) }
 
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
-    single<BookmarkedElementDataSource>(named("tags")){ InMemoryBookmarkedDataSourceImpl() }
-    single<BookmarkedElementDataSource>(named("events")) { SharedPreferencesBookmarkDataSource(androidContext()) }
+    single<BookmarkedElementDataSource>(named("tags")) { InMemoryBookmarkedDataSourceImpl() }
+    single<BookmarkedElementDataSource>(named("events")) {
+        SharedPreferencesBookmarkDataSource(
+            androidContext()
+        )
+    }
 
     single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }

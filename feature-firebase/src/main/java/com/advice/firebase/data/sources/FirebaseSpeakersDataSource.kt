@@ -12,6 +12,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.util.Locale
 
 @OptIn(FlowPreview::class)
@@ -19,7 +20,6 @@ class FirebaseSpeakersDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
 ) : SpeakersDataSource {
-
     override fun get(): Flow<List<Speaker>> {
         return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")

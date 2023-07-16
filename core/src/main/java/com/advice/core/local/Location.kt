@@ -2,7 +2,7 @@ package com.advice.core.local
 
 import android.os.Parcelable
 import com.advice.core.utils.Time
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.lang.Math.max
 import java.text.SimpleDateFormat
 import java.util.Date

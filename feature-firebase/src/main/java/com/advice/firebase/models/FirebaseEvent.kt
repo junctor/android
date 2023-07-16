@@ -3,7 +3,7 @@ package com.advice.firebase.models
 import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirebaseEvent(
@@ -16,6 +16,9 @@ data class FirebaseEvent(
     @PropertyName("android_description")
     val android_description: String = "",
 
+    @PropertyName("people")
+    val people: ArrayList<FirebasePerson> = ArrayList(),
+    @Deprecated("Use `people` instead")
     @PropertyName("speakers")
     val speakers: ArrayList<FirebaseSpeaker> = ArrayList(),
 

@@ -29,7 +29,7 @@ internal fun ConferenceView(
     startDate: Date,
     endDate: Date,
     timezone: String,
-    description: String,
+    description: String?,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -58,7 +58,7 @@ internal fun ConferenceView(
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(timezone, style = MaterialTheme.typography.bodyLarge)
-            if (description.isNotBlank()) {
+            if (description != null) {
                 Spacer(Modifier.height(16.dp))
                 Text(
                     description,

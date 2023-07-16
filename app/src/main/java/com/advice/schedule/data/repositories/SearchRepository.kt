@@ -1,13 +1,10 @@
 package com.advice.schedule.data.repositories
 
+import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.advice.core.local.Organization
 import com.advice.core.local.Speaker
-import com.advice.data.sources.DocumentsDataSource
-import com.advice.data.sources.EventsDataSource
-import com.advice.data.sources.FAQDataSource
-import com.advice.data.sources.OrganizationsDataSource
-import com.advice.data.sources.SpeakersDataSource
+import com.advice.documents.data.repositories.DocumentsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -22,24 +19,25 @@ data class SearchResults(
     val events: List<Event>,
     val speakers: List<Speaker>,
     val organizations: List<Organization>,
+    val documents: List<Document>,
 )
 
 class SearchRepository(
-    eventsDataSource: EventsDataSource,
-    speakersDataSource: SpeakersDataSource,
-    organizationsDataSource: OrganizationsDataSource,
-    faqDataSource: FAQDataSource,
-    documentsDataSource: DocumentsDataSource,
+    eventsDataSource: EventsRepository,
+    speakersDataSource: SpeakersRepository,
+    organizationsDataSource: OrganizationsRepository,
+    faqDataSource: FAQRepository,
+    documentsDataSource: DocumentsRepository,
 ) {
     private var query = MutableStateFlow("")
 
     val state: Flow<SearchState> = combine(
         query,
-        eventsDataSource.get(),
-        speakersDataSource.get(),
-        organizationsDataSource.get(),
-        faqDataSource.get(),
-        documentsDataSource.get(),
+        eventsDataSource.events,
+        speakersDataSource.speakers,
+        organizationsDataSource.organizations,
+        faqDataSource.faqs,
+        documentsDataSource.documents,
     ) { values ->
         val query = values[0] as String
         if (query.length < 3) {
@@ -58,6 +56,10 @@ class SearchRepository(
                 },
                 organizations = (values[3] as List<Organization>).filter { organization ->
                     organization.name.contains(query, ignoreCase = true)
+                },
+                documents = (values[5] as List<Document>).filter { document ->
+                    document.title.contains(query, ignoreCase = true) ||
+                            document.description.contains(query, ignoreCase = true)
                 },
             )
         )

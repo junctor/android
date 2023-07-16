@@ -6,7 +6,7 @@ import com.advice.core.utils.Time
 import com.advice.core.utils.TimeUtil
 import com.advice.core.utils.getDateMidnight
 import com.advice.core.utils.getLocalizedDate
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date

@@ -9,6 +9,6 @@ class SpeakersViewModel : ViewModel(), KoinComponent {
 
     private val repository by inject<SpeakersRepository>()
 
-    val speakers = repository.list
+    val speakers = repository.speakers
 
 }

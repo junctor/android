@@ -1,7 +1,8 @@
 package com.advice.firebase.models
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.advice.core.local.Affiliation
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirebaseSpeaker(
@@ -9,6 +10,7 @@ data class FirebaseSpeaker(
     val name: String = "",
     val title: String = "",
     val description: String = "",
+    val affiliations: List<FirebaseAffiliation> = emptyList(),
     val links: List<FirebaseSpeakerLink> = emptyList(),
 
     val conference: String? = null,
