@@ -21,10 +21,10 @@ import com.advice.core.local.FAQ
 import com.advice.ui.preview.FAQProvider
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.QuestionView
-import com.advice.ui.components.SearchBar
 import com.advice.ui.R
 import com.advice.ui.components.EmptyView
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.SearchBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +72,7 @@ fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
 @Composable
 private fun TopBar() {
     Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-        SearchBar {
+        SearchBar("Search frequently asked questions") {
 
         }
     }

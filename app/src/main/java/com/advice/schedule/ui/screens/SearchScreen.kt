@@ -53,7 +53,7 @@ internal fun SearchScreen(
                 LazyColumn() {
                     item {
                         Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-                            SearchBar(modifier = Modifier) {
+                            SearchBar("Search anything", modifier = Modifier) {
                                 onQueryChanged(it)
                             }
                         }

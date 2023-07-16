@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,13 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.advice.core.local.Speaker
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.SearchableTopAppBar
 import com.advice.ui.components.SpeakerView
 import com.advice.ui.R
 import com.advice.ui.components.EmptyView
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.SpeakerProvider
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakersScreenView(
     speakers: List<Speaker>?,
@@ -30,13 +31,11 @@ fun SpeakersScreenView(
     onSpeakerClicked: (Speaker) -> Unit
 ) {
     Scaffold(topBar = {
-        SearchableTopAppBar(title = { Text("Speakers") }, navigationIcon = {
+        CenterAlignedTopAppBar(title = { Text("Speakers") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null)
             }
-        }) { query ->
-
-        }
+        })
     }) {
         Box(Modifier.padding(it)) {
             when {

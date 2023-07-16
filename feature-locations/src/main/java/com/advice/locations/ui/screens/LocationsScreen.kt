@@ -3,6 +3,7 @@ package com.advice.locations.ui.screens
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,7 +18,6 @@ import com.advice.locations.ui.components.Location
 import com.advice.locations.ui.preview.LocationRowProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.SearchableTopAppBar
 import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,16 +28,14 @@ fun LocationsScreen(
     onBackPressed: () -> Unit
 ) {
     Scaffold(topBar = {
-        SearchableTopAppBar(
+        CenterAlignedTopAppBar(
             title = { Text("Locations") },
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null)
                 }
             }
-        ) { query ->
-
-        }
+        )
     }) {
         LocationsScreenContent(containers, onScheduleClicked, modifier = Modifier.padding(it))
     }
