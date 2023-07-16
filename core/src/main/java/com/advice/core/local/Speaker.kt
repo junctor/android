@@ -7,8 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class Speaker(
     val id: Long,
     val name: String,
+    val title: String,
     val description: String,
-    val link: String,
-    val twitter: String,
-    val title: String
+    val links: List<Link>,
 ) : Parcelable

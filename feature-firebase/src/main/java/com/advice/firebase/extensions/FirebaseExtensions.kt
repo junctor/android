@@ -8,6 +8,7 @@ import com.advice.core.local.ConferenceMap
 import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
+import com.advice.core.local.Link
 import com.advice.core.local.Location
 import com.advice.core.local.NewsArticle
 import com.advice.core.local.Organization
@@ -38,6 +39,7 @@ import com.advice.firebase.models.FirebaseProduct
 import com.advice.firebase.models.FirebaseProductMedia
 import com.advice.firebase.models.FirebaseProductVariant
 import com.advice.firebase.models.FirebaseSpeaker
+import com.advice.firebase.models.FirebaseSpeakerLink
 import com.advice.firebase.models.FirebaseTag
 import com.advice.firebase.models.FirebaseTagType
 import com.advice.firebase.models.FirebaseVendor
@@ -178,15 +180,28 @@ fun FirebaseTag.toTag(): Tag? {
 fun FirebaseSpeaker.toSpeaker(): Speaker? {
     return try {
         Speaker(
-            id,
-            name,
-            description,
-            link,
-            twitter,
-            title
+            id = id,
+            name = name,
+            title = title,
+            description = description,
+            links = links
+                .sortedBy { it.sort_order }
+                .mapNotNull { it.toLink() }
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Speaker: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseSpeakerLink.toLink(): Link? {
+    return try {
+        Link(
+            title,
+            url
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Link: ${ex.message}")
         null
     }
 }

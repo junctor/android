@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
@@ -42,6 +43,7 @@ import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
+import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DismissibleBottomAppBar
 import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
@@ -86,10 +88,14 @@ internal fun NavHost() {
             )
         }
         composable("speaker/{id}/{name}") { backStackEntry ->
+            val context = (LocalContext.current as MainActivity)
             SpeakerScreen(
                 navController = navController,
                 id = backStackEntry.arguments?.getString("id"),
-                name = backStackEntry.arguments?.getString("name")
+                name = backStackEntry.arguments?.getString("name"),
+                onLinkClicked = {
+                    context.openLink(it)
+                },
             )
         }
         composable("settings") { SettingsScreen(navController) }
@@ -224,7 +230,7 @@ private fun SpeakersScreen(navController: NavHostController) {
     SpeakersScreenView(
         speakers = state,
         onBackPressed = { navController.popBackStack() },
-        onSpeakerClicked = { navController.navigate("speaker/${it.id}") },
+        onSpeakerClicked = { navController.navigate("speaker/${it.id}/${it.name}") },
     )
 }
 
@@ -316,7 +322,7 @@ fun EventScreen(navController: NavHostController, id: String?) {
 }
 
 @Composable
-fun SpeakerScreen(navController: NavHostController, id: String?, name: String?) {
+fun SpeakerScreen(navController: NavHostController, id: String?, name: String?, onLinkClicked: (String) -> Unit,) {
     val viewModel = navController.navGraphViewModel<SpeakerViewModel>()
     val speakerDetails by viewModel.speakerDetails.collectAsState(SpeakerState.Loading)
 
@@ -330,6 +336,7 @@ fun SpeakerScreen(navController: NavHostController, id: String?, name: String?) 
         onBackPressed = {
             navController.popBackStack()
         },
+        onLinkClicked = onLinkClicked,
         onEventClicked = {
             navController.navigate("event/${it.id}")
         }

@@ -36,6 +36,7 @@ fun SpeakerScreen(
     name: String,
     state: SpeakerState,
     onBackPressed: () -> Unit,
+    onLinkClicked: (String) -> Unit,
     onEventClicked: (Event) -> Unit
 ) {
     Scaffold(topBar = {
@@ -53,6 +54,7 @@ fun SpeakerScreen(
                     SpeakerScreenContent(
                         state.speaker,
                         state.events,
+                        onLinkClicked,
                         onEventClicked,
                     )
                 }
@@ -65,6 +67,7 @@ fun SpeakerScreen(
 fun SpeakerScreenContent(
     speaker: Speaker,
     events: List<Event>,
+    onLinkClicked: (String) -> Unit,
     onEventClicked: (Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -82,9 +85,31 @@ fun SpeakerScreenContent(
         }
         if (speaker.description.isNotBlank()) {
             Paragraph(speaker.description, Modifier.padding(16.dp))
-        } else {
-            NoDetailsView()
         }
+
+        if (speaker.links.isNotEmpty()) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "Links", textAlign = TextAlign.Center, modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            )
+            speaker.links.forEach {
+                Surface(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    shape = RoundedCornerShape(12.dp),
+                ) {
+                    Text(it.title, Modifier
+                        .clickable {
+                            onLinkClicked(it.url)
+                        }.padding(16.dp))
+                }
+            }
+        }
+
 
         if (events.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
@@ -125,7 +150,10 @@ fun SpeakerScreenViewPreview(
             onBackPressed = {},
             onEventClicked = {
 
-            }
+            },
+            onLinkClicked = {
+
+            },
         )
     }
 }

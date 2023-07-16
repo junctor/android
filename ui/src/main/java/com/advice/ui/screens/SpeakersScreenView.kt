@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.advice.core.local.Speaker
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.SearchableTopAppBar
@@ -20,6 +21,7 @@ import com.advice.ui.components.SpeakerView
 import com.advice.ui.R
 import com.advice.ui.components.EmptyView
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.preview.SpeakerProvider
 
 @Composable
 fun SpeakersScreenView(
@@ -72,8 +74,8 @@ fun SpeakersScreenContent(
 
 @Preview(showBackground = true)
 @Composable
-fun SpeakersScreenViewPreview() {
+fun SpeakersScreenViewPreview(@PreviewParameter(SpeakerProvider::class) speaker: Speaker) {
     ScheduleTheme {
-        SpeakersScreenView(listOf(Speaker(-1, "John", "", "", "", "")), {}, {})
+        SpeakersScreenView(listOf(speaker), {}, {})
     }
 }

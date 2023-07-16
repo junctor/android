@@ -7,10 +7,9 @@ import kotlinx.android.parcel.Parcelize
 data class FirebaseSpeaker(
     val id: Long = -1,
     val name: String = "",
-    val description: String = "",
-    val link: String = "",
-    val twitter: String = "",
     val title: String = "",
+    val description: String = "",
+    val links: List<FirebaseSpeakerLink> = emptyList(),
 
     val conference: String? = null,
     val updated_at: String? = null,
