@@ -153,13 +153,19 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
                     }
                     .padding(16.dp))
         }
-
-
         HomeCard {
             Text("Villages",
                 Modifier
                     .clickable {
                         onNavigationClick("villages")
+                    }
+                    .padding(16.dp))
+        }
+        HomeCard {
+            Text("Locations",
+                Modifier
+                    .clickable {
+                        onNavigationClick("locations")
                     }
                     .padding(16.dp))
         }

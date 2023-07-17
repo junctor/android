@@ -80,6 +80,9 @@ internal fun NavHost() {
         composable("search") {
             Search(navController)
         }
+        composable("locations") {
+            LocationsScreen(navController)
+        }
         composable("information") { InformationScreen(navController) }
         composable("event/{id}") { backStackEntry ->
             EventScreen(navController, backStackEntry.arguments?.getString("id"))
@@ -194,7 +197,6 @@ private fun NavGraphBuilder.informationScreens(navController: NavHostController)
     composable("document/{id}") { backStackEntry ->
         DocumentScreen(navController, backStackEntry.arguments?.getString("id"))
     }
-    composable("locations") { LocationsScreen(navController) }
     composable("faq") { FAQScreen(navController) }
     composable("vendors") { VendorsScreen(navController) }
     composable("villages") { VillagesScreen(navController) }
