@@ -60,6 +60,7 @@ import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.advice.ui.R
+import com.advice.ui.screens.NewsScreen
 import com.advice.ui.screens.SpeakerState
 
 @Composable
@@ -72,6 +73,9 @@ internal fun NavHost() {
         composable("home") { HomeScreen(navController) }
         composable("maps") {
             MapsScreen(navController)
+        }
+        composable("news") {
+            NewsScreen(navController)
         }
         composable("search") {
             Search(navController)
@@ -116,6 +120,14 @@ internal fun NavHost() {
             ProductsSummary(navController, productsViewModel)
         }
     }
+}
+
+@Composable
+private fun NewsScreen(navController: NavHostController) {
+    // todo: add news view model
+    com.advice.ui.screens.NewsScreen(emptyList(), onBackPressed = {
+        navController.popBackStack()
+    })
 }
 
 @Composable
@@ -322,7 +334,12 @@ fun EventScreen(navController: NavHostController, id: String?) {
 }
 
 @Composable
-fun SpeakerScreen(navController: NavHostController, id: String?, name: String?, onLinkClicked: (String) -> Unit,) {
+fun SpeakerScreen(
+    navController: NavHostController,
+    id: String?,
+    name: String?,
+    onLinkClicked: (String) -> Unit,
+) {
     val viewModel = navController.navGraphViewModel<SpeakerViewModel>()
     val speakerDetails by viewModel.speakerDetails.collectAsState(SpeakerState.Loading)
 

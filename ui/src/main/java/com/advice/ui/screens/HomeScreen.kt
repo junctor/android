@@ -84,7 +84,7 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
         }
 
         if (state.hasProducts) {
-            ProductCard(media = "https://htem2.habemusconferencing.net/temp/dc24front.jpg") {
+            ProductCard(media = state.productExample) {
                 onNavigationClick("merch")
             }
         }
@@ -95,9 +95,22 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
         }
 
         // Latest news
-        state.news.take(1).forEach {
-            ArticleView(text = it.text, date = it.date)
+        if (state.news.isNotEmpty()) {
+            state.news.first().let {
+                ArticleView(text = it.text, date = it.date)
+            }
+            if (state.news.size > 1) {
+                HomeCard {
+                    Text("News",
+                        Modifier
+                            .clickable {
+                                onNavigationClick("news")
+                            }
+                            .padding(16.dp))
+                }
+            }
         }
+
 
         if (state.documents.isNotEmpty()) {
             Text(

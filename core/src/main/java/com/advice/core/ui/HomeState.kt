@@ -11,9 +11,11 @@ sealed class HomeState {
         val conference: Conference,
         val hasWifi: Boolean = false,
         val hasProducts: Boolean = false,
-        val documents: List<Document>,
-        val news: List<NewsArticle>,
-        val countdown: Long
+        val productExample: String? = null,
+        val documents: List<Document> = emptyList(),
+        val news: List<NewsArticle> = emptyList(),
+        val countdown: Long = -1L,
     ) : HomeState()
+
     data class Error(val ex: Exception) : HomeState()
 }

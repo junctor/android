@@ -1,0 +1,62 @@
+package com.advice.ui.screens
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import com.advice.core.local.NewsArticle
+import com.advice.ui.R
+import com.advice.ui.components.EmptyView
+import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.home.ArticleView
+import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.theme.ScheduleTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewsScreen(news: List<NewsArticle>?, onBackPressed: () -> Unit) {
+    Scaffold(topBar = {
+        CenterAlignedTopAppBar(title = { Text("News") }, navigationIcon =
+        {
+            IconButton(onClick = { onBackPressed() }) {
+                Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
+            }
+        })
+    }) {
+        Box(Modifier.padding(it)) {
+            when {
+                news == null -> {
+                    ProgressSpinner()
+                }
+
+                news.isEmpty() -> {
+                    EmptyView("News not found")
+                }
+
+                else -> {
+                    news.forEach {
+                        ArticleView(text = it.text, date = it.date)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun NewsScreenPreview() {
+    ScheduleTheme {
+        NewsScreen(
+            news = emptyList(),
+            onBackPressed = {}
+        )
+    }
+}

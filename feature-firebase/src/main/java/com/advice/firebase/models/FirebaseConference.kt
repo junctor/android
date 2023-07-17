@@ -24,4 +24,5 @@ data class FirebaseConference(
     val hidden: Boolean = false,
     val developer: Boolean = false,
     val enable_merch: Boolean = false,
+    val enable_merch_cart: Boolean = false,
 ) : Parcelable

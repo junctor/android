@@ -100,6 +100,7 @@ fun FirebaseConference.toConference(): Conference? {
             timezone,
             mapOf(
                 "enable_merch" to enable_merch,
+                "enable_merch_cart" to enable_merch_cart,
             )
         )
     } catch (ex: Exception) {

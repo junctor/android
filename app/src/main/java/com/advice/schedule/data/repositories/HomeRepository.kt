@@ -1,11 +1,16 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Conference
+import com.advice.core.local.Document
+import com.advice.core.local.NewsArticle
+import com.advice.core.local.Product
 import com.advice.core.ui.HomeState
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.DocumentsDataSource
 import com.advice.data.sources.NewsDataSource
+import com.advice.data.sources.ProductsDataSource
+import com.advice.retrofit.datasource.Article
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
@@ -14,6 +19,7 @@ class HomeRepository(
     newsDataSource: NewsDataSource,
     conferencesDataSource: ConferencesDataSource,
     documentsDataSource: DocumentsDataSource,
+    productsDataSource: ProductsDataSource,
 ) {
 
     private val _countdown = MutableStateFlow(-1L)
@@ -23,11 +29,35 @@ class HomeRepository(
         conferencesDataSource.get(),
         documentsDataSource.get(),
         newsDataSource.get(),
+        productsDataSource.get(),
         _countdown
-    ) { conference, conferences, documents, news, countdown ->
+    ) { array ->
+        val conference = array[0] as Conference
+        val conferences = array[1] as List<Conference>
+        val documents = array[2] as List<Document>
+        val news = array[3] as List<NewsArticle>
+        val products = array[4] as List<Product>
+        val countdown = array[5] as Long
+
         val isDefCon = conference.code.contains("DEFCON30")
         val hasProducts = conference.flags["enable_merch"] ?: false
-        HomeState.Loaded(conferences, conference, isDefCon, hasProducts, documents, news, countdown)
+        // Find a random product with a media url to show off
+        val productExample = if (hasProducts) {
+            products.filter { it.media.isNotEmpty() }
+                .randomOrNull()?.media?.first()?.url
+        } else {
+            null
+        }
+        HomeState.Loaded(
+            conferences = conferences,
+            conference = conference,
+            hasWifi = isDefCon,
+            hasProducts = hasProducts,
+            productExample = productExample,
+            documents = documents,
+            news = news,
+            countdown = countdown
+        )
     }
 
     fun setConference(conference: Conference) {
