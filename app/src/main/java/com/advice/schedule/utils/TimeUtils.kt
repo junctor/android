@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.shortstack.hackertracker.BuildConfig
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.Date
 
 object TimeUtils {
@@ -17,7 +18,7 @@ object TimeUtils {
 
 
     @SuppressLint("SimpleDateFormat")
-    fun getTimeStamp(context: Context, date: Date?): String {
+    fun getTimeStamp(context: Context, date: Instant?): String {
         // No start time, return TBA.
         if (date == null)
             return context.getString(com.shortstack.hackertracker.R.string.tba)

@@ -20,7 +20,7 @@ class ReminderManager(
         val start = event.start
         val now = Time.now()
 
-        val delay = start.time - now.time - TWENTY_MINUTES_BEFORE
+        val delay = start.toEpochMilli() - now.time - TWENTY_MINUTES_BEFORE
 
         if (delay < 0) {
             return

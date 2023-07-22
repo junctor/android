@@ -145,7 +145,7 @@ fun SpeakerScreenContent(
             for (event in events) {
                 EventRowView(
                     title = event.title,
-                    time = TimeUtil.getTimeStamp(event.startTime, is24HourFormat = false),
+                    time = TimeUtil.getTimeStamp(event.start, is24HourFormat = false),
                     location = event.location.name,
                     tags = event.types,
                     event.isBookmarked,

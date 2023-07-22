@@ -146,10 +146,9 @@ fun FirebaseEvent.toEvent(tags: List<TagType>, isBookmarked: Boolean = false): E
             conference,
             title,
             android_description,
-            begin_timestamp.toDate(),
-            end_timestamp.toDate(),
-            //todo:
-            updated_timestamp.seconds.toString(),
+            begin_timestamp.toDate().toInstant(),
+            end_timestamp.toDate().toInstant(),
+            updated_timestamp.toDate().toInstant(),
             speakers.mapNotNull { it.toSpeaker() },
             types,
             location.toLocation()!!,

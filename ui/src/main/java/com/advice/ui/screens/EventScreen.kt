@@ -1,5 +1,6 @@
 package com.advice.ui.screens
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.BorderStroke
@@ -45,6 +46,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
+import com.advice.core.utils.TimeUtil
 import com.advice.ui.components.ActionView
 import com.advice.ui.components.BookmarkButton
 import com.advice.ui.components.CategorySize
@@ -67,8 +70,6 @@ import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
 import com.advice.ui.R
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -233,7 +234,7 @@ private fun EventScreenContent(
     onSpeakerClicked: (Speaker) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
+    val context = LocalContext.current
     Column(
         Modifier
         //.padding(16.dp)
@@ -241,7 +242,7 @@ private fun EventScreenContent(
         HeaderSection(
             event.title,
             event.types,
-            getDateTimestamp(event),
+            getDateTimestamp(context, event),
             event.location.name,
             onLocationClicked,
             modifier,
@@ -295,17 +296,8 @@ private fun EventScreenContent(
     }
 }
 
-private fun getDateTimestamp(event: Event): String {
-    val x = (event.startTime.time / 1000) / 86400
-    val now = Date().time / 1000 / 86400
-    val prefix = if (x == now) {
-        "Today"
-    } else {
-        val format = SimpleDateFormat("EEEE, MMMM d")
-        format.format(event.startTime)
-    }
-    val format = SimpleDateFormat("h:mm a")
-    return prefix + " - " + format.format(event.startTime) + " to " + format.format(event.end)
+private fun getDateTimestamp(context: Context, event: Event): String {
+    return TimeUtil.getTimeStamp(context, event)
 }
 
 @LightDarkPreview

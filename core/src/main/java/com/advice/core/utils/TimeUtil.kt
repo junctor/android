@@ -2,48 +2,48 @@ package com.advice.core.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import java.text.SimpleDateFormat
+import com.advice.core.local.Event
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 
+@SuppressLint("NewApi")
 object TimeUtil {
 
-    @SuppressLint("SimpleDateFormat")
-    fun getDateStamp(date: Date): String {
-        val format = SimpleDateFormat("MMMM d")
+    // todo: get from conference or user device
+    private var timeZone = "America/Los_Angeles"
 
-        return format.format(date)
+    fun getDateStamp(date: Instant): String {
+        val formatter = DateTimeFormatter.ofPattern("MMMM d")
+        val localDateTime = date.atZone(ZoneId.of(timeZone))
+        return formatter.format(localDateTime)
     }
 
 
-    @SuppressLint("SimpleDateFormat")
-    fun getTimeStamp(context: Context, date: Date?): String {
-        // No start time, return TBA.
-//        if (date == null)
-//            return context.getString(R.string.tba)
-
-
+    fun getTimeStamp(context: Context, event: Event): String {
         val s = if (android.text.format.DateFormat.is24HourFormat(context)) {
             "HH:mm"
         } else {
-            "h:mm\naa"
+            "h:mm\na"
         }
 
-        val formatter = SimpleDateFormat(s)
-
-//        if (App.instance.storage.forceTimeZone) {
-//            val timezone = App.instance.database.conference.value?.timezone ?: "America/Los_Angeles"
-//            formatter.timeZone = TimeZone.getTimeZone(timezone)
-//        }
-
-        return formatter.format(date)
+        val dayFormat = DateTimeFormatter.ofPattern("EEEE, MMMM d")
+        val prefix = dayFormat.format(event.start.atZone(ZoneId.of(timeZone)))
+        val timeFormat = DateTimeFormatter.ofPattern(s)
+        return prefix + " - " + timeFormat.format(event.start.atZone(ZoneId.of(timeZone))) + " to " + timeFormat.format(
+            event.end.atZone(ZoneId.of(timeZone))
+        )
     }
 
-    fun getTimeStamp(date: Date?, is24HourFormat: Boolean): String {
+    fun getTimeStamp(date: Instant, is24HourFormat: Boolean): String {
         val pattern = if (is24HourFormat) {
             "HH:mm"
         } else {
-            "h:mm aa"
+            "h:mm a"
         }
-        return SimpleDateFormat(pattern).format(date)
+        val formatter = DateTimeFormatter.ofPattern(pattern)
+        val localDateTime = date.atZone(ZoneId.of(timeZone))
+        return formatter.format(localDateTime)
     }
 }

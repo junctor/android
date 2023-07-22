@@ -45,6 +45,7 @@ import com.advice.ui.rememberScrollContext
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.util.Date
 
 sealed class ScheduleScreenState {
@@ -195,7 +196,7 @@ fun ScheduleScreenContent(
                     for (it in day.value) {
                         item {
                             EventRowView(it.title,
-                                TimeUtil.getTimeStamp(it.startTime, is24HourFormat = false),
+                                TimeUtil.getTimeStamp(it.start, is24HourFormat = false),
                                 it.location.name,
                                 it.types,
                                 it.isBookmarked,
@@ -229,9 +230,9 @@ fun ScheduleScreenViewPreview() {
                         conference = "THOTCON 0xC",
                         title = "DOORS OPEN 喝一杯",
                         description = "",
-                        start = Date(2023, 5, 19, 8, 30),
-                        end = Date(),
-                        updated = "",
+                        start = Instant.now(),
+                        end = Instant.now(),
+                        updated = Instant.now(),
                         speakers = emptyList(),
                         types = listOf(
                             Tag(
