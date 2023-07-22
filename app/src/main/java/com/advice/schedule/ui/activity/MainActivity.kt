@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.advice.schedule.ui.navigation.NavHost
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -17,6 +20,8 @@ import timber.log.Timber
 class MainActivity :
     AppCompatActivity(),
     KoinComponent {
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,27 +35,22 @@ class MainActivity :
                 )
             }
 
+            navController = rememberNavController()
+
             ScheduleTheme {
-                NavHost()
+                NavHost(navController as NavHostController)
             }
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val target = when {
-            intent == null -> null
-            intent.hasExtra("target") -> intent.getLongExtra("target", -1L)
-            intent.data != null -> {
-                intent.data.toString().substringAfter("events/").take(5).toLongOrNull()
-            }
-
-            else -> null
-        }
-
-        Timber.d("target: $target")
-        if (target != null) {
-            //todo: navController.navigate("event/$target")
+        if (intent != null && intent.data != null) {
+            val uri: Uri? = intent.data
+            val conference = uri?.getQueryParameter("c")
+            val event = uri?.getQueryParameter("e")
+            Timber.e("onNewIntent: $uri")
+            navController.navigate("event/$event")
         }
     }
 

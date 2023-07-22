@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Event
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.data.sources.EventDataSource
 import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.snapshotFlow

@@ -74,7 +74,7 @@ import java.util.Date
 @Composable
 fun EventScreen(
     event: Event,
-    onBookmark: () -> Unit,
+    onBookmark: (Boolean) -> Unit,
     onBackPressed: () -> Unit,
     onLocationClicked: () -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
@@ -103,7 +103,7 @@ fun EventScreen(
                 },
                 actions = {
                     BookmarkButton(isBookmarked = event.isBookmarked) {
-                        onBookmark()
+                        onBookmark(it)
                     }
                 }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = parseColor(event.types.first().color).copy(alpha = alpha.value),

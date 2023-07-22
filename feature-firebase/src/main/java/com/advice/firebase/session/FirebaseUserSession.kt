@@ -38,9 +38,8 @@ class FirebaseUserSession(
     init {
         CoroutineScope(Job()).launch {
             conferencesDataSource.get().collect {
-                Timber.e("ConferencesDataSource.get() it: $it")
                 _conference.value = getConference(preferences.preferredConference, it)
-                Timber.e("Conference is: ${_conference.value?.code}")
+                Timber.d("Current Conference is: ${_conference.value?.code}")
             }
         }
 
@@ -48,7 +47,7 @@ class FirebaseUserSession(
             val it = auth.signInAnonymously().await()
             val user = it.user
             if (user != null) {
-                Timber.e("User uid: ${user.uid}")
+                Timber.d("User uid: ${user.uid}")
                 _user.value = User(user.uid)
             } else {
                 crashlytics.log("user cannot be signed in")

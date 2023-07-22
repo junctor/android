@@ -3,11 +3,11 @@ package com.advice.schedule.data.repositories
 import com.advice.core.local.Event
 import com.advice.core.local.Tag
 import com.advice.core.ui.ScheduleFilter
-import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import timber.log.Timber
 
 class ScheduleRepository(
     private val eventsRepository: EventsRepository,
@@ -49,9 +49,13 @@ class ScheduleRepository(
     }
 
 
-    suspend fun bookmark(event: Event) {
+    suspend fun bookmark(event: Event, isBookmarked: Boolean) {
+        Timber.e(isBookmarked.toString())
         eventsRepository.bookmark(event)
-        // todo: check if we're bookmarking or removing it.
-        reminderManager.setReminder(event)
+        if (isBookmarked) {
+            reminderManager.setReminder(event)
+        } else {
+            reminderManager.removeReminder(event)
+        }
     }
 }

@@ -25,9 +25,9 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    fun bookmark(event: Event) {
+    fun bookmark(event: Event, isBookmarked: Boolean) {
         viewModelScope.launch {
-            repository.bookmark(event)
+            repository.bookmark(event, isBookmarked)
         }
     }
 }

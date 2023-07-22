@@ -65,7 +65,7 @@ fun ScheduleScreenView(
     onMenuClicked: () -> Unit,
     onFabClicked: () -> Unit,
     onEventClick: (Event) -> Unit,
-    onBookmarkClick: (Event) -> Unit,
+    onBookmarkClick: (Event, Boolean) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -98,7 +98,7 @@ fun ScheduleScreenView(
     label: String?,
     onBackPressed: () -> Unit,
     onEventClick: (Event) -> Unit,
-    onBookmarkClick: (Event) -> Unit,
+    onBookmarkClick: (Event, Boolean) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -124,7 +124,7 @@ fun ScheduleScreenView(
 private fun ScheduleScreenContent(
     state: ScheduleScreenState?,
     onEventClick: (Event) -> Unit,
-    onBookmarkClick: (Event) -> Unit,
+    onBookmarkClick: (Event, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier) {
@@ -159,7 +159,7 @@ private fun ScheduleScreenContent(
 fun ScheduleScreenContent(
     days: Map<String, List<Event>>,
     onEventClick: (Event) -> Unit,
-    onBookmarkClick: (Event) -> Unit,
+    onBookmarkClick: (Event, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val elements = remember {
@@ -202,7 +202,7 @@ fun ScheduleScreenContent(
                                 modifier = Modifier.clickable {
                                     onEventClick(it)
                                 }) { isChecked ->
-                                onBookmarkClick(it)
+                                onBookmarkClick(it, isChecked)
                             }
                         }
                     }
@@ -257,6 +257,6 @@ fun ScheduleScreenViewPreview() {
         )
 
 
-        ScheduleScreenView(state, {}, {}, {}, {})
+        ScheduleScreenView(state, {}, {}, {}, { event, isBookmarked -> })
     }
 }

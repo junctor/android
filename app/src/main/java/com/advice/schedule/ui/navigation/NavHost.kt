@@ -60,12 +60,10 @@ import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.advice.ui.R
-import com.advice.ui.screens.NewsScreen
 import com.advice.ui.screens.SpeakerState
 
 @Composable
-internal fun NavHost() {
-    val navController = rememberNavController()
+internal fun NavHost(navController: NavHostController) {
 
     val productsViewModel = viewModel<ProductsViewModel>()
 
@@ -319,7 +317,7 @@ fun EventScreen(navController: NavHostController, id: String?) {
     val event = state.days.values.flatten().find { it.id == id!!.toLong() }!!
     EventScreen(
         event = event,
-        onBookmark = { viewModel.bookmark(event) },
+        onBookmark = { viewModel.bookmark(event, it) },
         onBackPressed = { navController.popBackStack() },
         onLocationClicked = {
             navController.navigate(
@@ -377,8 +375,8 @@ fun LocationScreen(navController: NavHostController, id: String?, label: String?
         onEventClick = {
             navController.navigate("event/${it.id}")
         },
-        onBookmarkClick = {
-            viewModel.bookmark(it)
+        onBookmarkClick = { event, isBookmarked ->
+            viewModel.bookmark(event, isBookmarked)
         },
     )
 }
@@ -453,8 +451,8 @@ private fun HomeScreen(navController: NavHostController) {
                     onEventClick = {
                         navController.navigate("event/${it.id}")
                     },
-                    onBookmarkClick = {
-                        scheduleViewModel.bookmark(it)
+                    onBookmarkClick = { event, isBookmarked ->
+                        scheduleViewModel.bookmark(event, isBookmarked)
                     },
                 )
             },

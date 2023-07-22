@@ -4,8 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.advice.core.utils.NotificationHelper
-import com.advice.data.sources.EventsDataSource
-import kotlinx.coroutines.flow.first
+import com.advice.data.sources.EventDataSource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
@@ -15,7 +14,7 @@ class ReminderWorker(
     params: WorkerParameters,
 ) : CoroutineWorker(context, params), KoinComponent {
 
-    private val eventsDataSource by inject<EventsDataSource>()
+    private val eventsDataSource by inject<EventDataSource>()
     private val notificationHelper by inject<NotificationHelper>()
 
     override suspend fun doWork(): Result {
@@ -31,7 +30,7 @@ class ReminderWorker(
             return Result.failure()
         }
 
-        val event = eventsDataSource.get().first().find { it.id == id }
+        val event = eventsDataSource.get(conference, id)
         if (event == null) {
             Timber.e("Could not find the target event.")
             return Result.failure()
@@ -43,7 +42,7 @@ class ReminderWorker(
             return Result.success()
         }
 
-        notificationHelper.notifyStartingSoon(context, event)
+        notificationHelper.notifyStartingSoon(event)
 
         return Result.success()
     }

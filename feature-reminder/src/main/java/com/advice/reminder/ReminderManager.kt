@@ -14,12 +14,7 @@ class ReminderManager(
 
     companion object {
         private const val TWENTY_MINUTES_BEFORE = 1000 * 20 * 60
-        private const val TAG = "reminder_"
     }
-
-//    suspend fun getEvent(conference: String, id: Long): Event? {
-//        return eventsDataSource.get().first().find { it.id == id }
-//    }
 
     fun setReminder(event: Event) {
         val start = event.start
@@ -33,19 +28,19 @@ class ReminderManager(
 
         val data = workDataOf(
             ReminderWorker.INPUT_ID to event.id,
-            ReminderWorker.INPUT_CONFERENCE to event.conference
+            ReminderWorker.INPUT_CONFERENCE to event.conference,
         )
 
         val notify = OneTimeWorkRequestBuilder<ReminderWorker>()
             .setInputData(data)
             .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-            .addTag(TAG + event.id)
+            .addTag("reminder/${event.conference}/${event.id}")
             .build()
 
         workManager.enqueueUniqueWork(event.title, ExistingWorkPolicy.REPLACE, notify)
     }
 
-    fun cancel(event: Event) {
-        workManager.cancelAllWorkByTag(TAG + event.id)
+    fun removeReminder(event: Event) {
+        workManager.cancelAllWorkByTag("reminder/${event.conference}/${event.id}")
     }
 }

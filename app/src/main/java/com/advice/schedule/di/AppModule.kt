@@ -10,6 +10,7 @@ import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.DocumentsDataSource
+import com.advice.data.sources.EventDataSource
 import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.FAQDataSource
 import com.advice.data.sources.LocationsDataSource
@@ -24,6 +25,7 @@ import com.advice.data.sources.VillagesDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
+import com.advice.firebase.data.sources.FirebaseEventDataSource
 import com.advice.firebase.data.sources.FirebaseEventsDataSource
 import com.advice.firebase.data.sources.FirebaseFAQDataSource
 import com.advice.firebase.data.sources.FirebaseLocationsDataSource
@@ -138,6 +140,7 @@ val appModule = module {
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(named("events")), get()) }
+    single<EventDataSource> { FirebaseEventDataSource(get()) }
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
     single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
     single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
