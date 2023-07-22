@@ -1,12 +1,16 @@
 package com.advice.schedule.ui.activity
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -16,12 +20,26 @@ import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.koin.core.component.KoinComponent
 import timber.log.Timber
+import java.util.jar.Manifest
 
 class MainActivity :
     AppCompatActivity(),
     KoinComponent {
 
+    // todo: fix this - this is a hack to get the navController to work
     private lateinit var navController: NavController
+
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Timber.d("Permission granted")
+            } else {
+                Timber.d("Permission denied")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,15 +59,38 @@ class MainActivity :
                 NavHost(navController as NavHostController)
             }
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS,
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    // You can use the API that requires the permission.
+                }
+
+//                shouldShowRequestPermissionRationale(...)-> {
+//
+//                }
+
+                else -> {
+                    // You can directly ask for the permission.
+                    // The registered ActivityResultCallback gets the result of this request.
+                    requestPermissionLauncher.launch(
+                        android.Manifest.permission.POST_NOTIFICATIONS
+                    )
+                }
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null && intent.data != null) {
             val uri: Uri? = intent.data
+            Timber.e("onNewIntent: $uri")
             val conference = uri?.getQueryParameter("c")
             val event = uri?.getQueryParameter("e")
-            Timber.e("onNewIntent: $uri")
             navController.navigate("event/$event")
         }
     }

@@ -50,7 +50,6 @@ class ScheduleRepository(
 
 
     suspend fun bookmark(event: Event, isBookmarked: Boolean) {
-        Timber.e(isBookmarked.toString())
         eventsRepository.bookmark(event)
         if (isBookmarked) {
             reminderManager.setReminder(event)
