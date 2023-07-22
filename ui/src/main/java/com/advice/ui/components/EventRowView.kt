@@ -1,6 +1,7 @@
 package com.advice.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -34,13 +35,16 @@ fun EventRowView(
     location: String,
     tags: List<Tag>,
     isBookmarked: Boolean,
+    onEventPressed: () -> Unit,
+    onBookmark: ((Boolean) -> Unit),
     modifier: Modifier = Modifier,
-    onBookmark: ((Boolean) -> Unit) = {},
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier
+            .clickable {
+                onEventPressed()
+            }
             .fillMaxWidth()
-            //
     ) {
         if (tags.isNotEmpty()) {
             // Category
@@ -57,7 +61,11 @@ fun EventRowView(
             )
         }
 
-        Text(time.replace(" ", "\n"), textAlign = TextAlign.Center, modifier = Modifier.width(85.dp))
+        Text(
+            time.replace(" ", "\n"),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.width(85.dp)
+        )
 
         Column(
             Modifier
@@ -92,8 +100,10 @@ private fun EventRowViewPreview() {
                 tags = listOf(
                     createTag(label = "Introduction", color = "#EEAAFF"),
                 ),
-                isBookmarked = true
-            ) {}
+                isBookmarked = true,
+                onEventPressed = {},
+                onBookmark = {},
+            )
             EventRowView(
                 title = "Compelled Decryption",
                 time = "6:00\nAM",
@@ -102,8 +112,10 @@ private fun EventRowViewPreview() {
                     createTag(label = "Talk", color = "#FF61EEAA"),
                     createTag(label = "Introduction", color = "#EEAAFF"),
                 ),
-                isBookmarked = false
-            ) {}
+                isBookmarked = false,
+                onEventPressed = {},
+                onBookmark = {},
+            )
         }
     }
 }

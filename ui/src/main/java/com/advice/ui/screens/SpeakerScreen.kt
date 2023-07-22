@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,6 +71,8 @@ fun SpeakerScreenContent(
     onEventClicked: (Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
     Column(modifier.verticalScroll(rememberScrollState())) {
         val pronouns = speaker.pronouns
         if (pronouns != null) {
@@ -145,16 +148,17 @@ fun SpeakerScreenContent(
             for (event in events) {
                 EventRowView(
                     title = event.title,
-                    time = TimeUtil.getTimeStamp(event.start, is24HourFormat = false),
+                    time = TimeUtil.getTimeStamp(context, event),
                     location = event.location.name,
                     tags = event.types,
-                    event.isBookmarked,
-                    modifier = Modifier.clickable {
+                    isBookmarked = event.isBookmarked,
+                    onEventPressed = {
                         onEventClicked(event)
-                    }
-                ) {
-                    // todo:
-                }
+                    },
+                    onBookmark = {
+                        // todo:
+                    },
+                )
             }
         }
     }

@@ -22,7 +22,7 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
 
     fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> {
         return repository.getSchedule(filter).map { elements ->
-            val days = elements.groupBy { TimeUtil.getDateStamp(it.start) }
+            val days = elements.groupBy { TimeUtil.getDateStamp(it, storage.forceTimeZone) }
             return@map ScheduleScreenState.Success(filter, days)
         }
     }

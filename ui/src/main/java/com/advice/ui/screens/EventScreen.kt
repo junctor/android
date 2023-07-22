@@ -297,7 +297,7 @@ private fun EventScreenContent(
 }
 
 private fun getDateTimestamp(context: Context, event: Event): String {
-    return TimeUtil.getTimeStamp(context, event)
+    return TimeUtil.getDateTimeStamp(context, event)
 }
 
 @LightDarkPreview

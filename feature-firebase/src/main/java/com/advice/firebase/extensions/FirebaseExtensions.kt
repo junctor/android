@@ -144,6 +144,7 @@ fun FirebaseEvent.toEvent(tags: List<TagType>, isBookmarked: Boolean = false): E
         return Event(
             id,
             conference,
+            timezone,
             title,
             android_description,
             begin_timestamp.toDate().toInstant(),

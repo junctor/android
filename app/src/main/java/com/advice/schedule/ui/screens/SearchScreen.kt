@@ -14,14 +14,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.advice.core.utils.TimeUtil
 import com.advice.organizations.ui.components.OrganizationRow
 import com.advice.schedule.data.repositories.SearchState
-import com.advice.schedule.utils.TimeUtils
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
@@ -71,11 +70,17 @@ internal fun SearchScreen(
                             }
                             items(state.results.events) {
                                 EventRowView(
-                                    it.title,
-                                    TimeUtils.getTimeStamp(context, it.start),
-                                    it.location.name,
-                                    it.types,
-                                    it.isBookmarked
+                                    title = it.title,
+                                    time = TimeUtil.getTimeStamp(context, it),
+                                    location = it.location.name,
+                                    tags = it.types,
+                                    isBookmarked = it.isBookmarked,
+                                    onEventPressed = {
+                                        // todo: handle
+                                    },
+                                    onBookmark = {
+                                        // todo: handle
+                                    },
                                 )
                             }
                             if (state.results.speakers.isNotEmpty()) {

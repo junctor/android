@@ -8,6 +8,7 @@ import java.time.Instant
 data class Event(
     val id: Long = -1,
     val conference: String,
+    val timeZone: String,
     val title: String,
     val description: String,
     val start: Instant,

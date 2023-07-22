@@ -1,12 +1,9 @@
 package com.advice.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,8 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
@@ -46,7 +43,6 @@ import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 import kotlinx.coroutines.launch
 import java.time.Instant
-import java.util.Date
 
 sealed class ScheduleScreenState {
     object Init : ScheduleScreenState()
@@ -163,6 +159,8 @@ fun ScheduleScreenContent(
     onBookmarkClick: (Event, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
     val elements = remember {
         days.flatMap { listOf(it.key) + it.value }
     }
@@ -195,16 +193,19 @@ fun ScheduleScreenContent(
                     // Events
                     for (it in day.value) {
                         item {
-                            EventRowView(it.title,
-                                TimeUtil.getTimeStamp(it.start, is24HourFormat = false),
-                                it.location.name,
-                                it.types,
-                                it.isBookmarked,
-                                modifier = Modifier.clickable {
+                            EventRowView(
+                                title = it.title,
+                                time = TimeUtil.getTimeStamp(context, it),
+                                location = it.location.name,
+                                tags = it.types,
+                                isBookmarked = it.isBookmarked,
+                                onEventPressed = {
                                     onEventClick(it)
-                                }) { isChecked ->
-                                onBookmarkClick(it, isChecked)
-                            }
+                                },
+                                onBookmark = { isChecked ->
+                                    onBookmarkClick(it, isChecked)
+                                },
+                            )
                         }
                     }
                 }
@@ -228,6 +229,7 @@ fun ScheduleScreenViewPreview() {
                 "May 19" to listOf(
                     Event(
                         conference = "THOTCON 0xC",
+                        timeZone = "America/Chicago",
                         title = "DOORS OPEN 喝一杯",
                         description = "",
                         start = Instant.now(),

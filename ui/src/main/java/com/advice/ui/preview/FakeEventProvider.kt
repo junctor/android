@@ -17,6 +17,7 @@ class FakeEventProvider : PreviewParameterProvider<Event> {
         Event(
             0,
             "DEFCON",
+            "America/Los_Angeles",
             "Payment Hacking Challenge",
             "Try yourself in ATM, Online bank, POST and Cards hacking challenges.\nPlease join the DEF CON Discord and see the #payv-labs-text channel for more information.",
             Instant.now(),

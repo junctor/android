@@ -9,6 +9,8 @@ import java.util.Calendar
 class Storage(context: Context, private val gson: Gson) {
 
     companion object {
+        const val KEY_PREFERENCES = "preferences"
+
         private const val USER_THEME = "user_theme"
         private const val PREFERRED_CONFERENCE = "preferred_conference"
 
@@ -25,8 +27,9 @@ class Storage(context: Context, private val gson: Gson) {
         const val TUTORIAL_EVENT_LOCATIONS = "tutorial_event_locations"
     }
 
+
     private val preferences: SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context)
+        context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
 
     var allowAnalytics: Boolean
         get() = preferences.getBoolean(USER_ANALYTICS_KEY, true)
