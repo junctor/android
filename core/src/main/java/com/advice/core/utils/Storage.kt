@@ -32,7 +32,7 @@ class Storage(context: Context, private val gson: Gson) {
         context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
 
     var allowAnalytics: Boolean
-        get() = preferences.getBoolean(USER_ANALYTICS_KEY, true)
+        get() = preferences.getBoolean(USER_ANALYTICS_KEY, false)
         set(value) {
             preferences.edit().putBoolean(USER_ANALYTICS_KEY, value).apply()
         }
