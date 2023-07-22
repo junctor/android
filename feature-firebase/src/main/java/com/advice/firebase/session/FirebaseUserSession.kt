@@ -62,7 +62,7 @@ class FirebaseUserSession(
             if (pref != null) return pref
         }
 
-        val list = conferences.sortedBy { it.startDate }
+        val list = conferences.sortedBy { it.start }
 
         val defcon = list.find { it.code == "DEFCON30" }
         if (defcon?.hasFinished == false) {

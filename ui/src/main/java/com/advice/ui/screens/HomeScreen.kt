@@ -1,6 +1,5 @@
 package com.advice.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
@@ -18,7 +16,6 @@ import com.advice.ui.components.home.*
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
-import com.advice.ui.R
 import com.advice.ui.components.ProgressSpinner
 import java.util.*
 
@@ -70,15 +67,7 @@ fun HomeScreenContent(
 @Composable
 private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> Unit) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-        val conference = state.conference
-        ConferenceView(
-            conference.name,
-            conference.startDate,
-            conference.endDate,
-            conference.timezone,
-            conference.tagline,
-        )
-
+        ConferenceView(state.conference)
         if (state.hasWifi) {
             WiFiCard(onConnectClicked = {})
         }
@@ -194,7 +183,8 @@ fun HomeScreenViewPreview() {
                 conference = Conference.Zero,
                 documents = emptyList(),
                 news = emptyList(),
-                countdown = Date().time / 1000L
+                countdown = Date().time / 1000L,
+                forceTimeZone = false
             ), {}, {})
     }
 }

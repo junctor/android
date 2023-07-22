@@ -5,12 +5,12 @@ import com.advice.core.local.Document
 import com.advice.core.local.NewsArticle
 import com.advice.core.local.Product
 import com.advice.core.ui.HomeState
+import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.DocumentsDataSource
 import com.advice.data.sources.NewsDataSource
 import com.advice.data.sources.ProductsDataSource
-import com.advice.retrofit.datasource.Article
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
@@ -20,6 +20,7 @@ class HomeRepository(
     conferencesDataSource: ConferencesDataSource,
     documentsDataSource: DocumentsDataSource,
     productsDataSource: ProductsDataSource,
+    storage: Storage,
 ) {
 
     private val _countdown = MutableStateFlow(-1L)
@@ -49,6 +50,7 @@ class HomeRepository(
             null
         }
         HomeState.Loaded(
+            forceTimeZone = storage.forceTimeZone,
             conferences = conferences,
             conference = conference,
             hasWifi = isDefCon,

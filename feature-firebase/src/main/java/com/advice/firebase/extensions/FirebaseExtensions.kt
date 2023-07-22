@@ -94,9 +94,9 @@ fun FirebaseConference.toConference(): Conference? {
             tagline_text,
             code,
             maps.mapNotNull { it.toMap() },
-            kickoff_timestamp.toDate(),
-            start_timestamp.toDate(),
-            end_timestamp.toDate(),
+            kickoff_timestamp.toDate().toInstant(),
+            start_timestamp.toDate().toInstant(),
+            end_timestamp.toDate().toInstant(),
             timezone,
             mapOf(
                 "enable_merch" to enable_merch,

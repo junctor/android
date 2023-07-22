@@ -37,11 +37,11 @@ class HomeViewModel : ViewModel(), KoinComponent {
     }
 
     private fun startCountdown(conference: Conference) {
-        var remainder = conference.kickoffDate.time - Date().time
+        var remainder = conference.kickoffDate.toEpochMilli() - Date().time
         if (remainder > 0L) {
             countdownJob = viewModelScope.launch {
                 while (remainder > 0L) {
-                    remainder = conference.kickoffDate.time - Date().time
+                    remainder = conference.kickoffDate.toEpochMilli() - Date().time
                     repository.setCountdown(remainder)
                     delay(COUNTDOWN_DELAY)
                 }

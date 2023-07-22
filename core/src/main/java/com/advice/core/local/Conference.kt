@@ -1,9 +1,8 @@
 package com.advice.core.local
 
 import android.os.Parcelable
-import com.advice.core.utils.Time
 import kotlinx.parcelize.Parcelize
-import java.util.Date
+import java.time.Instant
 
 @Parcelize
 data class Conference(
@@ -12,30 +11,30 @@ data class Conference(
     val tagline: String?,
     val code: String,
     val maps: List<ConferenceMap>,
-    val kickoffDate: Date,
-    val startDate: Date,
-    val endDate: Date,
+    val kickoffDate: Instant,
+    val start: Instant,
+    val end: Instant,
     val timezone: String,
     val flags: Map<String, Boolean>,
     var isSelected: Boolean = false
 ) : Parcelable {
 
     val hasFinished: Boolean
-        get() = Time.now().after(endDate)
+        get() = end.compareTo(Instant.now()) == -1
 
     companion object {
         val Zero = Conference(
-            -1,
-            "CACTUSCON2023",
-            "",
-            "CACTUSCON2023",
-            ArrayList(),
-            Date(),
-            Date(),
-            Date(),
-            "",
-            emptyMap(),
-            false
+            id = -1,
+            name = "TEST 2023",
+            tagline = "",
+            code = "TEST2023",
+            maps = ArrayList(),
+            kickoffDate = Instant.now(),
+            start = Instant.now(),
+            end = Instant.now(),
+            timezone = "",
+            flags = emptyMap(),
+            isSelected = false
         )
     }
 }

@@ -21,7 +21,7 @@ class FirebaseConferencesDataSource(
                 querySnapshot.toObjectsOrEmpty(FirebaseConference::class.java)
                     .filter { !it.hidden || it.developer }
                     .mapNotNull { it.toConference() }
-                    .sortedByDescending { it.startDate }
+                    .sortedByDescending { it.start }
             }
     }
 }

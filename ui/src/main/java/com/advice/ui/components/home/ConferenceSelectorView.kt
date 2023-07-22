@@ -1,4 +1,4 @@
-package com.advice.ui.components
+package com.advice.ui.components.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -14,26 +14,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.advice.core.utils.Time
+import com.advice.core.local.Conference
+import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import java.text.SimpleDateFormat
-import java.util.Date
 
 @Composable
 fun ConferenceSelectorView(
-    label: String,
-    startDate: Date,
-    endDate: Date,
-    isFinished: Boolean,
+    conference: Conference,
     modifier: Modifier = Modifier,
     onConferenceClick: () -> Unit,
 ) {
-    val dateFormat = SimpleDateFormat("MMMM d")
-    val yearFormat = SimpleDateFormat("yyyy")
+    val context = LocalContext.current
 
     Row(
         modifier = modifier
@@ -41,7 +37,7 @@ fun ConferenceSelectorView(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val alpha = if (isFinished) 0.6f else 1.0f
+        val alpha = if (conference.hasFinished) 0.6f else 1.0f
         Column(
             Modifier
                 .weight(1f)
@@ -49,16 +45,12 @@ fun ConferenceSelectorView(
                 .alpha(alpha)
         ) {
             Text(
-                label,
+                conference.name,
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(
-                "${dateFormat.format(startDate)} - ${dateFormat.format(endDate)}, ${
-                    yearFormat.format(
-                        startDate
-                    )
-                }",
+                TimeUtil.getConferenceDateRange(context, conference),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -75,15 +67,11 @@ fun ConferenceSelectorView(
 
 @LightDarkPreview
 @Composable
-fun ConferenceDropdownPreview() {
+private fun ConferenceSelectorViewPreview() {
     ScheduleTheme {
         ConferenceSelectorView(
-            label = "Disobey 2023",
-            Time.now(),
-            Time.now(),
-            isFinished = false
-        ) {
-
-        }
+            conference = Conference.Zero,
+            onConferenceClick = {}
+        )
     }
 }

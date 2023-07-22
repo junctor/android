@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.ConferenceSelectorView
 
 @Composable
 fun ConferenceDropdown(
@@ -31,10 +30,7 @@ fun ConferenceDropdown(
         Column(Modifier.padding(bottom = 64.dp)) {
             for (conference in conferences) {
                 ConferenceSelectorView(
-                    conference.name,
-                    conference.startDate,
-                    conference.endDate,
-                    conference.hasFinished
+                    conference
                 ) {
                     onConferenceClick(conference)
                 }
@@ -45,7 +41,7 @@ fun ConferenceDropdown(
 
 @LightDarkPreview
 @Composable
-fun ConferenceDropdownPreview() {
+private fun ConferenceDropdownPreview() {
     ScheduleTheme {
         ConferenceDropdown(true, listOf(Conference.Zero, Conference.Zero), {}, {})
     }

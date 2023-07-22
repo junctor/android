@@ -1,14 +1,14 @@
 package com.advice.core.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
+import com.advice.core.local.Conference
 import com.advice.core.local.Event
 import com.shortstack.core.BuildConfig
+import timber.log.Timber
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.TimeZone
 
-@SuppressLint("NewApi")
 object TimeUtil {
 
     private fun getZoneId(context: Context, timezone: String): ZoneId? {
@@ -19,8 +19,13 @@ object TimeUtil {
     }
 
     private fun getZoneId(forceTimeZone: Boolean, timeZone: String): ZoneId? {
-        if (forceTimeZone)
-            return ZoneId.of(timeZone)
+        if (forceTimeZone) {
+            try {
+                return ZoneId.of(timeZone)
+            } catch (ex: Exception) {
+                Timber.e(ex, "Error getting zone id for $timeZone")
+            }
+        }
 
         // forcing to Paris
         if (BuildConfig.DEBUG) {
@@ -69,5 +74,17 @@ object TimeUtil {
         val formatter = DateTimeFormatter.ofPattern(pattern)
         val localDateTime = event.start.atZone(zoneId)
         return formatter.format(localDateTime)
+    }
+
+    fun getConferenceDateRange(context: Context, conference: Conference): String {
+        val zoneId = getZoneId(context, conference.timezone)
+
+        val startFormat = DateTimeFormatter.ofPattern("MMMM d")
+        val endFormat = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+        return "${startFormat.format(conference.start.atZone(zoneId))} - ${
+            endFormat.format(
+                conference.end.atZone(zoneId)
+            )
+        }"
     }
 }

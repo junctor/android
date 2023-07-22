@@ -15,6 +15,7 @@ sealed class HomeState {
         val documents: List<Document> = emptyList(),
         val news: List<NewsArticle> = emptyList(),
         val countdown: Long = -1L,
+        val forceTimeZone: Boolean,
     ) : HomeState()
 
     data class Error(val ex: Exception) : HomeState()
