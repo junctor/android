@@ -101,6 +101,7 @@ fun FirebaseConference.toConference(): Conference? {
             mapOf(
                 "enable_merch" to enable_merch,
                 "enable_merch_cart" to enable_merch_cart,
+                "enable_wifi" to enable_wifi,
             )
         )
     } catch (ex: Exception) {
