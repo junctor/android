@@ -94,12 +94,6 @@ fun SettingsScreenContent(
         ) {
             onPreferenceChanged("force_time_zone", it)
         }
-        SwitchPreference("Show Schedule by default", isChecked = showSchedule) {
-            onPreferenceChanged("show_schedule", it)
-        }
-        SwitchPreference("Show filter button", isChecked = showFilterButton) {
-            onPreferenceChanged("show_filter", it)
-        }
         SwitchPreference("Send anonymous usage statistics", isChecked = enableAnalytics) {
             onPreferenceChanged("allow_analytics", it)
         }
