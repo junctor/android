@@ -268,7 +268,7 @@ private fun EventScreenContent(
         if (event.urls.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             for (action in event.urls) {
-                ActionView(action.label)
+                ActionView(action.label, modifier = Modifier.padding(horizontal = 16.dp))
             }
         }
         if (event.speakers.isNotEmpty()) {
