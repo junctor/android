@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -160,14 +161,21 @@ fun ScheduleScreenContent(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    val scrollContext = rememberScrollContext(listState = listState)
 
     val elements = remember {
         days.flatMap { listOf(it.key) + it.value }
     }
 
-    val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-    val scrollContext = rememberScrollContext(listState = listState)
+    // Scrolling to the first event that is not finished
+    LaunchedEffect(key1 = days) {
+        val first = elements.indexOfFirst { it is Event && !it.hasFinished }
+        if (first != -1) {
+            listState.scrollToItem(first)
+        }
+    }
 
     val temp = remember {
         elements.mapIndexed { index, any -> index to any }.filter { it.second is String }
@@ -210,7 +218,7 @@ fun ScheduleScreenContent(
                     }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(128.dp))
                 }
             }
         }

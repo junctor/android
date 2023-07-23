@@ -22,8 +22,8 @@ data class Event(
 ) : Parcelable {
 
     val hasStarted: Boolean
-        get() = start.compareTo(Instant.now()) == -1
+        get() = start.compareTo(Instant.now()) == 1
 
     val hasFinished: Boolean
-        get() = end.compareTo(Instant.now()) == 1
+        get() = end.compareTo(Instant.now()) == -1
 }
