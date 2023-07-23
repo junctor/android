@@ -31,7 +31,6 @@ internal fun ConferenceView(
 ) {
     val context = LocalContext.current
     Surface(
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
             .fillMaxWidth()

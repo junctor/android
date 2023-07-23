@@ -1,6 +1,5 @@
 package com.advice.ui.components.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,7 +22,6 @@ fun CountdownView(time: Long) {
     val days = hours / 24
 
     Surface(
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
