@@ -107,7 +107,7 @@ val appModule = module {
     single { ScheduleRepository(get(), get(), get()) }
     single { HomeRepository(get(), get(), get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
-    single { EventsRepository(get()) }
+    single { EventsRepository(get(), get()) }
     single { SpeakerRepository(get(), get()) }
     single { FiltersRepository(get(), get(named("tags"))) }
     single { FAQRepository(get()) }
@@ -140,7 +140,7 @@ val appModule = module {
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(named("events")), get()) }
-    single<EventDataSource> { FirebaseEventDataSource(get()) }
+    single<EventDataSource> { FirebaseEventDataSource(get(), get(), get(named("events"))) }
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
     single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
     single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }

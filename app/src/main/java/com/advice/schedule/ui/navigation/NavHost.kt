@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -64,6 +65,7 @@ import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.advice.ui.R
 import com.advice.ui.screens.SpeakerState
+import timber.log.Timber
 
 @Composable
 internal fun NavHost(navController: NavHostController) {
@@ -85,8 +87,12 @@ internal fun NavHost(navController: NavHostController) {
             LocationsScreen(navController)
         }
         composable("information") { InformationScreen(navController) }
-        composable("event/{id}") { backStackEntry ->
-            EventScreen(navController, backStackEntry.arguments?.getString("id"))
+        composable("event/{conference}/{id}") { backStackEntry ->
+            EventScreen(
+                navController,
+                backStackEntry.arguments?.getString("conference"),
+                backStackEntry.arguments?.getString("id")
+            )
         }
         composable("location/{id}/{label}") { backStackEntry ->
             LocationScreen(
@@ -336,21 +342,23 @@ private fun Search(navController: NavHostController) {
 }
 
 @Composable
-fun EventScreen(navController: NavHostController, id: String?) {
+fun EventScreen(navController: NavHostController, conference: String?, id: String?) {
     // todo: this should be another ViewModel
     val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
-    val state =
-        viewModel.getState().collectAsState(initial = null).value as? ScheduleScreenState.Success
-            ?: return
-    val event = state.days.values.flatten().find { it.id == id!!.toLong() }!!
+    val flow = remember(conference, id) { viewModel.getEvent(conference, id?.toLong()) }
+    val event = flow.collectAsState(initial = null).value
     EventScreen(
         event = event,
-        onBookmark = { viewModel.bookmark(event, it) },
+        onBookmark = {
+            if (event != null) {
+                viewModel.bookmark(event, it)
+            }
+        },
         onBackPressed = { navController.popBackStack() },
-        onLocationClicked = {
+        onLocationClicked = { location ->
             navController.navigate(
-                "location/${event.location.id}/${
-                    event.location.shortName?.replace(
+                "location/${location.id}/${
+                    location.shortName?.replace(
                         "/",
                         "\\"
                     )
@@ -383,7 +391,7 @@ fun SpeakerScreen(
         },
         onLinkClicked = onLinkClicked,
         onEventClicked = {
-            navController.navigate("event/${it.id}")
+            navController.navigate("event/${it.conference}/${it.id}")
         }
     )
 }
@@ -401,7 +409,7 @@ fun LocationScreen(navController: NavHostController, id: String?, label: String?
             navController.popBackStack()
         },
         onEventClick = {
-            navController.navigate("event/${it.id}")
+            navController.navigate("event/${it.conference}/${it.id}")
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)
@@ -477,7 +485,7 @@ private fun HomeScreen(navController: NavHostController) {
                         mainViewModel.setAnchor(DragAnchors.End)
                     },
                     onEventClick = {
-                        navController.navigate("event/${it.id}")
+                        navController.navigate("event/${it.conference}/${it.id}")
                     },
                     onBookmarkClick = { event, isBookmarked ->
                         scheduleViewModel.bookmark(event, isBookmarked)

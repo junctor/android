@@ -142,6 +142,10 @@ fun FirebaseEvent.toEvent(tags: List<TagType>, isBookmarked: Boolean = false): E
             list.find { it.id == id }
         }.sortedBy { list.indexOf(it) }
 
+        if(types.isEmpty()) {
+            return null
+        }
+
         return Event(
             id,
             conference,

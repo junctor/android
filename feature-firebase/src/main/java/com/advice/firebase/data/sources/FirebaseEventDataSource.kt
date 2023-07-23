@@ -1,15 +1,23 @@
 package com.advice.firebase.data.sources
 
 import com.advice.core.local.Event
+import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.data.sources.BookmarkedEventsDataSource
 import com.advice.data.sources.EventDataSource
+import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.toEvent
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.models.FirebaseEvent
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 class FirebaseEventDataSource(
     private val firestore: FirebaseFirestore,
+    private val tagsDataSource: TagsDataSource,
+    private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : EventDataSource {
 
     override suspend fun get(conference: String, id: Long): Event? {
@@ -19,7 +27,13 @@ class FirebaseEventDataSource(
             .document(id.toString())
             .get()
             .await()
-        // todo: add tags
-        return snapshot.toObjectOrNull(FirebaseEvent::class.java)?.toEvent(emptyList())
+
+        val tags = tagsDataSource.get().first()
+        val bookmarks = bookmarkedEventsDataSource.get().first()
+        return snapshot.toObjectOrNull(FirebaseEvent::class.java)
+            ?.toEvent(
+                tags = tags,
+                isBookmarked = bookmarks.any { it.id == id.toString() }
+            )
     }
 }

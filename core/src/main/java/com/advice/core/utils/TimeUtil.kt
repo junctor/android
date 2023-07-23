@@ -23,7 +23,7 @@ object TimeUtil {
             try {
                 return ZoneId.of(timeZone)
             } catch (ex: Exception) {
-                Timber.e(ex, "Error getting zone id for $timeZone")
+                Timber.e("Error getting zone id for \"$timeZone\".")
             }
         }
 

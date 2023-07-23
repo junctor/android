@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
+import com.advice.core.local.Location
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
 import com.advice.core.utils.TimeUtil
@@ -69,15 +70,16 @@ import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
 import com.advice.ui.R
+import com.advice.ui.components.ProgressSpinner
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventScreen(
-    event: Event,
+    event: Event?,
     onBookmark: (Boolean) -> Unit,
     onBackPressed: () -> Unit,
-    onLocationClicked: () -> Unit,
+    onLocationClicked: (Location) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -91,7 +93,7 @@ fun EventScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        event.title,
+                        event?.title ?: "",
                         modifier = Modifier.alpha(alpha.value),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -103,11 +105,13 @@ fun EventScreen(
                     }
                 },
                 actions = {
-                    BookmarkButton(isBookmarked = event.isBookmarked) {
-                        onBookmark(it)
+                    if (event != null) {
+                        BookmarkButton(isBookmarked = event.isBookmarked) {
+                            onBookmark(it)
+                        }
                     }
                 }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = parseColor(event.types.first().color).copy(alpha = alpha.value),
+                    containerColor = getContainerColour(event).copy(alpha = alpha.value),
                 )
             )
         }) { contentPadding ->
@@ -115,12 +119,16 @@ fun EventScreen(
             Modifier
                 .verticalScroll(scrollState)
         ) {
-            EventScreenContent(
-                event,
-                onLocationClicked,
-                onSpeakerClicked,
-                modifier = Modifier.padding(contentPadding)
-            )
+            if (event == null) {
+
+            } else {
+                EventScreenContent(
+                    event,
+                    onLocationClicked,
+                    onSpeakerClicked,
+                    modifier = Modifier.padding(contentPadding)
+                )
+            }
         }
     }
 
@@ -137,6 +145,12 @@ fun EventScreen(
     }
 }
 
+fun getContainerColour(event: Event?): Color {
+    if (event == null)
+        return Color.Transparent
+    return parseColor(event.types.first().color)
+}
+
 @Composable
 private fun HeaderSection(
     title: String,
@@ -144,7 +158,6 @@ private fun HeaderSection(
     date: String,
     location: String,
     onLocationClicked: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val color = parseColor(categories.first().color)
     Column(
@@ -179,9 +192,8 @@ private fun HeaderSection(
                 Icons.Default.LocationOn,
                 null,
                 location.replace(" - ", "\n"),
-                modifier = Modifier.clickable {
-                    onLocationClicked()
-                })
+                modifier = Modifier.clickable(onClick = onLocationClicked)
+            )
         }
     }
 }
@@ -230,22 +242,22 @@ private fun DetailsCard(
 @Composable
 private fun EventScreenContent(
     event: Event,
-    onLocationClicked: () -> Unit,
+    onLocationClicked: (Location) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     Column(
         Modifier
-        //.padding(16.dp)
     ) {
         HeaderSection(
-            event.title,
-            event.types,
-            getDateTimestamp(context, event),
-            event.location.name,
-            onLocationClicked,
-            modifier,
+            title = event.title,
+            categories = event.types,
+            date = getDateTimestamp(context, event),
+            location = event.location.name,
+            onLocationClicked = {
+                onLocationClicked(event.location)
+            },
         )
         if (event.types.size > 1) {
             FlowRow(

@@ -91,7 +91,7 @@ class MainActivity :
             Timber.e("onNewIntent: $uri")
             val conference = uri?.getQueryParameter("c")
             val event = uri?.getQueryParameter("e")
-            navController.navigate("event/$event")
+            navController.navigate("event/${conference}/$event")
         }
     }
 

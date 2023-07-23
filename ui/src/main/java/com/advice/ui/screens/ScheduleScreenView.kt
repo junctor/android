@@ -189,7 +189,10 @@ fun ScheduleScreenContent(
         Column(modifier = modifier) {
             DaySelectorView(days = days.map { it.key }, start = start, end = end) {
                 coroutineScope.launch {
-                    listState.scrollToItem(elements.indexOf(it))
+                    val index = elements.indexOf(it)
+                    if (index != -1) {
+                        listState.scrollToItem(index)
+                    }
                 }
             }
             LazyColumn(state = listState) {

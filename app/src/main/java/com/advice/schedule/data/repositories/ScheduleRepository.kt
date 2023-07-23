@@ -3,20 +3,22 @@ package com.advice.schedule.data.repositories
 import com.advice.core.local.Event
 import com.advice.core.local.Tag
 import com.advice.core.ui.ScheduleFilter
-import com.advice.data.sources.TagsDataSource
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import timber.log.Timber
 
 class ScheduleRepository(
     private val eventsRepository: EventsRepository,
-    private val tagsDataSource: TagsDataSource,
+    private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
 ) {
 
+    suspend fun getEvent(conference: String, id: Long): Event? {
+        return eventsRepository.get(conference, id)
+    }
+
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
-        return combine(eventsRepository.events, tagsDataSource.get()) { events, tags ->
+        return combine(eventsRepository.events, tagsRepository.tags) { events, tags ->
 
             val sortedEvents = events.sortedBy { it.start }
 

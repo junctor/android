@@ -1,5 +1,6 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.local.Conference
 import com.advice.core.local.Event
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
@@ -13,10 +14,12 @@ import com.advice.firebase.models.FirebaseEvent
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
@@ -29,30 +32,46 @@ class FirebaseEventsDataSource(
     private val firestore: FirebaseFirestore,
 ) : EventsDataSource {
 
-    private val _eventsFlow = combine(
-        userSession.getConference(),
-        tagsDataSource.get(),
-        bookmarkedEventsDataSource.get()
-    ) { conference, tags, bookmarkedEvents ->
-        firestore.collection("conferences")
+    private fun observeConferenceEvents(conference: Conference): Flow<List<FirebaseEvent>> {
+        return firestore.collection("conferences")
             .document(conference.code)
             .collection("events")
             .snapshotFlow()
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseEvent::class.java)
                     .filter { (!it.hidden || userSession.isDeveloper) }
-                    .mapNotNull {
-                        it.toEvent(
-                            tags = tags,
-                            isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == it.id.toString() })
-                    }
             }
-    }.flattenMerge()
+    }
+
+    val conferenceAndTagsFlow = combine(
+        userSession.getConference(),
+        tagsDataSource.get()
+    ) { conference, tags -> Pair(conference, tags) }
         .shareIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Lazily,
             replay = 1
         )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _eventsFlow = conferenceAndTagsFlow.flatMapLatest { (conference, tags) ->
+        combine(
+            observeConferenceEvents(conference),
+            bookmarkedEventsDataSource.get()
+        ) { firebaseEvents, bookmarkedEvents ->
+            firebaseEvents.mapNotNull {
+                it.toEvent(
+                    tags = tags,
+                    isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == it.id.toString() })
+            }
+        }
+    }
+        .shareIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            replay = 1
+        )
+
 
     override fun get(): Flow<List<Event>> = _eventsFlow
 
