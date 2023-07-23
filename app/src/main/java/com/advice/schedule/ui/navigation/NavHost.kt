@@ -37,6 +37,7 @@ import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
 import com.advice.schedule.presentation.viewmodel.InformationViewModel
 import com.advice.schedule.presentation.viewmodel.MapsViewModel
+import com.advice.schedule.presentation.viewmodel.NewsViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.presentation.viewmodel.SearchViewModel
@@ -125,8 +126,9 @@ internal fun NavHost(navController: NavHostController) {
 
 @Composable
 private fun NewsScreen(navController: NavHostController) {
-    // todo: add news view model
-    com.advice.ui.screens.NewsScreen(emptyList(), onBackPressed = {
+    val viewModel = navController.navGraphViewModel<NewsViewModel>()
+    val news = viewModel.getNews().collectAsState(initial = emptyList()).value
+    com.advice.ui.screens.NewsScreen(news = news, onBackPressed = {
         navController.popBackStack()
     })
 }
