@@ -98,7 +98,9 @@ internal fun SearchScreen(
                             }
                             items(state.results.organizations) {
                                 // todo: fix this hacky solution
-                                OrganizationRow(listOf(it))
+                                OrganizationRow(listOf(it), onOrganizationPressed = {
+                                    // todo: implement
+                                })
                             }
                         }
                     }

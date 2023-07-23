@@ -19,7 +19,11 @@ import com.advice.ui.components.ProgressSpinner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VendorsScreen(organizations: List<Organization>?, onBackPressed: () -> Unit) {
+fun VendorsScreen(
+    organizations: List<Organization>?,
+    onBackPressed: () -> Unit,
+    onOrganizationPressed: (Organization) -> Unit,
+) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("Vendors") }, navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
@@ -38,7 +42,7 @@ fun VendorsScreen(organizations: List<Organization>?, onBackPressed: () -> Unit)
                 }
 
                 else -> {
-                    OrganizationsScreenContent(organizations)
+                    OrganizationsScreenContent(organizations, onOrganizationPressed)
                 }
             }
         }

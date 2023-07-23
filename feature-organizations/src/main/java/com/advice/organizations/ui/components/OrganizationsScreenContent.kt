@@ -9,11 +9,12 @@ import com.advice.core.local.Organization
 @Composable
 internal fun OrganizationsScreenContent(
     organizations: List<Organization>,
+    onOrganizationPressed: (Organization) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier) {
         items(organizations.chunked(2)) {
-            OrganizationRow(it)
+            OrganizationRow(it, onOrganizationPressed)
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -28,6 +29,7 @@ import com.advice.core.ui.InformationState
 import com.advice.core.ui.ScheduleFilter
 import com.advice.documents.presentation.viewmodel.DocumentsViewModel
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
+import com.advice.organizations.ui.screens.OrganizationScreen
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.products.ui.screens.ProductScreen
 import com.advice.products.ui.screens.ProductsSummaryScreen
@@ -121,7 +123,25 @@ internal fun NavHost(navController: NavHostController) {
         composable("merch/summary") {
             ProductsSummary(navController, productsViewModel)
         }
+        composable("organization/{id}") { backStackEntry ->
+            OrganizationScreen(backStackEntry, navController)
+        }
     }
+}
+
+@Composable
+private fun OrganizationScreen(
+    backStackEntry: NavBackStackEntry,
+    navController: NavHostController
+) {
+    val id = backStackEntry.arguments?.getString("id")
+    val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
+    val organizations = viewModel.organizations.collectAsState(initial = emptyList()).value
+    val organization = organizations.find { it.id.toString() == id } ?: return
+
+    OrganizationScreen(organization, onBackPressed = {
+        navController.popBackStack()
+    })
 }
 
 @Composable
@@ -256,7 +276,10 @@ private fun VendorsScreen(navController: NavHostController) {
         organizations = state,
         onBackPressed = {
             navController.popBackStack()
-        }
+        },
+        onOrganizationPressed = {
+            navController.navigate("organization/${it.id}")
+        },
     )
 }
 
@@ -268,7 +291,10 @@ private fun VillagesScreen(navController: NavHostController) {
         organizations = state,
         onBackPressed = {
             navController.popBackStack()
-        }
+        },
+        onOrganizationPressed = {
+            navController.navigate("organization/${it.id}")
+        },
     )
 }
 

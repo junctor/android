@@ -21,7 +21,11 @@ import com.advice.ui.components.ProgressSpinner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VillagesScreen(organizations: List<Organization>?, onBackPressed: () -> Unit) {
+fun VillagesScreen(
+    organizations: List<Organization>?,
+    onBackPressed: () -> Unit,
+    onOrganizationPressed: (Organization) -> Unit,
+) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("Villages") }, navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
@@ -40,7 +44,7 @@ fun VillagesScreen(organizations: List<Organization>?, onBackPressed: () -> Unit
                 }
 
                 else -> {
-                    OrganizationsScreenContent(organizations)
+                    OrganizationsScreenContent(organizations, onOrganizationPressed)
                 }
             }
         }
@@ -72,9 +76,9 @@ private fun OrganizationsScreenViewPreview() {
                     media = emptyList(),
                     tags = emptyList(),
                 )
-            )
-        ) {
-
-        }
+            ),
+            onBackPressed = {},
+            onOrganizationPressed = {}
+        )
     }
 }

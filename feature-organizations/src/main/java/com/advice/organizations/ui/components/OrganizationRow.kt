@@ -12,7 +12,10 @@ import com.advice.core.local.Organization
 
 
 @Composable
-fun OrganizationRow(organizations: List<Organization>) {
+fun OrganizationRow(
+    organizations: List<Organization>,
+    onOrganizationPressed: (Organization) -> Unit,
+) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -25,7 +28,7 @@ fun OrganizationRow(organizations: List<Organization>) {
                 organization.media.firstOrNull()?.url,
                 modifier = Modifier.weight(1f)
             ) {
-                // todo: open organization details
+                onOrganizationPressed(organization)
             }
         }
         if (organizations.size == 1) Box(modifier = Modifier.weight(1f))

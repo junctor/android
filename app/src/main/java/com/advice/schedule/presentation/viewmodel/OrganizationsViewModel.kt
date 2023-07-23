@@ -9,6 +9,7 @@ class OrganizationsViewModel : ViewModel(), KoinComponent {
 
     private val repository by inject<OrganizationsRepository>()
 
+    val organizations = repository.organizations
     val vendors = repository.vendors
     val villages = repository.villages
 
