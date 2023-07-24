@@ -40,7 +40,7 @@ fun ActionView(label: String, url: String, onClick: () -> Unit, modifier: Modifi
         ) {
             Column(Modifier.fillMaxWidth()) {
                 Text(label)
-                Text(url)
+                Text(url, color = MaterialTheme.colorScheme.primary, maxLines = 1)
             }
         }
     }

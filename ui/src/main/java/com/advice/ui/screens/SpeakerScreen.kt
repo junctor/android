@@ -23,6 +23,7 @@ import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.R
+import com.advice.ui.components.ActionView
 import com.advice.ui.components.EmptyView
 import com.advice.ui.components.EventRow
 import com.advice.ui.components.NoDetailsView
@@ -119,22 +120,9 @@ fun SpeakerScreenContent(
         if (speaker.links.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             speaker.links.forEach {
-                Surface(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 4.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                    shape = RoundedCornerShape(12.dp),
-                ) {
-                    Column(Modifier
-                        .clickable {
-                            onLinkClicked(it.url)
-                        }
-                        .padding(16.dp)) {
-                        Text(it.title)
-                        Text(it.url)
-                    }
-                }
+                ActionView(label = it.title, url = it.url, onClick = {
+                    onLinkClicked(it.url)
+                }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
             }
         }
 
