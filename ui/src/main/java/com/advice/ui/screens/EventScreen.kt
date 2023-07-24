@@ -1,16 +1,16 @@
 package com.advice.ui.screens
 
 import android.content.Context
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,14 +19,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -34,10 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,6 +75,7 @@ fun EventScreen(
     onBookmark: (Boolean) -> Unit,
     onBackPressed: () -> Unit,
     onLocationClicked: (Location) -> Unit,
+    onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -120,11 +116,19 @@ fun EventScreen(
                 .verticalScroll(scrollState)
         ) {
             if (event == null) {
-
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ProgressSpinner()
+                }
             } else {
                 EventScreenContent(
                     event,
                     onLocationClicked,
+                    onUrlClicked,
                     onSpeakerClicked,
                     modifier = Modifier.padding(contentPadding)
                 )
@@ -186,13 +190,15 @@ private fun HeaderSection(
                 CategoryView(categories.first(), size = CategorySize.Large, hasIcon = false)
             }
 
-            DetailsCard(Icons.Default.DateRange, null, date.replace(" - ", "\n"))
+            DetailsCard(
+                icon = Icons.Default.DateRange,
+                text = date.replace(" - ", "\n"),
+            )
 
             DetailsCard(
-                Icons.Default.LocationOn,
-                null,
-                location.replace(" - ", "\n"),
-                modifier = Modifier.clickable(onClick = onLocationClicked)
+                icon = Icons.Default.LocationOn,
+                text = location.replace(" - ", "\n"),
+                onClick = onLocationClicked
             )
         }
     }
@@ -201,39 +207,26 @@ private fun HeaderSection(
 @Composable
 private fun DetailsCard(
     icon: ImageVector,
-    tint: Color?,
     text: String,
     modifier: Modifier = Modifier,
-    onDismiss: (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
 ) {
-    var isVisible by remember {
-        mutableStateOf(true)
-    }
-
-    AnimatedVisibility(isVisible) {
-        Surface(
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
-            shape = RoundedCornerShape(8.dp),
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 0.dp, vertical = 4.dp)
+    val isClickable = onClick != null
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 0.dp, vertical = 4.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable(enabled = isClickable, onClick = onClick ?: {})
+                .padding(16.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Icon(icon, null, tint = tint ?: LocalContentColor.current)
-                Spacer(Modifier.width(8.dp))
-                Text(text, modifier = Modifier.weight(1f))
-                if (onDismiss != null) {
-                    IconButton(onClick = {
-                        onDismiss()
-                        isVisible = false
-                    }) {
-                        Icon(Icons.Default.Close, null)
-                    }
-                }
-            }
+            Icon(icon, null)
+            Spacer(Modifier.width(8.dp))
+            Text(text, modifier = Modifier.weight(1f))
         }
     }
 }
@@ -243,6 +236,7 @@ private fun DetailsCard(
 private fun EventScreenContent(
     event: Event,
     onLocationClicked: (Location) -> Unit,
+    onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -263,10 +257,12 @@ private fun EventScreenContent(
             FlowRow(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 16.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                for (tag in event.types.subList(1, event.types.size)) {
-                    CategoryView(tag, size = CategorySize.Medium)
+                val tags = event.types.takeLast(event.types.size - 1)
+                for (category in tags) {
+                    CategoryView(category, size = CategorySize.Medium)
                 }
             }
         }
@@ -280,7 +276,13 @@ private fun EventScreenContent(
         if (event.urls.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             for (action in event.urls) {
-                ActionView(action.label, modifier = Modifier.padding(horizontal = 16.dp))
+                ActionView(
+                    label = action.label,
+                    url = action.url,
+                    onClick = {
+                        onUrlClicked(action.url)
+                    }, modifier = Modifier.padding(horizontal = 16.dp)
+                )
             }
         }
         if (event.speakers.isNotEmpty()) {
@@ -318,6 +320,6 @@ private fun EventScreenPreview(
     @PreviewParameter(FakeEventProvider::class) event: Event,
 ) {
     ScheduleTheme {
-        EventScreen(event, {}, {}, {}, {})
+        EventScreen(event, {}, {}, {}, {}, {})
     }
 }

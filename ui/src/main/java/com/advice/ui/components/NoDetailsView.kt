@@ -11,8 +11,8 @@ import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun NoDetailsView() {
-    Text("No further information available.\nMaybe ask Chatgpt.", modifier = Modifier
+fun NoDetailsView(text: String = "No further information available.\nMaybe ask Chatgpt.") {
+    Text(text, modifier = Modifier
         .padding(16.dp)
         .fillMaxWidth(), textAlign = TextAlign.Center)
 }

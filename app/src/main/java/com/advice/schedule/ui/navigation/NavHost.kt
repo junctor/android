@@ -23,7 +23,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.core.ui.InformationState
@@ -65,7 +64,6 @@ import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
 import com.advice.ui.R
 import com.advice.ui.screens.SpeakerState
-import timber.log.Timber
 
 @Composable
 internal fun NavHost(navController: NavHostController) {
@@ -140,14 +138,21 @@ private fun OrganizationScreen(
     backStackEntry: NavBackStackEntry,
     navController: NavHostController
 ) {
+    val context = LocalContext.current
+
     val id = backStackEntry.arguments?.getString("id")
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
     val organizations = viewModel.organizations.collectAsState(initial = emptyList()).value
     val organization = organizations.find { it.id.toString() == id } ?: return
 
-    OrganizationScreen(organization, onBackPressed = {
-        navController.popBackStack()
-    })
+    OrganizationScreen(
+        organization = organization,
+        onBackPressed = {
+            navController.popBackStack()
+        }, onLinkClicked = {
+            (context as MainActivity).openLink(it)
+        }
+    )
 }
 
 @Composable
@@ -333,16 +338,14 @@ private fun InformationScreen(navController: NavHostController) {
 private fun Search(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<SearchViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value
-    SearchScreen(state, onQueryChanged = {
+    SearchScreen(navController, state, onQueryChanged = {
         viewModel.search(it)
-    }, onBackPressed = {
-        viewModel.search("")
-        navController.popBackStack()
     })
 }
 
 @Composable
 fun EventScreen(navController: NavHostController, conference: String?, id: String?) {
+    val context = LocalContext.current
     // todo: this should be another ViewModel
     val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
     val flow = remember(conference, id) { viewModel.getEvent(conference, id?.toLong()) }
@@ -364,6 +367,9 @@ fun EventScreen(navController: NavHostController, conference: String?, id: Strin
                     )
                 }"
             )
+        },
+        onUrlClicked = { url ->
+            (context as MainActivity).openLink(url)
         },
         onSpeakerClicked = { navController.navigate("speaker/${it.id}/${it.name}") }
     )

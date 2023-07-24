@@ -16,31 +16,40 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.advice.core.utils.TimeUtil
 import com.advice.organizations.ui.components.OrganizationRow
 import com.advice.schedule.data.repositories.SearchState
+import com.advice.ui.components.EventRow
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
 import com.advice.ui.components.SpeakerView
 import com.advice.ui.preview.LightDarkPreview
+import com.shortstack.hackertracker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SearchScreen(
+    navController: NavController,
     state: SearchState?,
     onQueryChanged: (String) -> Unit,
-    onBackPressed: () -> Unit,
 ) {
-    val context = LocalContext.current
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Search") }, navigationIcon = {
-                IconButton(onClick = onBackPressed) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                IconButton(onClick = {
+                    // clear the search
+                    onQueryChanged("")
+                    navController.popBackStack()
+                }) {
+                    Icon(
+                        painterResource(id = com.advice.ui.R.drawable.baseline_arrow_back_ios_new_24),
+                        contentDescription = "Back"
+                    )
                 }
             })
         }
@@ -51,8 +60,12 @@ internal fun SearchScreen(
             } else {
                 LazyColumn() {
                     item {
-                        Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-                            SearchBar("Search anything", modifier = Modifier) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                        ) {
+                            SearchBar("Search anywhere", modifier = Modifier) {
                                 onQueryChanged(it)
                             }
                         }
@@ -69,17 +82,10 @@ internal fun SearchScreen(
                                 }
                             }
                             items(state.results.events) {
-                                EventRowView(
-                                    title = it.title,
-                                    time = TimeUtil.getTimeStamp(context, it),
-                                    location = it.location.name,
-                                    tags = it.types,
-                                    isBookmarked = it.isBookmarked,
+                                EventRow(
+                                    event = it,
                                     onEventPressed = {
-                                        // todo: handle
-                                    },
-                                    onBookmark = {
-                                        // todo: handle
+                                        navController.navigate("event/${it.conference}/${it.id}")
                                     },
                                 )
                             }
@@ -89,18 +95,21 @@ internal fun SearchScreen(
                                 }
                             }
                             items(state.results.speakers) {
-                                SpeakerView(it.name)
+                                SpeakerView(it.name, onSpeakerClicked = {
+                                    navController.navigate("speaker/${it.id}/${it.name}")
+                                })
                             }
                             if (state.results.organizations.isNotEmpty()) {
                                 item {
                                     HeaderRow("Organizations")
                                 }
                             }
-                            items(state.results.organizations) {
-                                // todo: fix this hacky solution
-                                OrganizationRow(listOf(it), onOrganizationPressed = {
-                                    // todo: implement
-                                })
+                            state.results.organizations.windowed(2, 2) { organizations ->
+                                item {
+                                    OrganizationRow(organizations, onOrganizationPressed = {
+                                        navController.navigate("organization/${it.id}")
+                                    })
+                                }
                             }
                         }
                     }

@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
+import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.createTag
 import com.advice.ui.utils.parseColor
@@ -43,7 +44,7 @@ internal fun CategoryView(
     val fontWeight = when (size) {
         CategorySize.Large -> FontWeight.ExtraBold
         CategorySize.Medium -> MaterialTheme.typography.bodyMedium.fontWeight
-        CategorySize.Small -> MaterialTheme.typography.bodySmall.fontWeight
+        CategorySize.Small -> FontWeight.Medium
     }
 
     val padding = when (size) {
@@ -84,7 +85,7 @@ internal fun CategoryView(
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
 private fun CategoryViewPreview() {
     ScheduleTheme {

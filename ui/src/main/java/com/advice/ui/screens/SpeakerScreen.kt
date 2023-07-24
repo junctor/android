@@ -23,6 +23,10 @@ import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.R
+import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EventRow
+import com.advice.ui.components.NoDetailsView
+import com.advice.ui.components.ProgressSpinner
 
 sealed class SpeakerState {
     object Loading : SpeakerState()
@@ -40,7 +44,21 @@ fun SpeakerScreen(
     onEventClicked: (Event) -> Unit
 ) {
     Scaffold(topBar = {
-        CenterAlignedTopAppBar(title = { Text(name) }, navigationIcon = {
+        CenterAlignedTopAppBar(title = {
+            Column {
+                Text(name)
+                if (state is SpeakerState.Success) {
+                    val pronouns = state.speaker.pronouns
+                    if (pronouns != null) {
+                        Text(
+                            pronouns,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+            }
+
+        }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null)
             }
@@ -49,7 +67,10 @@ fun SpeakerScreen(
         Box(Modifier.padding(it)) {
             when (state) {
                 SpeakerState.Error -> {}
-                SpeakerState.Loading -> {}
+                SpeakerState.Loading -> {
+                    ProgressSpinner()
+                }
+
                 is SpeakerState.Success -> {
                     SpeakerScreenContent(
                         state.speaker,
@@ -74,28 +95,14 @@ fun SpeakerScreenContent(
     val context = LocalContext.current
 
     Column(modifier.verticalScroll(rememberScrollState())) {
-        val pronouns = speaker.pronouns
-        if (pronouns != null) {
-            Text(
-                pronouns,
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
         if (speaker.affiliations.isNotEmpty()) {
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Affiliations", textAlign = TextAlign.Center, modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            )
             speaker.affiliations.forEach {
                 Surface(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(0.dp),
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Text(it.organization)
@@ -104,18 +111,13 @@ fun SpeakerScreenContent(
                 }
             }
         }
-
         if (speaker.description.isNotBlank()) {
             Paragraph(speaker.description, Modifier.padding(16.dp))
+        } else {
+            NoDetailsView(text = "This speaker likes to keep a low profile.")
         }
-
         if (speaker.links.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
-            Text(
-                "Links", textAlign = TextAlign.Center, modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            )
             speaker.links.forEach {
                 Surface(
                     Modifier
@@ -146,17 +148,10 @@ fun SpeakerScreenContent(
             )
 
             for (event in events) {
-                EventRowView(
-                    title = event.title,
-                    time = TimeUtil.getTimeStamp(context, event),
-                    location = event.location.name,
-                    tags = event.types,
-                    isBookmarked = event.isBookmarked,
+                EventRow(
+                    event = event,
                     onEventPressed = {
                         onEventClicked(event)
-                    },
-                    onBookmark = {
-                        // todo:
                     },
                 )
             }
