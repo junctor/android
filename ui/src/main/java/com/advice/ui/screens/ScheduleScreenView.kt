@@ -20,8 +20,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -43,6 +45,7 @@ import com.advice.ui.rememberScrollContext
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.Instant
 
 sealed class ScheduleScreenState {
@@ -160,6 +163,8 @@ fun ScheduleScreenContent(
     onBookmarkClick: (Event, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+//    val alreadyScrolled = rememberSaveable { mutableStateOf(false) }
+
     val context = LocalContext.current
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -169,13 +174,16 @@ fun ScheduleScreenContent(
         days.flatMap { listOf(it.key) + it.value }
     }
 
-    // Scrolling to the first event that is not finished
-    LaunchedEffect(key1 = days) {
-        val first = elements.indexOfFirst { it is Event && !it.hasFinished }
-        if (first != -1) {
-            listState.scrollToItem(first)
-        }
-    }
+//    // Scrolling to the first event that is not finished
+//    LaunchedEffect(key1 = alreadyScrolled.value) {
+//        if (!alreadyScrolled.value) {
+//            Timber.e("Scrolling to first event")
+//            val first = elements.indexOfFirst { it is Event && !it.hasFinished }
+//            if (first != -1) {
+//                listState.scrollToItem(first)
+//            }
+//        }
+//    }
 
     val temp = remember {
         elements.mapIndexed { index, any -> index to any }.filter { it.second is String }
@@ -221,7 +229,7 @@ fun ScheduleScreenContent(
                     }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(128.dp))
+                    Spacer(modifier = Modifier.height(48.dp))
                 }
             }
         }
