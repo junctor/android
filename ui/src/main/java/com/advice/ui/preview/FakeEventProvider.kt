@@ -25,7 +25,7 @@ class FakeEventProvider : PreviewParameterProvider<Event> {
             Instant.now(),
             SpeakerProvider.speakers.take(2),
             TagProvider.tags.take(2),
-            Location(-1, "Main Stage", "Stage", null, "DEFCON"),
+            Location(-1, "Caesars Forum - Track 1", "Track 1", "DEFCON"),
             listOf(),
             false
         )

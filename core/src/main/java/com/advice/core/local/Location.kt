@@ -24,7 +24,6 @@ data class Location(
     val id: Long,
     val name: String,
     val shortName: String?,
-    val hotel: String?,
     val conference: String,
     // Schedule
     val defaultStatus: String? = null,

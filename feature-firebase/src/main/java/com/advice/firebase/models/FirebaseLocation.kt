@@ -8,7 +8,6 @@ import kotlinx.parcelize.Parcelize
 data class FirebaseLocation(
     val id: Long = -1,
     val name: String = "",
-    val hotel: String? = null,
     val conference: String = "",
     // Schedule
     val default_status: String? = null,

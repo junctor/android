@@ -116,7 +116,6 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
             id,
             name,
             short_name,
-            hotel,
             conference,
             default_status,
             hier_depth,

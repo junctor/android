@@ -9,7 +9,7 @@ class LocationProvider : PreviewParameterProvider<Location> {
 
     companion object {
         val locations = listOf(
-            Location(1, "Casino - Track 1", "Track 1", null, "DEFCON"),
+            Location(1, "Casino - Track 1", "Track 1", "DEFCON"),
         )
     }
 }

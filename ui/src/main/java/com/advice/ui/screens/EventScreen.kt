@@ -258,7 +258,7 @@ private fun EventScreenContent(
             categories = event.types,
             date = TimeUtil.getEventDateStamp(context, event),
             time = TimeUtil.getEventTimeStamp(context, event),
-            location = event.location.name,
+            location = getLocation(event.location),
             onTagClicked = onTagClicked
         ) {
             onLocationClicked(event.location)
@@ -323,6 +323,15 @@ private fun EventScreenContent(
         }
         Spacer(modifier = Modifier.height(64.dp))
     }
+}
+
+private fun getLocation(location: Location): String {
+    // Find the dash within name and replace it with a newline.
+    val index = location.name.indexOf(" - " + location.shortName)
+    if (index != -1) {
+        return location.name.substring(0, index) + "\n" + location.shortName
+    }
+    return location.name
 }
 
 @LightDarkPreview

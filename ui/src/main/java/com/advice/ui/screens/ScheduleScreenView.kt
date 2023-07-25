@@ -267,8 +267,7 @@ fun ScheduleScreenViewPreview() {
                         location = Location(
                             -1L,
                             "LOC://AUD - Track 1 / Первый Трек",
-                            null,
-                            null,
+                            "Track 1 / Первый Трек",
                             "THOCON 0xC"
                         ),
                         urls = emptyList(),
