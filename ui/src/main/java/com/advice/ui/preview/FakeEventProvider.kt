@@ -23,12 +23,11 @@ class FakeEventProvider : PreviewParameterProvider<Event> {
             Instant.now(),
             Instant.now(),
             Instant.now(),
-            listOf(SpeakerProvider.speakers.random()),
-            listOf(TagProvider.tags.random()),
+            SpeakerProvider.speakers.take(2),
+            TagProvider.tags.take(2),
             Location(-1, "Main Stage", "Stage", null, "DEFCON"),
             listOf(),
             false
         )
-
     )
 }

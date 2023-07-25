@@ -162,6 +162,7 @@ private fun HeaderSection(
     title: String,
     categories: List<Tag>,
     date: String,
+    time: String,
     location: String,
     onTagClicked: (Tag) -> Unit,
     onLocationClicked: () -> Unit,
@@ -199,12 +200,12 @@ private fun HeaderSection(
 
             DetailsCard(
                 icon = Icons.Default.DateRange,
-                text = date.replace(" - ", "\n"),
+                text = date + "\n" + time,
             )
 
             DetailsCard(
                 icon = Icons.Default.LocationOn,
-                text = location.replace(" - ", "\n"),
+                text = location,
                 onClick = onLocationClicked
             )
         }
@@ -255,7 +256,8 @@ private fun EventScreenContent(
         HeaderSection(
             title = event.title,
             categories = event.types,
-            date = getDateTimestamp(context, event),
+            date = TimeUtil.getEventDateStamp(context, event),
+            time = TimeUtil.getEventTimeStamp(context, event),
             location = event.location.name,
             onTagClicked = onTagClicked
         ) {
@@ -321,10 +323,6 @@ private fun EventScreenContent(
         }
         Spacer(modifier = Modifier.height(64.dp))
     }
-}
-
-private fun getDateTimestamp(context: Context, event: Event): String {
-    return TimeUtil.getDateTimeStamp(context, event)
 }
 
 @LightDarkPreview
