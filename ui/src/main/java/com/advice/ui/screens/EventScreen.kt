@@ -74,6 +74,7 @@ fun EventScreen(
     event: Event?,
     onBookmark: (Boolean) -> Unit,
     onBackPressed: () -> Unit,
+    onTagClicked: (Tag) -> Unit,
     onLocationClicked: (Location) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
@@ -127,6 +128,7 @@ fun EventScreen(
             } else {
                 EventScreenContent(
                     event,
+                    onTagClicked,
                     onLocationClicked,
                     onUrlClicked,
                     onSpeakerClicked,
@@ -161,6 +163,7 @@ private fun HeaderSection(
     categories: List<Tag>,
     date: String,
     location: String,
+    onTagClicked: (Tag) -> Unit,
     onLocationClicked: () -> Unit,
 ) {
     val color = parseColor(categories.first().color)
@@ -187,7 +190,11 @@ private fun HeaderSection(
             )
 
             Box(Modifier.padding(vertical = 8.dp)) {
-                CategoryView(categories.first(), size = CategorySize.Large, hasIcon = false)
+                CategoryView(
+                    categories.first(),
+                    size = CategorySize.Large,
+                    hasIcon = false,
+                    modifier = Modifier.clickable { onTagClicked(categories.first()) })
             }
 
             DetailsCard(
@@ -235,6 +242,7 @@ private fun DetailsCard(
 @Composable
 private fun EventScreenContent(
     event: Event,
+    onTagClicked: (Tag) -> Unit,
     onLocationClicked: (Location) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
@@ -249,10 +257,10 @@ private fun EventScreenContent(
             categories = event.types,
             date = getDateTimestamp(context, event),
             location = event.location.name,
-            onLocationClicked = {
-                onLocationClicked(event.location)
-            },
-        )
+            onTagClicked = onTagClicked
+        ) {
+            onLocationClicked(event.location)
+        }
         if (event.types.size > 1) {
             FlowRow(
                 Modifier
@@ -262,7 +270,12 @@ private fun EventScreenContent(
             ) {
                 val tags = event.types.takeLast(event.types.size - 1)
                 for (category in tags) {
-                    CategoryView(category, size = CategorySize.Medium)
+                    CategoryView(
+                        category,
+                        size = CategorySize.Medium,
+                        modifier = Modifier.clickable {
+                            onTagClicked(category)
+                        })
                 }
             }
         }
@@ -320,6 +333,6 @@ private fun EventScreenPreview(
     @PreviewParameter(FakeEventProvider::class) event: Event,
 ) {
     ScheduleTheme {
-        EventScreen(event, {}, {}, {}, {}, {})
+        EventScreen(event, {}, {}, {}, {}, {}, {})
     }
 }

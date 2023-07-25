@@ -99,6 +99,13 @@ internal fun NavHost(navController: NavHostController) {
                 label = backStackEntry.arguments?.getString("label")
             )
         }
+        composable("tag/{id}/{label}") { backStackEntry ->
+            TagScreen(
+                navController = navController,
+                id = backStackEntry.arguments?.getString("id"),
+                label = backStackEntry.arguments?.getString("label")
+            )
+        }
         composable("speaker/{id}/{name}") { backStackEntry ->
             val context = (LocalContext.current as MainActivity)
             SpeakerScreen(
@@ -358,6 +365,9 @@ fun EventScreen(navController: NavHostController, conference: String?, id: Strin
             }
         },
         onBackPressed = { navController.popBackStack() },
+        onTagClicked = {
+            navController.navigate("tag/${it.id}/${it.label}")
+        },
         onLocationClicked = { location ->
             navController.navigate(
                 "location/${location.id}/${
@@ -407,6 +417,27 @@ fun LocationScreen(navController: NavHostController, id: String?, label: String?
     val viewModel = viewModel<ScheduleViewModel>()
     val state =
         viewModel.getState(ScheduleFilter.Location(id))
+            .collectAsState(initial = ScheduleScreenState.Loading).value
+    ScheduleScreenView(
+        state = state,
+        label = label,
+        onBackPressed = {
+            navController.popBackStack()
+        },
+        onEventClick = {
+            navController.navigate("event/${it.conference}/${it.id}")
+        },
+        onBookmarkClick = { event, isBookmarked ->
+            viewModel.bookmark(event, isBookmarked)
+        },
+    )
+}
+
+@Composable
+fun TagScreen(navController: NavHostController, id: String?, label: String?) {
+    val viewModel = viewModel<ScheduleViewModel>()
+    val state =
+        viewModel.getState(ScheduleFilter.Tag(id))
             .collectAsState(initial = ScheduleScreenState.Loading).value
     ScheduleScreenView(
         state = state,

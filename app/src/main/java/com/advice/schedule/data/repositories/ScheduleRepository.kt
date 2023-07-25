@@ -33,7 +33,7 @@ class ScheduleRepository(
                 }
 
                 is ScheduleFilter.Tag -> {
-                    TODO()
+                    sortedEvents.filter { it.types.any { it.id.toString() == filter.id } }
                 }
             }
         }

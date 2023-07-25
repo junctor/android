@@ -33,7 +33,8 @@ sealed class CategorySize {
 internal fun CategoryView(
     tag: Tag,
     size: CategorySize = CategorySize.Small,
-    hasIcon: Boolean = true
+    hasIcon: Boolean = true,
+    modifier: Modifier = Modifier,
 ) {
     val style = when (size) {
         CategorySize.Large -> MaterialTheme.typography.bodyLarge
@@ -61,7 +62,7 @@ internal fun CategoryView(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(
+        modifier = modifier.padding(
             start = 0.dp,
             end = if (hasIcon) padding else 0.dp,
             top = padding / 2,
