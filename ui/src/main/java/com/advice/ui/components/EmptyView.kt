@@ -41,14 +41,6 @@ fun EmptyView(message: String? = null, modifier: Modifier = Modifier) {
                 )
             }
         }
-        Image(
-            painterResource(R.drawable.skull),
-            null,
-            Modifier
-                .padding(bottom = 16.dp)
-                .size(48.dp)
-                .align(Alignment.BottomCenter),
-        )
     }
 }
 

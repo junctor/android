@@ -48,7 +48,7 @@ class NotificationHelper(private val context: Context) {
             setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
             setVibrate(longArrayOf(0, 250, 500, 250))
             setLights(Color.MAGENTA, 3000, 1000)
-            setSmallIcon(R.drawable.skull)
+            setSmallIcon(R.drawable.logo_clean)
             color = ContextCompat.getColor(context, R.color.colorPrimary)
             setAutoCancel(true)
             block()

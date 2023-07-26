@@ -108,7 +108,7 @@ class ChromaticAberrationView @JvmOverloads constructor(
         )
     )
 
-    private val bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.skull)
+    private val bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.logo_clean)
 
     private var redBitmap: Bitmap? = null
     private var greenBitmap: Bitmap? = null

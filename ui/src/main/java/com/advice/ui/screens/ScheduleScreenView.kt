@@ -135,10 +135,7 @@ private fun ScheduleScreenContent(
             }
 
             null, ScheduleScreenState.Init -> {
-                Image(
-                    painter = painterResource(id = R.drawable.skull),
-                    contentDescription = "Skull"
-                )
+
             }
 
             ScheduleScreenState.Loading -> {

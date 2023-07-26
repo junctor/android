@@ -58,7 +58,7 @@ fun DismissibleBottomAppBarPreview() {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 IconButton(onClick = { /*TODO*/ }) {
-                    Icon(painterResource(id = R.drawable.skull), contentDescription = null)
+                    Icon(painterResource(id = com.shortstack.hackertracker.R.drawable.logo_clean), contentDescription = null)
                 }
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(

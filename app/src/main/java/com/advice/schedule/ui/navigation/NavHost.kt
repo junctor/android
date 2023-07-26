@@ -544,7 +544,7 @@ private fun HomeScreen(navController: NavHostController) {
                 IconButton(onClick = {
                     mainViewModel.setAnchor(DragAnchors.Center)
                 }) {
-                    Icon(painterResource(id = R.drawable.skull), contentDescription = "Logo")
+                    Icon(painterResource(id = com.shortstack.hackertracker.R.drawable.logo_clean), contentDescription = "Logo")
                 }
                 IconButton(onClick = {
                     navController.navigate("maps")
