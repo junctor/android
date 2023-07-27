@@ -27,6 +27,7 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     fun getEvent(conference: String?, id: Long?): Flow<Event?> {
         return flow {
             if (conference == null || id == null) {
+                Timber.e("Conference or id is null")
                 emit(null)
                 return@flow
             }

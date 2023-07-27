@@ -30,10 +30,16 @@ class FirebaseEventDataSource(
 
         val tags = tagsDataSource.get().first()
         val bookmarks = bookmarkedEventsDataSource.get().first()
-        return snapshot.toObjectOrNull(FirebaseEvent::class.java)
+
+        val event = snapshot.toObjectOrNull(FirebaseEvent::class.java)
             ?.toEvent(
                 tags = tags,
                 isBookmarked = bookmarks.any { it.id == id.toString() }
             )
+
+        if (event == null) {
+            Timber.e("Event with id $id not found")
+        }
+        return event
     }
 }
