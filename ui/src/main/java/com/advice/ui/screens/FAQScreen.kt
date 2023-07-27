@@ -20,15 +20,15 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.FAQ
 import com.advice.ui.preview.FAQProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.QuestionView
 import com.advice.ui.R
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
+import com.advice.ui.preview.LightDarkPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FAQScreenView(faqs: List<FAQ>?, onBackPressed: () -> Unit) {
+fun FAQScreen(faqs: List<FAQ>?, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("FAQ") }, navigationIcon =
         {
@@ -44,7 +44,7 @@ fun FAQScreenView(faqs: List<FAQ>?, onBackPressed: () -> Unit) {
                 }
 
                 faqs.isEmpty() -> {
-                    EmptyView("FAQ not found")
+                    EmptyMessage("FAQ not found")
                 }
 
                 else -> {
@@ -56,14 +56,14 @@ fun FAQScreenView(faqs: List<FAQ>?, onBackPressed: () -> Unit) {
 }
 
 @Composable
-fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
+private fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
     Column(modifier) {
         LazyColumn {
             item {
                 TopBar()
             }
             items(faqs) {
-                QuestionView(it.question, it.answer)
+                FAQ(it.question, it.answer)
             }
         }
     }
@@ -78,12 +78,12 @@ private fun TopBar() {
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
-fun FAQScreenViewPreview(
+private fun FAQScreenViewPreview(
     @PreviewParameter(FAQProvider::class) faq: FAQ
 ) {
     ScheduleTheme {
-        FAQScreenView(listOf(faq)) {}
+        FAQScreen(listOf(faq)) {}
     }
 }

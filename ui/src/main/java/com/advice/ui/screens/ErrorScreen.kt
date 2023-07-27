@@ -13,11 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorScreenView(onBackPressed: () -> Unit) {
+fun ErrorScreen(onBackPressed: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Error") }, navigationIcon = {
@@ -26,16 +26,16 @@ fun ErrorScreenView(onBackPressed: () -> Unit) {
                 }
             })
         }) { contentPadding ->
-        EmptyView(modifier = Modifier.padding(contentPadding))
+        EmptyMessage("Whoops", modifier = Modifier.padding(contentPadding))
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ErrorScreenViewPreview() {
+private fun ErrorScreenViewPreview() {
     ScheduleTheme {
-        ErrorScreenView() {
-
-        }
+        ErrorScreen(
+            onBackPressed = {}
+        )
     }
 }

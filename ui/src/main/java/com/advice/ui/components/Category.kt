@@ -5,30 +5,21 @@ import androidx.compose.animation.core.Spring.StiffnessLow
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
@@ -39,7 +30,7 @@ import com.advice.ui.utils.parseColor
 import kotlin.math.min
 
 @Composable
-internal fun FilterView(tag: Tag, onClick: () -> Unit) {
+internal fun Category(tag: Tag, onClick: () -> Unit) {
     val alpha = remember {
         Animatable(0f)
     }
@@ -60,7 +51,7 @@ internal fun FilterView(tag: Tag, onClick: () -> Unit) {
 }
 
 @Composable
-fun AnimatedCircleTextView(selected: Boolean, text: String, color: Color) {
+private fun AnimatedCircleTextView(selected: Boolean, text: String, color: Color) {
     val transition = updateTransition(targetState = selected, label = "CircleTransition")
 
     val circleSize = transition.animateDp(
@@ -78,8 +69,7 @@ fun AnimatedCircleTextView(selected: Boolean, text: String, color: Color) {
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp)
+            .padding(start = 4.dp, end = 4.dp)
             .drawBehind {
                 val radius = min(size.width, size.height) / 2
                 val circleSizePixels = circleSize.value.toPx()
@@ -98,24 +88,20 @@ fun AnimatedCircleTextView(selected: Boolean, text: String, color: Color) {
     ) {
         Text(
             text = text,
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier.padding(start = 12.dp, end = 12.dp)
         )
     }
 }
 
-
 @LightDarkPreview
 @Composable
-private fun FilterViewPreview() {
+private fun CategoryPreview() {
+    val tag = createTag(label = "Talk", color = "#FF0066")
+
     ScheduleTheme {
         Column {
-            FilterView(createTag(label = "Talk", color = "#FF0066")) {
-
-            }
-            FilterView(createTag(label = "Event", color = "#FF0066", isSelected = true)) {
-
-            }
+            Category(tag, onClick = {})
+            Category(tag.copy(isSelected = true), onClick = {})
         }
-
     }
 }

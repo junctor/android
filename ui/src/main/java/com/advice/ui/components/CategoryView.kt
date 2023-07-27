@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -80,7 +81,7 @@ internal fun CategoryView(
         }
         Text(
             tag.label,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = fontWeight, style = style, maxLines = 1, overflow = TextOverflow.Ellipsis
         )
     }
@@ -89,7 +90,11 @@ internal fun CategoryView(
 @LightDarkPreview
 @Composable
 private fun CategoryViewPreview() {
+    val tag = createTag(label = "Talk", color = "#EE11EE")
+
     ScheduleTheme {
-        CategoryView(createTag(label = "Talk", color = "#EE11EE"))
+        Surface {
+            CategoryView(tag)
+        }
     }
 }

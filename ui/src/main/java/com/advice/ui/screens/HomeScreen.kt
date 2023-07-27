@@ -39,7 +39,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeScreenContent(
+private fun HomeScreenContent(
     state: HomeState?,
     onNavigationClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -175,7 +175,7 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
 
 @LightDarkPreview
 @Composable
-fun HomeScreenViewPreview() {
+private fun HomeScreenViewPreview() {
     ScheduleTheme {
         HomeScreen(
             state = HomeState.Loaded(

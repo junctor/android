@@ -22,7 +22,7 @@ import com.advice.core.local.Product
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.ProductView
 import com.advice.products.ui.preview.ProductsProvider
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
@@ -71,7 +71,7 @@ fun ProductsScreen(
                 }
 
                 state.elements.isEmpty() -> {
-                    EmptyView("Merch not found")
+                    EmptyMessage("Merch not found")
                 }
 
                 else -> {

@@ -23,7 +23,7 @@ import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.EditableProduct
 import com.advice.products.ui.components.QRCodeImage
 import com.advice.products.ui.preview.ProductsProvider
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
@@ -44,7 +44,7 @@ fun ProductsSummaryScreen(
         })
     }) {
         if (list.isEmpty()) {
-            EmptyView(message = "Merch not found", modifier = Modifier.padding(it))
+            EmptyMessage(message = "Merch not found", modifier = Modifier.padding(it))
         } else {
             ProductsSummaryContent(
                 list,

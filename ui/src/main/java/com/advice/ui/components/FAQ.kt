@@ -32,7 +32,7 @@ import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun QuestionView(question: String, answer: String, expanded: Boolean = false) {
+fun FAQ(question: String, answer: String, expanded: Boolean = false) {
     var isExpanded by rememberSaveable {
         mutableStateOf(value = expanded)
     }
@@ -73,24 +73,24 @@ fun QuestionView(question: String, answer: String, expanded: Boolean = false) {
                 }
             }
             AnimatedVisibility(isExpanded) {
-                AnswerView(answer)
+                Answer(answer)
             }
         }
     }
 }
 
 @Composable
-fun AnswerView(answer: String) {
+private fun Answer(answer: String) {
     Text(answer, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
 }
 
 @LightDarkPreview
 @Composable
-fun QuestionViewExpandedPreview(@PreviewParameter(FAQProvider::class) faq: FAQ) {
+private fun FAQPreview(@PreviewParameter(FAQProvider::class) faq: FAQ) {
     ScheduleTheme {
         Column {
-            QuestionView(faq.question, faq.answer)
-            QuestionView(faq.question, faq.answer, expanded = true)
+            FAQ(faq.question, faq.answer)
+            FAQ(faq.question, faq.answer, expanded = true)
         }
     }
 }

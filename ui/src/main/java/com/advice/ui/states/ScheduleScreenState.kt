@@ -1,4 +1,4 @@
-package com.advice.ui.screens
+package com.advice.ui.states
 
 import com.advice.core.local.Event
 import com.advice.core.ui.ScheduleFilter

@@ -1,6 +1,5 @@
 package com.advice.ui.screens
 
-import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,13 +52,13 @@ import com.advice.core.local.Location
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
 import com.advice.core.utils.TimeUtil
-import com.advice.ui.components.ActionView
+import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.BookmarkButton
 import com.advice.ui.components.CategorySize
 import com.advice.ui.components.CategoryView
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
-import com.advice.ui.components.SpeakerView
+import com.advice.ui.components.Speaker
 import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
@@ -291,7 +290,7 @@ private fun EventScreenContent(
         if (event.urls.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             for (action in event.urls) {
-                ActionView(
+                ClickableUrl(
                     label = action.label,
                     url = action.url,
                     onClick = {
@@ -308,12 +307,11 @@ private fun EventScreenContent(
                     .fillMaxWidth()
             )
             for (speaker in event.speakers) {
-                SpeakerView(
+                Speaker(
                     name = speaker.name,
                     title = speaker.title,
-                ) {
-                    onSpeakerClicked(speaker)
-                }
+                    onSpeakerClicked = { onSpeakerClicked(speaker) },
+                )
             }
         }
 

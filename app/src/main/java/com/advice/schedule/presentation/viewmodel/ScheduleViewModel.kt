@@ -7,11 +7,9 @@ import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.Storage
 import com.advice.core.utils.TimeUtil
 import com.advice.schedule.data.repositories.ScheduleRepository
-import com.advice.ui.screens.ScheduleScreenState
+import com.advice.ui.states.ScheduleScreenState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent

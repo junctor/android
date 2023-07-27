@@ -30,7 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.MapFile
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.PdfDisplay
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -179,7 +179,7 @@ private fun EmptyScreen(onBackPressed: () -> Unit) {
             )
         },
     ) {
-        EmptyView("maps not found", Modifier.padding(it))
+        EmptyMessage("maps not found", Modifier.padding(it))
     }
 }
 

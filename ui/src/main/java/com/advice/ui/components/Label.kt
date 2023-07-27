@@ -1,29 +1,28 @@
 package com.advice.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun NoDetailsView(text: String = "No further information available.\nMaybe ask Chatgpt.") {
+fun Label(text: String, modifier: Modifier = Modifier) {
     Text(
-        text, modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(), textAlign = TextAlign.Center
+        text,
+        modifier = modifier
+            .padding(16.dp),
+        textAlign = TextAlign.Center,
     )
 }
 
 @LightDarkPreview
 @Composable
-private fun NoDetailsViewPreview() {
+private fun LabelPreview() {
     ScheduleTheme {
-        NoDetailsView()
+        Label("General")
     }
 }

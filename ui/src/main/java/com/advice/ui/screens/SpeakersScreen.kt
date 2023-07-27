@@ -17,15 +17,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.advice.core.local.Speaker
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.SpeakerView
+import com.advice.ui.components.Speaker
 import com.advice.ui.R
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.SpeakerProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpeakersScreenView(
+fun SpeakersScreen(
     speakers: List<Speaker>?,
     onBackPressed: () -> Unit,
     onSpeakerClicked: (Speaker) -> Unit
@@ -44,7 +45,7 @@ fun SpeakersScreenView(
                 }
 
                 speakers.isEmpty() -> {
-                    EmptyView("Speakers not found")
+                    EmptyMessage("Speakers not found")
                 }
 
                 else -> {
@@ -56,25 +57,27 @@ fun SpeakersScreenView(
 }
 
 @Composable
-fun SpeakersScreenContent(
+private fun SpeakersScreenContent(
     speakers: List<Speaker>?,
     onSpeakerClicked: (Speaker) -> Unit
 ) {
     LazyColumn() {
         if (speakers != null) {
             items(speakers) {
-                SpeakerView(it.name, title = it.title) {
-                    onSpeakerClicked(it)
-                }
+                Speaker(
+                    name = it.name,
+                    title = it.title,
+                    onSpeakerClicked = { onSpeakerClicked(it) }
+                )
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
-fun SpeakersScreenViewPreview(@PreviewParameter(SpeakerProvider::class) speaker: Speaker) {
+private fun SpeakersScreenViewPreview(@PreviewParameter(SpeakerProvider::class) speaker: Speaker) {
     ScheduleTheme {
-        SpeakersScreenView(listOf(speaker), {}, {})
+        SpeakersScreen(listOf(speaker), {}, {})
     }
 }

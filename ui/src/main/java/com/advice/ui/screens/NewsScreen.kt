@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.NewsArticle
 import com.advice.ui.R
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.home.ArticleView
 import com.advice.ui.preview.LightDarkPreview
@@ -42,7 +42,7 @@ fun NewsScreen(news: List<NewsArticle>?, onBackPressed: () -> Unit) {
                 }
 
                 news.isEmpty() -> {
-                    EmptyView("News not found")
+                    EmptyMessage("News not found")
                 }
 
                 else -> {

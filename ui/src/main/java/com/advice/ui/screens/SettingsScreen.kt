@@ -2,26 +2,17 @@ package com.advice.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,10 +26,11 @@ import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.R
+import com.advice.ui.components.SwitchPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreenView(
+fun SettingScreen(
     timeZone: String,
     version: String,
     useConferenceTimeZone: Boolean,
@@ -73,7 +65,7 @@ fun SettingScreenView(
 }
 
 @Composable
-fun SettingsScreenContent(
+private fun SettingsScreenContent(
     timeZone: String,
     version: String,
     useConferenceTimeZone: Boolean,
@@ -134,7 +126,7 @@ private fun DeveloperSection() {
 }
 
 @Composable
-fun TwitterBadge() {
+private fun TwitterBadge() {
     Card(Modifier.padding(16.dp)) {
         Row(Modifier.padding(16.dp)) {
             Image(
@@ -165,82 +157,11 @@ fun TwitterBadge() {
     }
 }
 
+@LightDarkPreview
 @Composable
-fun SwitchPreference(
-    title: String,
-    isChecked: Boolean,
-    summary: String? = null,
-    summaryOn: String? = null,
-    summaryOff: String? = null,
-    onPreferenceChanged: (Boolean) -> Unit
-) {
-    var checked by rememberSaveable {
-        mutableStateOf(isChecked)
-    }
-
-    Row(
-        Modifier
-            .clickable {
-                checked = !checked
-                onPreferenceChanged(checked)
-            }
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-            .padding(16.dp)
-    ) {
-        Column(
-            Modifier
-                .weight(1f)
-                .fillMaxHeight(), verticalArrangement = Arrangement.Center
-        ) {
-            Text(title)
-            when {
-                summary != null -> {
-                    Text(summary)
-                }
-
-                summaryOn != null && summaryOff != null -> {
-                    Text(if (checked) summaryOn else summaryOff)
-                }
-            }
-        }
-        Switch(
-            checked = checked,
-            onCheckedChange = {
-                checked = it
-                onPreferenceChanged(it)
-            },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                uncheckedThumbColor = Color.White
-            )
-        )
-    }
-}
-
-@LightDarkPreview()
-@Composable
-fun SwitchPreferencePreview() {
+private fun SettingScreenViewDarkPreview() {
     ScheduleTheme {
-        Column {
-            SwitchPreference(
-                "Events in (EUROPE/HELSINKI)",
-                true,
-                summaryOn = "Using conference's timezone",
-                summaryOff = "Using device's timezone"
-            ) {
-
-            }
-            SwitchPreference("Show filter button", false) {}
-        }
-    }
-}
-
-@LightDarkPreview()
-@Composable
-fun SettingScreenViewDarkPreview() {
-    ScheduleTheme {
-        SettingScreenView(
+        SettingScreen(
             timeZone = "Europe/Helsinki",
             version = "7.0.0 (1)",
             useConferenceTimeZone = true,

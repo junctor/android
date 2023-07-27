@@ -20,12 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
-import com.advice.core.ui.InformationState
 import com.advice.core.ui.ScheduleFilter
 import com.advice.documents.presentation.viewmodel.DocumentsViewModel
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
@@ -37,7 +35,6 @@ import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.presentation.viewmodel.FAQViewModel
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
-import com.advice.schedule.presentation.viewmodel.InformationViewModel
 import com.advice.schedule.presentation.viewmodel.MapsViewModel
 import com.advice.schedule.presentation.viewmodel.NewsViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
@@ -53,14 +50,14 @@ import com.advice.schedule.ui.components.OverlappingPanelsView
 import com.advice.schedule.ui.screens.SearchScreen
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.screens.EventScreen
-import com.advice.ui.screens.FAQScreenView
+import com.advice.ui.screens.FAQScreen
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
-import com.advice.ui.screens.ScheduleScreenState
+import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.screens.ScheduleScreen
-import com.advice.ui.screens.SettingScreenView
+import com.advice.ui.screens.SettingScreen
 import com.advice.ui.screens.SpeakerScreen
-import com.advice.ui.screens.SpeakersScreenView
+import com.advice.ui.screens.SpeakersScreen
 import com.advice.wifi.suggestNetwork
 import com.advice.ui.screens.SpeakerState
 
@@ -83,7 +80,6 @@ internal fun NavHost(navController: NavHostController) {
         composable("locations") {
             LocationsScreen(navController)
         }
-        composable("information") { InformationScreen(navController) }
         composable("event/{conference}/{id}") { backStackEntry ->
             EventScreen(
                 navController,
@@ -118,7 +114,14 @@ internal fun NavHost(navController: NavHostController) {
         }
         composable("settings") { SettingsScreen(navController) }
 
-        informationScreens(navController)
+        composable("wifi") { WifiScreen(navController) }
+        composable("document/{id}") { backStackEntry ->
+            DocumentScreen(navController, backStackEntry.arguments?.getString("id"))
+        }
+        composable("faq") { FAQScreen(navController) }
+        composable("vendors") { VendorsScreen(navController) }
+        composable("villages") { VillagesScreen(navController) }
+        composable("speakers") { SpeakersScreen(navController) }
 
         composable("merch") {
             ProductsScreen(navController, productsViewModel)
@@ -229,17 +232,6 @@ private fun ProductsScreen(navController: NavHostController, viewModel: Products
     )
 }
 
-private fun NavGraphBuilder.informationScreens(navController: NavHostController) {
-    composable("wifi") { WifiScreen(navController) }
-    composable("document/{id}") { backStackEntry ->
-        DocumentScreen(navController, backStackEntry.arguments?.getString("id"))
-    }
-    composable("faq") { FAQScreen(navController) }
-    composable("vendors") { VendorsScreen(navController) }
-    composable("villages") { VillagesScreen(navController) }
-    composable("speakers") { SpeakersScreen(navController) }
-}
-
 @Composable
 private fun WifiScreen(navController: NavHostController) {
     com.advice.wifi.ui.screens.WifiScreen(
@@ -278,7 +270,7 @@ private fun LocationsScreen(navController: NavHostController) {
 private fun SpeakersScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<SpeakersViewModel>()
     val state = viewModel.speakers.collectAsState(initial = null).value
-    SpeakersScreenView(
+    SpeakersScreen(
         speakers = state,
         onBackPressed = { navController.popBackStack() },
         onSpeakerClicked = { navController.navigate("speaker/${it.id}/${it.name}") },
@@ -319,21 +311,8 @@ private fun VillagesScreen(navController: NavHostController) {
 private fun FAQScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<FAQViewModel>()
     val state = viewModel.faqs.collectAsState(initial = null).value
-    FAQScreenView(
+    FAQScreen(
         faqs = state,
-        onBackPressed = {
-            navController.popBackStack()
-        }
-    )
-}
-
-@Composable
-private fun InformationScreen(navController: NavHostController) {
-    val viewModel = navController.navGraphViewModel<InformationViewModel>()
-    val state = viewModel.state.collectAsState(initial = InformationState()).value
-    com.advice.ui.screens.InformationScreen(
-        state = state,
-        onClick = { navController.navigate(it) },
         onBackPressed = {
             navController.popBackStack()
         }
@@ -457,7 +436,7 @@ fun TagScreen(navController: NavHostController, id: String?, label: String?) {
 fun SettingsScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<SettingsViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value ?: return
-    SettingScreenView(
+    SettingScreen(
         timeZone = state.timezone,
         version = state.version,
         useConferenceTimeZone = state.useConferenceTimeZone,

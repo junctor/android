@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.advice.core.local.Organization
 import com.advice.organizations.ui.components.OrganizationsScreenContent
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.R
@@ -40,7 +40,7 @@ fun VillagesScreen(
                 }
 
                 organizations.isEmpty() -> {
-                    EmptyView("Villages not found")
+                    EmptyMessage("Villages not found")
                 }
 
                 else -> {

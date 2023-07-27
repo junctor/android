@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.advice.core.local.Organization
 import com.advice.organizations.ui.components.OrganizationsScreenContent
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.R
 import com.advice.ui.components.ProgressSpinner
 
@@ -38,7 +38,7 @@ fun VendorsScreen(
                 }
 
                 organizations.isEmpty() -> {
-                    EmptyView("Vendors not found")
+                    EmptyMessage("Vendors not found")
                 }
 
                 else -> {

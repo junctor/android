@@ -1,7 +1,6 @@
 package com.advice.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,14 +16,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Speaker
-import com.advice.core.utils.TimeUtil
 import com.advice.ui.preview.SpeakerProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.EventRowView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.R
-import com.advice.ui.components.ActionView
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.EventRow
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.ProgressSpinner
@@ -120,7 +116,7 @@ fun SpeakerScreenContent(
         if (speaker.links.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             speaker.links.forEach {
-                ActionView(label = it.title, url = it.url, onClick = {
+                ClickableUrl(label = it.title, url = it.url, onClick = {
                     onLinkClicked(it.url)
                 }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
             }

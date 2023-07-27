@@ -32,16 +32,16 @@ import com.advice.core.local.Tag
 import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
-import com.advice.ui.components.DayHeaderView
+import com.advice.ui.components.DayHeader
 import com.advice.ui.components.DaySelectorView
-import com.advice.ui.components.EmptyView
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.rememberScrollContext
+import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -116,7 +116,7 @@ private fun ScheduleScreenContent(
     Box(modifier) {
         when (state) {
             is ScheduleScreenState.Error -> {
-                EmptyView()
+                EmptyMessage("Schedule not found")
             }
 
             null, ScheduleScreenState.Init -> {
@@ -189,7 +189,7 @@ private fun ScheduleScreenContent(
                 for (day in days) {
                     // Header
                     item(key = day.key) {
-                        DayHeaderView(day.key)
+                        DayHeader(day.key)
                     }
                     // Events
                     for (it in day.value) {
@@ -202,7 +202,6 @@ private fun ScheduleScreenContent(
                                 tags = it.types,
                                 isBookmarked = it.isBookmarked,
                                 onEventPressed = {
-                                    Timber.e("Event pressed: ${it.title}, ${event.title}")
                                     onEventClick(it)
                                 },
                                 onBookmark = { isChecked ->
@@ -218,7 +217,7 @@ private fun ScheduleScreenContent(
             }
         }
     } else {
-        EmptyView("Schedule not found")
+        EmptyMessage("Schedule not found")
     }
 }
 

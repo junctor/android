@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Organization
-import com.advice.organizations.R
-import com.advice.ui.components.ActionView
+import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.Paragraph
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +48,7 @@ fun OrganizationScreen(
             if (organization.links.isNotEmpty()) {
                 Spacer(Modifier.height(16.dp))
                 for (link in organization.links) {
-                    ActionView(
+                    ClickableUrl(
                         label = link.label,
                         url = link.url,
                         onClick = {
