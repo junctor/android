@@ -49,7 +49,6 @@ class ColorChannelShift : GlitchEffect {
         try {
             canvas.restore()
         } catch (ex: Exception) {
-
         }
     }
 
@@ -140,7 +139,6 @@ class ColorChannelShift : GlitchEffect {
                     }
                 }
             }
-
         }
         return matrix
     }
@@ -153,9 +151,11 @@ class ColorChannelShift : GlitchEffect {
         return Paint().apply {
             isFilterBitmap = true
             xfermode = XFE_ADD
-            colorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
-                set(getMatrix(channel))
-            })
+            colorFilter = ColorMatrixColorFilter(
+                ColorMatrix().apply {
+                    set(getMatrix(channel))
+                }
+            )
         }
     }
 
@@ -170,5 +170,4 @@ class ColorChannelShift : GlitchEffect {
         matrix[18] = 1.0f
         return matrix.toFloatArray()
     }
-
 }

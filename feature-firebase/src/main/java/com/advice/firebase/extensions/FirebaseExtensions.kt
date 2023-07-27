@@ -53,7 +53,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
-
 fun <T> QuerySnapshot.toObjectsOrEmpty(@NonNull clazz: Class<T>): List<T> {
     return try {
         toObjects(clazz)
@@ -141,7 +140,7 @@ fun FirebaseEvent.toEvent(tags: List<TagType>, isBookmarked: Boolean = false): E
             list.find { it.id == id }
         }.sortedBy { list.indexOf(it) }
 
-        if(types.isEmpty()) {
+        if (types.isEmpty()) {
             return null
         }
 

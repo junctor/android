@@ -9,5 +9,4 @@ interface Navigation {
     fun showMerch()
     fun showMerchSummary()
     fun showMerchItem(product: Product)
-
 }

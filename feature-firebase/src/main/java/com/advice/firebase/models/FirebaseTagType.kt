@@ -15,4 +15,3 @@ data class FirebaseTagType(
 
     val tags: List<FirebaseTag> = emptyList()
 )
-

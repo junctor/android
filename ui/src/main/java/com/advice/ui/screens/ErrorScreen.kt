@@ -12,8 +12,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.components.EmptyMessage
+import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +25,8 @@ fun ErrorScreen(onBackPressed: () -> Unit) {
                     Icon(Icons.Default.ArrowBack, null)
                 }
             })
-        }) { contentPadding ->
+        }
+    ) { contentPadding ->
         EmptyMessage("Whoops", modifier = Modifier.padding(contentPadding))
     }
 }

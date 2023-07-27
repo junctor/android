@@ -43,7 +43,6 @@ fun FAQ(question: String, answer: String, expanded: Boolean = false) {
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
 
-
         Column {
             Row(
                 Modifier

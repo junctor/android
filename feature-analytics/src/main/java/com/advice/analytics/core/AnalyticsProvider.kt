@@ -92,7 +92,7 @@ class AnalyticsProvider(private val storage: Storage) {
     }
 
     fun log(message: String) {
-        //todo: Crashlytics.getInstance().core.log(message)
+        // todo: Crashlytics.getInstance().core.log(message)
     }
 
     fun log(block: () -> Unit) {

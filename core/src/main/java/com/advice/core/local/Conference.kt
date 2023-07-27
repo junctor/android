@@ -38,4 +38,3 @@ data class Conference(
         )
     }
 }
-

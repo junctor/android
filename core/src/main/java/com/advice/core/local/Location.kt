@@ -16,8 +16,7 @@ data class LocationRow(
     val hasChildren: Boolean,
     val isExpanded: Boolean,
     val schedule: List<LocationSchedule>,
-): Parcelable
-
+) : Parcelable
 
 @Parcelize
 data class Location(

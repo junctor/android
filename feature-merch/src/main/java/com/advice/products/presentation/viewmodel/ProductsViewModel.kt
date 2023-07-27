@@ -96,6 +96,3 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         }
     }
 }
-
-
-

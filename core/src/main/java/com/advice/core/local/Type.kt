@@ -31,5 +31,4 @@ data class Type(
 
     val isWorkshop: Boolean
         get() = _name.endsWith(" Workshop", true)
-
 }

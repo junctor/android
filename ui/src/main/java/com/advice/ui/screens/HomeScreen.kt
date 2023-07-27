@@ -1,10 +1,15 @@
 package com.advice.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,12 +17,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
-import com.advice.ui.components.home.*
+import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.home.ArticleView
+import com.advice.ui.components.home.ConferenceSelector
+import com.advice.ui.components.home.ConferenceView
+import com.advice.ui.components.home.CountdownView
+import com.advice.ui.components.home.HomeCard
+import com.advice.ui.components.home.ProductCard
+import com.advice.ui.components.home.WiFiCard
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
-import com.advice.ui.components.ProgressSpinner
-import java.util.*
+import java.util.Date
 
 @Composable
 fun HomeScreen(
@@ -60,7 +71,6 @@ private fun HomeScreenContent(
             null -> {
             }
         }
-
     }
 }
 
@@ -90,16 +100,17 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
             }
             if (state.news.size > 1) {
                 HomeCard {
-                    Text("News",
+                    Text(
+                        "News",
                         Modifier
                             .clickable {
                                 onNavigationClick("news")
                             }
-                            .padding(16.dp))
+                            .padding(16.dp)
+                    )
                 }
             }
         }
-
 
         if (state.documents.isNotEmpty()) {
             Text(
@@ -111,12 +122,14 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
 
         state.documents.forEach {
             HomeCard {
-                Text(it.title,
+                Text(
+                    it.title,
                     Modifier
                         .clickable {
                             onNavigationClick("document/${it.id}")
                         }
-                        .padding(16.dp))
+                        .padding(16.dp)
+                )
             }
         }
 
@@ -127,46 +140,55 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
         )
 
         HomeCard {
-            Text("Speakers",
+            Text(
+                "Speakers",
                 Modifier
                     .clickable {
                         onNavigationClick("speakers")
                     }
-                    .padding(16.dp))
+                    .padding(16.dp)
+            )
         }
         HomeCard {
-            Text("Vendors",
+            Text(
+                "Vendors",
                 Modifier
                     .clickable {
                         onNavigationClick("vendors")
                     }
-                    .padding(16.dp))
+                    .padding(16.dp)
+            )
         }
         HomeCard {
-            Text("Villages",
+            Text(
+                "Villages",
                 Modifier
                     .clickable {
                         onNavigationClick("villages")
                     }
-                    .padding(16.dp))
+                    .padding(16.dp)
+            )
         }
         HomeCard {
-            Text("Locations",
+            Text(
+                "Locations",
                 Modifier
                     .clickable {
                         onNavigationClick("locations")
                     }
-                    .padding(16.dp))
+                    .padding(16.dp)
+            )
         }
         HomeCard {
-            Text("FAQ",
+            Text(
+                "FAQ",
                 Modifier
                     .clickable {
                         onNavigationClick("faq")
                     }
-                    .padding(16.dp))
+                    .padding(16.dp)
+            )
         }
-
 
         // Required spacer to push content above the bottom bar
         Spacer(Modifier.height(64.dp))
@@ -185,6 +207,8 @@ private fun HomeScreenViewPreview() {
                 news = emptyList(),
                 countdown = Date().time / 1000L,
                 forceTimeZone = false
-            ), {}, {})
+            ),
+            {}, {}
+        )
     }
 }

@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
@@ -41,7 +40,8 @@ fun Speaker(
                     onSpeakerClicked()
                 }
                 .padding(16.dp)
-                .height(IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
                 Text(name)

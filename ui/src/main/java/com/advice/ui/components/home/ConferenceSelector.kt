@@ -29,7 +29,6 @@ import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
 import com.advice.ui.R
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference) -> Unit) {
@@ -46,15 +45,18 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
         Modifier
             .verticalScroll(rememberScrollState())
     ) {
-        Box(modifier = Modifier
-            .clickable {
-                expanded = !expanded
-            }
-            .fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .clickable {
+                    expanded = !expanded
+                }
+                .fillMaxWidth()
+        ) {
             Row(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(16.dp), verticalAlignment = Alignment.CenterVertically
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(state.conference.name)
                 Spacer(modifier = Modifier.width(8.dp))
@@ -76,6 +78,7 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
             },
             onDismiss = {
                 expanded = false
-            })
+            }
+        )
     }
 }

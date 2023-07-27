@@ -64,13 +64,15 @@ fun ScheduleScreen(
                     IconButton(onClick = onMenuClicked) {
                         Icon(Icons.Default.Menu, "Menu")
                     }
-                })
+                }
+            )
         },
         floatingActionButton = {
             FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
                 Icon(painterResource(R.drawable.baseline_filter_list_24), "Filter Schedule")
             }
-        }, modifier = Modifier
+        },
+        modifier = Modifier
             .clip(roundedCornerShape)
     ) {
         ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
@@ -99,7 +101,8 @@ fun ScheduleScreen(
                             "Back"
                         )
                     }
-                })
+                }
+            )
         },
     ) {
         ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
@@ -120,7 +123,6 @@ private fun ScheduleScreenContent(
             }
 
             null, ScheduleScreenState.Init -> {
-
             }
 
             ScheduleScreenState.Loading -> {
@@ -178,13 +180,13 @@ private fun ScheduleScreenContent(
     if (days.isNotEmpty()) {
         Column(modifier = modifier) {
             DaySelectorView(days = days.map { it.key }, start = start, end = end) {
-                coroutineScope.launch {
-                    val index = elements.indexOf(it)
-                    if (index != -1) {
-                        listState.scrollToItem(index)
-                    }
+            coroutineScope.launch {
+                val index = elements.indexOf(it)
+                if (index != -1) {
+                    listState.scrollToItem(index)
                 }
             }
+        }
             LazyColumn(state = listState) {
                 for (day in days) {
                     // Header
@@ -255,11 +257,10 @@ private fun ScheduleScreenPreview() {
                         ),
                         urls = emptyList(),
 
-                        )
+                    )
                 )
             )
         )
-
 
         ScheduleScreen(state, {}, {}, {}, { event, isBookmarked -> })
     }

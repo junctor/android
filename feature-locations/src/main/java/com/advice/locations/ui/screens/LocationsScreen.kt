@@ -16,9 +16,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.advice.core.local.LocationRow
 import com.advice.locations.ui.components.Location
 import com.advice.locations.ui.preview.LocationRowProvider
+import com.advice.ui.R
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +61,6 @@ internal fun LocationsScreenContent(
     }
 }
 
-
 @LightDarkPreview
 @Composable
 private fun LocationsScreenViewPreview(
@@ -69,7 +68,6 @@ private fun LocationsScreenViewPreview(
 ) {
     ScheduleTheme {
         LocationsScreen(listOf(location), {
-
         }, {})
     }
 }

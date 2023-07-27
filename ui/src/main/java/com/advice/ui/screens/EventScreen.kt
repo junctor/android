@@ -52,19 +52,19 @@ import com.advice.core.local.Location
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
 import com.advice.core.utils.TimeUtil
-import com.advice.ui.components.ClickableUrl
+import com.advice.ui.R
 import com.advice.ui.components.BookmarkButton
 import com.advice.ui.components.CategorySize
 import com.advice.ui.components.CategoryView
+import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
+import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.Speaker
 import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
-import com.advice.ui.R
-import com.advice.ui.components.ProgressSpinner
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,11 +106,13 @@ fun EventScreen(
                             onBookmark(it)
                         }
                     }
-                }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = getContainerColour(event).copy(alpha = alpha.value),
                 )
             )
-        }) { contentPadding ->
+        }
+    ) { contentPadding ->
         Box(
             Modifier
                 .verticalScroll(scrollState)
@@ -175,7 +177,8 @@ private fun HeaderSection(
                     // need to add extra height for padding
                     cornerRadius = CornerRadius(16.dp.toPx())
                 )
-            }) {
+            }
+    ) {
         val statusBarHeight = 48.dp
         val toolbarHeight = 48.dp
         Spacer(Modifier.height(statusBarHeight + toolbarHeight))
@@ -194,7 +197,8 @@ private fun HeaderSection(
                     categories.first(),
                     size = CategorySize.Large,
                     hasIcon = false,
-                    modifier = Modifier.clickable { onTagClicked(categories.first()) })
+                    modifier = Modifier.clickable { onTagClicked(categories.first()) }
+                )
             }
 
             DetailsCard(
@@ -276,7 +280,8 @@ private fun EventScreenContent(
                         size = CategorySize.Medium,
                         modifier = Modifier.clickable {
                             onTagClicked(category)
-                        })
+                        }
+                    )
                 }
             }
         }
@@ -296,48 +301,50 @@ private fun EventScreenContent(
                     onClick = {
                         onUrlClicked(action.url)
                     }, modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                    )
+                }
             }
-        }
-        if (event.speakers.isNotEmpty()) {
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Speakers", textAlign = TextAlign.Center, modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            )
-            for (speaker in event.speakers) {
-                Speaker(
-                    name = speaker.name,
-                    title = speaker.title,
-                    onSpeakerClicked = { onSpeakerClicked(speaker) },
+            if (event.speakers.isNotEmpty()) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    "Speakers", textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
                 )
+                for (speaker in event.speakers) {
+                    Speaker(
+                        name = speaker.name,
+                        title = speaker.title,
+                        onSpeakerClicked = { onSpeakerClicked(speaker) },
+                    )
+                }
             }
+
+            if (event.description.isBlank() && event.urls.isEmpty() && event.speakers.isEmpty()) {
+                Spacer(Modifier.height(32.dp))
+                NoDetailsView()
+            }
+            Spacer(modifier = Modifier.height(64.dp))
         }
+    }
 
-        if (event.description.isBlank() && event.urls.isEmpty() && event.speakers.isEmpty()) {
-            Spacer(Modifier.height(32.dp))
-            NoDetailsView()
+    private fun getLocation(location: Location): String {
+        // Find the dash within name and replace it with a newline.
+        val index = location.name.indexOf(" - " + location.shortName)
+        if (index != -1) {
+            return location.name.substring(0, index) + "\n" + location.shortName
         }
-        Spacer(modifier = Modifier.height(64.dp))
+        return location.name
     }
-}
 
-private fun getLocation(location: Location): String {
-    // Find the dash within name and replace it with a newline.
-    val index = location.name.indexOf(" - " + location.shortName)
-    if (index != -1) {
-        return location.name.substring(0, index) + "\n" + location.shortName
+    @LightDarkPreview
+    @Composable
+    private fun EventScreenPreview(
+        @PreviewParameter(FakeEventProvider::class) event: Event,
+    ) {
+        ScheduleTheme {
+            EventScreen(event, {}, {}, {}, {}, {}, {})
+        }
     }
-    return location.name
-}
-
-@LightDarkPreview
-@Composable
-private fun EventScreenPreview(
-    @PreviewParameter(FakeEventProvider::class) event: Event,
-) {
-    ScheduleTheme {
-        EventScreen(event, {}, {}, {}, {}, {}, {})
-    }
-}
+    

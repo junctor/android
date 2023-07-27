@@ -43,4 +43,4 @@ class ReminderManager(
     fun removeReminder(event: Event) {
         workManager.cancelAllWorkByTag("reminder/${event.conference}/${event.id}")
     }
-}
+}}

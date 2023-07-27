@@ -11,7 +11,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,10 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
-import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.R
 import com.advice.ui.components.SwitchPreference
+import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,9 +111,11 @@ private fun SettingsScreenContent(
 @Composable
 private fun VersionNumber(version: String) {
     Text(
-        "Version $version", modifier = Modifier
+        "Version $version",
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp), textAlign = TextAlign.Center
+            .padding(16.dp),
+        textAlign = TextAlign.Center
     )
 }
 
@@ -119,9 +129,11 @@ private fun DeveloperSection() {
     }
 
     Text(
-        text, modifier = Modifier
+        text,
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp), textAlign = TextAlign.Center
+            .padding(16.dp),
+        textAlign = TextAlign.Center
     )
 }
 
@@ -170,10 +182,8 @@ private fun SettingScreenViewDarkPreview() {
             enableEasterEggs = false,
             enableAnalytics = true,
             showTwitterHandle = true, { _, _ ->
-
             }
         ) {
-
         }
     }
 }

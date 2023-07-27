@@ -1,7 +1,12 @@
 package com.advice.products.ui.screens
 
-
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -68,9 +73,11 @@ fun ProductsSummaryContent(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)) {
+                    .padding(16.dp)
+            ) {
                 QRCodeImage(
-                    json, Modifier
+                    json,
+                    Modifier
                         .size(256.dp)
                         .align(Alignment.Center)
                 )
@@ -104,7 +111,6 @@ fun getSubtotal(list: List<Product>): Float {
         element.cost.toInt()
     } / 100f
 }
-
 
 @LightDarkPreview
 @Composable

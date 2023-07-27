@@ -3,7 +3,6 @@ package com.advice.firebase.models
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-
 @Parcelize
 data class FirebaseOrganization(
     val conference_id: Long = -1L,
@@ -33,4 +32,4 @@ data class FirebaseLink(
 data class FirebaseOrganizationMedia(
     val asset_id: Long = -1L,
     val url: String = "",
-): Parcelable
+) : Parcelable

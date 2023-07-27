@@ -22,10 +22,9 @@ object Glitch {
         if (bitmap != null) {
             val effect = ColorChannelShift(bitmap)
             effect.apply(canvas, bitmap)
-            //bitmap.recycle()
+            // bitmap.recycle()
         }
     }
-
 
     private fun convertLayout(_view: View): Bitmap? {
         _view.isDrawingCacheEnabled = true

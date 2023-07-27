@@ -4,14 +4,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.advice.core.local.Event
 import com.advice.core.local.Location
 import java.time.Instant
-import java.util.Date
 
 class FakeEventProvider : PreviewParameterProvider<Event> {
 
-
     override val values: Sequence<Event>
         get() = events.asSequence()
-
 
     val events = listOf(
         Event(

@@ -35,7 +35,6 @@ import com.advice.core.local.ProductVariant
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ProductView(product: Product, onMerchClicked: (Product) -> Unit) {

@@ -22,7 +22,6 @@ import coil.compose.AsyncImage
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
-
 @Composable
 internal fun ProductCard(
     modifier: Modifier = Modifier,
@@ -30,22 +29,24 @@ internal fun ProductCard(
     onMerchClick: () -> Unit,
 ) {
     HomeCard {
-        Column(modifier = Modifier.clickable {
-            onMerchClick()
-        }) {
+        Column(
+            modifier = Modifier.clickable {
+                onMerchClick()
+            }
+        ) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
             ) {
                 if (media != null) {
-                        AsyncImage(
-                            model = media,
-                            contentDescription = "logo",
-                            modifier = Modifier
-                                .background(Color.White)
-                                .aspectRatio(2f),
-                            contentScale = ContentScale.Crop,
-                        )
+                    AsyncImage(
+                        model = media,
+                        contentDescription = "logo",
+                        modifier = Modifier
+                            .background(Color.White)
+                            .aspectRatio(2f),
+                        contentScale = ContentScale.Crop,
+                    )
                 } else {
 
                     val colors = listOf(
@@ -93,7 +94,6 @@ private fun MerchCardViewPreview() {
         ProductCard(
             media = "https://htem2.habemusconferencing.net/temp/dc24front.jpg",
         ) {
-
         }
     }
 }

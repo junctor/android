@@ -6,7 +6,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
@@ -14,9 +13,11 @@ import com.advice.ui.theme.ScheduleTheme
 @Composable
 fun NoDetailsView(text: String = "No further information available.\nMaybe ask Chatgpt.") {
     Text(
-        text, modifier = Modifier
+        text,
+        modifier = Modifier
             .padding(16.dp)
-            .fillMaxWidth(), textAlign = TextAlign.Center
+            .fillMaxWidth(),
+        textAlign = TextAlign.Center
     )
 }
 

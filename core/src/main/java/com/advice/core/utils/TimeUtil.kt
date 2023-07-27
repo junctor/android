@@ -125,9 +125,9 @@ object TimeUtil {
         val startFormat = DateTimeFormatter.ofPattern("MMMM d")
         val endFormat = DateTimeFormatter.ofPattern("MMMM d, yyyy")
         return "${startFormat.format(conference.start.atZone(zoneId))} - ${
-            endFormat.format(
-                conference.end.atZone(zoneId)
-            )
+        endFormat.format(
+            conference.end.atZone(zoneId)
+        )
         }"
     }
 

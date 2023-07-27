@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.advice.core.local.Organization
 import com.advice.organizations.ui.components.OrganizationsScreenContent
+import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
+import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.R
-import com.advice.ui.components.ProgressSpinner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +48,6 @@ fun VillagesScreen(
                 }
             }
         }
-
     }
 }
 

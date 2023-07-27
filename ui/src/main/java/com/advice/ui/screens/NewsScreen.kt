@@ -28,12 +28,15 @@ import com.advice.ui.theme.ScheduleTheme
 @Composable
 fun NewsScreen(news: List<NewsArticle>?, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
-        CenterAlignedTopAppBar(title = { Text("News") }, navigationIcon =
-        {
-            IconButton(onClick = { onBackPressed() }) {
-                Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
+        CenterAlignedTopAppBar(
+            title = { Text("News") },
+            navigationIcon =
+            {
+                IconButton(onClick = { onBackPressed() }) {
+                    Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
+                }
             }
-        })
+        )
     }) {
         Box(Modifier.padding(it)) {
             when {

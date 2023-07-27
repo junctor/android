@@ -6,12 +6,14 @@ import com.advice.data.sources.LocationsDataSource
 import com.advice.locations.data.repositories.LocationRepository
 import io.mockk.every
 import io.mockk.mockk
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
@@ -20,14 +22,14 @@ class LocationRepositoryTest {
 
     private val tree = listOf(
         Location(
-            1, "root", "root", null, "test", parent = 0,
+            1, "root", "root", "test", parent = 0,
             children = listOf(
-                Location(2, "root-child-1", "child-1", null, "test", parent = 1),
-                Location(3, "root-child-2", "child-2", null, "test", parent = 1),
+                Location(2, "root-child-1", "child-1", "test", parent = 1),
+                Location(3, "root-child-2", "child-2", "test", parent = 1),
                 Location(
-                    4, "root-child-3", "child-3", null, "test", parent = 1,
+                    4, "root-child-3", "child-3", "test", parent = 1,
                     children = listOf(
-                        Location(5, "grand-child-1", "grand-1", null, "test", parent = 4)
+                        Location(5, "grand-child-1", "grand-1", "test", parent = 4)
                     )
                 )
             )
@@ -38,9 +40,11 @@ class LocationRepositoryTest {
 
     @Before
     fun setup() {
-        subject = LocationRepository(mockk<LocationsDataSource>().apply {
-            every { get() } returns flow { emit(tree) }
-        })
+        subject = LocationRepository(
+            mockk<LocationsDataSource>().apply {
+                every { get() } returns flow { emit(tree) }
+            }
+        )
     }
 
     @Test
@@ -59,7 +63,6 @@ class LocationRepositoryTest {
 
         assertEquals(1, values[2].size)
     }
-
 
     @Test
     fun `collapse child and hide grand-child`() = runTest {

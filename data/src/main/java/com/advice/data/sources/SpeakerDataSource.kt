@@ -10,4 +10,3 @@ interface SpeakerDataSource {
 
     fun getEvents(): Flow<List<Event>>
 }
-

@@ -2,7 +2,6 @@ package com.advice.core.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.google.gson.Gson
 import java.util.Calendar
 
@@ -26,7 +25,6 @@ class Storage(context: Context, private val gson: Gson) {
         const val TUTORIAL_FILTERS = "tutorial_filters"
         const val TUTORIAL_EVENT_LOCATIONS = "tutorial_event_locations"
     }
-
 
     private val preferences: SharedPreferences =
         context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
@@ -104,7 +102,6 @@ class Storage(context: Context, private val gson: Gson) {
             else -> preferences.getBoolean(key, defaultValue)
         }
     }
-
 
     object CorruptionLevel {
         const val NONE = 0

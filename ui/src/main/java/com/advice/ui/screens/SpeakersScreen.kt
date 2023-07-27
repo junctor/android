@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.advice.core.local.Speaker
-import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.Speaker
 import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.Speaker
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.SpeakerProvider
+import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

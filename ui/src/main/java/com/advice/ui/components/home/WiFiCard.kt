@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
-
 @Composable
 internal fun WiFiCard(onConnectClicked: () -> Unit) {
     HomeCard {

@@ -84,7 +84,8 @@ private fun AnimatedCircleTextView(selected: Boolean, text: String, color: Color
                     )
                 }
             }
-            .padding(4.dp), contentAlignment = Alignment.CenterStart
+            .padding(4.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
         Text(
             text = text,

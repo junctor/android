@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
@@ -43,11 +42,14 @@ fun EventRow(
 ) {
     val context = LocalContext.current
 
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier
-        .clickable {
-            onEventPressed()
-        }
-        .fillMaxWidth()) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .clickable {
+                onEventPressed()
+            }
+            .fillMaxWidth()
+    ) {
         CategoryDash(event.types)
         Spacer(Modifier.width(24.dp))
         Column(
@@ -76,7 +78,8 @@ fun EventRowView(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically, modifier = modifier
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
             .clickable {
                 onEventPressed()
             }

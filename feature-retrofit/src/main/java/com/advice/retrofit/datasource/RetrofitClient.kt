@@ -30,7 +30,6 @@ interface RetrofitService {
     suspend fun getArticles(@Path("conference") conference: String): ApiResponse<Article>
 }
 
-
 class RetrofitClient {
 
     private val service: RetrofitService
@@ -42,7 +41,6 @@ class RetrofitClient {
             .build()
 
         service = retrofit.create(RetrofitService::class.java)
-
     }
 
     suspend fun get(conference: String): ApiResponse<Article> {

@@ -1,11 +1,38 @@
 package com.advice.products.ui.screens
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +48,6 @@ import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,7 +190,6 @@ fun Product(
                 Text("$$cost USD", style = MaterialTheme.typography.bodyMedium)
             }
 
-
             if (product.requiresSelection) {
                 Row(Modifier.padding(16.dp)) {
                     Text("Options", Modifier.weight(1.0f))
@@ -180,13 +205,15 @@ fun Product(
                             onSelectionChanged(option.label)
                         }
                         .defaultMinSize(minHeight = 64.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     val label = if (option.extraCost > 0) option.label + "  (+US" + String.format(
                         "%.2f",
                         option.extraCost / 100f
                     ) + ")" else option.label
                     Text(
-                        label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier
+                        label, style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
                             .weight(
                                 1.0f
                             )
@@ -195,7 +222,8 @@ fun Product(
                     if (canAdd) {
                         RadioButton(
                             selected = option.label == selection,
-                            onClick = { onSelectionChanged(option.label) })
+                            onClick = { onSelectionChanged(option.label) }
+                        )
                     }
                 }
             }

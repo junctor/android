@@ -4,7 +4,6 @@ import com.advice.core.local.Conference
 import com.advice.core.local.Event
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
-import com.advice.data.sources.EventDataSource
 import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.snapshotFlow
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
@@ -62,7 +60,8 @@ class FirebaseEventsDataSource(
             firebaseEvents.mapNotNull {
                 it.toEvent(
                     tags = tags,
-                    isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == it.id.toString() })
+                    isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == it.id.toString() }
+                )
             }
         }
     }
@@ -72,12 +71,9 @@ class FirebaseEventsDataSource(
             replay = 1
         )
 
-
     override fun get(): Flow<List<Event>> = _eventsFlow
-
 
     override suspend fun bookmark(event: Event) {
         bookmarkedEventsDataSource.bookmark(event.id, isBookmarked = !event.isBookmarked)
     }
 }
-

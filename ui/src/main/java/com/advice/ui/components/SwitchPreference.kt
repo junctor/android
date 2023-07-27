@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
-
 @Composable
 fun SwitchPreference(
     title: String,
@@ -50,7 +49,8 @@ fun SwitchPreference(
         Column(
             Modifier
                 .weight(1f)
-                .fillMaxHeight(), verticalArrangement = Arrangement.Center
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
         ) {
             Text(title)
             when {
@@ -88,7 +88,6 @@ private fun SwitchPreferencePreview() {
                 summaryOn = "Using conference's timezone",
                 summaryOff = "Using device's timezone"
             ) {
-
             }
             SwitchPreference("Show filter button", false) {}
         }

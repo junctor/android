@@ -2,7 +2,14 @@ package com.advice.locations.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -40,11 +47,14 @@ internal fun Location(
         LocationStatus.Unknown -> Color.Gray
     }
 
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-        .clickable {
-            onScheduleClicked()
-        }
-        .padding(horizontal = 16.dp, vertical = 8.dp)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clickable {
+                onScheduleClicked()
+            }
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
         Spacer(modifier = Modifier.width((16 * depth).dp))
         Box(
             modifier = Modifier

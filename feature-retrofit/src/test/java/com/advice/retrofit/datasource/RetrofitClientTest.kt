@@ -6,7 +6,7 @@ import org.junit.Test
 class RetrofitClientTest {
 
     @Test
-    fun get() = runBlocking{
+    fun get() = runBlocking {
         val client = RetrofitClient()
 
         val result = client.get("THOTCON0xC")

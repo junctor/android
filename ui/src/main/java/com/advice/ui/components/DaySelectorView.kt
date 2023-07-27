@@ -61,7 +61,7 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
     }
 
     val alpha = remember {
-        Animatable(if(hasSetup) 1f else 0f)
+        Animatable(if (hasSetup) 1f else 0f)
     }
     LaunchedEffect(key1 = "alpha", block = {
         alpha.animateTo(1f)
@@ -80,7 +80,6 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
         val x = positions.take(start).sumOf { it.width }
 
         startPosition.set(x.toFloat(), coroutineScope)
-
     }
     if (positions[end] != IntSize.Zero) {
         val x = positions.take(end).sumOf { it.width }
@@ -106,7 +105,8 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                     val verticalPadding = size.height * 0.25f
                     translate(left = startPosition.value + 8.dp.toPx(), top = verticalPadding) {
                         drawRoundRect(
-                            color, size = Size(
+                            color,
+                            size = Size(
                                 width = endPosition.value - startPosition.value,
                                 height = size.height - (verticalPadding * 2)
                             ),
@@ -117,14 +117,15 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
                 .padding(horizontal = 8.dp, vertical = 16.dp)
         ) {
             days.forEachIndexed { index, it ->
-                Box(modifier = Modifier
-                    .clickable {
-                        onDaySelected(it)
-                    }
-                    .onGloballyPositioned {
-                        positions[index] = it.size
-                    }
-                    .padding(10.dp)
+                Box(
+                    modifier = Modifier
+                        .clickable {
+                            onDaySelected(it)
+                        }
+                        .onGloballyPositioned {
+                            positions[index] = it.size
+                        }
+                        .padding(10.dp)
                 ) {
                     Text(
                         it,
@@ -152,7 +153,6 @@ private fun Animatable<Float, AnimationVector1D>.set(value: Float, coroutineScop
 fun DaySelectorViewPreview() {
     ScheduleTheme {
         DaySelectorView(listOf("May 31", "June 1", "June 2"), 0, 1) {
-
         }
     }
 }

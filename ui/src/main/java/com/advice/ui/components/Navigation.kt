@@ -13,8 +13,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.R
+import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 internal fun Navigation(label: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
@@ -22,7 +22,8 @@ internal fun Navigation(label: String, modifier: Modifier = Modifier, onClick: (
         modifier
             .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 24.dp),
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(label, Modifier.weight(1f))
         Icon(
             painterResource(id = R.drawable.arrow_back),

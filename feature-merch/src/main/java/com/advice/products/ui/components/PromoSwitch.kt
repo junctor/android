@@ -26,7 +26,8 @@ fun PromoSwitch(
             .clickable {
                 onCheckedChange(!checked)
             }
-            .padding(16.dp)) {
+            .padding(16.dp)
+    ) {
         Column(Modifier.weight(1.0f)) {
             Text(title)
             Text(description)

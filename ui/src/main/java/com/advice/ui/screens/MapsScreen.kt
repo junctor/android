@@ -11,12 +11,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -30,11 +40,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.MapFile
+import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.PdfDisplay
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.advice.ui.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -144,7 +155,8 @@ private fun MapsBottomSheet(
             .padding(16.dp)
     ) {
         files.forEach {
-            Text(it,
+            Text(
+                it,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .clickable {
@@ -188,7 +200,6 @@ private fun EmptyScreen(onBackPressed: () -> Unit) {
 private fun MapsScreenPreview() {
     ScheduleTheme {
         MapsScreen(listOf(MapFile("Map", File("/")))) {
-
         }
     }
 }

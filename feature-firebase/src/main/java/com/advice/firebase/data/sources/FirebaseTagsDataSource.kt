@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 
-
 class FirebaseTagsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
@@ -55,5 +54,3 @@ class FirebaseTagsDataSource(
         }
     }
 }
-
-

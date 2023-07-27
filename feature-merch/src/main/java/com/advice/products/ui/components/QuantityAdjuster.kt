@@ -29,7 +29,7 @@ fun QuantityAdjuster(
 ) {
     Row(
         modifier
-            //.border(1.dp, HotPink, RoundedCornerShape(32.dp))
+            // .border(1.dp, HotPink, RoundedCornerShape(32.dp))
             .background(MaterialTheme.colorScheme.onSurface, RoundedCornerShape(32.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -37,34 +37,35 @@ fun QuantityAdjuster(
         val enabled = canDelete || quantity > 1
         IconButton(
             onClick = { onQuantityChanged(quantity - 1) }, Modifier.size(24.dp),
-            enabled = enabled
-        ) {
-            Icon(
-                painterResource(if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
-                null,
-                tint = MaterialTheme.colorScheme.surface.copy(alpha = if (!enabled) 0.5f else 1.0f),
+                enabled = enabled
+            ) {
+                Icon(
+                    painterResource(if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
+                    null,
+                    tint = MaterialTheme.colorScheme.surface.copy(alpha = if (!enabled) 0.5f else 1.0f),
+                )
+            }
+            Text(
+                quantity.toString(),
+                Modifier.defaultMinSize(minWidth = 48.dp),
+                color = MaterialTheme.colorScheme.surface,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium
             )
-        }
-        Text(
-            quantity.toString(),
-            Modifier.defaultMinSize(minWidth = 48.dp),
-            color = MaterialTheme.colorScheme.surface,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium
-        )
-        IconButton(onClick = { onQuantityChanged(quantity + 1) }, Modifier.size(24.dp)) {
+            IconButton(onClick = { onQuantityChanged(quantity + 1) }, Modifier.size(24.dp)) {
             Icon(
                 painterResource(R.drawable.ic_add), null,
                 tint = MaterialTheme.colorScheme.surface
             )
         }
+        }
     }
-}
 
-@LightDarkPreview
-@Composable
-fun QuantityViewPreview() {
-    ScheduleTheme {
-        QuantityAdjuster(1, {}, canDelete = true)
+    @LightDarkPreview
+    @Composable
+    fun QuantityViewPreview() {
+        ScheduleTheme {
+            QuantityAdjuster(1, {}, canDelete = true)
+        }
     }
-}
+    

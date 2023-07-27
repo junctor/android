@@ -23,7 +23,6 @@ import coil.compose.AsyncImage
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
-
 @Composable
 internal fun OrganizationCard(
     title: String,
@@ -46,7 +45,8 @@ internal fun OrganizationCard(
             ) {
                 if (media != null) {
                     AsyncImage(
-                        model = media, contentDescription = "logo", modifier = Modifier
+                        model = media, contentDescription = "logo",
+                        modifier = Modifier
                             .background(Color.White)
                             .aspectRatio(1.333f)
                     )

@@ -22,15 +22,18 @@ import com.advice.wifi.R
 @Composable
 fun WifiScreen(onBackPressed: () -> Unit, onLinkClicked: (String) -> Unit) {
     Scaffold(topBar = {
-        CenterAlignedTopAppBar(title = { Text("WiFi") }, navigationIcon =
-        {
-            IconButton(onClick = onBackPressed) {
-                Icon(
-                    painterResource(com.advice.ui.R.drawable.arrow_back),
-                    contentDescription = null
-                )
+        CenterAlignedTopAppBar(
+            title = { Text("WiFi") },
+            navigationIcon =
+            {
+                IconButton(onClick = onBackPressed) {
+                    Icon(
+                        painterResource(com.advice.ui.R.drawable.arrow_back),
+                        contentDescription = null
+                    )
+                }
             }
-        })
+        )
     }) {
         WifiScreenContent(Modifier.padding(it), onLinkClicked)
     }

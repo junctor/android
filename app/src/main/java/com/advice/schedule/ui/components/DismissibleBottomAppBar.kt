@@ -67,7 +67,9 @@ private fun DismissibleBottomAppBarPreview() {
                 }
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
-                        painterResource(id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp),
+                        painterResource(
+                            id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp
+                        ),
                         contentDescription = "map"
                     )
                 }

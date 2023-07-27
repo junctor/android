@@ -14,28 +14,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.FAQ
-import com.advice.ui.preview.FAQProvider
-import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
+import com.advice.ui.preview.FAQProvider
 import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FAQScreen(faqs: List<FAQ>?, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
-        CenterAlignedTopAppBar(title = { Text("FAQ") }, navigationIcon =
-        {
-            IconButton(onClick = { onBackPressed() }) {
-                Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
+        CenterAlignedTopAppBar(
+            title = { Text("FAQ") },
+            navigationIcon =
+            {
+                IconButton(onClick = { onBackPressed() }) {
+                    Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
+                }
             }
-        })
+        )
     }) {
         Box(Modifier.padding(it)) {
             when {
@@ -73,7 +75,6 @@ private fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
 private fun TopBar() {
     Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
         SearchBar("Search frequently asked questions") {
-
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.advice.firebase.models
 
 import android.os.Parcelable
-import com.advice.firebase.models.FirebaseEvent
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

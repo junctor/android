@@ -1,6 +1,5 @@
 package com.advice.ui.components.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -22,7 +21,6 @@ import com.advice.core.local.Conference
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
-import java.time.Instant
 
 @Composable
 internal fun ConferenceView(

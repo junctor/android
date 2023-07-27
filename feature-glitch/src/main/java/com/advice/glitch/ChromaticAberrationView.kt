@@ -85,26 +85,26 @@ class ChromaticAberrationView @JvmOverloads constructor(
 
     private val redColorMatrix = ColorMatrix(
         floatArrayOf(
-            1f, 0f, 0f, 0f, 0f,  // red
-            0f, 0f, 0f, 0f, 0f,  // green
-            0f, 0f, 0f, 0f, 0f,  // blue
-            0f, 0f, 0f, 1f, 0f   // alpha
+            1f, 0f, 0f, 0f, 0f, // red
+            0f, 0f, 0f, 0f, 0f, // green
+            0f, 0f, 0f, 0f, 0f, // blue
+            0f, 0f, 0f, 1f, 0f // alpha
         )
     )
     private val greenColorMatrix = ColorMatrix(
         floatArrayOf(
-            0f, 0f, 0f, 0f, 0f,  // red
-            0f, 1f, 0f, 0f, 0f,  // green
-            0f, 0f, 0f, 0f, 0f,  // blue
-            0f, 0f, 0f, 1f, 0f   // alpha
+            0f, 0f, 0f, 0f, 0f, // red
+            0f, 1f, 0f, 0f, 0f, // green
+            0f, 0f, 0f, 0f, 0f, // blue
+            0f, 0f, 0f, 1f, 0f // alpha
         )
     )
     private val blueColorMatrix = ColorMatrix(
         floatArrayOf(
-            0f, 0f, 0f, 0f, 0f,  // red
-            0f, 0f, 0f, 0f, 0f,  // green
-            0f, 0f, 1f, 0f, 0f,  // blue
-            0f, 0f, 0f, 1f, 0f   // alpha
+            0f, 0f, 0f, 0f, 0f, // red
+            0f, 0f, 0f, 0f, 0f, // green
+            0f, 0f, 1f, 0f, 0f, // blue
+            0f, 0f, 0f, 1f, 0f // alpha
         )
     )
 
@@ -141,7 +141,7 @@ class ChromaticAberrationView @JvmOverloads constructor(
 
     fun setOffset(offset: Float) {
         this.offset = offset
-        invalidate()  // Redraw the view with the new offset
+        invalidate() // Redraw the view with the new offset
     }
 
     override fun onDraw(canvas: Canvas) {

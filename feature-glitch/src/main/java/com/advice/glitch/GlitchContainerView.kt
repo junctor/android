@@ -72,7 +72,6 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
         isRunning = false
     }
 
-
     override fun draw(canvas: Canvas) {
         if (isDrawing || !isGlitch || isNormal) {
             super.draw(canvas)

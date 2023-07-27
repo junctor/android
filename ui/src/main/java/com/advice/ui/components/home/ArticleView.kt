@@ -18,7 +18,7 @@ import java.util.Locale
 @Composable
 fun ArticleView(text: String, date: Date?) {
     HomeCard {
-        Column{
+        Column {
             Paragraph(text)
             if (date != null) {
                 val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())

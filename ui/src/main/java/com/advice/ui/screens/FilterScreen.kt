@@ -1,16 +1,9 @@
 package com.advice.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -27,11 +20,11 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.FiltersScreenState
+import com.advice.ui.components.Category
+import com.advice.ui.components.SectionHeader
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.preview.TagTypeProvider
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.components.SectionHeader
-import com.advice.ui.components.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +47,6 @@ fun FilterScreen(state: FiltersScreenState, onClick: (Tag) -> Unit, onClear: () 
         Box(Modifier.padding(it)) {
             when (state) {
                 FiltersScreenState.Init -> {
-
                 }
 
                 is FiltersScreenState.Success -> {
@@ -86,7 +78,6 @@ fun FilterScreenContent(
         }
     }
 }
-
 
 @LightDarkPreview()
 @Composable

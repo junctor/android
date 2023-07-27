@@ -10,5 +10,4 @@ class ProductsRepository(
 
     val conference = userSession.getConference()
     val products = productsDataSource.get()
-
 }

@@ -38,7 +38,8 @@ fun DocumentScreen(
                     }
                 }
             )
-        }) {
+        }
+    ) {
         Column(
             Modifier
                 .padding(it)
