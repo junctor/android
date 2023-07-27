@@ -103,7 +103,7 @@ internal fun SearchScreen(
                                     HeaderRow("Organizations")
                                 }
                             }
-                            state.results.organizations.windowed(2, 2) { organizations ->
+                            state.results.organizations.windowed(2, 2, partialWindows = true) { organizations ->
                                 item {
                                     OrganizationRow(organizations, onOrganizationPressed = {
                                         navController.navigate("organization/${it.id}")
