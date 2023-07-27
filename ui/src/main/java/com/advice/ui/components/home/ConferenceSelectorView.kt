@@ -55,7 +55,7 @@ fun ConferenceSelectorView(
             )
         }
         Icon(
-            painterResource(R.drawable.baseline_arrow_back_ios_new_24),
+            painterResource(R.drawable.arrow_back),
             null,
             modifier = Modifier
                 .padding(16.dp)

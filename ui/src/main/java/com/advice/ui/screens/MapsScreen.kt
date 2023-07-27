@@ -97,7 +97,7 @@ fun MapsScreen(maps: List<MapFile>, onBackPressed: () -> Unit) {
                             ),
                         ) {
                             Icon(
-                                painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
+                                painterResource(id = R.drawable.arrow_back),
                                 "Back",
                             )
                         }
@@ -167,7 +167,7 @@ private fun EmptyScreen(onBackPressed: () -> Unit) {
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
                         Icon(
-                            painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
+                            painterResource(id = R.drawable.arrow_back),
                             null
                         )
                     }

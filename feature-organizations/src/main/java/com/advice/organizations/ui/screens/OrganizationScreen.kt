@@ -62,7 +62,7 @@ fun OrganizationScreen(
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
-                        painterResource(id = com.advice.ui.R.drawable.baseline_arrow_back_ios_new_24),
+                        painterResource(id = com.advice.ui.R.drawable.arrow_back),
                         contentDescription = "Back",
                     )
                 }

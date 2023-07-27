@@ -53,13 +53,13 @@ import com.advice.ui.screens.EventScreen
 import com.advice.ui.screens.FAQScreen
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
-import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.screens.SettingScreen
 import com.advice.ui.screens.SpeakerScreen
-import com.advice.ui.screens.SpeakersScreen
-import com.advice.wifi.suggestNetwork
 import com.advice.ui.screens.SpeakerState
+import com.advice.ui.screens.SpeakersScreen
+import com.advice.ui.states.ScheduleScreenState
+import com.advice.wifi.suggestNetwork
 
 @Composable
 internal fun NavHost(navController: NavHostController) {
@@ -159,8 +159,8 @@ private fun OrganizationScreen(
         onBackPressed = {
             navController.popBackStack()
         }, onLinkClicked = {
-            (context as MainActivity).openLink(it)
-        }
+        (context as MainActivity).openLink(it)
+    }
     )
 }
 
@@ -349,10 +349,10 @@ fun EventScreen(navController: NavHostController, conference: String?, id: Strin
         onLocationClicked = { location ->
             navController.navigate(
                 "location/${location.id}/${
-                    location.shortName?.replace(
-                        "/",
-                        "\\"
-                    )
+                location.shortName?.replace(
+                    "/",
+                    "\\"
+                )
                 }"
             )
         },
@@ -478,7 +478,8 @@ private fun HomeScreen(navController: NavHostController) {
                     },
                     {
                         navController.navigate(it)
-                    })
+                    }
+                )
             },
             rightPanel = {
                 FilterScreen(
@@ -486,8 +487,8 @@ private fun HomeScreen(navController: NavHostController) {
                     onClick = {
                         filtersViewModel.toggle(it)
                     }, onClear = {
-                        filtersViewModel.clearBookmarks()
-                    }
+                    filtersViewModel.clearBookmarks()
+                }
                 )
             },
             mainPanel = {
@@ -523,7 +524,9 @@ private fun HomeScreen(navController: NavHostController) {
                     mainViewModel.setAnchor(DragAnchors.Center)
                 }) {
                     Icon(
-                        painterResource(id = com.shortstack.hackertracker.R.drawable.logo_clean),
+                        painterResource(
+                            id = com.shortstack.hackertracker.R.drawable.logo_clean
+                        ),
                         contentDescription = "Logo"
                     )
                 }
@@ -531,7 +534,9 @@ private fun HomeScreen(navController: NavHostController) {
                     navController.navigate("maps")
                 }) {
                     Icon(
-                        painterResource(id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp),
+                        painterResource(
+                            id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp
+                        ),
                         contentDescription = "Maps"
                     )
                 }

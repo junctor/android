@@ -10,5 +10,4 @@ class SpeakersViewModel : ViewModel(), KoinComponent {
     private val repository by inject<SpeakersRepository>()
 
     val speakers = repository.speakers
-
 }

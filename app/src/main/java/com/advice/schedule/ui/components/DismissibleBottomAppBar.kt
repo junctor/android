@@ -50,7 +50,7 @@ fun DismissibleBottomAppBar(
 
 @LightDarkPreview
 @Composable
-fun DismissibleBottomAppBarPreview() {
+private fun DismissibleBottomAppBarPreview() {
     ScheduleTheme {
         DismissibleBottomAppBar(isShown = true) {
             Row(
@@ -58,19 +58,24 @@ fun DismissibleBottomAppBarPreview() {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 IconButton(onClick = { /*TODO*/ }) {
-                    Icon(painterResource(id = com.shortstack.hackertracker.R.drawable.logo_clean), contentDescription = null)
+                    Icon(
+                        painterResource(
+                            id = com.shortstack.hackertracker.R.drawable.logo_clean
+                        ),
+                        contentDescription = "logo"
+                    )
                 }
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
                         painterResource(id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp),
-                        contentDescription = null
+                        contentDescription = "map"
                     )
                 }
                 IconButton(onClick = { }) {
-                    Icon(Icons.Default.Info, contentDescription = null)
+                    Icon(Icons.Default.Info, contentDescription = "search")
                 }
                 IconButton(onClick = { }) {
-                    Icon(Icons.Default.Settings, contentDescription = null)
+                    Icon(Icons.Default.Settings, contentDescription = "settings")
                 }
             }
         }

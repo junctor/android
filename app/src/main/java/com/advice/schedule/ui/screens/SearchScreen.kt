@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.advice.organizations.ui.components.OrganizationRow
@@ -42,7 +41,9 @@ internal fun SearchScreen(
                     navController.popBackStack()
                 }) {
                     Icon(
-                        painterResource(id = com.advice.ui.R.drawable.baseline_arrow_back_ios_new_24),
+                        painterResource(
+                            id = com.advice.ui.R.drawable.arrow_back
+                        ),
                         contentDescription = "Back"
                     )
                 }
@@ -103,7 +104,11 @@ internal fun SearchScreen(
                                     HeaderRow("Organizations")
                                 }
                             }
-                            state.results.organizations.windowed(2, 2, partialWindows = true) { organizations ->
+                            state.results.organizations.windowed(
+                                2,
+                                2,
+                                partialWindows = true
+                            ) { organizations ->
                                 item {
                                     OrganizationRow(organizations, onOrganizationPressed = {
                                         navController.navigate("organization/${it.id}")

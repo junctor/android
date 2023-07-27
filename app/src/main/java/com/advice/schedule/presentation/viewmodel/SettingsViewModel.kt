@@ -1,8 +1,8 @@
 package com.advice.schedule.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.advice.schedule.data.repositories.SettingsRepository
 import com.advice.analytics.core.AnalyticsProvider
+import com.advice.schedule.data.repositories.SettingsRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

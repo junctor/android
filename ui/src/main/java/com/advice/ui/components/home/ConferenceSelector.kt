@@ -59,7 +59,7 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
                 Text(state.conference.name)
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
-                    painterResource(R.drawable.baseline_arrow_back_ios_new_24),
+                    painterResource(R.drawable.arrow_back),
                     null,
                     modifier = Modifier
                         .size(12.dp)

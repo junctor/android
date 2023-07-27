@@ -16,7 +16,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-
 class ScheduleViewModel : ViewModel(), KoinComponent {
 
     private val storage by inject<Storage>()

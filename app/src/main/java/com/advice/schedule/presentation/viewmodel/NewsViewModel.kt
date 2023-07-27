@@ -11,6 +11,4 @@ class NewsViewModel : ViewModel(), KoinComponent {
     private val repository by inject<NewsDataSource>()
 
     fun getNews() = repository.get()
-
-
 }

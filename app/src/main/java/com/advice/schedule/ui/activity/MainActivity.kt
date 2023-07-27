@@ -18,9 +18,9 @@ import androidx.navigation.compose.rememberNavController
 import com.advice.schedule.ui.navigation.NavHost
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import java.util.jar.Manifest
 import org.koin.core.component.KoinComponent
 import timber.log.Timber
-import java.util.jar.Manifest
 
 class MainActivity :
     AppCompatActivity(),
@@ -28,7 +28,6 @@ class MainActivity :
 
     // todo: fix this - this is a hack to get the navController to work
     private lateinit var navController: NavController
-
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -91,7 +90,7 @@ class MainActivity :
             Timber.e("onNewIntent: $uri")
             val conference = uri?.getQueryParameter("c")
             val event = uri?.getQueryParameter("e")
-            navController.navigate("event/${conference}/$event")
+            navController.navigate("event/$conference/$event")
         }
     }
 

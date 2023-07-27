@@ -26,7 +26,7 @@ fun WifiScreen(onBackPressed: () -> Unit, onLinkClicked: (String) -> Unit) {
         {
             IconButton(onClick = onBackPressed) {
                 Icon(
-                    painterResource(com.advice.ui.R.drawable.baseline_arrow_back_ios_new_24),
+                    painterResource(com.advice.ui.R.drawable.arrow_back),
                     contentDescription = null
                 )
             }

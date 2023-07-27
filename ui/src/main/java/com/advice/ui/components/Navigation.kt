@@ -25,7 +25,7 @@ internal fun Navigation(label: String, modifier: Modifier = Modifier, onClick: (
         verticalAlignment = Alignment.CenterVertically) {
         Text(label, Modifier.weight(1f))
         Icon(
-            painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
+            painterResource(id = R.drawable.arrow_back),
             null,
             modifier = Modifier
                 .size(16.dp)

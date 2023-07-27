@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 private const val GUTTER_SIZE = 56
@@ -62,7 +61,6 @@ fun OverlappingPanelsView(
 ) {
     val isComposableReady = remember { mutableStateOf(false) }
 
-
     val density = LocalDensity.current
 
     var size by remember { mutableStateOf(IntSize.Zero) }
@@ -70,38 +68,40 @@ fun OverlappingPanelsView(
     val gutterSize = with(density) { GUTTER_SIZE.dp.toPx() }
 
     val dragState =
-        rememberSaveable(saver = object : Saver<AnchoredDraggableState<DragAnchors>, Any> {
-            override fun restore(value: Any): AnchoredDraggableState<DragAnchors> {
-                // Your logic for restoring the state from the saved value
-                val restoredAnchor = when (value as String) {
-                    "start" -> DragAnchors.Start
-                    "center" -> DragAnchors.Center
-                    "end" -> DragAnchors.End
-                    else -> DragAnchors.Center // Default value
-                }
-
-                return AnchoredDraggableState(
-                    initialValue = restoredAnchor,
-                    positionalThreshold = { distance: Float -> distance * 0.5f },
-                    velocityThreshold = { with(density) { 100.dp.toPx() } },
-                    animationSpec = tween(),
-                    confirmValueChange = { anchor ->
-                        onPanelChangedListener?.invoke(anchor)
-                        true
+        rememberSaveable(
+            saver = object : Saver<AnchoredDraggableState<DragAnchors>, Any> {
+                override fun restore(value: Any): AnchoredDraggableState<DragAnchors> {
+                    // Your logic for restoring the state from the saved value
+                    val restoredAnchor = when (value as String) {
+                        "start" -> DragAnchors.Start
+                        "center" -> DragAnchors.Center
+                        "end" -> DragAnchors.End
+                        else -> DragAnchors.Center // Default value
                     }
-                )
-            }
 
-            override fun SaverScope.save(value: AnchoredDraggableState<DragAnchors>): Any {
-                // Your logic for saving the state to a persistent value
-                return when (value.currentValue) {
-                    DragAnchors.Start -> "start"
-                    DragAnchors.Center -> "center"
-                    DragAnchors.End -> "end"
-                    else -> "center" // Default value
+                    return AnchoredDraggableState(
+                        initialValue = restoredAnchor,
+                        positionalThreshold = { distance: Float -> distance * 0.5f },
+                        velocityThreshold = { with(density) { 100.dp.toPx() } },
+                        animationSpec = tween(),
+                        confirmValueChange = { anchor ->
+                            onPanelChangedListener?.invoke(anchor)
+                            true
+                        }
+                    )
+                }
+
+                override fun SaverScope.save(value: AnchoredDraggableState<DragAnchors>): Any {
+                    // Your logic for saving the state to a persistent value
+                    return when (value.currentValue) {
+                        DragAnchors.Start -> "start"
+                        DragAnchors.Center -> "center"
+                        DragAnchors.End -> "end"
+                        else -> "center" // Default value
+                    }
                 }
             }
-        }) {
+        ) {
             AnchoredDraggableState(
                 initialValue = DragAnchors.Start,
                 positionalThreshold = { distance: Float -> distance * 0.5f },
@@ -173,7 +173,8 @@ fun OverlappingPanelsView(
                     IntOffset(
                         dragState
                             .requireOffset()
-                            .roundToInt(), 0
+                            .roundToInt(),
+                        0
                     )
                 }
                 .alpha(1.0f)
@@ -181,7 +182,7 @@ fun OverlappingPanelsView(
             mainPanel()
         }
 
-        if(currentAnchor != DragAnchors.Center) {
+        if (currentAnchor != DragAnchors.Center) {
             val alignment = when (currentAnchor) {
                 DragAnchors.Start -> Alignment.CenterEnd
                 DragAnchors.Center -> Alignment.Center

@@ -45,7 +45,7 @@ fun SettingScreen(
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("Settings") }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
-                Icon(painterResource(id = R.drawable.baseline_arrow_back_ios_new_24), null)
+                Icon(painterResource(id = R.drawable.arrow_back), null)
             }
         })
     }) {

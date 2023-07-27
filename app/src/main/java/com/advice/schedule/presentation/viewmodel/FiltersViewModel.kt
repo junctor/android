@@ -13,7 +13,6 @@ import timber.log.Timber
 
 class FiltersViewModel : ViewModel(), KoinComponent {
 
-
     private val repository by inject<FiltersRepository>()
 
     val state = flow {
@@ -36,4 +35,3 @@ class FiltersViewModel : ViewModel(), KoinComponent {
         }
     }
 }
-
