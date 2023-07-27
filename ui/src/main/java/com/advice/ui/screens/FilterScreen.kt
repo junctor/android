@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -73,11 +74,11 @@ fun FilterScreenContent(
     LazyColumn(modifier = modifier) {
         for (tag in tags) {
             item {
+                SectionHeader(tag.label)
             }
             for (tag in tag.tags) {
                 item {
-                    FilterView(tag) {
-            SectionHeader(tag.label)
+                    Category(tag) {
                         onClick(tag)
                     }
                 }
