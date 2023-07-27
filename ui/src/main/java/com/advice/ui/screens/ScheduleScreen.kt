@@ -1,6 +1,5 @@
 package com.advice.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,11 +18,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -48,20 +44,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Instant
 
-sealed class ScheduleScreenState {
-    object Init : ScheduleScreenState()
-    object Loading : ScheduleScreenState()
-    data class Success(
-        val filter: ScheduleFilter,
-        val days: Map<String, List<Event>>,
-    ) : ScheduleScreenState()
-
-    data class Error(val error: String) : ScheduleScreenState()
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreenView(
+fun ScheduleScreen(
     state: ScheduleScreenState?,
     onMenuClicked: () -> Unit,
     onFabClicked: () -> Unit,
@@ -94,7 +79,7 @@ fun ScheduleScreenView(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreenView(
+fun ScheduleScreen(
     state: ScheduleScreenState?,
     label: String?,
     onBackPressed: () -> Unit,
@@ -154,7 +139,7 @@ private fun ScheduleScreenContent(
 }
 
 @Composable
-fun ScheduleScreenContent(
+private fun ScheduleScreenContent(
     days: Map<String, List<Event>>,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event, Boolean) -> Unit,
@@ -203,12 +188,13 @@ fun ScheduleScreenContent(
             LazyColumn(state = listState) {
                 for (day in days) {
                     // Header
-                    item {
+                    item(key = day.key) {
                         DayHeaderView(day.key)
                     }
                     // Events
                     for (it in day.value) {
-                        item {
+                        val event = it
+                        item(key = it.id) {
                             EventRowView(
                                 title = it.title,
                                 time = TimeUtil.getTimeStamp(context, it),
@@ -216,6 +202,7 @@ fun ScheduleScreenContent(
                                 tags = it.types,
                                 isBookmarked = it.isBookmarked,
                                 onEventPressed = {
+                                    Timber.e("Event pressed: ${it.title}, ${event.title}")
                                     onEventClick(it)
                                 },
                                 onBookmark = { isChecked ->
@@ -237,7 +224,7 @@ fun ScheduleScreenContent(
 
 @Preview
 @Composable
-fun ScheduleScreenViewPreview() {
+private fun ScheduleScreenPreview() {
     ScheduleTheme {
         val state = ScheduleScreenState.Success(
             ScheduleFilter.Default,
@@ -275,6 +262,6 @@ fun ScheduleScreenViewPreview() {
         )
 
 
-        ScheduleScreenView(state, {}, {}, {}, { event, isBookmarked -> })
+        ScheduleScreen(state, {}, {}, {}, { event, isBookmarked -> })
     }
 }

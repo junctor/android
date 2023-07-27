@@ -57,12 +57,11 @@ import com.advice.ui.screens.FAQScreenView
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreenState
-import com.advice.ui.screens.ScheduleScreenView
+import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.screens.SettingScreenView
 import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreenView
 import com.advice.wifi.suggestNetwork
-import com.advice.ui.R
 import com.advice.ui.screens.SpeakerState
 
 @Composable
@@ -418,7 +417,7 @@ fun LocationScreen(navController: NavHostController, id: String?, label: String?
     val state =
         viewModel.getState(ScheduleFilter.Location(id))
             .collectAsState(initial = ScheduleScreenState.Loading).value
-    ScheduleScreenView(
+    ScheduleScreen(
         state = state,
         label = label,
         onBackPressed = {
@@ -439,7 +438,7 @@ fun TagScreen(navController: NavHostController, id: String?, label: String?) {
     val state =
         viewModel.getState(ScheduleFilter.Tag(id))
             .collectAsState(initial = ScheduleScreenState.Loading).value
-    ScheduleScreenView(
+    ScheduleScreen(
         state = state,
         label = label,
         onBackPressed = {
@@ -513,7 +512,7 @@ private fun HomeScreen(navController: NavHostController) {
                 )
             },
             mainPanel = {
-                ScheduleScreenView(
+                ScheduleScreen(
                     state = scheduleScreenState,
                     onMenuClicked = {
                         mainViewModel.setAnchor(DragAnchors.Start)
@@ -544,7 +543,10 @@ private fun HomeScreen(navController: NavHostController) {
                 IconButton(onClick = {
                     mainViewModel.setAnchor(DragAnchors.Center)
                 }) {
-                    Icon(painterResource(id = com.shortstack.hackertracker.R.drawable.logo_clean), contentDescription = "Logo")
+                    Icon(
+                        painterResource(id = com.shortstack.hackertracker.R.drawable.logo_clean),
+                        contentDescription = "Logo"
+                    )
                 }
                 IconButton(onClick = {
                     navController.navigate("maps")
