@@ -31,7 +31,7 @@ class HomeRepository(
         documentsDataSource.get(),
         newsDataSource.get(),
         productsDataSource.get(),
-        _countdown
+        _countdown,
     ) { array ->
         val conference = array[0] as Conference
         val conferences = array[1] as List<Conference>
@@ -58,7 +58,7 @@ class HomeRepository(
             productExample = productExample,
             documents = documents,
             news = news,
-            countdown = countdown
+            countdown = countdown,
         )
     }
 

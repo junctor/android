@@ -1,10 +1,8 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Event
-import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.EventDataSource
 import com.advice.data.sources.EventsDataSource
-import com.advice.data.sources.TagsDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted

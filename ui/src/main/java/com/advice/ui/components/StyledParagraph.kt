@@ -13,7 +13,6 @@ import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material3.Material3RichText
 import com.halilibo.richtext.ui.string.RichTextStringStyle
 
-
 @Composable
 fun Paragraph(
     text: String,
@@ -25,10 +24,10 @@ fun Paragraph(
         style = RichTextStyle(
             stringStyle = RichTextStringStyle(
                 linkStyle = SpanStyle(
-                    color = HotPink
-                )
-            )
-        )
+                    color = HotPink,
+                ),
+            ),
+        ),
     ) {
         Markdown(text)
     }
@@ -40,7 +39,7 @@ fun ParagraphPreview() {
     ScheduleTheme {
         Paragraph(
             "DEF CON provides a forum for open discussion between participants, where radical viewpoints are welcome and a high degree of skepticism is expected." +
-                    "- The Dark Tangent[https://www.defcon.org/html/links/dc-policy.html](https://www.defcon.org/html/links/dc-policy.html)"
+                "- The Dark Tangent[https://www.defcon.org/html/links/dc-policy.html](https://www.defcon.org/html/links/dc-policy.html)",
         )
     }
 }
@@ -50,7 +49,7 @@ fun ParagraphPreview() {
 fun ParagraphWebsitePreview() {
     ScheduleTheme {
         Paragraph(
-            "wifireg.defcon.org/android.html<br/><br/>In order to access the DEF CON 30 Wireless Network, you must have already registered.<br/>"
+            "wifireg.defcon.org/android.html<br/><br/>In order to access the DEF CON 30 Wireless Network, you must have already registered.<br/>",
         )
     }
 }

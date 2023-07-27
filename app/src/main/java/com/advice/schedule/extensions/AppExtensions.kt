@@ -8,7 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import timber.log.Timber
 
-
 @Composable
 inline fun <reified VM : ViewModel> NavHostController.navGraphViewModel(): VM {
     val navBackStackEntry by currentBackStackEntryAsState()

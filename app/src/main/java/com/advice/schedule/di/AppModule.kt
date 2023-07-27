@@ -75,7 +75,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.shortstack.hackertracker.BuildConfig
-import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -115,7 +114,7 @@ val appModule = module {
         SettingsRepository(
             get(),
             get(),
-            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
         )
     }
     single { MapRepository(get()) }
@@ -127,12 +126,11 @@ val appModule = module {
     single { TagsRepository(get()) }
     single { SearchRepository(get(), get(), get(), get(), get()) }
 
-
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
     single<BookmarkedElementDataSource>(named("tags")) { InMemoryBookmarkedDataSourceImpl() }
     single<BookmarkedElementDataSource>(named("events")) {
         SharedPreferencesBookmarkDataSource(
-            androidContext()
+            androidContext(),
         )
     }
 
@@ -178,5 +176,4 @@ val appModule = module {
     viewModel { SearchViewModel() }
 
     viewModel { ProductsViewModel() }
-
 }

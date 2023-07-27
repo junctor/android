@@ -49,7 +49,7 @@ class SearchRepository(
                 query = query,
                 events = (values[1] as List<Event>).filter { event ->
                     event.title.contains(query, ignoreCase = true) ||
-                            event.description.contains(query, ignoreCase = true)
+                        event.description.contains(query, ignoreCase = true)
                 },
                 speakers = (values[2] as List<Speaker>).filter { speaker ->
                     speaker.name.contains(query, ignoreCase = true)
@@ -59,9 +59,9 @@ class SearchRepository(
                 },
                 documents = (values[5] as List<Document>).filter { document ->
                     document.title.contains(query, ignoreCase = true) ||
-                            document.description.contains(query, ignoreCase = true)
+                        document.description.contains(query, ignoreCase = true)
                 },
-            )
+            ),
         )
     }
 

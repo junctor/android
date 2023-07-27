@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
-
 class FiltersRepository(
     tagsRepository: TagsRepository,
     private val bookmarksDataSource: BookmarkedElementDataSource,

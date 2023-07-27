@@ -50,7 +50,6 @@ class ScheduleRepository(
             .filter { ids.isEmpty() || it.types.any { it.id in ids } }
     }
 
-
     suspend fun bookmark(event: Event, isBookmarked: Boolean) {
         eventsRepository.bookmark(event)
         if (isBookmarked) {

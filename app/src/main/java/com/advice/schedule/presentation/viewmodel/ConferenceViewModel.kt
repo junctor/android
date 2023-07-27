@@ -10,5 +10,4 @@ class ConferenceViewModel : ViewModel(), KoinComponent {
     private val userSession by inject<UserSession>()
 
     val conference = userSession.getConference()
-
 }
