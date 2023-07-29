@@ -6,6 +6,12 @@ data class Menu(
 )
 
 sealed class MenuItem(val label: String) {
+    class SectionHeading(
+        label: String,
+    ) : MenuItem(label)
+
+    object Divider : MenuItem("")
+
     class Document(
         label: String,
         val documentId: Int,

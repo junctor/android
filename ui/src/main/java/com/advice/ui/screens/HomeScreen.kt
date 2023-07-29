@@ -1,12 +1,16 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +22,7 @@ import com.advice.core.local.Conference
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
 import com.advice.core.ui.HomeState
+import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.home.ConferenceSelector
 import com.advice.ui.components.home.ConferenceView
@@ -83,6 +88,23 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
         }
 
         state.menu.items.forEach {
+            if (it is MenuItem.SectionHeading) {
+                Label(text = it.label)
+                return@forEach
+            }
+
+            if (it is MenuItem.Divider) {
+                Box(
+                    Modifier
+                        .padding(vertical = 16.dp, horizontal = 16.dp)
+                        .height(1.dp)
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.outline)
+
+                )
+                return@forEach
+            }
+
             HomeCard {
                 Text(
                     it.label,
@@ -100,6 +122,8 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
                                         )
                                     }"
                                 )
+
+                                else -> error("Unknown menu item: $it")
                             }
 
                         }

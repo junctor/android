@@ -336,6 +336,12 @@ fun FirebaseMenu.toMenu(): Menu? {
 fun FirebaseMenuItem.toMenuItem(): MenuItem? {
     return try {
         when (function) {
+            "section_heading" -> MenuItem.SectionHeading(
+                title_text,
+            )
+
+            "divider" -> MenuItem.Divider
+
             "document" -> MenuItem.Document(
                 title_text,
                 document ?: error("null document id: $title_text"),
