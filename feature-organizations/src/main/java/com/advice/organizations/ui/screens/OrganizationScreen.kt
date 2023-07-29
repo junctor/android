@@ -33,15 +33,15 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrganizationScreen(
-    organization: Organization,
+    organization: Organization?,
     onBackPressed: () -> Unit,
     onLinkClicked: (String) -> Unit,
 ) {
     val systemUiController = rememberSystemUiController()
 
-    val hasMedia = organization.media.isNotEmpty()
+    val hasMedia = organization?.media?.isNotEmpty()
 
-    if (hasMedia) {
+    if (hasMedia == true) {
         DisposableEffect(Unit) {
             systemUiController.setSystemBarsColor(
                 color = Color.Black.copy(0.40f),
@@ -57,7 +57,7 @@ fun OrganizationScreen(
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = {
-                Text(text = organization.name)
+                Text(text = organization?.name ?: "")
             },
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
@@ -77,30 +77,32 @@ fun OrganizationScreen(
                 .padding(it)
                 .verticalScroll(rememberScrollState()),
         ) {
-            if (organization.media.isNotEmpty()) {
-                AsyncImage(
-                    model = organization.media.first().url,
-                    contentDescription = "image",
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth,
-                )
-            }
-            if (organization.description != null) {
-                Paragraph(organization.description ?: "")
-            }
-            if (organization.links.isNotEmpty()) {
-                Spacer(Modifier.height(16.dp))
-                for (link in organization.links) {
-                    ClickableUrl(
-                        label = link.label,
-                        url = link.url,
-                        onClick = {
-                            onLinkClicked(link.url)
-                        },
+            if (organization != null) {
+                if (organization.media.isNotEmpty()) {
+                    AsyncImage(
+                        model = organization.media.first().url,
+                        contentDescription = "image",
                         modifier = Modifier
-                            .padding(horizontal = 16.dp),
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth,
                     )
+                }
+                if (organization.description != null) {
+                    Paragraph(organization.description ?: "")
+                }
+                if (organization.links.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
+                    for (link in organization.links) {
+                        ClickableUrl(
+                            label = link.label,
+                            url = link.url,
+                            onClick = {
+                                onLinkClicked(link.url)
+                            },
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp),
+                        )
+                    }
                 }
             }
         }

@@ -11,6 +11,11 @@ sealed class MenuItem(val label: String) {
         val documentId: Int,
     ) : MenuItem(label)
 
+    class Menu(
+        label: String,
+        val menuId: Int,
+    ) : MenuItem(label)
+
     class Navigation(
         label: String,
         val function: String,

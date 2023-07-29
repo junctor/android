@@ -26,9 +26,9 @@ import com.advice.ui.components.ProgressSpinner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DocumentsScreen(
+fun MenuScreen(
     label: String,
-    documents: List<Document>?,
+    items: List<Document>?,
     onBackPressed: () -> Unit,
     onDocumentPressed: (Document) -> Unit,
 ) {
@@ -41,11 +41,11 @@ fun DocumentsScreen(
     }) {
         Box(Modifier.padding(it)) {
             when {
-                documents == null -> {
+                items == null -> {
                     ProgressSpinner()
                 }
 
-                documents.isEmpty() -> {
+                items.isEmpty() -> {
                     EmptyMessage("$label not found")
                 }
 
@@ -53,7 +53,7 @@ fun DocumentsScreen(
                     Column(Modifier.padding(16.dp)) {
 
 
-                        documents.forEach {
+                        items.forEach {
                             Surface(
                                 border = BorderStroke(
                                     1.dp,

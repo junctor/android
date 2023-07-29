@@ -15,7 +15,7 @@ data class FirebaseMenuItem(
     @get:PropertyName("document_id") @set:PropertyName("document_id") var document: Int? = null,
     val function: String = "",
     val id: Long = -1,
-    val menu_id: Long? = null,
+    val menu_id: Int? = null,
     val prohibit_tag_filter: String = "",
     val sort_order: Int = -1,
     val title_text: String = "",

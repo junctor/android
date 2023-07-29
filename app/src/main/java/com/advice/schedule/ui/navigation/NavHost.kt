@@ -26,7 +26,6 @@ import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.core.ui.ScheduleFilter
 import com.advice.documents.presentation.viewmodel.DocumentsViewModel
-import com.advice.documents.ui.screens.DocumentsScreen
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.organizations.ui.screens.OrganizationScreen
 import com.advice.products.presentation.viewmodel.ProductsViewModel
@@ -78,7 +77,7 @@ internal fun NavHost(navController: NavHostController) {
         composable("search") {
             Search(navController)
         }
-        composable("locations") {
+        composable("locations/{label}") {
             LocationsScreen(navController)
         }
         composable("event/{conference}/{id}") { backStackEntry ->
@@ -123,7 +122,7 @@ internal fun NavHost(navController: NavHostController) {
         composable("settings") { SettingsScreen(navController) }
 
         composable("wifi") { WifiScreen(navController) }
-        composable("menu/{label}") { backStackEntry ->
+        composable("menu/{label}/{id}") { backStackEntry ->
             DocumentsScreen(
                 navController = navController,
                 label = backStackEntry.arguments?.getString("label"),
@@ -140,9 +139,9 @@ internal fun NavHost(navController: NavHostController) {
                 label = it.arguments?.getString("label"),
             )
         }
-        composable("people") { SpeakersScreen(navController) }
+        composable("people/{label}") { SpeakersScreen(navController) }
 
-        composable("products") {
+        composable("products/{label}") {
             ProductsScreen(navController, productsViewModel)
         }
         composable("merch/{id}") { backStackEntry ->
@@ -170,8 +169,9 @@ private fun OrganizationScreen(
 
     val id = backStackEntry.arguments?.getString("id")
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
-    val organizations = viewModel.organizations.collectAsState(initial = emptyList()).value
-    val organization = organizations.find { it.id.toString() == id } ?: return
+
+    val flow = remember(id) { viewModel.getOrganization(id?.toLong()) }
+    val organization = flow.collectAsState(initial = null).value
 
     OrganizationScreen(
         organization = organization,
@@ -266,8 +266,8 @@ private fun DocumentsScreen(
 ) {
     val viewModel = navController.navGraphViewModel<DocumentsViewModel>()
     val documents = viewModel.documents.collectAsState(initial = null).value ?: return
-    com.advice.documents.ui.screens.DocumentsScreen(
-        documents = documents,
+    com.advice.documents.ui.screens.MenuScreen(
+        items = documents,
         label = label ?: "",
         onDocumentPressed = {
             navController.navigate("document/${it.id}")
@@ -318,7 +318,7 @@ private fun SpeakersScreen(navController: NavHostController) {
 @Composable
 private fun OrganizationsScreen(navController: NavHostController, label: String?, id: String?) {
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
-    val state = viewModel.vendors.collectAsState(initial = null).value
+    val state = viewModel.getState(id!!).collectAsState(initial = null).value
     com.advice.organizations.ui.screens.OrganizationsScreen(
         label = label ?: "",
         organizations = state,

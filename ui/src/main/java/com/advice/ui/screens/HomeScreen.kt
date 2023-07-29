@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,16 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
+import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
 import com.advice.core.ui.HomeState
 import com.advice.ui.components.ProgressSpinner
-import com.advice.ui.components.home.ArticleView
 import com.advice.ui.components.home.ConferenceSelector
 import com.advice.ui.components.home.ConferenceView
 import com.advice.ui.components.home.CountdownView
 import com.advice.ui.components.home.HomeCard
-import com.advice.ui.components.home.ProductCard
-import com.advice.ui.components.home.WiFiCard
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
@@ -85,36 +82,29 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
             CountdownView(remainder)
         }
 
-        state.menu.forEach {
-            Text(
-                it.label,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-
-            it.items.forEach {
-                HomeCard {
-                    Text(
-                        it.label,
-                        Modifier
-                            .clickable {
-                                when (it) {
-                                    is MenuItem.Document -> onNavigationClick("document/${it.documentId}")
-                                    is MenuItem.Navigation -> onNavigationClick("${it.function}/${it.label}")
-                                    is MenuItem.Organization -> onNavigationClick("organizations/${it.label}/${it.organizationId}")
-                                    is MenuItem.Schedule -> onNavigationClick(
-                                        "schedule/${it.label}/${
-                                            it.tags.joinToString(
-                                                ","
-                                            )
-                                        }"
-                                    )
-                                }
-
+        state.menu.items.forEach {
+            HomeCard {
+                Text(
+                    it.label,
+                    Modifier
+                        .clickable {
+                            when (it) {
+                                is MenuItem.Document -> onNavigationClick("document/${it.documentId}")
+                                is MenuItem.Menu -> onNavigationClick("menu/${it.label}/${it.menuId}")
+                                is MenuItem.Navigation -> onNavigationClick("${it.function}/${it.label}")
+                                is MenuItem.Organization -> onNavigationClick("organizations/${it.label}/${it.organizationId}")
+                                is MenuItem.Schedule -> onNavigationClick(
+                                    "schedule/${it.label}/${
+                                        it.tags.joinToString(
+                                            ","
+                                        )
+                                    }"
+                                )
                             }
-                            .padding(16.dp)
-                    )
-                }
+
+                        }
+                        .padding(16.dp)
+                )
             }
         }
 
@@ -131,7 +121,7 @@ private fun HomeScreenViewPreview() {
             state = HomeState.Loaded(
                 conferences = listOf(Conference.Zero),
                 conference = Conference.Zero,
-                menu = emptyList(),
+                menu = Menu("Home", listOf()),
                 countdown = Date().time / 1000L,
                 forceTimeZone = false
             ),

@@ -325,7 +325,7 @@ fun FirebaseMenu.toMenu(): Menu? {
     return try {
         Menu(
             title_text,
-            items.mapNotNull { it.toMenuItem() },
+            items.sortedBy { it.sort_order }.mapNotNull { it.toMenuItem() },
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Menu: ${ex.message}")
@@ -335,23 +335,35 @@ fun FirebaseMenu.toMenu(): Menu? {
 
 fun FirebaseMenuItem.toMenuItem(): MenuItem? {
     return try {
-        when(function) {
+        when (function) {
             "document" -> MenuItem.Document(
                 title_text,
                 document ?: error("null document id: $title_text"),
             )
-            "schedule" -> MenuItem.Schedule(
+
+            "schedule" -> {
+                if (applied_tag_ids.isEmpty()) error("empty tags: $title_text")
+                MenuItem.Schedule(
+                    title_text,
+                    applied_tag_ids,
+                )
+            }
+
+            "menu" -> MenuItem.Menu(
                 title_text,
-                applied_tag_ids,
+                menu_id ?: error("null menu id: $title_text"),
             )
-            "people", "locations", "products", "news", "menu", -> MenuItem.Navigation(
+
+            "people", "locations", "products", "news" -> MenuItem.Navigation(
                 title_text,
                 function,
             )
+
             "organizations" -> MenuItem.Organization(
                 title_text,
                 applied_tag_ids.first(),
             )
+
             else -> error("Unknown menu item function: $title_text, $function")
         }
     } catch (ex: Exception) {

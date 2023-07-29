@@ -1,16 +1,10 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Conference
-import com.advice.core.local.Document
-import com.advice.core.local.NewsArticle
-import com.advice.core.local.Product
 import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
-import com.advice.data.sources.DocumentsDataSource
-import com.advice.data.sources.NewsDataSource
-import com.advice.data.sources.ProductsDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
@@ -33,7 +27,7 @@ class HomeRepository(
             forceTimeZone = storage.forceTimeZone,
             conferences = conferences,
             conference = conference,
-            menu = menu,
+            menu = menu.first(),
             countdown = countdown,
         )
     }
