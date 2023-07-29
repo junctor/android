@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
+import com.advice.core.local.MenuItem
 import com.advice.core.ui.HomeState
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.home.ArticleView
@@ -78,116 +79,43 @@ private fun HomeScreenContent(
 private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> Unit) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         ConferenceView(state.conference)
-        if (state.hasWifi) {
-            WiFiCard(onConnectClicked = {})
-        }
-
-        if (state.hasProducts) {
-            ProductCard(media = state.productExample) {
-                onNavigationClick("merch")
-            }
-        }
 
         val remainder = state.countdown
         if (remainder > 0L) {
             CountdownView(remainder)
         }
 
-        // Latest news
-        if (state.news.isNotEmpty()) {
-            state.news.first().let {
-                ArticleView(text = it.text, date = it.date)
-            }
-            if (state.news.size > 1) {
+        state.menu.forEach {
+            Text(
+                it.label,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(16.dp)
+            )
+
+            it.items.forEach {
                 HomeCard {
                     Text(
-                        "News",
+                        it.label,
                         Modifier
                             .clickable {
-                                onNavigationClick("news")
+                                when (it) {
+                                    is MenuItem.Document -> onNavigationClick("document/${it.documentId}")
+                                    is MenuItem.Navigation -> onNavigationClick("${it.function}/${it.label}")
+                                    is MenuItem.Organization -> onNavigationClick("organizations/${it.label}/${it.organizationId}")
+                                    is MenuItem.Schedule -> onNavigationClick(
+                                        "schedule/${it.label}/${
+                                            it.tags.joinToString(
+                                                ","
+                                            )
+                                        }"
+                                    )
+                                }
+
                             }
                             .padding(16.dp)
                     )
                 }
             }
-        }
-
-        if (state.documents.isNotEmpty()) {
-            Text(
-                "Documents",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-
-        state.documents.forEach {
-            HomeCard {
-                Text(
-                    it.title,
-                    Modifier
-                        .clickable {
-                            onNavigationClick("document/${it.id}")
-                        }
-                        .padding(16.dp)
-                )
-            }
-        }
-
-        Text(
-            "Other",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp)
-        )
-
-        HomeCard {
-            Text(
-                "Speakers",
-                Modifier
-                    .clickable {
-                        onNavigationClick("speakers")
-                    }
-                    .padding(16.dp)
-            )
-        }
-        HomeCard {
-            Text(
-                "Vendors",
-                Modifier
-                    .clickable {
-                        onNavigationClick("vendors")
-                    }
-                    .padding(16.dp)
-            )
-        }
-        HomeCard {
-            Text(
-                "Villages",
-                Modifier
-                    .clickable {
-                        onNavigationClick("villages")
-                    }
-                    .padding(16.dp)
-            )
-        }
-        HomeCard {
-            Text(
-                "Locations",
-                Modifier
-                    .clickable {
-                        onNavigationClick("locations")
-                    }
-                    .padding(16.dp)
-            )
-        }
-        HomeCard {
-            Text(
-                "FAQ",
-                Modifier
-                    .clickable {
-                        onNavigationClick("faq")
-                    }
-                    .padding(16.dp)
-            )
         }
 
         // Required spacer to push content above the bottom bar
@@ -203,8 +131,7 @@ private fun HomeScreenViewPreview() {
             state = HomeState.Loaded(
                 conferences = listOf(Conference.Zero),
                 conference = Conference.Zero,
-                documents = emptyList(),
-                news = emptyList(),
+                menu = emptyList(),
                 countdown = Date().time / 1000L,
                 forceTimeZone = false
             ),

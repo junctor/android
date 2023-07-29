@@ -2,6 +2,7 @@ package com.advice.core.ui
 
 import com.advice.core.local.Conference
 import com.advice.core.local.Document
+import com.advice.core.local.Menu
 import com.advice.core.local.NewsArticle
 
 sealed class HomeState {
@@ -9,11 +10,7 @@ sealed class HomeState {
     data class Loaded(
         val conferences: List<Conference>,
         val conference: Conference,
-        val hasWifi: Boolean = false,
-        val hasProducts: Boolean = false,
-        val productExample: String? = null,
-        val documents: List<Document> = emptyList(),
-        val news: List<NewsArticle> = emptyList(),
+        val menu: List<Menu>,
         val countdown: Long = -1L,
         val forceTimeZone: Boolean,
     ) : HomeState()

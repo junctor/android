@@ -35,6 +35,10 @@ class ScheduleRepository(
                 is ScheduleFilter.Tag -> {
                     sortedEvents.filter { it.types.any { it.id.toString() == filter.id } }
                 }
+
+                is ScheduleFilter.Tags -> {
+                    sortedEvents.filter { it.types.any { it.id.toString() in filter.ids } }
+                }
             }
         }
     }

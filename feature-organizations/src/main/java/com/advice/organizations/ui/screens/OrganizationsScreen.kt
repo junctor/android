@@ -19,13 +19,14 @@ import com.advice.ui.components.ProgressSpinner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VendorsScreen(
+fun OrganizationsScreen(
+    label: String,
     organizations: List<Organization>?,
     onBackPressed: () -> Unit,
     onOrganizationPressed: (Organization) -> Unit,
 ) {
     Scaffold(topBar = {
-        CenterAlignedTopAppBar(title = { Text("Vendors") }, navigationIcon = {
+        CenterAlignedTopAppBar(title = { Text(label) }, navigationIcon = {
             IconButton(onClick = { onBackPressed() }) {
                 Icon(painterResource(R.drawable.arrow_back), null)
             }
@@ -38,7 +39,7 @@ fun VendorsScreen(
                 }
 
                 organizations.isEmpty() -> {
-                    EmptyMessage("Vendors not found")
+                    EmptyMessage("$label not found")
                 }
 
                 else -> {

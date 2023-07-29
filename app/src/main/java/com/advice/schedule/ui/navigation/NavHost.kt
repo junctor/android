@@ -26,6 +26,7 @@ import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.core.ui.ScheduleFilter
 import com.advice.documents.presentation.viewmodel.DocumentsViewModel
+import com.advice.documents.ui.screens.DocumentsScreen
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.organizations.ui.screens.OrganizationScreen
 import com.advice.products.presentation.viewmodel.ProductsViewModel
@@ -101,6 +102,13 @@ internal fun NavHost(navController: NavHostController) {
                 label = backStackEntry.arguments?.getString("label")
             )
         }
+        composable("schedule/{label}/{ids}") {
+            TagsScreen(
+                navController = navController,
+                id = it.arguments?.getString("ids"),
+                label = it.arguments?.getString("label"),
+            )
+        }
         composable("speaker/{id}/{name}") { backStackEntry ->
             val context = (LocalContext.current as MainActivity)
             SpeakerScreen(
@@ -115,15 +123,26 @@ internal fun NavHost(navController: NavHostController) {
         composable("settings") { SettingsScreen(navController) }
 
         composable("wifi") { WifiScreen(navController) }
+        composable("menu/{label}") { backStackEntry ->
+            DocumentsScreen(
+                navController = navController,
+                label = backStackEntry.arguments?.getString("label"),
+            )
+        }
         composable("document/{id}") { backStackEntry ->
             DocumentScreen(navController, backStackEntry.arguments?.getString("id"))
         }
         composable("faq") { FAQScreen(navController) }
-        composable("vendors") { VendorsScreen(navController) }
-        composable("villages") { VillagesScreen(navController) }
-        composable("speakers") { SpeakersScreen(navController) }
+        composable("organizations/{label}/{id}") {
+            OrganizationsScreen(
+                navController = navController,
+                id = it.arguments?.getString("id"),
+                label = it.arguments?.getString("label"),
+            )
+        }
+        composable("people") { SpeakersScreen(navController) }
 
-        composable("merch") {
+        composable("products") {
             ProductsScreen(navController, productsViewModel)
         }
         composable("merch/{id}") { backStackEntry ->
@@ -159,8 +178,8 @@ private fun OrganizationScreen(
         onBackPressed = {
             navController.popBackStack()
         }, onLinkClicked = {
-        (context as MainActivity).openLink(it)
-    }
+            (context as MainActivity).openLink(it)
+        }
     )
 }
 
@@ -241,6 +260,25 @@ private fun WifiScreen(navController: NavHostController) {
 }
 
 @Composable
+private fun DocumentsScreen(
+    navController: NavHostController,
+    label: String?,
+) {
+    val viewModel = navController.navGraphViewModel<DocumentsViewModel>()
+    val documents = viewModel.documents.collectAsState(initial = null).value ?: return
+    com.advice.documents.ui.screens.DocumentsScreen(
+        documents = documents,
+        label = label ?: "",
+        onDocumentPressed = {
+            navController.navigate("document/${it.id}")
+        },
+        onBackPressed = {
+            navController.popBackStack()
+        }
+    )
+}
+
+@Composable
 private fun DocumentScreen(navController: NavHostController, id: String? = null) {
     val viewModel = navController.navGraphViewModel<DocumentsViewModel>()
     val documents = viewModel.documents.collectAsState(initial = null).value ?: return
@@ -278,25 +316,11 @@ private fun SpeakersScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun VendorsScreen(navController: NavHostController) {
+private fun OrganizationsScreen(navController: NavHostController, label: String?, id: String?) {
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
     val state = viewModel.vendors.collectAsState(initial = null).value
-    com.advice.organizations.ui.screens.VendorsScreen(
-        organizations = state,
-        onBackPressed = {
-            navController.popBackStack()
-        },
-        onOrganizationPressed = {
-            navController.navigate("organization/${it.id}")
-        },
-    )
-}
-
-@Composable
-private fun VillagesScreen(navController: NavHostController) {
-    val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
-    val state = viewModel.villages.collectAsState(initial = null).value
-    com.advice.organizations.ui.screens.VillagesScreen(
+    com.advice.organizations.ui.screens.OrganizationsScreen(
+        label = label ?: "",
         organizations = state,
         onBackPressed = {
             navController.popBackStack()
@@ -349,10 +373,10 @@ fun EventScreen(navController: NavHostController, conference: String?, id: Strin
         onLocationClicked = { location ->
             navController.navigate(
                 "location/${location.id}/${
-                location.shortName?.replace(
-                    "/",
-                    "\\"
-                )
+                    location.shortName?.replace(
+                        "/",
+                        "\\"
+                    )
                 }"
             )
         },
@@ -433,6 +457,27 @@ fun TagScreen(navController: NavHostController, id: String?, label: String?) {
 }
 
 @Composable
+fun TagsScreen(navController: NavHostController, id: String?, label: String?) {
+    val viewModel = viewModel<ScheduleViewModel>()
+    val state =
+        viewModel.getState(ScheduleFilter.Tags(id!!.split(",")))
+            .collectAsState(initial = ScheduleScreenState.Loading).value
+    ScheduleScreen(
+        state = state,
+        label = label,
+        onBackPressed = {
+            navController.popBackStack()
+        },
+        onEventClick = {
+            navController.navigate("event/${it.conference}/${it.id}")
+        },
+        onBookmarkClick = { event, isBookmarked ->
+            viewModel.bookmark(event, isBookmarked)
+        },
+    )
+}
+
+@Composable
 fun SettingsScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<SettingsViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value ?: return
@@ -487,8 +532,8 @@ private fun HomeScreen(navController: NavHostController) {
                     onClick = {
                         filtersViewModel.toggle(it)
                     }, onClear = {
-                    filtersViewModel.clearBookmarks()
-                }
+                        filtersViewModel.clearBookmarks()
+                    }
                 )
             },
             mainPanel = {

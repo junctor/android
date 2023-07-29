@@ -11,6 +11,8 @@ import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Link
 import com.advice.core.local.Location
+import com.advice.core.local.Menu
+import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
 import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
@@ -34,6 +36,8 @@ import com.advice.firebase.models.FirebaseFAQ
 import com.advice.firebase.models.FirebaseLink
 import com.advice.firebase.models.FirebaseLocation
 import com.advice.firebase.models.FirebaseMap
+import com.advice.firebase.models.FirebaseMenu
+import com.advice.firebase.models.FirebaseMenuItem
 import com.advice.firebase.models.FirebaseOrganization
 import com.advice.firebase.models.FirebaseOrganizationLocation
 import com.advice.firebase.models.FirebaseOrganizationMedia
@@ -313,6 +317,45 @@ fun FirebaseArticle.toArticle(): NewsArticle? {
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Article: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseMenu.toMenu(): Menu? {
+    return try {
+        Menu(
+            title_text,
+            items.mapNotNull { it.toMenuItem() },
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Menu: ${ex.message}")
+        null
+    }
+}
+
+fun FirebaseMenuItem.toMenuItem(): MenuItem? {
+    return try {
+        when(function) {
+            "document" -> MenuItem.Document(
+                title_text,
+                document ?: error("null document id: $title_text"),
+            )
+            "schedule" -> MenuItem.Schedule(
+                title_text,
+                applied_tag_ids,
+            )
+            "people", "locations", "products", "news", "menu", -> MenuItem.Navigation(
+                title_text,
+                function,
+            )
+            "organizations" -> MenuItem.Organization(
+                title_text,
+                applied_tag_ids.first(),
+            )
+            else -> error("Unknown menu item function: $title_text, $function")
+        }
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to MenuItem: ${ex.message}")
         null
     }
 }

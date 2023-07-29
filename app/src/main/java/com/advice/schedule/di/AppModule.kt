@@ -15,6 +15,7 @@ import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.FAQDataSource
 import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.MapsDataSource
+import com.advice.data.sources.MenuDataSource
 import com.advice.data.sources.NewsDataSource
 import com.advice.data.sources.OrganizationsDataSource
 import com.advice.data.sources.ProductsDataSource
@@ -30,6 +31,7 @@ import com.advice.firebase.data.sources.FirebaseEventsDataSource
 import com.advice.firebase.data.sources.FirebaseFAQDataSource
 import com.advice.firebase.data.sources.FirebaseLocationsDataSource
 import com.advice.firebase.data.sources.FirebaseMapsDataSource
+import com.advice.firebase.data.sources.FirebaseMenuDataSource
 import com.advice.firebase.data.sources.FirebaseNewsDataSource
 import com.advice.firebase.data.sources.FirebaseOrganizationDataSource
 import com.advice.firebase.data.sources.FirebaseProductsDataSource
@@ -49,6 +51,7 @@ import com.advice.schedule.data.repositories.FiltersRepository
 import com.advice.schedule.data.repositories.HomeRepository
 import com.advice.schedule.data.repositories.InformationRepository
 import com.advice.schedule.data.repositories.MapRepository
+import com.advice.schedule.data.repositories.MenuRepository
 import com.advice.schedule.data.repositories.OrganizationsRepository
 import com.advice.schedule.data.repositories.ScheduleRepository
 import com.advice.schedule.data.repositories.SearchRepository
@@ -104,7 +107,7 @@ val appModule = module {
 
     // repo
     single { ScheduleRepository(get(), get(), get()) }
-    single { HomeRepository(get(), get(), get(), get(), get(), get()) }
+    single { HomeRepository(get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
     single { EventsRepository(get(), get()) }
     single { SpeakerRepository(get(), get()) }
@@ -125,6 +128,7 @@ val appModule = module {
     single { DocumentsRepository(get()) }
     single { TagsRepository(get()) }
     single { SearchRepository(get(), get(), get(), get(), get()) }
+    single { MenuRepository(get()) }
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
     single<BookmarkedElementDataSource>(named("tags")) { InMemoryBookmarkedDataSourceImpl() }
@@ -160,6 +164,8 @@ val appModule = module {
 
     // Documents
     single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get()) }
+    
+    single<MenuDataSource> { FirebaseMenuDataSource(get(), get()) }
 
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }
