@@ -24,6 +24,7 @@ import com.advice.core.local.MenuItem
 import com.advice.core.ui.HomeState
 import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.home.ArticleView
 import com.advice.ui.components.home.ConferenceSelector
 import com.advice.ui.components.home.ConferenceView
 import com.advice.ui.components.home.CountdownView
@@ -87,6 +88,12 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
             CountdownView(remainder)
         }
 
+        // Latest news
+        val news = state.news
+        if (news != null) {
+            ArticleView(text = news.text, date = news.date)
+        }
+
         state.menu.items.forEach {
             if (it is MenuItem.SectionHeading) {
                 Label(text = it.label)
@@ -146,6 +153,7 @@ private fun HomeScreenViewPreview() {
                 conferences = listOf(Conference.Zero),
                 conference = Conference.Zero,
                 menu = Menu("Home", listOf()),
+                news = null,
                 countdown = Date().time / 1000L,
                 forceTimeZone = false
             ),

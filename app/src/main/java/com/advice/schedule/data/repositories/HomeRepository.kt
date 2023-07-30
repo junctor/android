@@ -6,13 +6,15 @@ import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
+import com.advice.data.sources.NewsDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
 class HomeRepository(
     private val userSession: UserSession,
-    menuRepository: MenuRepository,
     conferencesDataSource: ConferencesDataSource,
+    menuRepository: MenuRepository,
+    newsRepository: NewsDataSource,
     storage: Storage,
 ) {
 
@@ -22,13 +24,15 @@ class HomeRepository(
         userSession.getConference(),
         conferencesDataSource.get(),
         menuRepository.menu,
+        newsRepository.get(),
         _countdown,
-    ) { conference, conferences, menu, countdown ->
+    ) { conference, conferences, menu, news, countdown ->
         HomeState.Loaded(
             forceTimeZone = storage.forceTimeZone,
             conferences = conferences,
             conference = conference,
             menu = menu.firstOrNull() ?: Menu("Nothing", emptyList()),
+            news = news.firstOrNull(),
             countdown = countdown,
         )
     }
