@@ -1,6 +1,7 @@
 package com.advice.ui.screens
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -64,13 +65,18 @@ fun FilterScreenContent(
     onClick: (Tag) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
+        item {
+            Category(tag = Tag.bookmark, modifier = Modifier.fillMaxWidth()) {
+                onClick(Tag.bookmark)
+            }
+        }
         for (tag in tags) {
             item {
                 SectionHeader(tag.label)
             }
             for (tag in tag.tags) {
                 item {
-                    Category(tag) {
+                    Category(tag, modifier = Modifier.fillMaxWidth()) {
                         onClick(tag)
                     }
                 }

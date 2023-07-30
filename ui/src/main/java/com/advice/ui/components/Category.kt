@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +31,7 @@ import com.advice.ui.utils.parseColor
 import kotlin.math.min
 
 @Composable
-internal fun Category(tag: Tag, onClick: () -> Unit) {
+internal fun Category(tag: Tag, modifier: Modifier = Modifier, onClick: () -> Unit) {
     val alpha = remember {
         Animatable(0f)
     }
@@ -42,7 +43,7 @@ internal fun Category(tag: Tag, onClick: () -> Unit) {
     val tagColor = parseColor(tag.color)
 
     Row(
-        Modifier
+        modifier
             .clickable(onClick = onClick)
             .padding(8.dp)
     ) {
@@ -69,6 +70,7 @@ private fun AnimatedCircleTextView(selected: Boolean, text: String, color: Color
 
     Box(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(start = 4.dp, end = 4.dp)
             .drawBehind {
                 val radius = min(size.width, size.height) / 2

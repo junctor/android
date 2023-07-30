@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
+import timber.log.Timber
 
 class FiltersRepository(
     tagsRepository: TagsRepository,
@@ -23,6 +24,11 @@ class FiltersRepository(
 
     suspend fun toggle(tag: Tag) {
         bookmarksDataSource.bookmark(tag.id, !tag.isSelected)
+
+        // Setting the bookmark locally as we don't rely on the backend
+        if (tag.isBookmark) {
+            tag.isSelected = !tag.isSelected
+        }
     }
 
     suspend fun clear() {

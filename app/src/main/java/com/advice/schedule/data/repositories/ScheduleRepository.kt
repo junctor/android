@@ -6,6 +6,7 @@ import com.advice.core.ui.ScheduleFilter
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import timber.log.Timber
 
 class ScheduleRepository(
     private val eventsRepository: EventsRepository,
@@ -24,7 +25,8 @@ class ScheduleRepository(
 
             return@combine when (filter) {
                 ScheduleFilter.Default -> {
-                    val tags = tags.flatMap { it.tags }.filter { it.isSelected }
+                    val flatMap = tags.flatMap { it.tags } + Tag.bookmark
+                    val tags = flatMap.filter { it.isSelected }
                     filter(sortedEvents, tags)
                 }
 

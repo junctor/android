@@ -14,7 +14,7 @@ data class Tag(
 ) : Parcelable {
 
     companion object {
-        val bookmark = Tag(-1, "Bookmark", "", color = "#000000", -1)
+        val bookmark = Tag(-1, "Bookmarks", "", color = "#FF0066", -1)
     }
 
     val isBookmark: Boolean
