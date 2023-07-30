@@ -24,11 +24,12 @@ class FirebaseTagsDataSource(
         return combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
             val temp = tags.toMutableList()
                 .sortedBy { it.sortOrder }
+                .map {
+                    it.copy(tags = it.tags.sortedWith(compareBy({ it.sortOrder }, { it.label })))
+                }
 
             // clearing any previous set selections
-            temp.flatMap {
-                it.tags.sortedBy { it.sortOrder }
-            }.forEach {
+            temp.flatMap { it.tags }.forEach {
                 it.isSelected = false
             }
 
