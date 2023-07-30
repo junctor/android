@@ -38,8 +38,10 @@ class FirebaseUserSession(
     init {
         CoroutineScope(Job()).launch {
             conferencesDataSource.get().collect {
-                _conference.value = getConference(preferences.preferredConference, it)
-                Timber.d("Current Conference is: ${_conference.value?.code}")
+                if (_conference.value == null) {
+                    _conference.value = getConference(preferences.preferredConference, it)
+                    Timber.d("Current Conference is: ${_conference.value?.code}")
+                }
             }
         }
 
