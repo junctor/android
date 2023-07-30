@@ -1,6 +1,7 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Conference
+import com.advice.core.local.Menu
 import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
@@ -27,7 +28,7 @@ class HomeRepository(
             forceTimeZone = storage.forceTimeZone,
             conferences = conferences,
             conference = conference,
-            menu = menu.first(),
+            menu = menu.firstOrNull() ?: Menu("Nothing", emptyList()),
             countdown = countdown,
         )
     }
