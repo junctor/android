@@ -18,7 +18,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     private val selections = mutableListOf<ProductSelection>()
 
-    private val _state = MutableStateFlow(ProductsState(emptyList()))
+    private val _state = MutableStateFlow(ProductsState.EMPTY)
     val state: Flow<ProductsState> = _state
 
     init {
@@ -29,7 +29,10 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         }
         viewModelScope.launch {
             repository.products.collect {
-                _state.value = _state.value.copy(elements = it)
+                val shuffled = it.shuffled().filter { it.hasMedia() }
+                val featured = shuffled.take(3)
+
+                _state.value = _state.value.copy(featured = featured, products = it)
             }
         }
     }
@@ -55,18 +58,18 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     private suspend fun updateList() {
         // merging the merch list with the selections
-        val list = _state.value.elements.map { model ->
+        val list = _state.value.products.map { model ->
             val quantity = selections.filter { it.id == model.id }.sumOf { it.quantity }
             model.copy(quantity = quantity)
         }
 
-        _state.emit(_state.value.copy(elements = list))
+        _state.emit(_state.value.copy(products = list))
     }
 
     private suspend fun updateSummary() {
         // updating the summary broke down based on selections
         val summary = selections.map { selection ->
-            val element = _state.value.elements.find { it.id == selection.id }!!
+            val element = _state.value.products.find { it.id == selection.id }!!
             element.update(selection)
         }
 

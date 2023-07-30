@@ -252,6 +252,6 @@ fun Product(
 @Composable
 fun ProductScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
-        ProductScreen(state.elements.first(), true, {}) {}
+        ProductScreen(state.products.first(), true, {}) {}
     }
 }

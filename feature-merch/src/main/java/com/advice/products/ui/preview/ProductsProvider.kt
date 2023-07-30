@@ -12,8 +12,8 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
     override val values: Sequence<ProductsState>
         get() {
             val options = listOf(
-                ProductVariant(1,"S", emptyList(), 0, StockStatus.IN_STOCK),
-                ProductVariant(2,"4XL", emptyList(), 0, StockStatus.LOW_STOCK),
+                ProductVariant(1, "S", emptyList(), 0, StockStatus.IN_STOCK),
+                ProductVariant(2, "4XL", emptyList(), 0, StockStatus.LOW_STOCK),
                 ProductVariant(3, "5XL", emptyList(), 1000, StockStatus.OUT_OF_STOCK)
             )
             val product = Product(
@@ -32,7 +32,8 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
 
             return listOf(
                 ProductsState(
-                    elements = elements,
+                    featured = elements.take(1),
+                    products = elements,
                     cart = elements,
                     json = elements.toJson(),
                 )

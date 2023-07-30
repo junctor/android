@@ -1,6 +1,7 @@
 package com.advice.core.local.products
 
 import android.os.Parcelable
+import com.advice.core.local.StockStatus
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -14,6 +15,17 @@ data class Product(
     val cost: Long = baseCost * quantity,
     val selectedOption: String? = null,
 ) : Parcelable {
+
+    val stockStatus: StockStatus
+        get() {
+            if (variants.all { it.stockStatus == StockStatus.OUT_OF_STOCK }) {
+                return StockStatus.OUT_OF_STOCK
+            }
+            if (variants.all { it.stockStatus == StockStatus.LOW_STOCK }) {
+                return StockStatus.LOW_STOCK
+            }
+            return StockStatus.IN_STOCK
+        }
 
     val requiresSelection: Boolean
         get() = variants.size > 1
@@ -41,4 +53,6 @@ data class Product(
             cost = cost,
         )
     }
+
+    fun hasMedia(): Boolean = media.isNotEmpty()
 }
