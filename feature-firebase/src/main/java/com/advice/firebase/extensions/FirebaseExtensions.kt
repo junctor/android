@@ -360,7 +360,7 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? {
                 menu_id ?: error("null menu id: $title_text"),
             )
 
-            "people", "locations", "products", "news" -> MenuItem.Navigation(
+            "people", "locations", "products", "news", "faq" -> MenuItem.Navigation(
                 title_text,
                 function,
             )

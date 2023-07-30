@@ -131,7 +131,7 @@ internal fun NavHost(navController: NavHostController) {
         composable("document/{id}") { backStackEntry ->
             DocumentScreen(navController, backStackEntry.arguments?.getString("id"))
         }
-        composable("faq") { FAQScreen(navController) }
+        composable("faq/{label}") { FAQScreen(navController) }
         composable("organizations/{label}/{id}") {
             OrganizationsScreen(
                 navController = navController,

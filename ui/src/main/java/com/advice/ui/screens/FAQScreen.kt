@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.FAQ
 import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
+import com.advice.ui.components.FreqAskedQuestion
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
 import com.advice.ui.preview.FAQProvider
@@ -65,7 +66,7 @@ private fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
                 TopBar()
             }
             items(faqs) {
-                FAQ(it.question, it.answer)
+                FreqAskedQuestion(it.question, it.answer)
             }
         }
     }

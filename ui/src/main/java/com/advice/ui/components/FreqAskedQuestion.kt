@@ -32,7 +32,7 @@ import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun FAQ(question: String, answer: String, expanded: Boolean = false) {
+fun FreqAskedQuestion(question: String, answer: String, expanded: Boolean = false) {
     var isExpanded by rememberSaveable {
         mutableStateOf(value = expanded)
     }
@@ -85,11 +85,11 @@ private fun Answer(answer: String) {
 
 @LightDarkPreview
 @Composable
-private fun FAQPreview(@PreviewParameter(FAQProvider::class) faq: FAQ) {
+private fun FreqAskedQuestionPreview(@PreviewParameter(FAQProvider::class) faq: FAQ) {
     ScheduleTheme {
         Column {
-            FAQ(faq.question, faq.answer)
-            FAQ(faq.question, faq.answer, expanded = true)
+            FreqAskedQuestion(faq.question, faq.answer)
+            FreqAskedQuestion(faq.question, faq.answer, expanded = true)
         }
     }
 }
