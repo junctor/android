@@ -1,12 +1,12 @@
 package com.advice.firebase.data.sources
 
-import com.advice.core.local.Product
+import com.advice.core.local.products.Product
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ProductsDataSource
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toMerch
 import com.advice.firebase.extensions.toObjectsOrEmpty
-import com.advice.firebase.models.FirebaseProduct
+import com.advice.firebase.models.products.FirebaseProduct
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

@@ -2,7 +2,7 @@ package com.advice.products.utils
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import com.advice.core.local.Product
+import com.advice.core.local.products.Product
 import com.advice.products.models.QRCodeData
 import com.advice.products.models.QRCodeProduct
 import com.google.gson.Gson

@@ -23,7 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.advice.core.local.Product
+import com.advice.core.local.products.Product
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.ProductView
 import com.advice.products.ui.preview.ProductsProvider
@@ -62,7 +62,7 @@ fun ProductsScreen(
                             .fillMaxWidth(),
                         shape = FloatingActionButtonDefaults.extendedFabShape
                     ) {
-                        Text("View Cart ($itemCount)")
+                        Text("View List ($itemCount)")
                     }
                 }
             }

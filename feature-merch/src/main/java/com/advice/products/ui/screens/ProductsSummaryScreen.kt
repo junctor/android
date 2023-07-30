@@ -23,7 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.advice.core.local.Product
+import com.advice.core.local.products.Product
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.EditableProduct
 import com.advice.products.ui.components.QRCodeImage

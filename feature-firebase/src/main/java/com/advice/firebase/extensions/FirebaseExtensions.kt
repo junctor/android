@@ -18,10 +18,11 @@ import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
 import com.advice.core.local.OrganizationLocation
 import com.advice.core.local.OrganizationMedia
-import com.advice.core.local.Product
-import com.advice.core.local.ProductMedia
-import com.advice.core.local.ProductVariant
+import com.advice.core.local.products.Product
+import com.advice.core.local.products.ProductMedia
+import com.advice.core.local.products.ProductVariant
 import com.advice.core.local.Speaker
+import com.advice.core.local.StockStatus
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.Vendor
@@ -41,9 +42,9 @@ import com.advice.firebase.models.FirebaseMenuItem
 import com.advice.firebase.models.FirebaseOrganization
 import com.advice.firebase.models.FirebaseOrganizationLocation
 import com.advice.firebase.models.FirebaseOrganizationMedia
-import com.advice.firebase.models.FirebaseProduct
-import com.advice.firebase.models.FirebaseProductMedia
-import com.advice.firebase.models.FirebaseProductVariant
+import com.advice.firebase.models.products.FirebaseProduct
+import com.advice.firebase.models.products.FirebaseProductMedia
+import com.advice.firebase.models.products.FirebaseProductVariant
 import com.advice.firebase.models.FirebaseSpeaker
 import com.advice.firebase.models.FirebaseSpeakerLink
 import com.advice.firebase.models.FirebaseTag
@@ -431,9 +432,11 @@ fun FirebaseProduct.toMerch(): Product? {
 
 fun FirebaseProductVariant.toMerchOption(basePrice: Long): ProductVariant {
     return ProductVariant(
+        id = variant_id,
         label = title,
         tags = tags,
         extraCost = price - basePrice,
+        stockStatus = StockStatus.fromString(stock_status) ?: StockStatus.IN_STOCK,
     )
 }
 

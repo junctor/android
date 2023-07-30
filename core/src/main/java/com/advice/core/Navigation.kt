@@ -1,6 +1,6 @@
 package com.advice.core
 
-import com.advice.core.local.Product
+import com.advice.core.local.products.Product
 
 interface Navigation {
 

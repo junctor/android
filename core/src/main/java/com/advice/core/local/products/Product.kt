@@ -1,28 +1,8 @@
-package com.advice.core.local
+package com.advice.core.local.products
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
-data class ProductVariant(
-    val label: String,
-    val tags: List<Long>,
-    val extraCost: Long,
-) : Parcelable
-
-data class ProductSelection(
-    val id: Long,
-    val quantity: Int,
-    val selectionOption: String?,
-)
-
-@Parcelize
-data class ProductMedia(
-    val url: String,
-    val sortOrder: Int,
-) : Parcelable
-
-// in-cart Product
 @Parcelize
 data class Product(
     val id: Long,
@@ -37,6 +17,13 @@ data class Product(
 
     val requiresSelection: Boolean
         get() = variants.size > 1
+
+    val variantCost: Long
+        get() = (baseCost + (variants.find { it.label == selectedOption }?.extraCost
+            ?: 0))
+
+    val totalCost: Long
+        get() = variantCost * quantity
 
     fun update(
         selection: ProductSelection,

@@ -29,9 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.advice.core.local.Product
-import com.advice.core.local.ProductMedia
-import com.advice.core.local.ProductVariant
+import com.advice.core.local.StockStatus
+import com.advice.core.local.products.Product
+import com.advice.core.local.products.ProductMedia
+import com.advice.core.local.products.ProductVariant
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
@@ -99,9 +100,9 @@ fun ProductView(product: Product, onMerchClicked: (Product) -> Unit) {
 @Composable
 fun ProductViewPreview() {
     val variants = listOf(
-        ProductVariant("S", emptyList(), 0),
-        ProductVariant("4XL", emptyList(), 0),
-        ProductVariant("5XL", emptyList(), 1000)
+        ProductVariant(1, "S", emptyList(), 0, StockStatus.IN_STOCK),
+        ProductVariant(2, "4XL", emptyList(), 0, StockStatus.LOW_STOCK),
+        ProductVariant(3, "5XL", emptyList(), 1000, StockStatus.OUT_OF_STOCK)
     )
     val element = Product(
         1L,

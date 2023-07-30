@@ -2,7 +2,7 @@ package com.advice.products.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.advice.core.local.ProductSelection
+import com.advice.core.local.products.ProductSelection
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.utils.toJson
