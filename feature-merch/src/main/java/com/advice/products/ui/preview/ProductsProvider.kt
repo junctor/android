@@ -20,7 +20,7 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                 -1L, "DC30 Homecoming Men's T-Shirt", 35_00, options,
                 media = listOf(
                     ProductMedia(
-                        "https://htem2.habemusconferencing.net/temp/dc24front.jpg",
+                        "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
                         0
                     )
                 ),

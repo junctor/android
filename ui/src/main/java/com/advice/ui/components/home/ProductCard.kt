@@ -92,7 +92,7 @@ internal fun ProductCard(
 private fun MerchCardViewPreview() {
     ScheduleTheme {
         ProductCard(
-            media = "https://htem2.habemusconferencing.net/temp/dc24front.jpg",
+            media = "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
         ) {
         }
     }
