@@ -27,12 +27,14 @@ data class Product(
             return StockStatus.IN_STOCK
         }
 
+    val variant: ProductVariant?
+        get() = variants.find { it.label == selectedOption }
+
     val requiresSelection: Boolean
         get() = variants.size > 1
 
     val variantCost: Long
-        get() = (baseCost + (variants.find { it.label == selectedOption }?.extraCost
-            ?: 0))
+        get() = baseCost + (variant?.extraCost ?: 0)
 
     val totalCost: Long
         get() = variantCost * quantity

@@ -13,18 +13,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -34,7 +31,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -53,8 +50,8 @@ import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
 import com.advice.products.presentation.state.ProductsState
-import com.advice.products.ui.components.LowStock
-import com.advice.products.ui.components.OutOfStock
+import com.advice.products.ui.components.LowStockLabel
+import com.advice.products.ui.components.OutOfStockLabel
 import com.advice.products.ui.components.QuantityAdjuster
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
@@ -88,7 +85,7 @@ fun ProductScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { },
-                navigationIcon = {
+                actions = {
                     IconButton(
                         onClick = onBackPressed,
                         colors = IconButtonDefaults.iconButtonColors(
@@ -104,31 +101,7 @@ fun ProductScreen(
             )
         },
         floatingActionButton = {
-            val inStock = product.stockStatus != StockStatus.OUT_OF_STOCK
-            if (canAdd && inStock && selection != null) {
-                ExtendedFloatingActionButton(
-                    onClick = {
-                        if (selection != null || !product.requiresSelection) {
-                            onAddClicked(
-                                ProductSelection(
-                                    id = product.id,
-                                    quantity = quantity,
-                                    selectionOption = selection,
-                                )
-                            )
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 32.dp)
-                        .fillMaxWidth(),
-                ) {
-                    val optionCost =
-                        if (selection != null) product.variants.find { it.label == selection }?.extraCost
-                            ?: 0 else 0
-                    val cost = (product.baseCost + optionCost) * quantity
-                    Text("Add $quantity to list ∙ ${cost.toCurrency()}")
-                }
-            }
+
         },
         floatingActionButtonPosition = FabPosition.Center,
     ) {
@@ -137,6 +110,7 @@ fun ProductScreen(
             canAdd = canAdd,
             quantity = quantity,
             selection = selection,
+            onAddClicked = onAddClicked,
             onSelectionChanged = {
                 selection = it
             },
@@ -154,6 +128,7 @@ fun Product(
     canAdd: Boolean,
     quantity: Int,
     selection: String?,
+    onAddClicked: (ProductSelection) -> Unit,
     onSelectionChanged: (String) -> Unit,
     onQuantityChanged: (Int) -> Unit,
     modifier: Modifier,
@@ -188,12 +163,19 @@ fun Product(
                 }
             }
 
-            if (product.stockStatus == StockStatus.OUT_OF_STOCK) {
-                OutOfStock()
-            }
-
             if (product.stockStatus == StockStatus.LOW_STOCK) {
-                LowStock(modifier = Modifier.align(Alignment.BottomCenter))
+                LowStockLabel(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomEnd)
+                )
+            }
+            if (product.stockStatus == StockStatus.OUT_OF_STOCK) {
+                OutOfStockLabel(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomEnd)
+                )
             }
         }
         Column {
@@ -206,9 +188,12 @@ fun Product(
 
             if (product.requiresSelection) {
                 Row(Modifier.padding(16.dp)) {
-                    Text("Options", Modifier.weight(1.0f))
+                    Text(
+                        stringResource(com.advice.products.R.string.variants_label),
+                        Modifier.weight(1.0f)
+                    )
                     if (canAdd) {
-                        Text("Required")
+                        Text(stringResource(com.advice.products.R.string.variant_required))
                     }
                 }
             }
@@ -224,16 +209,22 @@ fun Product(
                             .defaultMinSize(minHeight = 64.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        val label =
-                            if (option.extraCost > 0) option.label + "  (+${option.extraCost.toCurrency()})" else option.label
-                        Text(
-                            label, style = MaterialTheme.typography.bodyMedium,
+                        Column(
                             modifier = Modifier
-                                .weight(
-                                    1.0f
-                                )
+                                .weight(1.0f)
                                 .padding(16.dp)
-                        )
+                        ) {
+                            val label =
+                                if (option.extraCost > 0) option.label + stringResource(
+                                    com.advice.products.R.string.label_with_variant,
+                                    option.extraCost.toCurrency()
+                                ) else option.label
+                            Text(label, style = MaterialTheme.typography.bodyMedium)
+                            if (option.stockStatus == StockStatus.LOW_STOCK) {
+                                Spacer(modifier = Modifier.height(4.dp))
+                                LowStockLabel()
+                            }
+                        }
                         if (canAdd) {
                             RadioButton(
                                 selected = option.label == selection,
@@ -252,6 +243,41 @@ fun Product(
                     canDelete = false,
                     Modifier.padding(16.dp)
                 )
+
+
+                val enabled = selection != null
+                Button(
+                    onClick = {
+                        if (enabled || !product.requiresSelection) {
+                            onAddClicked(
+                                ProductSelection(
+                                    id = product.id,
+                                    quantity = quantity,
+                                    selectionOption = selection,
+                                )
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .fillMaxWidth(),
+                    enabled = enabled,
+                ) {
+                    val label = if (enabled) {
+                        val optionCost =
+                            product.variants.find { it.label == selection }?.extraCost ?: 0
+                        val cost = (product.baseCost + optionCost) * quantity
+                        stringResource(
+                            com.advice.products.R.string.add_to_cart,
+                            quantity,
+                            cost.toCurrency()
+                        )
+                    } else {
+                        stringResource(com.advice.products.R.string.add_to_cart_disabled)
+                    }
+
+                    Text(label, modifier = Modifier.padding(vertical = 4.dp))
+                }
             }
 
             Spacer(Modifier.height(64.dp + 8.dp))
