@@ -28,6 +28,7 @@ import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.EditableProduct
 import com.advice.products.ui.components.QRCodeImage
 import com.advice.products.ui.preview.ProductsProvider
+import com.advice.products.utils.toCurrency
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
@@ -97,20 +98,19 @@ fun ProductsSummaryContent(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            val subtotal = getSubtotal(list)
             Text("Subtotal", style = MaterialTheme.typography.titleLarge)
             Text(
-                "US$${String.format("%.2f", subtotal)}",
+                getSubtotal(list).toCurrency(),
                 style = MaterialTheme.typography.titleLarge
             )
         }
     }
 }
 
-private fun getSubtotal(list: List<Product>): Float {
+private fun getSubtotal(list: List<Product>): Long {
     return list.sumOf { element ->
-        element.cost.toInt()
-    } / 100f
+        element.cost
+    }
 }
 
 @LightDarkPreview
