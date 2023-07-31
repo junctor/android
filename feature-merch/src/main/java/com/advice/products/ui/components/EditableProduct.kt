@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -30,25 +31,23 @@ import com.advice.products.utils.toCurrency
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun EditableProduct(
     product: Product,
     onQuantityChanged: (Int) -> Unit,
 ) {
-
-    Column(Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
-        Row(
+    Box {
+        val inStock = product.variant?.stockStatus != StockStatus.OUT_OF_STOCK
+        Column(
             Modifier
-                .defaultMinSize(minHeight = 64.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .alpha(if (inStock) 1.0f else 0.5f)
         ) {
-
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Modifier
+                    .defaultMinSize(minHeight = 64.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-
                 Column(Modifier.weight(1.0f)) {
                     Text(product.label, style = MaterialTheme.typography.labelLarge)
 
@@ -63,33 +62,33 @@ internal fun EditableProduct(
                         LowStockLabel()
                     }
                 }
-            }
 
-            // Image
-            if (product.media.isNotEmpty()) {
-                Box(
-                    Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.White)
-                        .size(64.dp)
-                ) {
-                    AsyncImage(
-                        model = product.media.first().url,
-                        contentDescription = product.label,
-                        contentScale = ContentScale.Crop,
-                    )
+                // Image
+                if (product.media.isNotEmpty()) {
+                    Box(
+                        Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.White)
+                            .size(64.dp)
+                    ) {
+                        AsyncImage(
+                            model = product.media.first().url,
+                            contentDescription = product.label,
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
                 }
             }
-        }
 
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            QuantityAdjuster(product.quantity, onQuantityChanged, canDelete = true)
-            Column {
-                Text(product.cost.toCurrency(), style = MaterialTheme.typography.titleMedium)
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                QuantityAdjuster(product.quantity, onQuantityChanged, canDelete = true)
+                Column {
+                    Text(product.cost.toCurrency(), style = MaterialTheme.typography.titleMedium)
+                }
             }
         }
     }
