@@ -57,6 +57,7 @@ import com.advice.products.ui.components.LowStock
 import com.advice.products.ui.components.OutOfStock
 import com.advice.products.ui.components.QuantityAdjuster
 import com.advice.products.ui.preview.ProductsProvider
+import com.advice.products.utils.toCurrency
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -125,7 +126,7 @@ fun ProductScreen(
                         if (selection != null) product.variants.find { it.label == selection }?.extraCost
                             ?: 0 else 0
                     val cost = (product.baseCost + optionCost) * quantity
-                    Text("Add $quantity to list ∙ US$${String.format("%.2f", cost / 100f)}")
+                    Text("Add $quantity to list ∙ ${cost.toCurrency()}")
                 }
             }
         },
@@ -200,8 +201,7 @@ fun Product(
                 Modifier.padding(16.dp)
             ) {
                 Text(product.label, style = MaterialTheme.typography.labelLarge)
-                val cost = String.format("%.2f", product.baseCost / 100f)
-                Text("$$cost USD", style = MaterialTheme.typography.bodyMedium)
+                Text(product.baseCost.toCurrency(), style = MaterialTheme.typography.bodyMedium)
             }
 
             if (product.requiresSelection) {
@@ -225,10 +225,7 @@ fun Product(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         val label =
-                            if (option.extraCost > 0) option.label + "  (+US" + String.format(
-                                "%.2f",
-                                option.extraCost / 100f
-                            ) + ")" else option.label
+                            if (option.extraCost > 0) option.label + "  (+${option.extraCost.toCurrency()})" else option.label
                         Text(
                             label, style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier

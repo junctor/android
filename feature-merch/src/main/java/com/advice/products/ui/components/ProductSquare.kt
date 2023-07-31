@@ -42,6 +42,7 @@ import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.R
+import com.advice.products.utils.toCurrency
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
@@ -116,9 +117,7 @@ fun ProductSquare(
             Text(
                 product.label, fontWeight = FontWeight.SemiBold,
             )
-            Text(
-                "US$${String.format("%.2f", product.baseCost / 100f)}",
-            )
+            Text(product.baseCost.toCurrency())
         }
     }
 }

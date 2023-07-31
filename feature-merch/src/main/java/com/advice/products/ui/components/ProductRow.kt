@@ -33,6 +33,7 @@ import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
+import com.advice.products.utils.toCurrency
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
@@ -48,7 +49,7 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
         Column(Modifier.weight(1.0f)) {
             Text(product.label, style = MaterialTheme.typography.labelLarge)
             Text(
-                "$${String.format("%.2f", product.baseCost / 100f)} USD",
+                product.baseCost.toCurrency(),
                 style = MaterialTheme.typography.bodyMedium
             )
 

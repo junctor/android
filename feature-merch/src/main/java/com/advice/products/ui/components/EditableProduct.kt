@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.advice.core.local.products.Product
+import com.advice.products.utils.toCurrency
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
@@ -68,10 +69,7 @@ internal fun EditableProduct(
         ) {
             QuantityAdjuster(product.quantity, onQuantityChanged, canDelete = true)
             Column {
-                Text(
-                    "$${String.format("%.2f", product.cost / 100f)} USD",
-                    style = MaterialTheme.typography.titleMedium,
-                )
+                Text(product.cost.toCurrency(), style = MaterialTheme.typography.titleMedium)
             }
         }
     }

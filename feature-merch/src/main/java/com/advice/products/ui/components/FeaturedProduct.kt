@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.advice.core.local.products.Product
+import com.advice.products.utils.toCurrency
 import com.advice.ui.preview.LightDarkPreview
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -53,9 +54,7 @@ private fun FeaturedProduct(product: Product, onProductClicked: (Product) -> Uni
             Text(
                 product.label, fontWeight = FontWeight.SemiBold,
             )
-            Text(
-                "US$${String.format("%.2f", product.baseCost / 100f)}",
-            )
+            Text(product.baseCost.toCurrency())
         }
     }
 }
