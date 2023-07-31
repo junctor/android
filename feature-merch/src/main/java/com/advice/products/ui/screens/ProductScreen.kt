@@ -1,23 +1,30 @@
 package com.advice.products.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -35,8 +42,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -44,11 +53,14 @@ import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
 import com.advice.products.presentation.state.ProductsState
+import com.advice.products.ui.components.LowStock
+import com.advice.products.ui.components.OutOfStock
 import com.advice.products.ui.components.QuantityAdjuster
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.shortstack.core.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,30 +70,17 @@ fun ProductScreen(
     onAddClicked: (ProductSelection) -> Unit,
     onBackPressed: () -> Unit,
 ) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(
+        color = Color.Black.copy(0.40f),
+    )
+
     var quantity by remember {
         mutableStateOf(1)
     }
 
-    val systemUiController = rememberSystemUiController()
-
     var selection by remember {
         mutableStateOf(if (!product.requiresSelection) product.variants.first().label else null)
-    }
-
-    val hasMedia = product.media.isNotEmpty()
-
-    if (hasMedia) {
-        DisposableEffect(Unit) {
-            systemUiController.setSystemBarsColor(
-                color = Color.Black.copy(0.40f),
-            )
-
-            onDispose {
-                systemUiController.setSystemBarsColor(
-                    color = Color.Transparent,
-                )
-            }
-        }
     }
 
     Scaffold(
@@ -99,13 +98,14 @@ fun ProductScreen(
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = if (hasMedia) Color.Transparent else MaterialTheme.colorScheme.surface,
+                    containerColor = Color.Transparent,
                 )
             )
         },
         floatingActionButton = {
-            if (canAdd) {
-                FloatingActionButton(
+            val inStock = product.stockStatus != StockStatus.OUT_OF_STOCK
+            if (canAdd && inStock && selection != null) {
+                ExtendedFloatingActionButton(
                     onClick = {
                         if (selection != null || !product.requiresSelection) {
                             onAddClicked(
@@ -117,7 +117,7 @@ fun ProductScreen(
                             )
                         }
                     },
-                    Modifier
+                    modifier = Modifier
                         .padding(horizontal = 32.dp)
                         .fillMaxWidth(),
                 ) {
@@ -158,30 +158,44 @@ fun Product(
     modifier: Modifier,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-        val hasMedia = product.media.isNotEmpty()
-        if (hasMedia) {
-            Box(
-                Modifier
-                    .background(Color.Black)
-                    .fillMaxWidth()
-            ) {
+        Box(
+            Modifier
+                .aspectRatio(0.900f)
+                .clip(RoundedCornerShape(8.dp))
+        ) {
+            val media = product.media.firstOrNull()
+            if (media != null) {
                 AsyncImage(
-                    model = product.media.first().url,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(400.dp),
-                    contentScale = ContentScale.FillWidth
+                    model = media.url,
+                    contentDescription = product.label,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
                 )
+            } else {
                 Box(
                     Modifier
-                        .background(Color.White)
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.50f))
+                        .padding(16.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_glitch),
+                        contentDescription = product.label,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                    )
+                }
+            }
 
-                )
+            if (product.stockStatus == StockStatus.OUT_OF_STOCK) {
+                OutOfStock()
+            }
+
+            if (product.stockStatus == StockStatus.LOW_STOCK) {
+                LowStock(modifier = Modifier.align(Alignment.BottomCenter))
             }
         }
-
-        Column(if (hasMedia) Modifier else modifier) {
+        Column {
             Column(
                 Modifier.padding(16.dp)
             ) {
@@ -234,7 +248,7 @@ fun Product(
                 }
             }
 
-            if (canAdd) {
+            if (canAdd && product.stockStatus != StockStatus.OUT_OF_STOCK) {
                 QuantityAdjuster(
                     quantity = quantity,
                     onQuantityChanged = onQuantityChanged,

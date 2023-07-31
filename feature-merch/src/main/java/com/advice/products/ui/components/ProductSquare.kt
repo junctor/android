@@ -75,11 +75,10 @@ fun ProductSquare(
                     }
                 }
             },
-            Modifier
-                .aspectRatio(.909f)
         ) {
             Box(
                 Modifier
+                    .aspectRatio(.909f)
                     .clip(RoundedCornerShape(8.dp)),
             ) {
                 val media = product.media.firstOrNull()
@@ -87,7 +86,8 @@ fun ProductSquare(
                     AsyncImage(
                         model = media.url,
                         contentDescription = product.label,
-                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
                     )
                 } else {
                     Box(
@@ -124,7 +124,7 @@ fun ProductSquare(
 }
 
 @Composable
-private fun LowStock(modifier: Modifier = Modifier) {
+internal fun LowStock(modifier: Modifier = Modifier) {
     Text(
         "Low Stock",
         modifier = modifier
@@ -139,7 +139,7 @@ private fun LowStock(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun OutOfStock() {
+internal fun OutOfStock() {
     Box(
         modifier = Modifier
             .fillMaxSize()

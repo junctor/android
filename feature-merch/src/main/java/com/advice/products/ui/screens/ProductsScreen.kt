@@ -16,10 +16,14 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -30,9 +34,11 @@ import com.advice.products.ui.components.ProductRow
 import com.advice.products.ui.components.ProductSquare
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.components.EmptyMessage
+import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,15 +49,36 @@ fun ProductsScreen(
     onProductClicked: (Product) -> Unit,
     onBackPressed: () -> Unit,
 ) {
+    val systemUiController = rememberSystemUiController()
+
+    DisposableEffect(Unit) {
+        systemUiController.setSystemBarsColor(
+            color = Color.Black.copy(0.40f),
+        )
+
+        onDispose {
+            systemUiController.setSystemBarsColor(
+                color = Color.Transparent,
+            )
+        }
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Merch") },
+                title = { },
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
+                    IconButton(
+                        onClick = onBackPressed, colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Black.copy(0.40f),
+                        )
+                    ) {
                         Icon(painterResource(id = com.advice.ui.R.drawable.arrow_back), "Back")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent,
+                )
             )
         },
         floatingActionButton = {
@@ -72,14 +99,18 @@ fun ProductsScreen(
         },
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        Box(Modifier.padding(it)) {
+        Box {
             when {
                 state == null -> {
-                    ProgressSpinner()
+                    Box(Modifier.padding(it)) {
+                        ProgressSpinner()
+                    }
                 }
 
                 state.products.isEmpty() -> {
-                    EmptyMessage("Merch not found")
+                    Box(Modifier.padding(it)) {
+                        EmptyMessage("Merch not found")
+                    }
                 }
 
                 else -> {
@@ -97,11 +128,15 @@ fun ProductsScreenContent(
     onProductClicked: (Product) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(modifier, contentPadding = PaddingValues(vertical = 16.dp)) {
-        item {
-            FeaturedProducts(products = featured, onProductClicked)
+    LazyColumn(modifier) {
+        if (featured.isNotEmpty()) {
+            item {
+                FeaturedProducts(products = featured, onProductClicked)
+            }
+            item {
+                Label(text = "All Products", modifier = Modifier.padding(horizontal = 16.dp))
+            }
         }
-
         list.windowed(2, 2, partialWindows = true).forEachIndexed { index, products ->
             item(key = index) {
                 ProductsRow(products, onProductClicked)

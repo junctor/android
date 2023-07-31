@@ -208,7 +208,7 @@ private fun ProductScreen(
     id: Long?,
 ) {
     val state = viewModel.state.collectAsState(null).value ?: return
-    val product = state.elements.find { it.id == id } ?: return
+    val product = state.products.find { it.id == id } ?: return
     ProductScreen(
         product = product,
         canAdd = state.canAdd,

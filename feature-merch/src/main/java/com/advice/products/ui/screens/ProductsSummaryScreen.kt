@@ -48,15 +48,16 @@ fun ProductsSummaryScreen(
             }
         })
     }) {
-        if (list.isEmpty()) {
-            EmptyMessage(message = "Merch not found", modifier = Modifier.padding(it))
-        } else {
-            ProductsSummaryContent(
-                list,
-                state.json,
-                Modifier.padding(it),
-                onQuantityChanged,
-            )
+        Box(Modifier.padding(it)) {
+            if (list.isEmpty()) {
+                EmptyMessage(message = "Merch not found", modifier = Modifier.padding(it))
+            } else {
+                ProductsSummaryContent(
+                    list,
+                    state.json,
+                    onQuantityChanged = onQuantityChanged,
+                )
+            }
         }
     }
 }
@@ -65,7 +66,7 @@ fun ProductsSummaryScreen(
 fun ProductsSummaryContent(
     list: List<Product>,
     json: String?,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onQuantityChanged: (Long, Int, String?) -> Unit,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
@@ -99,14 +100,14 @@ fun ProductsSummaryContent(
             val subtotal = getSubtotal(list)
             Text("Subtotal", style = MaterialTheme.typography.titleLarge)
             Text(
-                "$${String.format("%.2f", subtotal)} USD",
+                "US$${String.format("%.2f", subtotal)}",
                 style = MaterialTheme.typography.titleLarge
             )
         }
     }
 }
 
-fun getSubtotal(list: List<Product>): Float {
+private fun getSubtotal(list: List<Product>): Float {
     return list.sumOf { element ->
         element.cost.toInt()
     } / 100f

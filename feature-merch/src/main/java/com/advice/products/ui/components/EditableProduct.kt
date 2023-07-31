@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.advice.core.local.products.Product
@@ -51,7 +52,11 @@ internal fun EditableProduct(
                         .background(Color.White)
                         .size(64.dp)
                 ) {
-                    AsyncImage(model = product.media.first().url, contentDescription = null)
+                    AsyncImage(
+                        model = product.media.first().url,
+                        contentDescription = product.label,
+                        contentScale = ContentScale.Crop,
+                    )
                 }
             }
         }
