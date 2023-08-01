@@ -26,6 +26,7 @@ fun QuantityAdjuster(
     onQuantityChanged: (Int) -> Unit,
     canDelete: Boolean,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     Row(
         modifier
@@ -34,38 +35,42 @@ fun QuantityAdjuster(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val enabled = canDelete || quantity > 1
         IconButton(
-            onClick = { onQuantityChanged(quantity - 1) }, Modifier.size(24.dp),
-                enabled = enabled
-            ) {
-                Icon(
-                    painterResource(if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
-                    null,
-                    tint = MaterialTheme.colorScheme.surface.copy(alpha = if (!enabled) 0.5f else 1.0f),
-                )
-            }
-            Text(
-                quantity.toString(),
-                Modifier.defaultMinSize(minWidth = 48.dp),
-                color = MaterialTheme.colorScheme.surface,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium
+            onClick = { onQuantityChanged(quantity - 1) },
+            Modifier.size(24.dp),
+            enabled = enabled && (canDelete || quantity > 1)
+        ) {
+            Icon(
+                painterResource(if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
+                null,
+                tint = MaterialTheme.colorScheme.surface.copy(alpha = if (!enabled) 0.5f else 1.0f),
             )
-            IconButton(onClick = { onQuantityChanged(quantity + 1) }, Modifier.size(24.dp)) {
+        }
+        Text(
+            quantity.toString(),
+            Modifier.defaultMinSize(minWidth = 48.dp),
+            color = MaterialTheme.colorScheme.surface,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        IconButton(
+            onClick = { onQuantityChanged(quantity + 1) },
+            Modifier.size(24.dp),
+            enabled = enabled
+        ) {
             Icon(
                 painterResource(R.drawable.ic_add), null,
                 tint = MaterialTheme.colorScheme.surface
             )
         }
-        }
     }
+}
 
-    @LightDarkPreview
-    @Composable
-    fun QuantityViewPreview() {
-        ScheduleTheme {
-            QuantityAdjuster(1, {}, canDelete = true)
-        }
+@LightDarkPreview
+@Composable
+fun QuantityViewPreview() {
+    ScheduleTheme {
+        QuantityAdjuster(1, {}, canDelete = true)
     }
+}
     

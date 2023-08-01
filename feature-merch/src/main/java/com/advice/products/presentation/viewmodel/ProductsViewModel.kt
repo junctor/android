@@ -33,6 +33,9 @@ class ProductsViewModel : ViewModel(), KoinComponent {
                 val featured = shuffled.take(3)
 
                 _state.value = _state.value.copy(featured = featured, products = it)
+
+                updateList()
+                updateSummary()
             }
         }
     }

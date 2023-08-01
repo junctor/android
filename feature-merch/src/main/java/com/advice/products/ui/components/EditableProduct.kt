@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +40,7 @@ internal fun EditableProduct(
         Column(
             Modifier
                 .padding(horizontal = 16.dp, vertical = 16.dp)
-                .alpha(if (inStock) 1.0f else 0.5f)
+                .alpha(if (inStock) 1.0f else 0.25f)
         ) {
             Row(
                 Modifier
@@ -85,10 +84,8 @@ internal fun EditableProduct(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                QuantityAdjuster(product.quantity, onQuantityChanged, canDelete = true)
-                Column {
-                    Text(product.cost.toCurrency(), style = MaterialTheme.typography.titleMedium)
-                }
+                QuantityAdjuster(product.quantity, onQuantityChanged, canDelete = true, enabled = inStock)
+                Text(product.cost.toCurrency(), style = MaterialTheme.typography.titleMedium)
             }
         }
     }
@@ -113,7 +110,7 @@ private fun EditableProductPreview() {
                         "M",
                         emptyList(),
                         10_00,
-                        StockStatus.LOW_STOCK
+                        StockStatus.OUT_OF_STOCK
                     )
                 ),
             ),
