@@ -53,6 +53,7 @@ import com.advice.ui.screens.EventScreen
 import com.advice.ui.screens.FAQScreen
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
+import com.advice.ui.states.MapsScreenState
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.screens.SettingScreen
 import com.advice.ui.screens.SpeakerScreen
@@ -195,8 +196,8 @@ private fun NewsScreen(navController: NavHostController) {
 @Composable
 private fun MapsScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<MapsViewModel>()
-    val maps = viewModel.maps.collectAsState(initial = emptyList()).value
-    com.advice.ui.screens.MapsScreen(maps = maps) {
+    val state = viewModel.state.collectAsState(initial = MapsScreenState.Loading).value
+    com.advice.ui.screens.MapsScreen(state = state) {
         navController.popBackStack()
     }
 }

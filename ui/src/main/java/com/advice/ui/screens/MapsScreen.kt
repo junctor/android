@@ -43,17 +43,18 @@ import com.advice.core.local.MapFile
 import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.PdfDisplay
+import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.states.MapsScreenState
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun MapsScreen(maps: List<MapFile>, onBackPressed: () -> Unit) {
-    val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
+    val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
 
     val systemUiController = rememberSystemUiController()
@@ -70,75 +71,83 @@ fun MapsScreen(maps: List<MapFile>, onBackPressed: () -> Unit) {
         }
     }
 
-    if (maps.isEmpty()) {
-        EmptyScreen(onBackPressed)
-        return
-    }
+    when (state) {
+        MapsScreenState.Loading -> {
+            ProgressSpinner()
+        }
 
-    var file by remember { mutableStateOf(maps.first().name) }
-    val temp = maps.find { it.name == file }!!
+        is MapsScreenState.Success -> {
+            val maps = state.maps
+            var file by remember { mutableStateOf(maps.first().name) }
+            val temp = maps.find { it.name == file }!!
 
-    ModalBottomSheetLayout(
-        sheetContent = {
-            MapsBottomSheet(
-                files = maps.map { it.name },
-                onMapChanged = {
-                    file = it
-                    coroutineScope.launch {
-                        state.hide()
-                    }
+            ModalBottomSheetLayout(
+                sheetContent = {
+                    MapsBottomSheet(
+                        files = maps.map { it.name },
+                        onMapChanged = {
+                            file = it
+                            coroutineScope.launch {
+                                bottomSheetState.hide()
+                            }
+                        },
+                        modifier = Modifier.navigationBarsPadding()
+                    )
                 },
-                modifier = Modifier.navigationBarsPadding()
-            )
-        },
-        sheetState = state,
-        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-    ) {
-        Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = { },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = onBackPressed,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color.Black.copy(0.40f),
-                                contentColor = Color.White,
+                sheetState = bottomSheetState,
+                sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+            ) {
+                Scaffold(
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = onBackPressed,
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        containerColor = Color.Black.copy(0.40f),
+                                        contentColor = Color.White,
+                                    ),
+                                ) {
+                                    Icon(
+                                        painterResource(id = R.drawable.arrow_back),
+                                        "Back",
+                                    )
+                                }
+                            },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                containerColor = Color.Transparent,
+                                navigationIconContentColor = Color.Black,
                             ),
-                        ) {
-                            Icon(
-                                painterResource(id = R.drawable.arrow_back),
-                                "Back",
-                            )
+                        )
+                    },
+                    floatingActionButton = {
+                        if (maps.isNotEmpty()) {
+                            FloatingActionButton(shape = CircleShape, onClick = {
+                                coroutineScope.launch {
+                                    bottomSheetState.show()
+                                }
+                            }) {
+                                Icon(Icons.Default.List, null)
+                            }
                         }
                     },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Color.Transparent,
-                        navigationIconContentColor = Color.Black,
-                    ),
-                )
-            },
-            floatingActionButton = {
-                if (maps.isNotEmpty()) {
-                    FloatingActionButton(shape = CircleShape, onClick = {
-                        coroutineScope.launch {
-                            state.show()
-                        }
-                    }) {
-                        Icon(Icons.Default.List, null)
-                    }
-                }
-            },
-        ) {
-            Timber.e("file: ${temp.file}")
+                ) {
+                    Timber.e("file: ${temp.file}")
 
-            PdfDisplay(
-                temp.file!!,
-                Modifier
-                    .padding(it)
-                    .fillMaxSize()
-            )
+                    PdfDisplay(
+                        temp.file!!,
+                        Modifier
+                            .padding(it)
+                            .fillMaxSize()
+                    )
+                }
+            }
+        }
+
+        is MapsScreenState.Error -> {
+            EmptyScreen(onBackPressed)
         }
     }
 }
@@ -199,7 +208,7 @@ private fun EmptyScreen(onBackPressed: () -> Unit) {
 @Composable
 private fun MapsScreenPreview() {
     ScheduleTheme {
-        MapsScreen(listOf(MapFile("Map", File("/")))) {
+        MapsScreen(MapsScreenState.Success(listOf(MapFile("Map", File("/"))))) {
         }
     }
 }
