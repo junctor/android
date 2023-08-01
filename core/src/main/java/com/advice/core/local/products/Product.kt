@@ -21,7 +21,12 @@ data class Product(
             if (variants.all { it.stockStatus == StockStatus.OUT_OF_STOCK }) {
                 return StockStatus.OUT_OF_STOCK
             }
-            if (variants.all { it.stockStatus == StockStatus.LOW_STOCK }) {
+            if (variants.all {
+                    it.stockStatus in listOf(
+                        StockStatus.LOW_STOCK,
+                        StockStatus.OUT_OF_STOCK
+                    )
+                }) {
                 return StockStatus.LOW_STOCK
             }
             return StockStatus.IN_STOCK
