@@ -16,6 +16,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -102,17 +103,17 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
                     topBar = {
                         CenterAlignedTopAppBar(
                             title = { },
-                            navigationIcon = {
+                            actions = {
                                 IconButton(
                                     onClick = onBackPressed,
                                     colors = IconButtonDefaults.iconButtonColors(
                                         containerColor = Color.Black.copy(0.40f),
-                                        contentColor = Color.White,
                                     ),
                                 ) {
                                     Icon(
-                                        painterResource(id = R.drawable.arrow_back),
-                                        "Back",
+                                        Icons.Default.Close,
+                                        "Close",
+                                        tint = Color.White,
                                     )
                                 }
                             },
@@ -129,7 +130,11 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
                                     bottomSheetState.show()
                                 }
                             }) {
-                                Icon(Icons.Default.List, null)
+                                Icon(
+                                    Icons.Default.List,
+                                    "List",
+                                    tint = Color.White,
+                                )
                             }
                         }
                     },

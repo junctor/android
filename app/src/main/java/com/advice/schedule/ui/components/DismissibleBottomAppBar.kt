@@ -60,7 +60,7 @@ private fun DismissibleBottomAppBarPreview() {
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
                         painterResource(
-                            id = com.shortstack.hackertracker.R.drawable.logo_clean
+                            id = com.shortstack.core.R.drawable.logo_glitch
                         ),
                         contentDescription = "logo"
                     )

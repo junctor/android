@@ -571,7 +571,7 @@ private fun HomeScreen(navController: NavHostController) {
                 }) {
                     Icon(
                         painterResource(
-                            id = com.shortstack.hackertracker.R.drawable.logo_clean
+                            id = com.shortstack.core.R.drawable.logo_glitch
                         ),
                         contentDescription = "Logo"
                     )

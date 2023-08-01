@@ -92,7 +92,11 @@ fun ProductScreen(
                             containerColor = Color.Black.copy(0.40f),
                         ),
                     ) {
-                        Icon(Icons.Default.Close, "Close")
+                        Icon(
+                            Icons.Default.Close,
+                            "Close",
+                            tint = Color.White,
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
