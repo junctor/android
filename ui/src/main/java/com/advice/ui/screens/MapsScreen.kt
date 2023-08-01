@@ -78,7 +78,7 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
 
         is MapsScreenState.Success -> {
             val maps = state.maps
-            var file by remember { mutableStateOf(maps.first().name) }
+            var file by remember(key1 = state.maps) { mutableStateOf(maps.first().name) }
             val temp = maps.find { it.name == file }!!
 
             ModalBottomSheetLayout(
