@@ -68,6 +68,9 @@ fun FeaturedProducts(products: List<Product>, onProductClicked: (Product) -> Uni
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerDots(state: PagerState, modifier: Modifier = Modifier) {
+    // Don't show dots if there is only one page
+    if (state.pageCount < 2) return
+
     Row(modifier.padding(8.dp)) {
         for (i in 0 until state.pageCount) {
             Box(
