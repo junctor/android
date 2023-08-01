@@ -9,29 +9,41 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
-class SharedPreferencesBookmarkDataSource(private val context: Context) : BookmarkedElementDataSource {
+class SharedPreferencesBookmarkDataSource(private val context: Context) :
+    BookmarkedElementDataSource {
 
     companion object {
         const val PREF_NAME = "bookmarks_pref"
     }
 
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
+    init {
+        // Clearing out any unneeded bookmarks
+        getBookmarks().filter {
+            !it.value
+        }.forEach {
+            prefs.edit().remove(it.id).apply()
+        }
+    }
 
     override fun get(): Flow<List<Bookmark>> = callbackFlow {
-        val allEntries = prefs.all
-        val bookmarks = allEntries.map { Bookmark(it.key, it.value as Boolean) }
-        trySend(bookmarks).isSuccess
+        trySend(getBookmarks()).isSuccess
 
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-            val allUpdatedEntries = prefs.all
-            val updatedBookmarks = allUpdatedEntries.map { Bookmark(it.key, it.value as Boolean) }
-            trySend(updatedBookmarks).isSuccess
+            trySend(getBookmarks()).isSuccess
         }
 
         prefs.registerOnSharedPreferenceChangeListener(listener)
 
         awaitClose { prefs.unregisterOnSharedPreferenceChangeListener(listener) }
+    }
+
+    private fun getBookmarks(): List<Bookmark> {
+        return prefs.all.map { Bookmark(it.key, it.value as Boolean) }
     }
 
     override suspend fun clear() {
@@ -42,7 +54,14 @@ class SharedPreferencesBookmarkDataSource(private val context: Context) : Bookma
 
     override suspend fun bookmark(id: Long, isBookmarked: Boolean) {
         withContext(Dispatchers.IO) {
-            prefs.edit().putBoolean(id.toString(), isBookmarked).apply()
+            prefs.edit().apply {
+                if (isBookmarked) {
+                    putBoolean(id.toString(), true)
+                } else {
+                    remove(id.toString())
+                }
+                apply()
+            }
         }
     }
 }
