@@ -30,7 +30,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             repository.products.collect {
                 val shuffled = it.shuffled().filter { it.hasMedia() }
-                val featured = shuffled.take(3)
+                val featured = shuffled.take(5)
 
                 _state.value = _state.value.copy(featured = featured, products = it)
 

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalLayoutApi::class, ExperimentalLayoutApi::class)
-
 package com.advice.products.ui.components
 
 import androidx.compose.foundation.Image
@@ -144,6 +142,7 @@ internal fun OutOfStock() {
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Black,
         )
     }
 }
@@ -170,6 +169,6 @@ private fun ProductSquarePreview() {
         )
     )
     ScheduleTheme {
-        ProductRow(element) {}
+        ProductSquare(element, {})
     }
 }
