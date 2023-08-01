@@ -3,8 +3,13 @@ package com.advice.ui.components.home
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -16,10 +21,16 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun ArticleView(text: String, date: Date?) {
+fun ArticleView(text: String, date: Date?, onDismiss: (() -> Unit)? = null) {
     HomeCard {
-        Column {
-            Paragraph(text)
+        Column(horizontalAlignment = Alignment.End) {
+            if (onDismiss != null) {
+                IconButton(onClick = onDismiss) {
+                    Icon(Icons.Default.Close, contentDescription = "Dismiss")
+                }
+            }
+
+            Paragraph(text, modifier = Modifier.fillMaxWidth())
             if (date != null) {
                 val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
                 Text(
@@ -36,8 +47,12 @@ fun ArticleView(text: String, date: Date?) {
 
 @LightDarkPreview
 @Composable
-fun ArticleViewPreview() {
+private fun ArticleViewPreview() {
     ScheduleTheme {
-        ArticleView("Welcome to DEFCON 28!", Date())
+        ArticleView(
+            text = "Welcome to DEFCON 28!",
+            date = Date(),
+            onDismiss = {}
+        )
     }
 }

@@ -2,6 +2,7 @@ package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Conference
 import com.advice.core.local.Menu
+import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
@@ -15,7 +16,7 @@ class HomeRepository(
     conferencesDataSource: ConferencesDataSource,
     menuRepository: MenuRepository,
     newsRepository: NewsDataSource,
-    storage: Storage,
+    private val storage: Storage,
 ) {
 
     private val _countdown = MutableStateFlow(-1L)
@@ -27,14 +28,21 @@ class HomeRepository(
         newsRepository.get(),
         _countdown,
     ) { conference, conferences, menu, news, countdown ->
+        val latest = news.firstOrNull().takeUnless {
+            it == null || storage.hasReadNews(conference.code, it.id)
+        }
         HomeState.Loaded(
             forceTimeZone = storage.forceTimeZone,
             conferences = conferences,
             conference = conference,
             menu = menu.firstOrNull() ?: Menu("Nothing", emptyList()),
-            news = news.firstOrNull(),
+            news = latest,
             countdown = countdown,
         )
+    }
+
+    fun markLatestNewsAsRead(newsArticle: NewsArticle) {
+        storage.markNewsAsRead(userSession.currentConference?.code, newsArticle.id)
     }
 
     fun setConference(conference: Conference) {

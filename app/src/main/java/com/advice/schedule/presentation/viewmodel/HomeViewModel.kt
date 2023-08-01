@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.Conference
+import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
 import com.advice.schedule.data.repositories.HomeRepository
 import java.util.Date
@@ -59,6 +60,12 @@ class HomeViewModel : ViewModel(), KoinComponent {
     }
 
     fun getHomeState(): Flow<HomeState> = state
+
+    fun markLatestNewsAsRead(newsArticle: NewsArticle) {
+        viewModelScope.launch {
+            repository.markLatestNewsAsRead(newsArticle)
+        }
+    }
 
     companion object {
         private const val COUNTDOWN_DELAY = 250L

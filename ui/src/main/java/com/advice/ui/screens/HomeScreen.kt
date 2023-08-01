@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
+import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
 import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
@@ -39,6 +40,7 @@ fun HomeScreen(
     state: HomeState?,
     onConferenceClick: (Conference) -> Unit,
     onNavigationClick: (String) -> Unit,
+    onDismissNews: (NewsArticle) -> Unit,
 ) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
@@ -47,6 +49,7 @@ fun HomeScreen(
         HomeScreenContent(
             state,
             onNavigationClick,
+            onDismissNews,
             modifier = Modifier
                 .padding(contentPadding)
         )
@@ -57,6 +60,7 @@ fun HomeScreen(
 private fun HomeScreenContent(
     state: HomeState?,
     onNavigationClick: (String) -> Unit,
+    onDismissNews: (NewsArticle) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -65,7 +69,7 @@ private fun HomeScreenContent(
             }
 
             is HomeState.Loaded -> {
-                HomeScreen(state, onNavigationClick)
+                HomeScreen(state, onNavigationClick, onDismissNews)
             }
 
             HomeState.Loading -> {
@@ -79,7 +83,11 @@ private fun HomeScreenContent(
 }
 
 @Composable
-private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> Unit) {
+private fun HomeScreen(
+    state: HomeState.Loaded,
+    onNavigationClick: (String) -> Unit,
+    onDismissNews: (NewsArticle) -> Unit,
+) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         ConferenceView(state.conference)
 
@@ -91,7 +99,7 @@ private fun HomeScreen(state: HomeState.Loaded, onNavigationClick: (String) -> U
         // Latest news
         val news = state.news
         if (news != null) {
-            ArticleView(text = news.text, date = news.date)
+            ArticleView(text = news.text, date = news.date) { onDismissNews(news) }
         }
 
         state.menu.items.forEach {

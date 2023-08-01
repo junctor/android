@@ -519,11 +519,14 @@ private fun HomeScreen(navController: NavHostController) {
             leftPanel = {
                 HomeScreen(
                     state = homeState,
-                    {
+                    onConferenceClick = {
                         homeViewModel.setConference(it)
                     },
-                    {
+                    onNavigationClick = {
                         navController.navigate(it)
+                    },
+                    onDismissNews = {
+                        homeViewModel.markLatestNewsAsRead(it)
                     }
                 )
             },

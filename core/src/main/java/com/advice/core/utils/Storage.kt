@@ -24,6 +24,8 @@ class Storage(context: Context, private val gson: Gson) {
 
         const val TUTORIAL_FILTERS = "tutorial_filters"
         const val TUTORIAL_EVENT_LOCATIONS = "tutorial_event_locations"
+
+        const val LATEST_NEWS_READ = "latest_news_read"
     }
 
     private val preferences: SharedPreferences =
@@ -101,6 +103,18 @@ class Storage(context: Context, private val gson: Gson) {
             EASTER_EGGS_ENABLED_KEY -> easterEggs
             else -> preferences.getBoolean(key, defaultValue)
         }
+    }
+
+    fun markNewsAsRead(code: String?, id: Int) {
+        if (code == null)
+            return
+        preferences.edit().putInt("$LATEST_NEWS_READ-$code", id).apply()
+    }
+
+    fun hasReadNews(code: String?, id: Int): Boolean {
+        if (code == null)
+            return false
+        return preferences.getInt("$LATEST_NEWS_READ-$code", -1) == id
     }
 
     object CorruptionLevel {
