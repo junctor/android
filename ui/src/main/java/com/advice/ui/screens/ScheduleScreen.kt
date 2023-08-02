@@ -154,7 +154,8 @@ private fun ScheduleScreenContent(
 ) {
     val context = LocalContext.current
 
-    var hasScrolled by rememberSaveable(inputs = arrayOf(days)) {
+    // Only scrolling when the list of unique events changes
+    var hasScrolled by rememberSaveable(inputs = arrayOf(days.flatMap { it.value }.map { it.id })) {
         mutableStateOf(false)
     }
 
