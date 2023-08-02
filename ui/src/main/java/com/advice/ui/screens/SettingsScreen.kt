@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -93,6 +94,8 @@ private fun SettingsScreenContent(
     onVersionClick: () -> Unit,
     modifier: Modifier
 ) {
+    var enableEasterEggs by remember { mutableStateOf(enableEasterEggs) }
+
     Column(modifier) {
         SwitchPreference(
             "Events in ($timeZone)",
@@ -106,6 +109,7 @@ private fun SettingsScreenContent(
             onPreferenceChanged("allow_analytics", it)
         }
         SwitchPreference("Easter Eggs", summary = "???", isChecked = enableEasterEggs) {
+            enableEasterEggs = it
             onPreferenceChanged("easter_eggs", it)
         }
         DeveloperSection()
