@@ -222,6 +222,10 @@ fun Product(
                                 Spacer(modifier = Modifier.height(4.dp))
                                 LowStockLabel()
                             }
+                            if (option.stockStatus == StockStatus.OUT_OF_STOCK) {
+                                Spacer(modifier = Modifier.height(4.dp))
+                                OutOfStockLabel()
+                            }
                         }
                         if (canAdd) {
                             RadioButton(
