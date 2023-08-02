@@ -2,6 +2,7 @@ package com.advice.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -48,6 +53,7 @@ fun SettingScreen(
     enableAnalytics: Boolean,
     showTwitterHandle: Boolean,
     onPreferenceChanged: (String, Boolean) -> Unit,
+    onVersionClick: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     Scaffold(topBar = {
@@ -67,7 +73,8 @@ fun SettingScreen(
             enableAnalytics,
             showTwitterHandle,
             onPreferenceChanged,
-            Modifier.padding(it)
+            onVersionClick,
+            Modifier.padding(it),
         )
     }
 }
@@ -83,6 +90,7 @@ private fun SettingsScreenContent(
     enableAnalytics: Boolean,
     showTwitterHandle: Boolean,
     onPreferenceChanged: (String, Boolean) -> Unit,
+    onVersionClick: () -> Unit,
     modifier: Modifier
 ) {
     Column(modifier) {
@@ -104,16 +112,29 @@ private fun SettingsScreenContent(
         if (showTwitterHandle) {
             TwitterBadge()
         }
-        VersionNumber(version)
+        VersionNumber(version, enableEasterEggs, onVersionClick)
     }
 }
 
 @Composable
-private fun VersionNumber(version: String) {
+private fun VersionNumber(
+    version: String,
+    enableEasterEggs: Boolean,
+    onVersionClick: () -> Unit = {},
+) {
+    var clickCount by remember { mutableIntStateOf(0) }
+
     Text(
         "Version $version",
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(enabled = enableEasterEggs) {
+                clickCount++
+                if (clickCount == 10) {
+                    clickCount = 0
+                    onVersionClick()
+                }
+            }
             .padding(16.dp),
         textAlign = TextAlign.Center
     )
@@ -122,7 +143,7 @@ private fun VersionNumber(version: String) {
 @Composable
 private fun DeveloperSection() {
     val text = buildAnnotatedString {
-        append("Android client built with ♥ by ")
+        append("Android client is built with ♥ by ")
         withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
             append("advice")
         }
@@ -181,9 +202,10 @@ private fun SettingScreenViewDarkPreview() {
             showFilterButton = true,
             enableEasterEggs = false,
             enableAnalytics = true,
-            showTwitterHandle = true, { _, _ ->
-            }
-        ) {
-        }
+            showTwitterHandle = false,
+            onPreferenceChanged = { _, _ -> },
+            onVersionClick = {},
+            onBackPressed = {}
+        )
     }
 }

@@ -501,6 +501,9 @@ fun SettingsScreen(navController: NavHostController) {
         onPreferenceChanged = { id, value ->
             viewModel.onPreferenceChanged(id, value)
         },
+        onVersionClick = {
+            (context as MainActivity).openLink("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+        },
         onBackPressed = { navController.popBackStack() }
     )
 }
