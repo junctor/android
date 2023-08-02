@@ -150,12 +150,12 @@ fun FirebaseEvent.toEvent(
         }.sortedBy { list.indexOf(it) }
 
         val speakers = people
-            .sortedBy { it.sort_order }
-            .mapNotNull { person ->
+            .map { person ->
                 val role = list.find { it.id == person.tag_id }
                 val speaker = speakers.find { it.id == person.person_id }
-                speaker?.copy(roles = listOf(role).filterNotNull())
-            }
+                person to speaker?.copy(roles = listOfNotNull(role))
+            }.sortedWith(compareBy({ it.first.sort_order }, { it.second?.name }))
+            .mapNotNull { it.second }
 
         if (types.isEmpty()) {
             return null
