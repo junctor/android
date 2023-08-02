@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class FirebasePerson(
     val person_id: Long = -1L,
     val sort_order: Int = 0,
-    val tag_id: Int = 0,
+    val tag_id: Long = 0,
 ) : Parcelable

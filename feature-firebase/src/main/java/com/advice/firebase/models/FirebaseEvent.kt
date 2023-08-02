@@ -15,16 +15,10 @@ data class FirebaseEvent(
     val timezone: String = "",
     @PropertyName("title")
     val title: String = "",
-    @Deprecated("use description instead")
-    @PropertyName("android_description")
-    val android_description: String = "",
-
+    @PropertyName("description")
+    val description: String = "",
     @PropertyName("people")
     val people: ArrayList<FirebasePerson> = ArrayList(),
-    @Deprecated("Use `people` instead")
-    @PropertyName("speakers")
-    val speakers: ArrayList<FirebaseSpeaker> = ArrayList(),
-
     @PropertyName("location")
     val location: FirebaseLocation = FirebaseLocation(),
     @PropertyName("links")

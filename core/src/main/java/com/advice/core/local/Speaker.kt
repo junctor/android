@@ -11,6 +11,7 @@ data class Speaker(
     val description: String,
     val affiliations: List<Affiliation>,
     val links: List<Link>,
+    val roles: List<Tag>,
 ) : Parcelable {
     val title: String?
         get() = affiliations.firstOrNull()?.organization

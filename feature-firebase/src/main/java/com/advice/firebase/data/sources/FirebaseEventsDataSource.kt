@@ -5,6 +5,7 @@ import com.advice.core.local.Event
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.EventsDataSource
+import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toEvent
@@ -22,10 +23,10 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
-@OptIn(FlowPreview::class)
 class FirebaseEventsDataSource(
     private val userSession: UserSession,
-    private val tagsDataSource: TagsDataSource,
+    tagsDataSource: TagsDataSource,
+    speakersDataSource: SpeakersDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
     private val firestore: FirebaseFirestore,
 ) : EventsDataSource {
@@ -41,10 +42,11 @@ class FirebaseEventsDataSource(
             }
     }
 
-    val conferenceAndTagsFlow = combine(
+    private val conferenceAndTagsFlow = combine(
         userSession.getConference(),
-        tagsDataSource.get()
-    ) { conference, tags -> Pair(conference, tags) }
+        tagsDataSource.get(),
+        speakersDataSource.get(),
+    ) { conference, tags, speakers -> Triple(conference, tags, speakers) }
         .shareIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Lazily,
@@ -52,7 +54,7 @@ class FirebaseEventsDataSource(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _eventsFlow = conferenceAndTagsFlow.flatMapLatest { (conference, tags) ->
+    private val _eventsFlow = conferenceAndTagsFlow.flatMapLatest { (conference, tags, speakers) ->
         combine(
             observeConferenceEvents(conference),
             bookmarkedEventsDataSource.get()
@@ -60,6 +62,7 @@ class FirebaseEventsDataSource(
             firebaseEvents.mapNotNull {
                 it.toEvent(
                     tags = tags,
+                    speakers = speakers,
                     isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == it.id.toString() }
                 )
             }

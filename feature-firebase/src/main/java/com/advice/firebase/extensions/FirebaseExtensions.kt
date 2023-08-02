@@ -136,7 +136,11 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
     }
 }
 
-fun FirebaseEvent.toEvent(tags: List<TagType>, isBookmarked: Boolean = false): Event? {
+fun FirebaseEvent.toEvent(
+    tags: List<TagType>,
+    speakers: List<Speaker>,
+    isBookmarked: Boolean = false
+): Event? {
     try {
         val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
 
@@ -144,6 +148,14 @@ fun FirebaseEvent.toEvent(tags: List<TagType>, isBookmarked: Boolean = false): E
         val types = tag_ids.mapNotNull { id ->
             list.find { it.id == id }
         }.sortedBy { list.indexOf(it) }
+
+        val speakers = people
+            .sortedBy { it.sort_order }
+            .mapNotNull { person ->
+                val role = list.find { it.id == person.tag_id }
+                val speaker = speakers.find { it.id == person.person_id }
+                speaker?.copy(roles = listOf(role).filterNotNull())
+            }
 
         if (types.isEmpty()) {
             return null
@@ -154,11 +166,11 @@ fun FirebaseEvent.toEvent(tags: List<TagType>, isBookmarked: Boolean = false): E
             conference,
             timezone,
             title,
-            android_description,
+            description,
             begin_timestamp.toDate().toInstant(),
             end_timestamp.toDate().toInstant(),
             updated_timestamp.toDate().toInstant(),
-            speakers.mapNotNull { it.toSpeaker() },
+            speakers,
             types,
             location.toLocation()!!,
             links,
@@ -198,7 +210,8 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? {
             affiliations = affiliations.mapNotNull { it.toAffiliation() },
             links = links
                 .sortedBy { it.sort_order }
-                .mapNotNull { it.toLink() }
+                .mapNotNull { it.toLink() },
+            roles = emptyList(),
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Speaker: ${ex.message}")

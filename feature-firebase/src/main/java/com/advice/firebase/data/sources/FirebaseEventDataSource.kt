@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Event
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.EventDataSource
+import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.toEvent
 import com.advice.firebase.extensions.toObjectOrNull
@@ -15,6 +16,7 @@ import timber.log.Timber
 class FirebaseEventDataSource(
     private val firestore: FirebaseFirestore,
     private val tagsDataSource: TagsDataSource,
+    private val speakersDataSource: SpeakersDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : EventDataSource {
 
@@ -27,11 +29,13 @@ class FirebaseEventDataSource(
             .await()
 
         val tags = tagsDataSource.get().first()
+        val speakers = speakersDataSource.get().first()
         val bookmarks = bookmarkedEventsDataSource.get().first()
 
         val event = snapshot.toObjectOrNull(FirebaseEvent::class.java)
             ?.toEvent(
                 tags = tags,
+                speakers = speakers,
                 isBookmarked = bookmarks.any { it.id == id.toString() }
             )
 

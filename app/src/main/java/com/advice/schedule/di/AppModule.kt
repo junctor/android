@@ -8,6 +8,7 @@ import com.advice.data.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.SharedPreferencesBookmarkDataSource
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.data.sources.BookmarkedEventsDataSource
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.DocumentsDataSource
 import com.advice.data.sources.EventDataSource
@@ -141,8 +142,16 @@ val appModule = module {
     single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
-    single<EventsDataSource> { FirebaseEventsDataSource(get(), get(), get(named("events")), get()) }
-    single<EventDataSource> { FirebaseEventDataSource(get(), get(), get(named("events"))) }
+    single<EventsDataSource> {
+        FirebaseEventsDataSource(
+            get<UserSession>(),
+            get<TagsDataSource>(),
+            get<SpeakersDataSource>(),
+            get<BookmarkedElementDataSource>(named("events")),
+            get<FirebaseFirestore>()
+        )
+    }
+    single<EventDataSource> { FirebaseEventDataSource(get(), get(), get(), get(named("events"))) }
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
     single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
     single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
@@ -164,7 +173,7 @@ val appModule = module {
 
     // Documents
     single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get()) }
-    
+
     single<MenuDataSource> { FirebaseMenuDataSource(get(), get()) }
 
     viewModel { HomeViewModel() }

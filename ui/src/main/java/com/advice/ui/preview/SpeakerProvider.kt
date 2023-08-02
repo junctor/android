@@ -19,6 +19,7 @@ class SpeakerProvider : PreviewParameterProvider<Speaker> {
                 description = "/john",
                 affiliations = listOf(Affiliation("DEF CON", "CTO")),
                 links = listOf(Link("twitter", "www.twitter.com")),
+                roles = listOf()
             )
         )
     }

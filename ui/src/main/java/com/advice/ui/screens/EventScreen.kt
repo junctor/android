@@ -301,50 +301,49 @@ private fun EventScreenContent(
                     onClick = {
                         onUrlClicked(action.url)
                     }, modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                }
-            }
-            if (event.speakers.isNotEmpty()) {
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    "Speakers", textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
                 )
-                for (speaker in event.speakers) {
-                    Speaker(
-                        name = speaker.name,
-                        title = speaker.title,
-                        onSpeakerClicked = { onSpeakerClicked(speaker) },
-                    )
-                }
             }
-
-            if (event.description.isBlank() && event.urls.isEmpty() && event.speakers.isEmpty()) {
-                Spacer(Modifier.height(32.dp))
-                NoDetailsView()
+        }
+        if (event.speakers.isNotEmpty()) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "Speakers", textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            )
+            for (speaker in event.speakers) {
+                Speaker(
+                    speaker = speaker,
+                    onSpeakerClicked = { onSpeakerClicked(speaker) },
+                )
             }
-            Spacer(modifier = Modifier.height(64.dp))
         }
-    }
 
-    private fun getLocation(location: Location): String {
-        // Find the dash within name and replace it with a newline.
-        val index = location.name.indexOf(" - " + location.shortName)
-        if (index != -1) {
-            return location.name.substring(0, index) + "\n" + location.shortName
+        if (event.description.isBlank() && event.urls.isEmpty() && event.speakers.isEmpty()) {
+            Spacer(Modifier.height(32.dp))
+            NoDetailsView()
         }
-        return location.name
+        Spacer(modifier = Modifier.height(64.dp))
     }
+}
 
-    @LightDarkPreview
-    @Composable
-    private fun EventScreenPreview(
-        @PreviewParameter(FakeEventProvider::class) event: Event,
-    ) {
-        ScheduleTheme {
-            EventScreen(event, {}, {}, {}, {}, {}, {})
-        }
+private fun getLocation(location: Location): String {
+    // Find the dash within name and replace it with a newline.
+    val index = location.name.indexOf(" - " + location.shortName)
+    if (index != -1) {
+        return location.name.substring(0, index) + "\n" + location.shortName
     }
+    return location.name
+}
+
+@LightDarkPreview
+@Composable
+private fun EventScreenPreview(
+    @PreviewParameter(FakeEventProvider::class) event: Event,
+) {
+    ScheduleTheme {
+        EventScreen(event, {}, {}, {}, {}, {}, {})
+    }
+}
     
