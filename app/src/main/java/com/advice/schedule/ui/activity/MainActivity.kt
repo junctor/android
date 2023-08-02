@@ -58,6 +58,7 @@ class MainActivity :
                 NavHost(navController as NavHostController)
             }
         }
+    }
 
     fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
