@@ -19,8 +19,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -149,6 +153,11 @@ private fun ScheduleScreenContent(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+
+    var hasScrolled by rememberSaveable(inputs = arrayOf(days)) {
+        mutableStateOf(false)
+    }
+
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val scrollContext = rememberScrollContext(listState = listState)
@@ -159,6 +168,9 @@ private fun ScheduleScreenContent(
 
     // Scrolling to the first event that is not started
     LaunchedEffect(key1 = days) {
+        if (hasScrolled) return@LaunchedEffect
+
+        hasScrolled = true
         val first = elements.indexOfFirst { it is Event && !it.hasStarted }
         if (first != -1) {
             if (first > 0 && elements[first - 1] is String) {
