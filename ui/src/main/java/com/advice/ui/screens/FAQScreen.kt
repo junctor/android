@@ -75,7 +75,7 @@ private fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
 @Composable
 private fun TopBar() {
     Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-        SearchBar("Search frequently asked questions") {
+        SearchBar("", "Search frequently asked questions") {
         }
     }
 }

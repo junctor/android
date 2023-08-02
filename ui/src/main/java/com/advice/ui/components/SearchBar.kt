@@ -92,8 +92,12 @@ fun SearchBar(onQuery: (String) -> Unit, onDismiss: () -> Unit) {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
-fun SearchBar(placeholder: String, modifier: Modifier = Modifier, onQuery: (String) -> Unit) {
-    var text by remember { mutableStateOf("") }
+fun SearchBar(
+    query: String,
+    placeholder: String,
+    modifier: Modifier = Modifier,
+    onQuery: (String) -> Unit) {
+    var text by remember { mutableStateOf(query) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     keyboardController?.show()
@@ -143,7 +147,7 @@ fun SearchBarPreview() {
         ) {
             SearchBar(onQuery = {}, onDismiss = {})
             Spacer(modifier = Modifier.height(4.dp))
-            SearchBar("Search", onQuery = {})
+            SearchBar("hello world", "Search", onQuery = {})
         }
     }
 }

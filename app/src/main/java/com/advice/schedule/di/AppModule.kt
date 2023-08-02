@@ -128,7 +128,7 @@ val appModule = module {
     single { ProductsRepository(get(), get()) }
     single { DocumentsRepository(get()) }
     single { TagsRepository(get()) }
-    single { SearchRepository(get(), get(), get(), get(), get()) }
+    single { SearchRepository(get(), get(), get(), get(), get(), get()) }
     single { MenuRepository(get()) }
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }

@@ -348,7 +348,8 @@ private fun FAQScreen(navController: NavHostController) {
 private fun Search(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<SearchViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value
-    SearchScreen(navController, state, onQueryChanged = {
+    val conference = viewModel.conference.collectAsState(initial = null).value
+    SearchScreen(navController, conference, state, onQueryChanged = {
         viewModel.search(it)
     })
 }
