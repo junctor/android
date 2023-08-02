@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -147,8 +148,6 @@ private fun ScheduleScreenContent(
     onBookmarkClick: (Event, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-//    val alreadyScrolled = rememberSaveable { mutableStateOf(false) }
-
     val context = LocalContext.current
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -158,16 +157,17 @@ private fun ScheduleScreenContent(
         days.flatMap { listOf(it.key) + it.value }
     }
 
-//    // Scrolling to the first event that is not finished
-//    LaunchedEffect(key1 = alreadyScrolled.value) {
-//        if (!alreadyScrolled.value) {
-//            Timber.e("Scrolling to first event")
-//            val first = elements.indexOfFirst { it is Event && !it.hasFinished }
-//            if (first != -1) {
-//                listState.scrollToItem(first)
-//            }
-//        }
-//    }
+    // Scrolling to the first event that is not started
+    LaunchedEffect(key1 = days) {
+        val first = elements.indexOfFirst { it is Event && !it.hasStarted }
+        if (first != -1) {
+            if (first > 0 && elements[first - 1] is String) {
+                listState.scrollToItem(first - 1)
+            } else {
+                listState.scrollToItem(first)
+            }
+        }
+    }
 
     val temp = remember(key1 = elements) {
         elements.mapIndexed { index, any -> index to any }.filter { it.second is String }
@@ -180,13 +180,13 @@ private fun ScheduleScreenContent(
     if (days.isNotEmpty()) {
         Column(modifier = modifier) {
             DaySelectorView(days = days.map { it.key }, start = start, end = end) {
-            coroutineScope.launch {
-                val index = elements.indexOf(it)
-                if (index != -1) {
-                    listState.scrollToItem(index)
+                coroutineScope.launch {
+                    val index = elements.indexOf(it)
+                    if (index != -1) {
+                        listState.scrollToItem(index)
+                    }
                 }
             }
-        }
             LazyColumn(state = listState) {
                 for (day in days) {
                     // Header
@@ -257,7 +257,7 @@ private fun ScheduleScreenPreview() {
                         ),
                         urls = emptyList(),
 
-                    )
+                        )
                 )
             )
         )
