@@ -91,6 +91,12 @@ class AnalyticsProvider(private val storage: Storage) {
         }
     }
 
+    fun onVersionClickEvent() {
+        analytics.logEvent("version_click") {
+            param(FirebaseAnalytics.Param.CONTENT_TYPE, "easter egg")
+        }
+    }
+
     fun log(message: String) {
         // todo: Crashlytics.getInstance().core.log(message)
     }

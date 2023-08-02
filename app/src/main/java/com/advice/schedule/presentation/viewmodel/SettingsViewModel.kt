@@ -21,4 +21,8 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     fun onPreferenceChanged(id: String, isChecked: Boolean) {
         repository.onPreferenceChanged(id, isChecked)
     }
+
+    fun onVersionClick() {
+        analytics.onVersionClickEvent()
+    }
 }

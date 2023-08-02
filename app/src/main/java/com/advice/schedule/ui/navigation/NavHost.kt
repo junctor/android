@@ -487,6 +487,7 @@ fun TagsScreen(navController: NavHostController, id: String?, label: String?) {
 
 @Composable
 fun SettingsScreen(navController: NavHostController) {
+    val context = LocalContext.current
     val viewModel = navController.navGraphViewModel<SettingsViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value ?: return
     SettingScreen(
@@ -502,6 +503,7 @@ fun SettingsScreen(navController: NavHostController) {
             viewModel.onPreferenceChanged(id, value)
         },
         onVersionClick = {
+            viewModel.onVersionClick()
             (context as MainActivity).openLink("https://www.youtube.com/watch?v=xvFZjo5PgG0")
         },
         onBackPressed = { navController.popBackStack() }
