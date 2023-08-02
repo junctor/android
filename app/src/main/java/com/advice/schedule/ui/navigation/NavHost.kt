@@ -365,6 +365,7 @@ fun EventScreen(navController: NavHostController, conference: String?, id: Strin
         onBookmark = {
             if (event != null) {
                 viewModel.bookmark(event, it)
+                (context as MainActivity).requestNotificationPermission()
             }
         },
         onBackPressed = { navController.popBackStack() },
@@ -417,6 +418,7 @@ fun SpeakerScreen(
 
 @Composable
 fun LocationScreen(navController: NavHostController, id: String?, label: String?) {
+    val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
     val state =
         viewModel.getState(ScheduleFilter.Location(id))
@@ -432,12 +434,14 @@ fun LocationScreen(navController: NavHostController, id: String?, label: String?
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)
+            (context as MainActivity).requestNotificationPermission()
         },
     )
 }
 
 @Composable
 fun TagScreen(navController: NavHostController, id: String?, label: String?) {
+    val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
     val state =
         viewModel.getState(ScheduleFilter.Tag(id))
@@ -453,12 +457,14 @@ fun TagScreen(navController: NavHostController, id: String?, label: String?) {
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)
+            (context as MainActivity).requestNotificationPermission()
         },
     )
 }
 
 @Composable
 fun TagsScreen(navController: NavHostController, id: String?, label: String?) {
+    val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
     val state =
         viewModel.getState(ScheduleFilter.Tags(id!!.split(",")))
@@ -474,6 +480,7 @@ fun TagsScreen(navController: NavHostController, id: String?, label: String?) {
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)
+            (context as MainActivity).requestNotificationPermission()
         },
     )
 }
@@ -500,6 +507,7 @@ fun SettingsScreen(navController: NavHostController) {
 
 @Composable
 private fun HomeScreen(navController: NavHostController) {
+    val context = LocalContext.current
     val mainViewModel = viewModel<MainViewModel>()
     val viewState by mainViewModel.state.collectAsState()
 
@@ -554,6 +562,7 @@ private fun HomeScreen(navController: NavHostController) {
                     },
                     onBookmarkClick = { event, isBookmarked ->
                         scheduleViewModel.bookmark(event, isBookmarked)
+                        (context as MainActivity).requestNotificationPermission()
                     },
                 )
             },

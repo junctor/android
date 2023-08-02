@@ -59,6 +59,7 @@ class MainActivity :
             }
         }
 
+    fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             when {
                 ContextCompat.checkSelfPermission(
@@ -68,9 +69,6 @@ class MainActivity :
                     // You can use the API that requires the permission.
                 }
 
-//                shouldShowRequestPermissionRationale(...)-> {
-//
-//                }
 
                 else -> {
                     // You can directly ask for the permission.
