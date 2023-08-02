@@ -63,6 +63,10 @@ class HomeViewModel : ViewModel(), KoinComponent {
 
     fun markLatestNewsAsRead(newsArticle: NewsArticle) {
         viewModelScope.launch {
+            val temp = state.value
+            if (temp is HomeState.Loaded) {
+                state.value = temp.copy(news = null)
+            }
             repository.markLatestNewsAsRead(newsArticle)
         }
     }
