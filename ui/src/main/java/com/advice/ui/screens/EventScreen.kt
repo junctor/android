@@ -306,12 +306,6 @@ private fun EventScreenContent(
         }
         if (event.speakers.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
-            Text(
-                "Speakers", textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            )
             for (speaker in event.speakers) {
                 Speaker(
                     speaker = speaker,
