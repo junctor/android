@@ -57,7 +57,7 @@ class NotificationHelper(private val context: Context) {
 
     private fun getPendingIntent(event: Event): PendingIntent {
         val deepLink =
-            Uri.parse("https://www.hackertracker.com/event?c=${event.conference}&e=${event.id}")
+            Uri.parse("https://www.hackertracker.app/event?c=${event.conference}&e=${event.id}")
 
         val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
             setPackage("com.shortstack.hackertracker")
