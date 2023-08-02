@@ -113,20 +113,20 @@ fun EventScreen(
             )
         }
     ) { contentPadding ->
-        Box(
-            Modifier
-                .verticalScroll(scrollState)
-        ) {
-            if (event == null) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(contentPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ProgressSpinner()
-                }
-            } else {
+        if (event == null) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                ProgressSpinner()
+            }
+        } else {
+            Box(
+                Modifier
+                    .verticalScroll(scrollState)
+            ) {
                 EventScreenContent(
                     event,
                     onTagClicked,
