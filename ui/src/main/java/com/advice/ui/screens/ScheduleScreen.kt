@@ -154,7 +154,7 @@ private fun ScheduleScreenContent(
     val coroutineScope = rememberCoroutineScope()
     val scrollContext = rememberScrollContext(listState = listState)
 
-    val elements = remember {
+    val elements = remember(key1 = days) {
         days.flatMap { listOf(it.key) + it.value }
     }
 
@@ -169,7 +169,7 @@ private fun ScheduleScreenContent(
 //        }
 //    }
 
-    val temp = remember {
+    val temp = remember(key1 = elements) {
         elements.mapIndexed { index, any -> index to any }.filter { it.second is String }
             .map { it.first }
     }
