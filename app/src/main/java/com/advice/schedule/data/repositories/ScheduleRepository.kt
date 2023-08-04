@@ -2,6 +2,7 @@ package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Event
 import com.advice.core.local.Tag
+import com.advice.core.local.TagType
 import com.advice.core.ui.ScheduleFilter
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.Flow
@@ -25,9 +26,8 @@ class ScheduleRepository(
 
             return@combine when (filter) {
                 ScheduleFilter.Default -> {
-                    val flatMap = tags.flatMap { it.tags } + Tag.bookmark
-                    val tags = flatMap.filter { it.isSelected }
-                    filter(sortedEvents, tags)
+                    val selected = tags.filter { it.tags.any { it.isSelected } }
+                    filter(sortedEvents, selected)
                 }
 
                 is ScheduleFilter.Location -> {
@@ -39,6 +39,7 @@ class ScheduleRepository(
                 }
 
                 is ScheduleFilter.Tags -> {
+                    // Any events that have any of the selected tags
                     sortedEvents.filter { it.types.any { it.id.toString() in filter.ids } }
                 }
             }
@@ -47,13 +48,25 @@ class ScheduleRepository(
 
     private fun filter(
         events: List<Event>,
-        filter: List<Tag>,
+        filter: List<TagType>,
     ): List<Event> {
-        val bookmarksOnly = filter.any { it.isBookmark && it.isSelected }
-        val ids = filter.filter { !it.isBookmark }.map { it.id }
+        if (filter.isEmpty()) {
+            if (Tag.bookmark.isSelected) {
+                return events.filter { it.isBookmarked }
+            }
+            return events
+        }
+
+        val groups = filter.map {
+            it.tags.filter { it.isSelected }.map { it.id }
+        }
+
         return events
-            .filter { !bookmarksOnly || it.isBookmarked }
-            .filter { ids.isEmpty() || it.types.any { it.id in ids } }
+            .filter {
+                groups.all { ids ->
+                    it.types.any { it.id in ids }
+                }
+            }
     }
 
     suspend fun bookmark(event: Event, isBookmarked: Boolean) {
