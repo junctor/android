@@ -421,9 +421,10 @@ fun SpeakerScreen(
 fun LocationScreen(navController: NavHostController, id: String?, label: String?) {
     val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
-    val state =
+    val state = remember {
         viewModel.getState(ScheduleFilter.Location(id))
-            .collectAsState(initial = ScheduleScreenState.Loading).value
+    }.collectAsState(initial = ScheduleScreenState.Loading).value
+
     ScheduleScreen(
         state = state,
         label = label,
@@ -444,9 +445,10 @@ fun LocationScreen(navController: NavHostController, id: String?, label: String?
 fun TagScreen(navController: NavHostController, id: String?, label: String?) {
     val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
-    val state =
+    val state = remember {
         viewModel.getState(ScheduleFilter.Tag(id))
-            .collectAsState(initial = ScheduleScreenState.Loading).value
+    }.collectAsState(initial = ScheduleScreenState.Loading).value
+
     ScheduleScreen(
         state = state,
         label = label,
@@ -467,9 +469,10 @@ fun TagScreen(navController: NavHostController, id: String?, label: String?) {
 fun TagsScreen(navController: NavHostController, id: String?, label: String?) {
     val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
-    val state =
+    val state = remember {
         viewModel.getState(ScheduleFilter.Tags(id!!.split(",")))
-            .collectAsState(initial = ScheduleScreenState.Loading).value
+    }.collectAsState(initial = ScheduleScreenState.Loading).value
+
     ScheduleScreen(
         state = state,
         label = label,
@@ -521,11 +524,14 @@ private fun HomeScreen(navController: NavHostController) {
     val filtersViewModel = viewModel<FiltersViewModel>()
     val scheduleViewModel = viewModel<ScheduleViewModel>()
 
+    val scheduleScreenState = remember {
+        scheduleViewModel.getState()
+    }.collectAsState(initial = ScheduleScreenState.Loading).value
+
     val homeState = homeViewModel.getHomeState().collectAsState(initial = HomeState.Loading).value
     val filtersScreenState =
         filtersViewModel.state.collectAsState(initial = FiltersScreenState.Init).value
-    val scheduleScreenState =
-        scheduleViewModel.getState().collectAsState(initial = ScheduleScreenState.Loading).value
+
 
     Box {
         OverlappingPanelsView(
