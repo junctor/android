@@ -55,6 +55,7 @@ dependencies {
     implementation project(":feature-organizations")
     implementation project(":feature-documents")
     implementation project(":feature-analytics")
+    implementation project(':feature-play')
 
     def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
     implementation composeBom

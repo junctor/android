@@ -15,16 +15,19 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.advice.play.AppManager
 import com.advice.schedule.ui.navigation.NavHost
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import java.util.jar.Manifest
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
-class MainActivity :
-    AppCompatActivity(),
-    KoinComponent {
+class MainActivity : AppCompatActivity(), KoinComponent {
+
+    private val appManager by inject<AppManager>()
+    private val REQUEST_CODE_UPDATE = 9003
 
     // todo: fix this - this is a hack to get the navController to work
     private lateinit var navController: NavController
@@ -57,6 +60,17 @@ class MainActivity :
             ScheduleTheme {
                 NavHost(navController as NavHostController)
             }
+        }
+
+        appManager.checkForUpdate(this, REQUEST_CODE_UPDATE)
+    }
+
+    @Deprecated("This is deprecated in favor of registerForActivityResult")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_UPDATE && resultCode != RESULT_OK) {
+            Timber.e("Update flow failed! Result code: $resultCode")
         }
     }
 

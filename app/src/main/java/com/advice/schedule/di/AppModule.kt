@@ -43,6 +43,7 @@ import com.advice.firebase.data.sources.FirebaseVillagesDataSource
 import com.advice.firebase.session.FirebaseUserSession
 import com.advice.locations.data.repositories.LocationRepository
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
+import com.advice.play.AppManager
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.reminder.ReminderManager
@@ -99,6 +100,9 @@ val appModule = module {
 
     // work manager
     single { WorkManager.getInstance(androidContext()) }
+
+    // update manager
+    single { AppManager(androidContext()) }
 
     single { AnalyticsProvider(get()) }
 
