@@ -127,6 +127,7 @@ internal fun NavHost(navController: NavHostController) {
         composable("menu/{label}/{id}") { backStackEntry ->
             MenuScreen(
                 navController = navController,
+                id = backStackEntry.arguments?.getString("id"),
                 label = backStackEntry.arguments?.getString("label"),
             )
         }
@@ -278,10 +279,11 @@ private fun WifiScreen(navController: NavHostController) {
 private fun MenuScreen(
     navController: NavHostController,
     label: String?,
+    id: String?,
 ) {
     val viewModel = navController.navGraphViewModel<MenuViewModel>()
     val menus = viewModel.menu.collectAsState(initial = null).value ?: return
-    val menu = menus.find { it.label == label } ?: return
+    val menu = menus.find { it.id.toString() == id } ?: return
 
     com.advice.documents.ui.screens.MenuScreen(
         menu = menu,
