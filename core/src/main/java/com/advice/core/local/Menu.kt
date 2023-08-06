@@ -6,37 +6,43 @@ data class Menu(
     val items: List<MenuItem>,
 )
 
-sealed class MenuItem(val label: String) {
+sealed class MenuItem(val icon: String?, val label: String) {
     class SectionHeading(
         label: String,
-    ) : MenuItem(label)
+    ) : MenuItem(null, label)
 
-    object Divider : MenuItem("")
+    object Divider : MenuItem(null, "")
 
     class Document(
+        icon: String,
         label: String,
         val documentId: Int,
-    ) : MenuItem(label)
+    ) : MenuItem(icon, label)
 
     class Menu(
+        icon: String,
         label: String,
         val menuId: Int,
-    ) : MenuItem(label)
+    ) : MenuItem(icon, label)
 
     class Navigation(
+        icon: String,
         label: String,
         val function: String,
-    ) : MenuItem(label)
+    ) : MenuItem(icon, label)
 
     class Organization(
+        icon: String,
         label: String,
         val organizationId: Int,
-    ) : MenuItem(label)
+    ) : MenuItem(icon, label)
 
     class Schedule(
+        icon: String,
         label: String,
         val tags: List<Int>,
-    ) : MenuItem(label)
+    ) : MenuItem(icon, label)
+
 
     val url: String?
         get() = when (this) {
