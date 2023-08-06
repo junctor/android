@@ -1,5 +1,6 @@
 package com.advice.firebase.extensions
 
+import android.annotation.SuppressLint
 import androidx.annotation.NonNull
 import com.advice.core.local.Action
 import com.advice.core.local.Affiliation
@@ -11,6 +12,8 @@ import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Link
 import com.advice.core.local.Location
+import com.advice.firebase.models.FirebaseLocationSchedule
+import com.advice.core.local.LocationSchedule
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
@@ -57,6 +60,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
+import java.text.SimpleDateFormat
 
 fun <T> QuerySnapshot.toObjectsOrEmpty(@NonNull clazz: Class<T>): List<T> {
     return try {
@@ -129,11 +133,27 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
             hier_extent_right,
             parent_id,
             peer_sort_order,
-            schedule,
+            schedule?.mapNotNull { it.toSchedule() },
             children
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Location: ${ex.message}")
+        null
+    }
+}
+
+@SuppressLint("SimpleDateFormat")
+fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? {
+    return try {
+        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        LocationSchedule(
+            format.parse(begin).toInstant(),
+            format.parse(end).toInstant(),
+            notes,
+            status
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to LocationSchedule: ${ex.message}")
         null
     }
 }

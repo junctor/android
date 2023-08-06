@@ -3,6 +3,7 @@ package com.advice.core.utils
 import android.content.Context
 import com.advice.core.local.Conference
 import com.advice.core.local.Event
+import com.advice.core.local.LocationSchedule
 import com.shortstack.core.BuildConfig
 import timber.log.Timber
 import java.time.Instant
@@ -125,10 +126,42 @@ object TimeUtil {
         val startFormat = DateTimeFormatter.ofPattern("MMMM d")
         val endFormat = DateTimeFormatter.ofPattern("MMMM d, yyyy")
         return "${startFormat.format(conference.start.atZone(zoneId))} - ${
-        endFormat.format(
-            conference.end.atZone(zoneId)
-        )
+            endFormat.format(
+                conference.end.atZone(zoneId)
+            )
         }"
+    }
+
+    fun getScheduleDateStamp(context: Context, location: LocationSchedule): String {
+        // todo: replace - this is only for DEF CON
+        val zoneId = getZoneId(context, "America/Los_Angeles")
+
+        val dayFormat = DateTimeFormatter.ofPattern("EEEE, MMMM d")
+        // If the schedule is on the same day, we don't need to show the date twice.
+//        if (isSameDay(location.start, location.end)) {
+        return dayFormat.format(location.start.atZone(zoneId))
+    }
+
+    fun getScheduleTimestamp(context: Context, location: LocationSchedule): String {
+        // todo: replace - this is only for DEF CON
+        val zoneId = getZoneId(context, "America/Los_Angeles")
+
+        val is24HourFormat = android.text.format.DateFormat.is24HourFormat(context)
+
+        val s = if (is24HourFormat) {
+            "HH:mm"
+        } else {
+            "h:mm a"
+        }
+        val timeFormat = DateTimeFormatter.ofPattern(s)
+
+        return location.status.capitalize() + ": " + timeFormat.format(
+            location.start.atZone(
+                zoneId
+            )
+        ) + " to " + timeFormat.format(
+            location.end.atZone(zoneId)
+        )
     }
 
     private fun isSameDay(

@@ -1,22 +1,9 @@
 package com.advice.core.local
 
 import android.os.Parcelable
-import com.advice.core.utils.Time
 import kotlinx.parcelize.Parcelize
 import java.lang.Math.max
-import java.text.SimpleDateFormat
-import java.util.Date
-
-@Parcelize
-data class LocationRow(
-    val id: Long,
-    val title: String,
-    val status: LocationStatus,
-    val depth: Int,
-    val hasChildren: Boolean,
-    val isExpanded: Boolean,
-    val schedule: List<LocationSchedule>,
-) : Parcelable
+import java.time.Instant
 
 @Parcelize
 data class Location(
@@ -56,12 +43,10 @@ data class Location(
         }
 
     private fun getCurrentStatus(): LocationStatus {
-        val now = Time.now()
+        val now = Instant.now()
 
         val status = schedule?.firstOrNull {
-            val begin = parse(it.begin)
-            val end = parse(it.end)
-            begin != null && end != null && begin.before(now) && end.after(now)
+            it.start.compareTo(now) == -1 && it.end.compareTo(now) == 1
         }?.status ?: defaultStatus
 
         return when (status) {
@@ -71,17 +56,14 @@ data class Location(
         }
     }
 
-    private fun parse(date: String): Date? {
-        return try {
-            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date)
-        } catch (ex: Exception) {
-            null
-        }
-    }
-
     override fun toString(): String {
         var s =
-            "  " + "--".repeat(max(0, depth - 1)) + "> $name - isExpanded: $isExpanded, isVisible: $isVisible"
+            "  " + "--".repeat(
+                max(
+                    0,
+                    depth - 1
+                )
+            ) + "> $name - isExpanded: $isExpanded, isVisible: $isVisible"
 //        children.map {
 //            s = "$s\n  $it"
 //        }

@@ -5,6 +5,7 @@ import com.advice.core.local.LocationRow
 import com.advice.data.sources.LocationsDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import timber.log.Timber
 
 class LocationRepository(private val locationsDataSource: LocationsDataSource) {
 
@@ -14,18 +15,23 @@ class LocationRepository(private val locationsDataSource: LocationsDataSource) {
         locationsDataSource.get(),
         expanded,
     ) { locations, expandedIds ->
-        val updated = locations.filter { it.parent == 0L }.flatMap {
+        val roots = locations.filter { it.parent == 0L }
+        if (expandedIds.isEmpty()) {
+            val temp = roots.flatMap {
+                flatten(it)
+            }
+
+            expanded.value = temp.map { it.id }
+        }
+
+        val updated = roots.flatMap {
             val flatten = flatten(it)
-
-//            if (expandedIds.isEmpty()) {
-//                expanded.value = flatten.map { it.id }
-//            }
-
             flatten.map { location ->
                 val isVisible = isVisible(location, expandedIds, flatten)
-                location.copy(isVisible = true, isExpanded = true)
+                location.copy(isVisible = isVisible, isExpanded = location.id in expandedIds)
             }
         }
+
 
         return@combine updated.filter { it.isVisible }.map {
             LocationRow(

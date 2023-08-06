@@ -2,11 +2,12 @@ package com.advice.core.local
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.time.Instant
 
 @Parcelize
 data class LocationSchedule(
-    val begin: String = "",
-    val end: String = "",
-    val notes: String? = null,
-    val status: String = "closed"
+    val start: Instant,
+    val end: Instant,
+    val notes: String?,
+    val status: String,
 ) : Parcelable

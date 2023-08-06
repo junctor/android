@@ -312,6 +312,9 @@ private fun LocationsScreen(navController: NavHostController) {
     val state = viewModel.state.collectAsState(initial = null).value ?: return
     com.advice.locations.ui.screens.LocationsScreen(
         containers = state.list,
+        onToggleClicked = {
+            viewModel.toggle(it)
+        },
         onScheduleClicked = {
             // todo: this should URL encode the title
             navController.navigate("location/${it.id}/${it.title.replace("/", "-")}")
