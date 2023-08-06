@@ -14,15 +14,17 @@ class LocationRepository(private val locationsDataSource: LocationsDataSource) {
         locationsDataSource.get(),
         expanded,
     ) { locations, expandedIds ->
-        val flatten = flatten(locations.first())
+        val updated = locations.filter { it.parent == 0L }.flatMap {
+            val flatten = flatten(it)
 
-        if (expandedIds.isEmpty()) {
-            expanded.value = flatten.map { it.id }
-        }
+//            if (expandedIds.isEmpty()) {
+//                expanded.value = flatten.map { it.id }
+//            }
 
-        val updated = flatten.map { location ->
-            val isVisible = isVisible(location, expandedIds, flatten)
-            location.copy(isVisible = isVisible, isExpanded = location.id in expandedIds)
+            flatten.map { location ->
+                val isVisible = isVisible(location, expandedIds, flatten)
+                location.copy(isVisible = true, isExpanded = true)
+            }
         }
 
         return@combine updated.filter { it.isVisible }.map {
