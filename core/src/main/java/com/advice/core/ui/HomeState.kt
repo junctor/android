@@ -14,6 +14,7 @@ sealed class HomeState {
         val news: NewsArticle?,
         val countdown: Long = -1L,
         val forceTimeZone: Boolean,
+        val isUpdateAvailable: Boolean = false,
     ) : HomeState()
 
     data class Error(val ex: Exception) : HomeState()

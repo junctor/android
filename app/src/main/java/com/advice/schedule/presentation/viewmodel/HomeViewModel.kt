@@ -6,6 +6,7 @@ import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.Conference
 import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
+import com.advice.play.AppManager
 import com.advice.schedule.data.repositories.HomeRepository
 import java.util.Date
 import kotlinx.coroutines.Job
@@ -20,6 +21,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
 
     private val repository by inject<HomeRepository>()
     private val analytics by inject<AnalyticsProvider>()
+    private val appManager by inject<AppManager>()
 
     private val state = MutableStateFlow<HomeState>(HomeState.Loading)
 
@@ -28,7 +30,9 @@ class HomeViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             repository.contents.collect {
-                state.value = it
+                // Check if there is any updates available
+                val isUpdateAvailable = appManager.isUpdateAvailable()
+                state.value = it.copy(isUpdateAvailable = isUpdateAvailable)
 
                 if (countdownJob == null) {
                     startCountdown(it.conference)

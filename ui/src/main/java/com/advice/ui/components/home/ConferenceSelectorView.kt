@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.utils.TimeUtil
@@ -47,7 +48,8 @@ fun ConferenceSelectorView(
             Text(
                 conference.name,
                 modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Black,
             )
             Text(
                 TimeUtil.getConferenceDateRange(context, conference),

@@ -89,6 +89,14 @@ private fun HomeScreen(
     onDismissNews: (NewsArticle) -> Unit,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
+        if (state.isUpdateAvailable) {
+            Text(
+                "Update available",
+                Modifier.padding(16.dp),
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
+
         ConferenceView(state.conference)
 
         val remainder = state.countdown
@@ -148,7 +156,7 @@ private fun HomeScreenViewPreview() {
             state = HomeState.Loaded(
                 conferences = listOf(Conference.Zero),
                 conference = Conference.Zero,
-                menu = Menu(-1,"Home", listOf()),
+                menu = Menu(-1, "Home", listOf()),
                 news = null,
                 countdown = Date().time / 1000L,
                 forceTimeZone = false

@@ -1,10 +1,12 @@
 package com.advice.ui.components.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,7 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.ui.HomeState
@@ -43,6 +48,8 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
 
     Column(
         Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         Box(
@@ -58,7 +65,10 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(state.conference.name)
+                Text(
+                    text = state.conference.name,
+                    fontWeight = FontWeight.Black,
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     painterResource(R.drawable.arrow_back),
@@ -79,6 +89,12 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
             onDismiss = {
                 expanded = false
             }
+        )
+        Box(
+            Modifier
+                .background(Color.Yellow)
+                .fillMaxSize()
+                .background(Color.Red)
         )
     }
 }
