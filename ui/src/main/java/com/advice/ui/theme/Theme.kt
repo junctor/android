@@ -14,6 +14,7 @@ private val DarkColorPalette = darkColorScheme(
     onPrimary = Color.White,
     primaryContainer = HotPink,
     onPrimaryContainer = Color.White,
+    onBackground = Color.White,
     onSurface = Color.White,
     outline = Color.White.copy(alpha = 0.12f),
     errorContainer = Color(0xFFB00020),

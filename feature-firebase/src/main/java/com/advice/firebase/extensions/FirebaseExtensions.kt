@@ -266,6 +266,7 @@ fun FirebaseOrganization.toOrganization(): Organization? {
             locations.mapNotNull { it.toLocation() },
             links.mapNotNull { it.toLink() },
             media.mapNotNull { it.toMedia() },
+            tag_id_as_organizer,
             tag_ids,
         )
     } catch (ex: Exception) {

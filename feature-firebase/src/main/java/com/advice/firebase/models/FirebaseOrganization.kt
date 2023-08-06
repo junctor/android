@@ -13,6 +13,7 @@ data class FirebaseOrganization(
     val links: List<FirebaseLink> = emptyList(),
     val locations: List<FirebaseOrganizationLocation> = emptyList(),
     val media: List<FirebaseOrganizationMedia> = emptyList(),
+    val tag_id_as_organizer: Long? = null,
     val tag_ids: List<Long> = emptyList(),
 ) : Parcelable
 

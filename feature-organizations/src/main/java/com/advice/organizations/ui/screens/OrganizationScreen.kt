@@ -1,9 +1,10 @@
 package com.advice.organizations.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,24 +12,25 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
 import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.Paragraph
 import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.screens.ImageScaffold
 import com.advice.ui.theme.ScheduleTheme
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,77 +38,91 @@ fun OrganizationScreen(
     organization: Organization?,
     onBackPressed: () -> Unit,
     onLinkClicked: (String) -> Unit,
+    onScheduleClicked: (Long, String) -> Unit,
 ) {
-    val systemUiController = rememberSystemUiController()
-
-    val hasMedia = organization?.media?.isNotEmpty()
-
-    if (hasMedia == true) {
-        DisposableEffect(Unit) {
-            systemUiController.setSystemBarsColor(
-                color = Color.Black.copy(0.40f),
+    ImageScaffold(
+        url = organization?.media?.firstOrNull()?.url,
+        imageModifier = Modifier.aspectRatio(1.333f),
+        contentModifier = Modifier
+            .verticalScroll(rememberScrollState()),
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBackPressed, colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Black.copy(0.40f),
+                        )
+                    ) {
+                        Icon(
+                            painterResource(id = com.advice.ui.R.drawable.arrow_back),
+                            contentDescription = "Back",
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent,
+                ),
             )
-
-            onDispose {
-                systemUiController.setSystemBarsColor(
-                    color = Color.Transparent,
-                )
-            }
-        }
-    }
-    Scaffold(topBar = {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(text = organization?.name ?: "")
-            },
-            navigationIcon = {
-                IconButton(onClick = onBackPressed) {
-                    Icon(
-                        painterResource(id = com.advice.ui.R.drawable.arrow_back),
-                        contentDescription = "Back",
-                    )
-                }
-            },
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color.Transparent,
-            ),
-        )
-    }) {
+        }) {
         Column(
-            Modifier
-                .padding(it)
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.padding(vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             if (organization != null) {
-                if (organization.media.isNotEmpty()) {
-                    AsyncImage(
-                        model = organization.media.first().url,
-                        contentDescription = "image",
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.FillWidth,
-                    )
+                Header(organization.name)
+
+                val tag = organization.tag
+                if (tag != null) {
+                    Box(
+                        Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                    ) {
+                        OutlinedButton(
+                            onClick = { onScheduleClicked(tag, organization.name) },
+                            Modifier
+                                .fillMaxWidth()
+                                .align(
+                                    Alignment.CenterEnd
+                                )
+                        ) {
+                            Text("Show Schedule")
+                        }
+                    }
                 }
+
                 if (organization.description != null) {
                     Paragraph(organization.description ?: "")
                 }
                 if (organization.links.isNotEmpty()) {
-                    Spacer(Modifier.height(16.dp))
-                    for (link in organization.links) {
-                        ClickableUrl(
-                            label = link.label,
-                            url = link.url,
-                            onClick = {
-                                onLinkClicked(link.url)
-                            },
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp),
-                        )
+                    Column {
+                        for (link in organization.links) {
+                            ClickableUrl(
+                                label = link.label,
+                                url = link.url,
+                                onClick = {
+                                    onLinkClicked(link.url)
+                                },
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp),
+                            )
+                        }
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun Header(label: String) {
+    Text(
+        text = label,
+        modifier = Modifier.padding(horizontal = 24.dp),
+        style = MaterialTheme.typography.headlineLarge,
+        fontWeight = FontWeight.Black,
+    )
 }
 
 @LightDarkPreview
@@ -120,14 +136,21 @@ private fun OrganizationScreenPreview() {
             locations = emptyList(),
             links = listOf(
                 OrganizationLink("Website", "website", "https://www.google.com"),
+                OrganizationLink("Website", "website", "https://www.google.com"),
             ),
-            media = listOf(),
-            tags = listOf(),
+            media = listOf(
+
+            ),
+            tag = 1,
+            tags = listOf(1),
         )
         OrganizationScreen(
             organization = organization,
             onBackPressed = {},
             onLinkClicked = {},
+            onScheduleClicked = { _, _ ->
+
+            },
         )
     }
 }

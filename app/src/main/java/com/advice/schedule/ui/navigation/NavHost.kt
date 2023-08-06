@@ -179,8 +179,12 @@ private fun OrganizationScreen(
         organization = organization,
         onBackPressed = {
             navController.popBackStack()
-        }, onLinkClicked = {
+        },
+        onLinkClicked = {
             (context as MainActivity).openLink(it)
+        },
+        onScheduleClicked = { id, label ->
+            navController.navigate("schedule/${label}/${id}")
         }
     )
 }

@@ -7,6 +7,7 @@ data class Organization(
     val locations: List<OrganizationLocation>,
     val links: List<OrganizationLink>,
     val media: List<OrganizationMedia>,
+    val tag: Long?,
     val tags: List<Long>,
 )
 
