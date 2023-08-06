@@ -124,23 +124,11 @@ private fun HomeScreen(
                 Text(
                     it.label,
                     Modifier
-                        .clickable {
-                            when (it) {
-                                is MenuItem.Document -> onNavigationClick("document/${it.documentId}")
-                                is MenuItem.Menu -> onNavigationClick("menu/${it.label}/${it.menuId}")
-                                is MenuItem.Navigation -> onNavigationClick("${it.function}/${it.label}")
-                                is MenuItem.Organization -> onNavigationClick("organizations/${it.label}/${it.organizationId}")
-                                is MenuItem.Schedule -> onNavigationClick(
-                                    "schedule/${it.label}/${
-                                        it.tags.joinToString(
-                                            ","
-                                        )
-                                    }"
-                                )
-
-                                else -> error("Unknown menu item: $it")
+                        .clickable(enabled = it.url != null) {
+                            val url = it.url
+                            if (url != null) {
+                                onNavigationClick(url)
                             }
-
                         }
                         .padding(16.dp)
                 )
@@ -160,7 +148,7 @@ private fun HomeScreenViewPreview() {
             state = HomeState.Loaded(
                 conferences = listOf(Conference.Zero),
                 conference = Conference.Zero,
-                menu = Menu("Home", listOf()),
+                menu = Menu(-1,"Home", listOf()),
                 news = null,
                 countdown = Date().time / 1000L,
                 forceTimeZone = false

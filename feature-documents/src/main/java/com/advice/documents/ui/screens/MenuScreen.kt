@@ -19,7 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.advice.core.local.Document
+import com.advice.core.local.Menu
+import com.advice.core.local.MenuItem
 import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
@@ -28,9 +29,9 @@ import com.advice.ui.components.ProgressSpinner
 @Composable
 fun MenuScreen(
     label: String,
-    items: List<Document>?,
+    menu: Menu?,
     onBackPressed: () -> Unit,
-    onDocumentPressed: (Document) -> Unit,
+    onNavigationClick: (String) -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text(label) }, navigationIcon = {
@@ -41,19 +42,17 @@ fun MenuScreen(
     }) {
         Box(Modifier.padding(it)) {
             when {
-                items == null -> {
+                menu == null -> {
                     ProgressSpinner()
                 }
 
-                items.isEmpty() -> {
+                menu == null -> {
                     EmptyMessage("$label not found")
                 }
 
                 else -> {
                     Column(Modifier.padding(16.dp)) {
-
-
-                        items.forEach {
+                        menu.items.forEach {
                             Surface(
                                 border = BorderStroke(
                                     1.dp,
@@ -66,12 +65,15 @@ fun MenuScreen(
                             ) {
                                 Column(Modifier
                                     .fillMaxWidth()
-                                    .clickable {
-                                        onDocumentPressed(it)
+                                    .clickable(enabled = it.url != null) {
+                                        val url = it.url
+                                        if (url != null) {
+                                            onNavigationClick(url)
+                                        }
                                     }
                                     .padding(16.dp)) {
 
-                                    Text(it.title)
+                                    Text(it.label)
                                 }
                             }
                         }

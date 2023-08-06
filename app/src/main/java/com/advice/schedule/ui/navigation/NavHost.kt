@@ -36,6 +36,7 @@ import com.advice.schedule.presentation.viewmodel.FAQViewModel
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
 import com.advice.schedule.presentation.viewmodel.MapsViewModel
+import com.advice.schedule.presentation.viewmodel.MenuViewModel
 import com.advice.schedule.presentation.viewmodel.NewsViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
@@ -72,8 +73,8 @@ internal fun NavHost(navController: NavHostController) {
         composable("maps") {
             MapsScreen(navController)
         }
-        composable("news") {
-            NewsScreen(navController)
+        composable("news/{label}") { backStackEntry ->
+            NewsScreen(navController, backStackEntry.arguments?.getString("label"))
         }
         composable("search") {
             Search(navController)
@@ -124,7 +125,7 @@ internal fun NavHost(navController: NavHostController) {
 
         composable("wifi") { WifiScreen(navController) }
         composable("menu/{label}/{id}") { backStackEntry ->
-            DocumentsScreen(
+            MenuScreen(
                 navController = navController,
                 label = backStackEntry.arguments?.getString("label"),
             )
@@ -185,12 +186,12 @@ private fun OrganizationScreen(
 }
 
 @Composable
-private fun NewsScreen(navController: NavHostController) {
+private fun NewsScreen(navController: NavHostController, label: String?) {
     val viewModel = navController.navGraphViewModel<NewsViewModel>()
     val news = viewModel.getNews().collectAsState(initial = emptyList()).value
-    com.advice.ui.screens.NewsScreen(news = news, onBackPressed = {
+    com.advice.ui.screens.NewsScreen(label = label, news = news) {
         navController.popBackStack()
-    })
+    }
 }
 
 @Composable
@@ -270,17 +271,19 @@ private fun WifiScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun DocumentsScreen(
+private fun MenuScreen(
     navController: NavHostController,
     label: String?,
 ) {
-    val viewModel = navController.navGraphViewModel<DocumentsViewModel>()
-    val documents = viewModel.documents.collectAsState(initial = null).value ?: return
+    val viewModel = navController.navGraphViewModel<MenuViewModel>()
+    val menus = viewModel.menu.collectAsState(initial = null).value ?: return
+    val menu = menus.find { it.label == label } ?: return
+
     com.advice.documents.ui.screens.MenuScreen(
-        items = documents,
+        menu = menu,
         label = label ?: "",
-        onDocumentPressed = {
-            navController.navigate("document/${it.id}")
+        onNavigationClick = {
+            navController.navigate(it)
         },
         onBackPressed = {
             navController.popBackStack()

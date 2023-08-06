@@ -35,7 +35,7 @@ class HomeRepository(
             forceTimeZone = storage.forceTimeZone,
             conferences = conferences,
             conference = conference,
-            menu = menu.firstOrNull() ?: Menu("Nothing", emptyList()),
+            menu = menu.find { it.id == conference.homeMenuId } ?: menu.firstOrNull() ?: Menu(-1, "Nothing", emptyList()),
             news = latest,
             countdown = countdown,
         )

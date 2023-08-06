@@ -340,6 +340,7 @@ fun FirebaseArticle.toArticle(): NewsArticle? {
 fun FirebaseMenu.toMenu(): Menu? {
     return try {
         Menu(
+            id,
             title_text,
             items.sortedBy { it.sort_order }.mapNotNull { it.toMenuItem() },
         )

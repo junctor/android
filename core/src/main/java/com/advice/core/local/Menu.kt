@@ -1,6 +1,7 @@
 package com.advice.core.local
 
 data class Menu(
+    val id: Long,
     val label: String,
     val items: List<MenuItem>,
 )
@@ -36,4 +37,15 @@ sealed class MenuItem(val label: String) {
         label: String,
         val tags: List<Int>,
     ) : MenuItem(label)
+
+    val url: String?
+        get() = when (this) {
+            Divider -> null
+            is Document -> "document/$documentId"
+            is Menu -> "menu/$label/$menuId"
+            is Navigation -> "$function/$label"
+            is Organization -> "organizations/$label/$organizationId"
+            is Schedule -> "schedule/$label/${tags.joinToString(",")}"
+            is SectionHeading -> null
+        }
 }

@@ -26,10 +26,10 @@ import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsScreen(news: List<NewsArticle>?, onBackPressed: () -> Unit) {
+fun NewsScreen(label: String?, news: List<NewsArticle>?, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
-            title = { Text("News") },
+            title = { Text(label ?: "News") },
             navigationIcon =
             {
                 IconButton(onClick = { onBackPressed() }) {
@@ -68,8 +68,8 @@ fun NewsScreen(news: List<NewsArticle>?, onBackPressed: () -> Unit) {
 private fun NewsScreenPreview() {
     ScheduleTheme {
         NewsScreen(
-            news = emptyList(),
-            onBackPressed = {}
-        )
+            label = "Announcements",
+            news = emptyList()
+        ) {}
     }
 }
