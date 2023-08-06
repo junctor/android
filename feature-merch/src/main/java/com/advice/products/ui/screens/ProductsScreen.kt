@@ -84,7 +84,11 @@ fun ProductsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = onLearnMore) {
+                    IconButton(
+                        onClick = onLearnMore, colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Black.copy(0.40f),
+                        )
+                    ) {
                         Icon(Icons.Outlined.Info, "Learn More", tint = Color.White)
                     }
                 },

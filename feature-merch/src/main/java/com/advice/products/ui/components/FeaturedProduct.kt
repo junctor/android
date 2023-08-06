@@ -93,7 +93,7 @@ private fun FeaturedProduct(product: Product, onProductClicked: (Product) -> Uni
     }) {
         Box(
             Modifier
-                .aspectRatio(0.909f)
+                .aspectRatio(0.9f)
                 .background(Color.Black)
         ) {
             AsyncImage(

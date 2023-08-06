@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -150,7 +151,7 @@ fun Product(
     Column(Modifier.verticalScroll(rememberScrollState())) {
         Box(
             Modifier
-                .aspectRatio(0.900f)
+                .aspectRatio(0.9f)
                 .clip(RoundedCornerShape(8.dp))
         ) {
 
@@ -180,8 +181,8 @@ fun Product(
             Column(
                 Modifier.padding(16.dp)
             ) {
-                Text(product.label, style = MaterialTheme.typography.labelLarge)
-                Text(product.baseCost.toCurrency(), style = MaterialTheme.typography.bodyMedium)
+                Text(product.label, fontWeight = FontWeight.SemiBold)
+                Text(product.baseCost.toCurrency())
             }
 
             if (product.requiresSelection) {
