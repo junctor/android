@@ -49,7 +49,6 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
     Column(
         Modifier
             .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         Box(
