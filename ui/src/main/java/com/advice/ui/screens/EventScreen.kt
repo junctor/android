@@ -188,7 +188,7 @@ private fun HeaderSection(
             Text(
                 title,
                 color = Color.White,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Black,
                 style = MaterialTheme.typography.headlineLarge
             )
 
