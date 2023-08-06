@@ -12,6 +12,7 @@ data class FirebaseConference(
     val tagline_text: String? = null,
     val code: String = "",
     val home_menu_id: Int? = null,
+    val merch_help_doc_id: Int? = null,
     val maps: ArrayList<FirebaseMap> = ArrayList(),
     val kickoff_timestamp: Timestamp = Timestamp(Date()),
     val start_timestamp: Timestamp = Timestamp(Date()),

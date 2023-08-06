@@ -3,6 +3,7 @@ package com.advice.products.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.products.ProductSelection
+import com.advice.core.utils.Storage
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.utils.toJson
@@ -15,6 +16,7 @@ import org.koin.core.component.inject
 class ProductsViewModel : ViewModel(), KoinComponent {
 
     private val repository by inject<ProductsRepository>()
+    private val storage by inject<Storage>()
 
     private val selections = mutableListOf<ProductSelection>()
 
@@ -22,9 +24,11 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     val state: Flow<ProductsState> = _state
 
     init {
+        _state.value = _state.value.copy(showMerchInformation = !storage.hasSeenMerchInformation())
+
         viewModelScope.launch {
             repository.conference.collect {
-                _state.value = _state.value.copy(canAdd = it.flags["enable_merch_cart"] ?: false)
+                _state.value = _state.value.copy(canAdd = it.flags["enable_merch_cart"] ?: false, merchDocument = it.merchDocumentId)
             }
         }
         viewModelScope.launch {
@@ -100,5 +104,10 @@ class ProductsViewModel : ViewModel(), KoinComponent {
             updateList()
             updateSummary()
         }
+    }
+
+    fun dismiss() {
+        storage.dismissMerchInformation()
+        _state.value = _state.value.copy(showMerchInformation = false)
     }
 }

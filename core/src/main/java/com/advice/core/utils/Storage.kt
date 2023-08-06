@@ -117,6 +117,14 @@ class Storage(context: Context, private val gson: Gson) {
         return preferences.getInt("$LATEST_NEWS_READ-$code", -1) == id
     }
 
+    fun dismissMerchInformation(): Boolean {
+        return preferences.edit().putBoolean("merch_information", true).commit()
+    }
+
+    fun hasSeenMerchInformation(): Boolean {
+        return preferences.getBoolean("merch_information", false)
+    }
+
     object CorruptionLevel {
         const val NONE = 0
         const val MINOR = 1

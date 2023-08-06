@@ -248,7 +248,16 @@ private fun ProductsScreen(navController: NavHostController, viewModel: Products
         },
         onBackPressed = {
             navController.popBackStack()
-        }
+        },
+        onLearnMore = {
+            val merchDocument = state?.merchDocument
+            if (merchDocument != null) {
+                navController.navigate("document/$merchDocument")
+            }
+        },
+        onDismiss = {
+            viewModel.dismiss()
+        },
     )
 }
 

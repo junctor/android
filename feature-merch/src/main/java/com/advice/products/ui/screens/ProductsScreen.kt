@@ -1,14 +1,16 @@
 package com.advice.products.ui.screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -30,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.products.Product
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.FeaturedProducts
-import com.advice.products.ui.components.ProductRow
+import com.advice.products.ui.components.InformationCard
 import com.advice.products.ui.components.ProductSquare
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.components.EmptyMessage
@@ -39,7 +41,6 @@ import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +48,8 @@ fun ProductsScreen(
     state: ProductsState?,
     onSummaryClicked: () -> Unit,
     onProductClicked: (Product) -> Unit,
+    onLearnMore: () -> Unit,
+    onDismiss: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val systemUiController = rememberSystemUiController()
@@ -73,7 +76,16 @@ fun ProductsScreen(
                             containerColor = Color.Black.copy(0.40f),
                         )
                     ) {
-                        Icon(painterResource(id = com.advice.ui.R.drawable.arrow_back), "Back")
+                        Icon(
+                            painterResource(id = com.advice.ui.R.drawable.arrow_back),
+                            "Back",
+                            tint = Color.White
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onLearnMore) {
+                        Icon(Icons.Outlined.Info, "Learn More", tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -114,7 +126,14 @@ fun ProductsScreen(
                 }
 
                 else -> {
-                    ProductsScreenContent(state.featured, state.products, onProductClicked)
+                    ProductsScreenContent(
+                        featured = state.featured,
+                        list = state.products,
+                        hasInformation = state.showMerchInformation,
+                        onProductClicked = onProductClicked,
+                        onLearnMore = onLearnMore,
+                        onDismiss = onDismiss,
+                    )
                 }
             }
         }
@@ -125,7 +144,10 @@ fun ProductsScreen(
 fun ProductsScreenContent(
     featured: List<Product>,
     list: List<Product>,
+    hasInformation: Boolean,
     onProductClicked: (Product) -> Unit,
+    onLearnMore: () -> Unit,
+    onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier) {
@@ -135,6 +157,15 @@ fun ProductsScreenContent(
             }
             item {
                 Label(text = "All Products", modifier = Modifier.padding(horizontal = 16.dp))
+            }
+        }
+        if (hasInformation) {
+            item {
+                InformationCard(
+                    modifier = Modifier.padding(16.dp),
+                    onLearnMore = onLearnMore,
+                    onDismiss = onDismiss
+                )
             }
         }
         list.windowed(2, 2, partialWindows = true).forEachIndexed { index, products ->
@@ -165,6 +196,6 @@ private fun ProductsRow(
 @Composable
 fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
-        ProductsScreen(state, {}, {}, {})
+        ProductsScreen(state, {}, {}, {}, {}, {})
     }
 }

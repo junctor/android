@@ -97,6 +97,8 @@ fun FirebaseConference.toConference(): Conference? {
             name,
             tagline_text,
             code,
+            home_menu_id,
+            merch_help_doc_id,
             maps.mapNotNull { it.toMap() },
             kickoff_timestamp.toDate().toInstant(),
             start_timestamp.toDate().toInstant(),
