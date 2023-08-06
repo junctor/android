@@ -96,6 +96,11 @@ fun MenuIcon(resource: String?) {
             contentDescription = resource
         )
 
+        "point_of_sale" -> Icon(
+            painterResource(id = R.drawable.baseline_point_of_sale_24),
+            contentDescription = resource
+        )
+
         else -> {
             Timber.e("Unknown icon: $resource")
         }
