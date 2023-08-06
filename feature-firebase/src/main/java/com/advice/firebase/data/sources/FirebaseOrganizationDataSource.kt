@@ -27,6 +27,7 @@ class FirebaseOrganizationDataSource(
                 .snapshotFlow()
                 .map {
                     it.toObjectsOrEmpty(FirebaseOrganization::class.java)
+                        .sortedBy { it.name }
                         .mapNotNull { it.toOrganization() }
                 }
         }

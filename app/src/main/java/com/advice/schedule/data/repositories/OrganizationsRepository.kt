@@ -9,14 +9,10 @@ import kotlinx.coroutines.flow.first
 
 class OrganizationsRepository(
     private val organizationsDataSource: OrganizationsDataSource,
-    private val vendorsDataSource: VendorsDataSource,
-    private val villagesDataSource: VillagesDataSource,
 ) {
     suspend fun getOrganization(id: Long): Organization? {
         return organizations.first().find { it.id == id }
     }
 
     val organizations = organizationsDataSource.get()
-    val vendors = vendorsDataSource.get()
-    val villages = villagesDataSource.get()
 }

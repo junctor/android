@@ -1,11 +1,13 @@
 package com.advice.organizations.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,13 +17,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
+import com.shortstack.core.R
 
 @Composable
 internal fun OrganizationCard(
@@ -41,32 +46,31 @@ internal fun OrganizationCard(
         Column() {
             Box(
                 modifier = Modifier
+                    .background(Color.Black)
+                    .fillMaxWidth()
+                    .aspectRatio(1.333f)
                     .clip(RoundedCornerShape(12.dp))
             ) {
                 if (media != null) {
                     AsyncImage(
                         model = media, contentDescription = "logo",
                         modifier = Modifier
-                            .background(Color.White)
-                            .aspectRatio(1.333f)
+                            .fillMaxSize()
+
                     )
                 } else {
-
-                    val colors = listOf(
-                        Color(0xFFEABEBE),
-                        Color(0xFFBABEEA),
-                    )
-                    val gradient = Brush.verticalGradient(colors)
-
                     Box(
-                        modifier = modifier
-                            .aspectRatio(1.333f)
-                            .background(
-                                gradient // Gradient background
-                            ),
-                        contentAlignment = Alignment.Center
+                        Modifier
+                            .fillMaxSize()
+                            .alpha(0.50f)
+                            .padding(16.dp)
                     ) {
-                        // Empty or additional content as needed
+                        Image(
+                            painter = painterResource(id = R.drawable.logo_glitch),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                        )
                     }
                 }
             }
@@ -91,6 +95,6 @@ internal fun OrganizationCard(
 @Composable
 private fun OrganizationCardPreview() {
     ScheduleTheme {
-        OrganizationCard("360 Unicorn Team", "https://i.imgur.com/2xVXZ1B.png")
+        OrganizationCard("360 Unicorn Team", null)
     }
 }

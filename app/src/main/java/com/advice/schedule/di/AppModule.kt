@@ -127,7 +127,7 @@ val appModule = module {
     }
     single { MapRepository(get()) }
     single { LocationRepository(get()) }
-    single { OrganizationsRepository(get(), get(), get()) }
+    single { OrganizationsRepository(get()) }
     single { InformationRepository(get(), get(), get(), get()) }
     single { ProductsRepository(get(), get()) }
     single { DocumentsRepository(get()) }
