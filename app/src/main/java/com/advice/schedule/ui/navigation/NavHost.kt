@@ -313,7 +313,8 @@ private fun LocationsScreen(navController: NavHostController) {
     com.advice.locations.ui.screens.LocationsScreen(
         containers = state.list,
         onScheduleClicked = {
-            // todo: navController.navigate("location/$it")
+            // todo: this should URL encode the title
+            navController.navigate("location/${it.id}/${it.title.replace("/", "-")}")
         },
         onBackPressed = {
             navController.popBackStack()
