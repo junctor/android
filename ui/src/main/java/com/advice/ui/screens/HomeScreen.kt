@@ -89,14 +89,6 @@ private fun HomeScreen(
     onDismissNews: (NewsArticle) -> Unit,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-        if (state.isUpdateAvailable) {
-            Text(
-                "Update available",
-                Modifier.padding(16.dp),
-                style = MaterialTheme.typography.labelSmall
-            )
-        }
-
         ConferenceView(state.conference)
 
         val remainder = state.countdown
