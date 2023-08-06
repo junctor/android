@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.LocationRow
@@ -133,9 +134,10 @@ private fun ScheduleBottomSheet(
             .padding(start = 32.dp, end = 32.dp, bottom = 64.dp)
     ) {
         Text(
-            row.title,
-            style = MaterialTheme.typography.displaySmall,
-            modifier = Modifier.padding(16.dp)
+            text = row.title,
+            modifier = Modifier.padding(16.dp),
+            fontWeight = FontWeight.Black,
+            style = MaterialTheme.typography.headlineSmall,
         )
         for (schedule in row.schedule) {
             LocationRow(
