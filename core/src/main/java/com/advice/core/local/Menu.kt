@@ -6,7 +6,7 @@ data class Menu(
     val items: List<MenuItem>,
 )
 
-sealed class MenuItem(val icon: String?, val label: String) {
+sealed class MenuItem(val icon: String?, val label: String, val description: String? = null) {
     class SectionHeading(
         label: String,
     ) : MenuItem(null, label)
@@ -16,32 +16,37 @@ sealed class MenuItem(val icon: String?, val label: String) {
     class Document(
         icon: String,
         label: String,
+        description: String?,
         val documentId: Int,
-    ) : MenuItem(icon, label)
+    ) : MenuItem(icon, label, description)
 
     class Menu(
         icon: String,
         label: String,
+        description: String?,
         val menuId: Int,
-    ) : MenuItem(icon, label)
+    ) : MenuItem(icon, label, description)
 
     class Navigation(
         icon: String,
         label: String,
+        description: String?,
         val function: String,
-    ) : MenuItem(icon, label)
+    ) : MenuItem(icon, label, description)
 
     class Organization(
         icon: String,
         label: String,
+        description: String?,
         val organizationId: Int,
-    ) : MenuItem(icon, label)
+    ) : MenuItem(icon, label, description)
 
     class Schedule(
         icon: String,
         label: String,
+        description: String?,
         val tags: List<Int>,
-    ) : MenuItem(icon, label)
+    ) : MenuItem(icon, label, description)
 
 
     val url: String?

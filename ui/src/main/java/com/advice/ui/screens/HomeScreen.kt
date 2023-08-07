@@ -102,47 +102,77 @@ private fun HomeScreen(
         // Latest news
         val news = state.news
         if (news != null) {
-            ArticleView(title = news.name, text = news.text, date = news.date) { onDismissNews(news) }
+            ArticleView(
+                title = news.name,
+                text = news.text,
+                date = news.date
+            ) { onDismissNews(news) }
         }
 
         state.menu.items.forEach {
-            if (it is MenuItem.SectionHeading) {
-                Label(text = it.label)
-                return@forEach
-            }
+            when (it) {
+                is MenuItem.SectionHeading -> {
+                    Label(text = it.label)
+                }
 
-            if (it is MenuItem.Divider) {
-                Box(
-                    Modifier
-                        .padding(vertical = 16.dp, horizontal = 16.dp)
-                        .height(1.dp)
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.outline)
+                is MenuItem.Divider -> {
+                    Divider()
+                }
 
-                )
-                return@forEach
-            }
-
-            HomeCard {
-                Row(
-                    Modifier
-                        .clickable(enabled = it.url != null) {
-                            val url = it.url
-                            if (url != null) {
-                                onNavigationClick(url)
-                            }
-                        }
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    MenuIcon(it.icon)
-                    Text(it.label)
+                else -> {
+                    MenuItem(it, onNavigationClick)
                 }
             }
         }
 
         // Required spacer to push content above the bottom bar
         Spacer(Modifier.height(64.dp))
+    }
+}
+
+@Composable
+private fun Divider() {
+    Box(
+        Modifier
+            .padding(vertical = 16.dp, horizontal = 16.dp)
+            .height(1.dp)
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.outline)
+
+    )
+}
+
+@Composable
+private fun MenuItem(
+    menuItem: MenuItem,
+    onNavigationClick: (String) -> Unit
+) {
+    HomeCard {
+        Column(Modifier
+            .clickable(enabled = menuItem.url != null) {
+                val url = menuItem.url
+                if (url != null) {
+                    onNavigationClick(url)
+                }
+            }
+            .padding(16.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                MenuIcon(menuItem.icon)
+                Text(menuItem.label)
+            }
+            val description = menuItem.description
+            if (description != null) {
+                Text(
+                    description,
+                    modifier = Modifier
+                        .padding(start = 0.dp, top = 8.dp)
+                        .fillMaxWidth()
+                )
+            }
+        }
     }
 }
 
@@ -160,6 +190,22 @@ private fun HomeScreenViewPreview() {
                 forceTimeZone = false
             ),
             {}, {}
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun MenuItemPreview() {
+    ScheduleTheme {
+        MenuItem(
+            MenuItem.Navigation(
+                label = "Menu Item",
+                icon = "description",
+                description = "This is a description",
+                function = "news",
+            ),
+            {}
         )
     }
 }

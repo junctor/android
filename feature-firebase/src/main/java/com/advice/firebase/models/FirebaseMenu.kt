@@ -20,4 +20,5 @@ data class FirebaseMenuItem(
     val prohibit_tag_filter: String = "",
     val sort_order: Int = -1,
     val title_text: String = "",
+    val description: String? = null,
 )

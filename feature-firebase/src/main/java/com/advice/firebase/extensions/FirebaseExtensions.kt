@@ -383,6 +383,7 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? {
             "document" -> MenuItem.Document(
                 google_materialsymbol,
                 title_text,
+                description,
                 document ?: error("null document id: $title_text"),
             )
 
@@ -391,6 +392,7 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? {
                 MenuItem.Schedule(
                     google_materialsymbol,
                     title_text,
+                    description,
                     applied_tag_ids,
                 )
             }
@@ -398,18 +400,21 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? {
             "menu" -> MenuItem.Menu(
                 google_materialsymbol,
                 title_text,
+                description,
                 menu_id ?: error("null menu id: $title_text"),
             )
 
             "people", "locations", "products", "news", "faq" -> MenuItem.Navigation(
                 google_materialsymbol,
                 title_text,
+                description,
                 function,
             )
 
             "organizations" -> MenuItem.Organization(
                 google_materialsymbol,
                 title_text,
+                description,
                 applied_tag_ids.first(),
             )
 
