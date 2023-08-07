@@ -62,7 +62,6 @@ internal fun OrganizationCard(
                     Box(
                         Modifier
                             .fillMaxSize()
-                            .alpha(0.50f)
                             .padding(16.dp)
                     ) {
                         Image(
