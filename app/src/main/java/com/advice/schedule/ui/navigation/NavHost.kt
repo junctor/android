@@ -19,9 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.core.ui.ScheduleFilter
@@ -69,48 +73,85 @@ internal fun NavHost(navController: NavHostController) {
     val productsViewModel = viewModel<ProductsViewModel>()
 
     androidx.navigation.compose.NavHost(navController = navController, startDestination = "home") {
-        composable("home") { HomeScreen(navController) }
+        composable("home") {
+            HomeScreen(navController)
+        }
         composable("maps") {
             MapsScreen(navController)
         }
-        composable("news/{label}") { backStackEntry ->
+        composable("news/{label}",
+            arguments = listOf(
+                navArgument("label") { type = NavType.StringType }
+            ),
+        ) { backStackEntry ->
             NewsScreen(navController, backStackEntry.arguments?.getString("label"))
         }
         composable("search") {
             Search(navController)
         }
-        composable("locations/{label}") {
+        composable("locations/{label}",
+            arguments = listOf(
+                navArgument("label") { type = NavType.StringType }
+            )
+        ) {
             LocationsScreen(navController)
         }
-        composable("event/{conference}/{id}") { backStackEntry ->
+        composable("event/{conference}/{id}",
+            arguments = listOf(
+                navArgument("conference") { type = NavType.StringType },
+                navArgument("id") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
             EventScreen(
                 navController,
                 backStackEntry.arguments?.getString("conference"),
                 backStackEntry.arguments?.getString("id")
             )
         }
-        composable("location/{id}/{label}") { backStackEntry ->
+        composable("location/{id}/{label}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+                navArgument("label") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
             LocationScreen(
                 navController = navController,
                 id = backStackEntry.arguments?.getString("id"),
                 label = backStackEntry.arguments?.getString("label")
             )
         }
-        composable("tag/{id}/{label}") { backStackEntry ->
+        composable("tag/{id}/{label}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+                navArgument("label") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
             TagScreen(
                 navController = navController,
                 id = backStackEntry.arguments?.getString("id"),
                 label = backStackEntry.arguments?.getString("label")
             )
         }
-        composable("schedule/{label}/{ids}") {
+        composable(
+            "schedule/{label}/{ids}",
+            arguments = listOf(
+                navArgument("label") { type = NavType.StringType },
+                navArgument("ids") { type = NavType.StringType }
+            ),
+        ) {
             TagsScreen(
                 navController = navController,
                 id = it.arguments?.getString("ids"),
                 label = it.arguments?.getString("label"),
             )
         }
-        composable("speaker/{id}/{name}") { backStackEntry ->
+        composable(
+            "speaker/{id}/{name}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+                navArgument("name") { type = NavType.StringType }
+            ),
+        ) { backStackEntry ->
             val context = (LocalContext.current as MainActivity)
             SpeakerScreen(
                 navController = navController,
@@ -121,43 +162,94 @@ internal fun NavHost(navController: NavHostController) {
                 },
             )
         }
-        composable("settings") { SettingsScreen(navController) }
+        composable("settings") {
+            SettingsScreen(navController)
+        }
 
-        composable("wifi") { WifiScreen(navController) }
-        composable("menu/{label}/{id}") { backStackEntry ->
+        composable("wifi") {
+            WifiScreen(navController)
+        }
+        composable(
+            "menu/{label}/{id}",
+            arguments = listOf(
+                navArgument("label") { type = NavType.StringType },
+                navArgument("id") { type = NavType.StringType }
+            ),
+        ) { backStackEntry ->
             MenuScreen(
                 navController = navController,
                 id = backStackEntry.arguments?.getString("id"),
                 label = backStackEntry.arguments?.getString("label"),
             )
         }
-        composable("document/{id}") { backStackEntry ->
+        composable(
+            "document/{id}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
             DocumentScreen(navController, backStackEntry.arguments?.getString("id"))
         }
-        composable("faq/{label}") { FAQScreen(navController) }
-        composable("organizations/{label}/{id}") {
+        composable(
+            "faq/{label}",
+            arguments = listOf(
+                navArgument("label") { type = NavType.StringType },
+            ),
+        ) { FAQScreen(navController) }
+        composable(
+            "organizations/{label}/{id}",
+            arguments = listOf(
+                navArgument("label") { type = NavType.StringType },
+                navArgument("id") { type = NavType.StringType }
+            ),
+        ) {
             OrganizationsScreen(
                 navController = navController,
                 id = it.arguments?.getString("id"),
                 label = it.arguments?.getString("label"),
             )
         }
-        composable("people/{label}") { SpeakersScreen(navController) }
+        composable(
+            "people/{label}",
+            arguments = listOf(
+                navArgument("label") { type = NavType.StringType }
+            ),
+        ) { SpeakersScreen(navController) }
 
-        composable("products/{label}") {
+        composable(
+            "products/{label}",
+            arguments = listOf(
+                navArgument("label") { type = NavType.StringType }
+            ),
+        ) {
             ProductsScreen(navController, productsViewModel)
         }
-        composable("merch/{id}") { backStackEntry ->
+        composable(
+            "merch/{id}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType }
+            ),
+        ) { backStackEntry ->
             ProductScreen(
                 navController,
                 productsViewModel,
                 backStackEntry.arguments?.getString("id")?.toLong()
             )
         }
-        composable("merch/summary") {
+        composable(
+            "merch/summary",
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType }
+            ),
+        ) {
             ProductsSummary(navController, productsViewModel)
         }
-        composable("organization/{id}") { backStackEntry ->
+        composable(
+            "organization/{id}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType }
+            ),
+        ) { backStackEntry ->
             OrganizationScreen(backStackEntry, navController)
         }
     }
