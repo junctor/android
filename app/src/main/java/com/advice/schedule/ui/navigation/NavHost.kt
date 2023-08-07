@@ -79,7 +79,8 @@ internal fun NavHost(navController: NavHostController) {
         composable("maps") {
             MapsScreen(navController)
         }
-        composable("news/{label}",
+        composable(
+            "news/{label}",
             arguments = listOf(
                 navArgument("label") { type = NavType.StringType }
             ),
@@ -619,6 +620,12 @@ fun SettingsScreen(navController: NavHostController) {
         showTwitterHandle = state.showTwitterHandle,
         onPreferenceChanged = { id, value ->
             viewModel.onPreferenceChanged(id, value)
+        },
+        onThemeChanged = {
+            if (viewModel.onThemeChanged(it)) {
+                // Recreate the Activity if the theme has changed
+                (context as MainActivity).recreate()
+            }
         },
         onVersionClick = {
             viewModel.onVersionClick()

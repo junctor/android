@@ -1,11 +1,15 @@
 package com.advice.ui.theme
 
+import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.advice.core.utils.Storage
+import timber.log.Timber
 
 private val DarkColorPalette = darkColorScheme(
     primary = HotPink,
@@ -38,10 +42,17 @@ private val LightColorPalette = lightColorScheme(
 
 @Composable
 fun ScheduleTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
+    val context = LocalContext.current
+    val preferences = context.getSharedPreferences(Storage.KEY_PREFERENCES, Context.MODE_PRIVATE)
+    val preference = preferences.getString("user_theme", "system")
+
+    Timber.e("Theme: $preference")
+
+    val colors = when {
+        preference == "dark" -> DarkColorPalette
+        preference == "light" -> LightColorPalette
+        darkTheme -> DarkColorPalette
+        else -> LightColorPalette
     }
 
     MaterialTheme(

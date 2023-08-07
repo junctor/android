@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.advice.ui.R
+import com.advice.ui.components.ButtonPreference
 import com.advice.ui.components.SwitchPreference
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
@@ -54,6 +55,7 @@ fun SettingScreen(
     enableAnalytics: Boolean,
     showTwitterHandle: Boolean,
     onPreferenceChanged: (String, Boolean) -> Unit,
+    onThemeChanged: (String) -> Unit,
     onVersionClick: () -> Unit,
     onBackPressed: () -> Unit
 ) {
@@ -74,6 +76,7 @@ fun SettingScreen(
             enableAnalytics,
             showTwitterHandle,
             onPreferenceChanged,
+            onThemeChanged,
             onVersionClick,
             Modifier.padding(it),
         )
@@ -91,12 +94,16 @@ private fun SettingsScreenContent(
     enableAnalytics: Boolean,
     showTwitterHandle: Boolean,
     onPreferenceChanged: (String, Boolean) -> Unit,
+    onThemeChanged: (String) -> Unit,
     onVersionClick: () -> Unit,
     modifier: Modifier
 ) {
     var enableEasterEggs by remember { mutableStateOf(enableEasterEggs) }
 
     Column(modifier) {
+        ButtonPreference(onPreferenceChanged = {
+            onThemeChanged(it)
+        })
         SwitchPreference(
             "Events in ($timeZone)",
             isChecked = useConferenceTimeZone,
@@ -208,8 +215,9 @@ private fun SettingScreenViewDarkPreview() {
             enableAnalytics = true,
             showTwitterHandle = false,
             onPreferenceChanged = { _, _ -> },
+            onThemeChanged = {},
             onVersionClick = {},
-            onBackPressed = {}
+            onBackPressed = {},
         )
     }
 }

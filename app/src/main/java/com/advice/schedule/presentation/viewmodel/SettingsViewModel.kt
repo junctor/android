@@ -25,4 +25,8 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     fun onVersionClick() {
         analytics.onVersionClickEvent()
     }
+
+    fun onThemeChanged(theme: String): Boolean {
+        return repository.onThemeChanged(theme)
+    }
 }

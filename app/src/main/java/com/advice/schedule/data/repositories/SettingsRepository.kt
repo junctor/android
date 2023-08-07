@@ -32,4 +32,10 @@ class SettingsRepository(
             "easter_eggs" -> preferences.easterEggs = checked
         }
     }
+
+    fun onThemeChanged(theme: String): Boolean {
+        val result = preferences.theme != theme
+        preferences.theme = theme
+        return result
+    }
 }

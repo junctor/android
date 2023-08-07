@@ -85,6 +85,12 @@ class Storage(context: Context, private val gson: Gson) {
             preferences.edit().putLong(PREFERRED_CONFERENCE, value).apply()
         }
 
+    var theme: String?
+        get() = preferences.getString(USER_THEME, null)
+        set(value) {
+            preferences.edit().putString(USER_THEME, value).apply()
+        }
+
     fun setPreference(key: String, isChecked: Boolean) {
         when (key) {
             USER_ANALYTICS_KEY -> allowAnalytics = isChecked
