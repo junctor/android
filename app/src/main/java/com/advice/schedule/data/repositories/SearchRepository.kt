@@ -3,6 +3,7 @@ package com.advice.schedule.data.repositories
 import com.advice.core.local.Conference
 import com.advice.core.local.Document
 import com.advice.core.local.Event
+import com.advice.core.local.FAQ
 import com.advice.core.local.Organization
 import com.advice.core.local.Speaker
 import com.advice.data.session.UserSession
@@ -21,6 +22,7 @@ data class SearchResults(
     val events: List<Event>,
     val speakers: List<Speaker>,
     val organizations: List<Organization>,
+    val faq: List<FAQ>,
     val documents: List<Document>,
 )
 
@@ -62,6 +64,10 @@ class SearchRepository(
                 },
                 organizations = (values[ORGANIZATIONS_INDEX] as List<Organization>).filter { organization ->
                     organization.name.contains(query, ignoreCase = true)
+                },
+                faq = (values[FAQ_INDEX] as List<FAQ>).filter { faq ->
+                    faq.question.contains(query, ignoreCase = true) ||
+                            faq.answer.contains(query, ignoreCase = true)
                 },
                 documents = (values[DOCUMENTS_INDEX] as List<Document>).filter { document ->
                     document.title.contains(query, ignoreCase = true) ||

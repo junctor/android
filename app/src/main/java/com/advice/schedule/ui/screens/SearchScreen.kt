@@ -30,6 +30,7 @@ import com.advice.core.local.Conference
 import com.advice.organizations.ui.components.OrganizationRow
 import com.advice.schedule.data.repositories.SearchState
 import com.advice.ui.components.EventRow
+import com.advice.ui.components.FreqAskedQuestion
 import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
@@ -104,6 +105,15 @@ internal fun SearchScreen(
                         }
 
                         is SearchState.Results -> {
+                            if (state.results.faq.isNotEmpty()) {
+                                item {
+                                    HeaderRow("FAQ")
+                                }
+                                items(state.results.faq) {
+                                    FreqAskedQuestion(it.question, it.answer)
+                                }
+                            }
+
                             if (state.results.events.isNotEmpty()) {
                                 item {
                                     HeaderRow("Events")
