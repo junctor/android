@@ -51,7 +51,7 @@ fun NewsScreen(label: String?, news: List<NewsArticle>?, onBackPressed: () -> Un
                 else -> {
                     LazyColumn {
                         items(news) {
-                            ArticleView(text = it.text, date = it.date)
+                            ArticleView(title = it.name, text = it.text, date = it.date)
                         }
                         item {
                             Spacer(Modifier.height(64.dp))

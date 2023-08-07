@@ -9,6 +9,7 @@ import timber.log.Timber
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.TimeZone
 
 object TimeUtil {
@@ -162,6 +163,11 @@ object TimeUtil {
         ) + " to " + timeFormat.format(
             location.end.atZone(zoneId)
         )
+    }
+
+    fun getNewsTimestamp(date: Date): String {
+        val format = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+        return format.format(date.toInstant().atZone(ZoneId.systemDefault()))
     }
 
     private fun isSameDay(

@@ -102,7 +102,7 @@ private fun HomeScreen(
         // Latest news
         val news = state.news
         if (news != null) {
-            ArticleView(text = news.text, date = news.date) { onDismissNews(news) }
+            ArticleView(title = news.name, text = news.text, date = news.date) { onDismissNews(news) }
         }
 
         state.menu.items.forEach {
