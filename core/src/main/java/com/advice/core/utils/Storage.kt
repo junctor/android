@@ -91,6 +91,12 @@ class Storage(context: Context, private val gson: Gson) {
             preferences.edit().putString(USER_THEME, value).apply()
         }
 
+    var updateVersion: Int?
+        get() = preferences.getInt("update_version", -1)
+        set(value) {
+            preferences.edit().putInt("update_version", value ?: -1).apply()
+        }
+
     fun setPreference(key: String, isChecked: Boolean) {
         when (key) {
             USER_ANALYTICS_KEY -> allowAnalytics = isChecked

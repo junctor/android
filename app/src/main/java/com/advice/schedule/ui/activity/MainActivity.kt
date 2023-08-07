@@ -15,10 +15,12 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.advice.core.utils.Storage
 import com.advice.play.AppManager
 import com.advice.schedule.ui.navigation.NavHost
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.shortstack.hackertracker.BuildConfig
 import java.util.jar.Manifest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,6 +29,7 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity(), KoinComponent {
 
     private val appManager by inject<AppManager>()
+    private val storage by inject<Storage>()
     private val REQUEST_CODE_UPDATE = 9003
 
     // todo: fix this - this is a hack to get the navController to work
@@ -62,7 +65,10 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             }
         }
 
-        appManager.checkForUpdate(this, REQUEST_CODE_UPDATE)
+        // Only showing the prompt once per version.
+        if (storage.updateVersion != BuildConfig.VERSION_CODE) {
+            appManager.checkForUpdate(this, REQUEST_CODE_UPDATE)
+        }
     }
 
     @Deprecated("This is deprecated in favor of registerForActivityResult")
@@ -71,6 +77,8 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
         if (requestCode == REQUEST_CODE_UPDATE && resultCode != RESULT_OK) {
             Timber.e("Update flow failed! Result code: $resultCode")
+            // Storing the version code so we don't keep asking for updates.
+            storage.updateVersion = BuildConfig.VERSION_CODE
         }
     }
 
