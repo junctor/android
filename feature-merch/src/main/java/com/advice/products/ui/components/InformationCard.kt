@@ -47,7 +47,7 @@ fun InformationCard(
             ) {
                 Icon(Icons.Outlined.Info, contentDescription = "info")
                 Text(
-                    "DEF CON has gone digital!",
+                    "DEF CON Merch has gone digital!",
                     modifier = Modifier.weight(1f),
                     fontWeight = FontWeight.Black
                 )
@@ -55,10 +55,6 @@ fun InformationCard(
                     Icon(Icons.Default.Close, contentDescription = "Close")
                 }
             }
-            Text(
-                "This year, DEF CON is going digital. We're excited to be a part of this new experience and hope you are too. We've put together a few tips to help you get the most out of your DEF CON experience.",
-                modifier.fillMaxWidth()
-            )
             Button(
                 onClick = onLearnMore,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
