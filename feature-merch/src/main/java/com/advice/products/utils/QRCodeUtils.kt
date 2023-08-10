@@ -20,7 +20,7 @@ fun List<Product>.toJson(): String? {
         return null
     }
 
-    val data = QRCodeData(map { QRCodeProduct(it.id, it.quantity, it.selectedOption) })
+    val data = QRCodeData("", map { QRCodeProduct(it.quantity, it.variant?.id ?: -1L) })
 
     val gson = Gson()
     val type = object : TypeToken<QRCodeData>() {}.type
