@@ -239,9 +239,6 @@ internal fun NavHost(navController: NavHostController) {
         }
         composable(
             "merch/summary",
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType }
-            ),
         ) {
             ProductsSummary(navController, productsViewModel)
         }
