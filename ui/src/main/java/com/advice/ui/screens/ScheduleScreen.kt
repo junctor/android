@@ -212,7 +212,7 @@ private fun ScheduleScreenContent(
                         item(key = it.id) {
                             EventRowView(
                                 title = it.title,
-                                time = TimeUtil.getTimeStamp(context, it),
+                                time = TimeUtil.getEventTimeStamp(context, it),
                                 location = it.location.name,
                                 tags = it.types,
                                 isBookmarked = it.isBookmarked,

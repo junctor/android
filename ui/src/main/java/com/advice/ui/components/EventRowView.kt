@@ -86,11 +86,7 @@ fun EventRowView(
             .fillMaxWidth()
     ) {
         CategoryDash(tags)
-        Text(
-            time.replace(" ", "\n"),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.width(85.dp)
-        )
+        Time(time)
         Column(
             Modifier
                 .weight(1f)
@@ -118,6 +114,36 @@ private fun CategoryDash(tags: List<Tag>) {
                 .clip(RoundedCornerShape(4.dp))
                 .background(parseColor(tags.first().color))
         )
+    }
+}
+
+@Composable
+private fun Time(time: String) {
+    val parts = time.split(" - ")
+    val start = parts[0]
+    val end = parts.getOrNull(1)
+
+    Column(
+        Modifier.width(85.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            start,
+            textAlign = TextAlign.Center
+        )
+        if (end != null) {
+            Box(
+                Modifier
+                    .padding(vertical = 3.dp)
+                    .height(1.dp)
+                    .width(6.dp)
+                    .background(MaterialTheme.colorScheme.onSurface)
+            )
+            Text(
+                end,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
@@ -168,7 +194,7 @@ private fun EventRowViewPreview() {
         Column {
             EventRowView(
                 title = "Compelled Decryption",
-                time = "5:30\nAM",
+                time = "5:30 AM - 7:00 AM",
                 location = "Track 1",
                 tags = listOf(
                     createTag(label = "Introduction", color = "#EEAAFF"),
@@ -179,10 +205,21 @@ private fun EventRowViewPreview() {
             )
             EventRowView(
                 title = "Compelled Decryption",
-                time = "6:00\nAM",
+                time = "6:00 AM - 8:00 AM",
                 location = "Track 1",
                 tags = listOf(
                     createTag(label = "Talk", color = "#FF61EEAA"),
+                    createTag(label = "Introduction", color = "#EEAAFF"),
+                ),
+                isBookmarked = false,
+                onEventPressed = {},
+                onBookmark = {},
+            )
+            EventRowView(
+                title = "Compelled Decryption",
+                time = "7:00 AM",
+                location = "Track 1",
+                tags = listOf(
                     createTag(label = "Introduction", color = "#EEAAFF"),
                 ),
                 isBookmarked = false,
