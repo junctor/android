@@ -120,7 +120,7 @@ private fun CategoryDash(tags: List<Tag>) {
 @Composable
 private fun Time(time: String) {
     val parts = time.split(" - ")
-    val start = parts[0]
+    val begin = parts[0]
     val end = parts.getOrNull(1)
 
     Column(
@@ -128,7 +128,7 @@ private fun Time(time: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            start,
+            begin,
             textAlign = TextAlign.Center
         )
         if (end != null) {
