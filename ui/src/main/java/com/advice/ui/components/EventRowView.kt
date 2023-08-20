@@ -132,16 +132,10 @@ private fun Time(time: String) {
             textAlign = TextAlign.Center
         )
         if (end != null) {
-            Box(
-                Modifier
-                    .padding(vertical = 3.dp)
-                    .height(1.dp)
-                    .width(6.dp)
-                    .background(MaterialTheme.colorScheme.onSurface)
-            )
             Text(
                 end,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelSmall
             )
         }
     }
@@ -194,7 +188,7 @@ private fun EventRowViewPreview() {
         Column {
             EventRowView(
                 title = "Compelled Decryption",
-                time = "5:30 AM - 7:00 AM",
+                time = "05:30 - 07:00",
                 location = "Track 1",
                 tags = listOf(
                     createTag(label = "Introduction", color = "#EEAAFF"),
@@ -205,7 +199,7 @@ private fun EventRowViewPreview() {
             )
             EventRowView(
                 title = "Compelled Decryption",
-                time = "6:00 AM - 8:00 AM",
+                time = "06:00 - 08:00",
                 location = "Track 1",
                 tags = listOf(
                     createTag(label = "Talk", color = "#FF61EEAA"),
@@ -217,7 +211,7 @@ private fun EventRowViewPreview() {
             )
             EventRowView(
                 title = "Compelled Decryption",
-                time = "7:00 AM",
+                time = "07:00",
                 location = "Track 1",
                 tags = listOf(
                     createTag(label = "Introduction", color = "#EEAAFF"),

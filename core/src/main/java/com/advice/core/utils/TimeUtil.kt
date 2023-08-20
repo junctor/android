@@ -71,7 +71,7 @@ object TimeUtil {
         val pattern = if (is24HourFormat) {
             "HH:mm"
         } else {
-            "h:mm a"
+            "hh:mm"
         }
 
         val timeFormat = DateTimeFormatter.ofPattern(pattern)
