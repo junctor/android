@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
@@ -19,6 +20,7 @@ import com.advice.core.utils.Storage
 import com.advice.play.AppManager
 import com.advice.schedule.ui.navigation.NavHost
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.isLight
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.shortstack.hackertracker.BuildConfig
 import java.util.jar.Manifest
@@ -50,17 +52,19 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            val systemUiController = rememberSystemUiController()
-            SideEffect {
-                systemUiController.setSystemBarsColor(
-                    color = Color.Transparent,
-                    darkIcons = false
-                )
-            }
-
             navController = rememberNavController()
 
             ScheduleTheme {
+                val systemUiController = rememberSystemUiController()
+                val isLight = MaterialTheme.isLight()
+
+                SideEffect {
+                    systemUiController.setSystemBarsColor(
+                        color = Color.Transparent,
+                        darkIcons = isLight,
+                    )
+                }
+
                 NavHost(navController as NavHostController)
             }
         }

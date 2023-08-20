@@ -47,6 +47,7 @@ import com.advice.ui.components.PdfDisplay
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.states.MapsScreenState
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.isLight
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -59,6 +60,7 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
     val systemUiController = rememberSystemUiController()
+    val isLight = MaterialTheme.isLight()
 
     DisposableEffect(Unit) {
         systemUiController.setSystemBarsColor(
@@ -68,6 +70,7 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
         onDispose {
             systemUiController.setSystemBarsColor(
                 color = Color.Transparent,
+                darkIcons = isLight,
             )
         }
     }

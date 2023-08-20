@@ -41,6 +41,9 @@ private val LightColorPalette = lightColorScheme(
 )
 
 @Composable
+fun MaterialTheme.isLight() = this.colorScheme.background == LightColorPalette.background
+
+@Composable
 fun ScheduleTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val context = LocalContext.current
     val preferences = context.getSharedPreferences(Storage.KEY_PREFERENCES, Context.MODE_PRIVATE)

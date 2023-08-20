@@ -1,5 +1,6 @@
 package com.advice.schedule.ui.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -698,7 +700,8 @@ private fun HomeScreen(navController: NavHostController) {
             },
             onPanelChangedListener = { panel ->
                 mainViewModel.setAnchor(panel)
-            }
+            },
+            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
         )
         DismissibleBottomAppBar(
             Modifier.align(Alignment.BottomCenter),

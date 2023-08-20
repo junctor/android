@@ -19,6 +19,7 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -40,6 +41,7 @@ import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.isLight
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,6 +55,7 @@ fun ProductsScreen(
     onBackPressed: () -> Unit,
 ) {
     val systemUiController = rememberSystemUiController()
+    val isLight = MaterialTheme.isLight()
 
     DisposableEffect(Unit) {
         systemUiController.setSystemBarsColor(
@@ -62,6 +65,7 @@ fun ProductsScreen(
         onDispose {
             systemUiController.setSystemBarsColor(
                 color = Color.Transparent,
+                darkIcons = isLight,
             )
         }
     }

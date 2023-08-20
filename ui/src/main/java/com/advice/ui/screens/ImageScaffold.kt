@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.isLight
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
@@ -40,6 +41,7 @@ fun ImageScaffold(
     content: @Composable () -> Unit,
 ) {
     val systemUiController = rememberSystemUiController()
+    val isLight = MaterialTheme.isLight()
 
     if (url != null) {
         DisposableEffect(Unit) {
@@ -50,6 +52,7 @@ fun ImageScaffold(
             onDispose {
                 systemUiController.setSystemBarsColor(
                     color = Color.Transparent,
+                    darkIcons = isLight,
                 )
             }
         }
