@@ -1,0 +1,77 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jlleitschuh.gradle.ktlint'
+}
+
+android {
+    namespace 'com.advice.ui'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.0"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation project(':core')
+    implementation project(':feature-glitch')
+
+    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
+    implementation composeBom
+    androidTestImplementation composeBom
+
+    implementation "androidx.compose.material:material"
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
+    implementation("androidx.core:core-ktx:$coreKtxVersion")
+    implementation"androidx.appcompat:appcompat:$appcompatVersion"
+    implementation("com.google.android.material:material:1.8.0")
+
+    // Image loading
+    api ("io.coil-kt:coil-compose:2.3.0")
+
+    // Markdown
+    implementation "com.halilibo.compose-richtext:richtext-commonmark:0.16.0"
+    implementation "com.halilibo.compose-richtext:richtext-ui-material3:0.16.0"
+
+    // accompanist
+    implementation "com.google.accompanist:accompanist-pager:$accompanistVersion"
+    implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")
+
+    // PDFViewer
+    implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
+
+    api "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
+
+
+    testImplementation("junit:junit:$junitVersion")
+    androidTestImplementation("androidx.test.ext:junit:$extJunitVersion")
+    androidTestImplementation("androidx.test.espresso:espresso-core:$espressoCoreVersion")
+}

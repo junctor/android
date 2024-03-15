@@ -17,3 +17,17 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Schedule"
 include ':app'
+include ':ui'
+include ':core'
+include ':data'
+include ':feature-firebase'
+include ':feature-glitch'
+include ':feature-merch'
+include ':feature-locations'
+include ':feature-reminder'
+include ':feature-retrofit'
+include ':feature-wifi'
+include ':feature-organizations'
+include ':feature-documents'
+include ':feature-analytics'
+include ':feature-play'

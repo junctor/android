@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.shortstack.hackertracker"
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -11,6 +10,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:name="com.advice.schedule.App"
@@ -20,7 +20,7 @@
         android:theme="@style/Theme.Schedule">
 
         <activity
-            android:name="com.advice.schedule.ui.activities.MainActivity"
+            android:name="com.advice.schedule.ui.activity.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:launchMode="singleTop">
@@ -43,10 +43,16 @@
                 <data android:host="info.defcon.org" />
             </intent-filter>
 
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
+                <data
+                    android:host="www.hackertracker.app"
+                    android:scheme="https"
+                    android:pathPrefix="/event" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -57,7 +63,7 @@
      See README(https://goo.gl/l4GJaQ) for more. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/skull" />
+            android:resource="@drawable/logo_clean" />
         <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more. -->
         <meta-data

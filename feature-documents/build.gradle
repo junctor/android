@@ -1,0 +1,66 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jlleitschuh.gradle.ktlint'
+}
+
+android {
+    namespace 'com.advice.documents'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.0"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation project(":core")
+    implementation project(":data")
+    implementation project(":ui")
+
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation "androidx.core:core-ktx:$coreKtxVersion"
+
+    implementation 'com.google.android.material:material:1.8.0'
+
+    def composeBom = platform('androidx.compose:compose-bom:$composeVersion')
+    implementation composeBom
+    androidTestImplementation composeBom
+
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
+    // Koin
+    implementation("io.insert-koin:koin-android:$koinVersion")
+//    implementation("org.koin:koin-androidx-scope:$koinVersion")
+//    implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}

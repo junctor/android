@@ -1,21 +1,22 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    // kapt?
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'kotlin-parcelize'
+    id 'org.jlleitschuh.gradle.ktlint'
 }
 
 android {
-    compileSdk 32
+    namespace "com.shortstack.hackertracker"
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.shortstack.hackertracker"
-        minSdk 21
-        targetSdk 32
+        minSdk 26
+        targetSdk 33
         versionCode 1
-        versionName "7.0.0"
+        versionName "7.7.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,7 +28,10 @@ android {
         }
     }
     buildFeatures {
-        viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.0"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -36,59 +40,89 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'com.shortstack.hackertracker'
 }
 
 dependencies {
+    implementation project(':core')
+    implementation project(':data')
+    implementation project(':ui')
+    implementation project(':feature-firebase')
+    implementation project(':feature-merch')
+    implementation project(':feature-locations')
+    implementation project(':feature-reminder')
+    implementation project(':feature-wifi')
+    implementation project(":feature-organizations")
+    implementation project(":feature-documents")
+    implementation project(":feature-analytics")
+    implementation project(':feature-play')
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.6.1'
+    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
+    implementation composeBom
+    androidTestImplementation composeBom
 
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.preference:preference-ktx:1.2.0'
+    // Material Design 3
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
+    implementation("androidx.compose.foundation:foundation:1.6.0-alpha01")
+
+
+    implementation("androidx.core:core-ktx:$coreKtxVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+
+
+    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("com.google.android.material:material:1.6.1")
 
     // Koin
-    implementation 'org.koin:koin-android:2.1.6'
-    implementation 'org.koin:koin-androidx-scope:2.1.6'
-    implementation 'org.koin:koin-androidx-viewmodel:2.1.6'
+    implementation("io.insert-koin:koin-android:$koinVersion")
+    implementation "io.insert-koin:koin-androidx-compose:3.4.5"
+    //implementation("org.koin:koin-androidx-scope:$koinVersion")
+    //implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
 
     // Arch
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc01"
-    implementation 'androidx.work:work-runtime-ktx:2.7.1'
-    implementation "android.arch.work:work-firebase:1.0.0-alpha11"
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+    //implementation "android.arch.work:work-firebase:1.0.0-alpha11"
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
     // Firebase
-    implementation 'com.google.firebase:firebase-analytics-ktx:21.1.0'
-    implementation 'com.google.firebase:firebase-firestore:24.1.2'
-    implementation 'com.google.firebase:firebase-storage:20.0.1'
-    implementation 'com.google.firebase:firebase-auth:21.0.5'
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.11'
+    implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-crashlytics")
 
-    // Work Manager
-    implementation "androidx.work:work-runtime-ktx:2.7.1"
 
-    // UI
-    implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
-    implementation 'com.github.stkent:amplify:2.2.0'
-    implementation "com.hendraanggrian.material:collapsingtoolbarlayout-subtitle:1.1.0"
-    implementation 'com.github.Advice-Dog:timehop:master-SNAPSHOT'
-    implementation 'com.github.discord:OverlappingPanels:0.1.5'
-    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    // Optional - Integration with activities
+    implementation("androidx.activity:activity-compose:1.6.1")
+    // Optional - Integration with ViewModels
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+
+    implementation("androidx.compose.ui:ui-viewbinding:1.3.3")
+
+    implementation("androidx.navigation:navigation-compose:2.5.3")
 
 
     // Utils
-    implementation 'com.orhanobut:logger:1.15'
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'com.jakewharton.timber:timber:5.0.1'
+    implementation("com.google.code.gson:gson:$gsonVersion")
+
 
     // Testing
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation("junit:junit:$junitVersion")
     testImplementation "io.mockk:mockk:1.12.4"
-    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+}
+
+ktlint {
+    android.set true
+    outputColorName.set "RED"
 }
