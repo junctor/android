@@ -50,7 +50,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
-
     implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("androidx.core:core-ktx:$coreKtxVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
@@ -59,14 +58,11 @@ dependencies {
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.google.zxing:android-core:3.3.0'
 
-
     // Gson for JSON parsing
     implementation("com.google.code.gson:gson:$gsonVersion")
 
     // Koin
     implementation("io.insert-koin:koin-android:$koinVersion")
-//    implementation("org.koin:koin-androidx-scope:$koinVersion")
-//    implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
 
     testImplementation("junit:junit:$junitVersion")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

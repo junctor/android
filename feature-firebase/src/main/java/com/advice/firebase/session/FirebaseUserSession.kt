@@ -39,8 +39,9 @@ class FirebaseUserSession(
         CoroutineScope(Job()).launch {
             conferencesDataSource.get().collect {
                 if (_conference.value == null) {
-                    _conference.value = getConference(preferences.preferredConference, it)
-                    Timber.d("Current Conference is: ${_conference.value?.code}")
+                    val conference = getConference(preferences.preferredConference, it)
+                    Timber.d("Current Conference is: ${conference?.code}")
+                    _conference.value = conference
                 }
             }
         }
@@ -58,7 +59,12 @@ class FirebaseUserSession(
         }
     }
 
-    private fun getConference(preferred: Long, conferences: List<Conference>): Conference {
+    private fun getConference(preferred: Long, conferences: List<Conference>): Conference? {
+        if (conferences.isEmpty()) {
+            Timber.e("Could not load conferences.")
+            return null
+        }
+
         if (preferred != -1L) {
             val pref = conferences.find { it.id == preferred && !it.hasFinished }
             if (pref != null) return pref
@@ -66,12 +72,12 @@ class FirebaseUserSession(
 
         val list = conferences.sortedBy { it.start }
 
-        val defcon = list.find { it.code == "DEFCON31" }
+        val defcon = list.find { "DEFCON" in it.code }
         if (defcon?.hasFinished == false) {
             return defcon
         }
 
-        return list.firstOrNull { !it.hasFinished } ?: conferences.last()
+        return list.firstOrNull { !it.hasFinished } ?: conferences.lastOrNull()
     }
 
     override fun getConference(): Flow<Conference> {
