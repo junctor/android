@@ -32,8 +32,8 @@ android {
 
 dependencies {
 
-    implementation project(path: ':data')
-    implementation project(path: ':core')
+    implementation project(':data')
+    implementation project(':core')
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:32.1.1')

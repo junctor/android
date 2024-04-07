@@ -40,9 +40,9 @@ android {
 dependencies {
     implementation project(":core")
     implementation project(":ui")
-    implementation project(path: ':data')
+    implementation project(':data')
 
-    def composeBom = platform('androidx.compose:compose-bom:$composeVersion')
+    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
     implementation composeBom
     androidTestImplementation composeBom
 

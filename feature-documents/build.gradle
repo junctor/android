@@ -47,7 +47,7 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.8.0'
 
-    def composeBom = platform('androidx.compose:compose-bom:$composeVersion')
+    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
     implementation composeBom
     androidTestImplementation composeBom
 
