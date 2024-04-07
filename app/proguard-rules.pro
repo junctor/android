@@ -23,4 +23,6 @@
 -keep class com.advice.core.local.** { *; }
 -keep class com.advice.firebase.models.** { *; }
 
--dontwarn org.bouncycastle.jsse.BCSSLParameters
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
