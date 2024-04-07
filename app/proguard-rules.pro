@@ -22,3 +22,5 @@
 
 -keep class com.advice.core.local.** { *; }
 -keep class com.advice.firebase.models.** { *; }
+
+-dontwarn org.bouncycastle.jsse.BCSSLParameters
