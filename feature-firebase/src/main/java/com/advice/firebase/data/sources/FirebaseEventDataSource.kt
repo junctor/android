@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Event
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.EventDataSource
+import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.toEvent
@@ -17,25 +18,28 @@ class FirebaseEventDataSource(
     private val firestore: FirebaseFirestore,
     private val tagsDataSource: TagsDataSource,
     private val speakersDataSource: SpeakersDataSource,
+    private val locationsDataSource: LocationsDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : EventDataSource {
 
     override suspend fun get(conference: String, id: Long): Event? {
         val snapshot = firestore.collection("conferences")
             .document(conference)
-            .collection("events")
+            .collection("content")
             .document(id.toString())
             .get()
             .await()
 
         val tags = tagsDataSource.get().first()
         val speakers = speakersDataSource.get().first()
+        val locations = locationsDataSource.get().first()
         val bookmarks = bookmarkedEventsDataSource.get().first()
 
         val event = snapshot.toObjectOrNull(FirebaseEvent::class.java)
             ?.toEvent(
                 tags = tags,
                 speakers = speakers,
+                locations = locations,
                 isBookmarked = bookmarks.any { it.id == id.toString() }
             )
 

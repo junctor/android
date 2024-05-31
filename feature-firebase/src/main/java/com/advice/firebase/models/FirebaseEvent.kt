@@ -11,26 +11,23 @@ data class FirebaseEvent(
     val id: Long = -1,
     @PropertyName("conference")
     val conference: String = "",
-    @PropertyName("timezone")
-    val timezone: String = "",
+
     @PropertyName("title")
     val title: String = "",
     @PropertyName("description")
     val description: String = "",
     @PropertyName("people")
     val people: ArrayList<FirebasePerson> = ArrayList(),
-    @PropertyName("location")
-    val location: FirebaseLocation = FirebaseLocation(),
+
+    @PropertyName("sessions")
+    val sessions: ArrayList<FirebaseSession> = ArrayList(),
+
     @PropertyName("links")
     val links: List<FirebaseAction> = emptyList(),
-
+    @PropertyName("tag_ids")
     val tag_ids: List<Long> = emptyList(),
 
-    @PropertyName("begin_timestamp")
-    val begin_timestamp: Timestamp = Timestamp.now(),
-    @PropertyName("end_timestamp")
-    val end_timestamp: Timestamp = Timestamp.now(),
-    @PropertyName("updated_timestamp")
+    @PropertyName("updated_at")
     val updated_timestamp: Timestamp = Timestamp.now(),
     @PropertyName("hidden")
     val hidden: Boolean = false

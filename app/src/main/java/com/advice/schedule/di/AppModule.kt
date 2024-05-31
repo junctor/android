@@ -151,11 +151,20 @@ val appModule = module {
             get<UserSession>(),
             get<TagsDataSource>(),
             get<SpeakersDataSource>(),
+            get<LocationsDataSource>(),
             get<BookmarkedElementDataSource>(named("events")),
             get<FirebaseFirestore>()
         )
     }
-    single<EventDataSource> { FirebaseEventDataSource(get(), get(), get(), get(named("events"))) }
+    single<EventDataSource> {
+        FirebaseEventDataSource(
+            get(),
+            get(),
+            get(),
+            get<LocationsDataSource>(),
+            get(named("events"))
+        )
+    }
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
     single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
     single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }

@@ -83,6 +83,7 @@ fun <T> DocumentSnapshot.toObjectOrNull(@NonNull clazz: Class<T>): T? {
 fun Query.snapshotFlow(): Flow<QuerySnapshot> = callbackFlow {
     val listenerRegistration = addSnapshotListener { value, error ->
         if (error != null) {
+            Timber.e("Could not create snapshotFlow: ${error.message}")
             close()
             return@addSnapshotListener
         }
@@ -161,7 +162,8 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? {
 fun FirebaseEvent.toEvent(
     tags: List<TagType>,
     speakers: List<Speaker>,
-    isBookmarked: Boolean = false
+    isBookmarked: Boolean = false,
+    locations: List<Location>
 ): Event? {
     try {
         val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
@@ -183,21 +185,27 @@ fun FirebaseEvent.toEvent(
             return null
         }
 
-        return Event(
-            id,
-            conference,
-            timezone,
-            title,
-            description,
-            begin_timestamp.toDate().toInstant(),
-            end_timestamp.toDate().toInstant(),
-            updated_timestamp.toDate().toInstant(),
-            speakers,
-            types,
-            location.toLocation()!!,
-            links,
-            isBookmarked
-        )
+        // todo: return multiple events
+        return sessions.map { session ->
+            // todo: handle this gracefully
+            val location = locations.find { it.id == session.location_id }!!
+
+            Event(
+                id,
+                conference,
+                session.timezone_name,
+                title,
+                description,
+                session.begin.toDate().toInstant(),
+                session.end.toDate().toInstant(),
+                updated_timestamp.toDate().toInstant(),
+                speakers,
+                types,
+                location,
+                links,
+                isBookmarked
+            )
+        }.first()
     } catch (ex: Exception) {
         Timber.e("Could not map data to Event: ${ex.message}")
         return null
