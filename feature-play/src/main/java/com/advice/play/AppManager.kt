@@ -5,6 +5,7 @@ import android.content.Context
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class AppManager(context: Context) {
@@ -13,9 +14,14 @@ class AppManager(context: Context) {
 
     suspend fun isUpdateAvailable(): Boolean {
         return suspendCoroutine {
-            appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
-                it.resumeWith(Result.success(appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE))
-            }
+            appUpdateManager.appUpdateInfo
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        it.resumeWith(Result.success(task.result.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE))
+                    } else {
+                        it.resumeWith(Result.success(false))
+                    }
+                }
         }
     }
 
