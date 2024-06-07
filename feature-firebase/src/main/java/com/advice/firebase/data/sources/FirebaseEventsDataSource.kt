@@ -2,7 +2,6 @@ package com.advice.firebase.data.sources
 
 import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceContent
-import com.advice.core.local.Content
 import com.advice.core.local.Event
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
@@ -14,7 +13,7 @@ import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toContents
 import com.advice.firebase.extensions.toEvents
 import com.advice.firebase.extensions.toObjectsOrEmpty
-import com.advice.firebase.models.FirebaseEvent
+import com.advice.firebase.models.FirebaseContent
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,13 +34,13 @@ class FirebaseEventsDataSource(
     private val firestore: FirebaseFirestore,
 ) : EventsDataSource {
 
-    private fun observeConferenceEvents(conference: Conference): Flow<List<FirebaseEvent>> {
+    private fun observeConferenceEvents(conference: Conference): Flow<List<FirebaseContent>> {
         return firestore.collection("conferences")
             .document(conference.code)
             .collection("content")
             .snapshotFlow()
             .map { querySnapshot ->
-                querySnapshot.toObjectsOrEmpty(FirebaseEvent::class.java)
+                querySnapshot.toObjectsOrEmpty(FirebaseContent::class.java)
                     .filter { (!it.hidden || userSession.isDeveloper) }
             }
     }

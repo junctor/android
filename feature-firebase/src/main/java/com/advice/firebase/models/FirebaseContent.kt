@@ -6,7 +6,7 @@ import com.google.firebase.firestore.PropertyName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class FirebaseEvent(
+data class FirebaseContent(
     @PropertyName("id")
     val id: Long = -1,
     @PropertyName("title")

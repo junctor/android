@@ -37,7 +37,7 @@ import com.advice.firebase.models.FirebaseArticle
 import com.advice.firebase.models.FirebaseBookmark
 import com.advice.firebase.models.FirebaseConference
 import com.advice.firebase.models.FirebaseDocument
-import com.advice.firebase.models.FirebaseEvent
+import com.advice.firebase.models.FirebaseContent
 import com.advice.firebase.models.FirebaseFAQ
 import com.advice.firebase.models.FirebaseLink
 import com.advice.firebase.models.FirebaseLocation
@@ -161,7 +161,7 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? {
     }
 }
 
-fun FirebaseEvent.toEvents(
+fun FirebaseContent.toEvents(
     conference: String,
     tags: List<TagType>,
     speakers: List<Speaker>,
@@ -229,7 +229,7 @@ fun FirebaseEvent.toEvents(
     }
 }
 
-fun FirebaseEvent.toContents(
+fun FirebaseContent.toContents(
     conference: String,
     tags: List<TagType>,
     speakers: List<Speaker>,

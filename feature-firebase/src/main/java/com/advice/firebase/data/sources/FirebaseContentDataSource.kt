@@ -8,7 +8,7 @@ import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.toEvents
 import com.advice.firebase.extensions.toObjectOrNull
-import com.advice.firebase.models.FirebaseEvent
+import com.advice.firebase.models.FirebaseContent
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
@@ -35,7 +35,7 @@ class FirebaseContentDataSource(
         val locations = locationsDataSource.get().first()
         val bookmarks = bookmarkedEventsDataSource.get().first()
 
-        val event = snapshot.toObjectOrNull(FirebaseEvent::class.java)
+        val event = snapshot.toObjectOrNull(FirebaseContent::class.java)
             ?.toEvents(
                 conference = conference,
                 tags = tags,
