@@ -160,6 +160,7 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? {
 }
 
 fun FirebaseEvent.toEvent(
+    conference: String,
     tags: List<TagType>,
     speakers: List<Speaker>,
     isBookmarked: Boolean = false,

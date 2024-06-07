@@ -37,10 +37,11 @@ class FirebaseEventDataSource(
 
         val event = snapshot.toObjectOrNull(FirebaseEvent::class.java)
             ?.toEvent(
+                conference = conference,
                 tags = tags,
                 speakers = speakers,
-                locations = locations,
-                isBookmarked = bookmarks.any { it.id == id.toString() }
+                isBookmarked = bookmarks.any { it.id == id.toString() },
+                locations = locations
             )
 
         if (event == null) {

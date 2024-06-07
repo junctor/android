@@ -67,6 +67,7 @@ class FirebaseEventsDataSource(
             ) { firebaseEvents, bookmarkedEvents ->
                 firebaseEvents.mapNotNull {
                     it.toEvent(
+                        conference = conference.code,
                         tags = tags,
                         speakers = speakers,
                         isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == it.id.toString() },
