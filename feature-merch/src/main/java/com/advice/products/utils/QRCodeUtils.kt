@@ -12,19 +12,25 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import timber.log.Timber
 import java.util.EnumMap
 
 fun List<Product>.toJson(): String? {
-    // if the product is out of stock, we can't generate a QR code
-    if (any { it.variant?.stockStatus == StockStatus.OUT_OF_STOCK }) {
+    try {
+        // if the product is out of stock, we can't generate a QR code
+        if (any { it.variant?.stockStatus == StockStatus.OUT_OF_STOCK }) {
+            return null
+        }
+
+        val data = QRCodeData("", map { QRCodeProduct(it.quantity, it.variant?.id ?: -1L) })
+
+        val gson = Gson()
+        val type = object : TypeToken<QRCodeData>() {}.type
+        return gson.toJson(data, type)
+    } catch (ex: Exception) {
+        Timber.e(ex, "Error converting products to JSON")
         return null
     }
-
-    val data = QRCodeData("", map { QRCodeProduct(it.quantity, it.variant?.id ?: -1L) })
-
-    val gson = Gson()
-    val type = object : TypeToken<QRCodeData>() {}.type
-    return gson.toJson(data, type)
 }
 
 fun generateQRCode(json: String): Bitmap {
