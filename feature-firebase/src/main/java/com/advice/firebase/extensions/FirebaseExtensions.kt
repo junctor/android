@@ -185,10 +185,19 @@ fun FirebaseEvent.toEvent(
             return null
         }
 
+        // todo: return something if we don't have any sessions
+        if (sessions.isEmpty()) {
+            Timber.e("Could not find session for event: $title")
+            return null
+        }
+
         // todo: return multiple events
-        return sessions.map { session ->
-            // todo: handle this gracefully
-            val location = locations.find { it.id == session.location_id }!!
+        return sessions.mapNotNull { session ->
+            // if we cannot find the location, ignore this session
+            val location = locations.find { it.id == session.location_id } ?: run {
+                Timber.e("Could not find location for session: $title session.title}")
+                return@mapNotNull null
+            }
 
             Event(
                 id,
@@ -196,8 +205,8 @@ fun FirebaseEvent.toEvent(
                 session.timezone_name,
                 title,
                 description,
-                session.begin.toDate().toInstant(),
-                session.end.toDate().toInstant(),
+                session.begin_timestamp.toDate().toInstant(),
+                session.end_timetimestamp.toDate().toInstant(),
                 updated_timestamp.toDate().toInstant(),
                 speakers,
                 types,

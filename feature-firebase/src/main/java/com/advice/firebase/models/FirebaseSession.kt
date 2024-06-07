@@ -20,23 +20,9 @@ data class FirebaseSession(
     @PropertyName("session_id")
     val session_id: Long = -1,
     @PropertyName("begin_time")
-    val begin_time: String = "", // todo: would be nice if these were timestamps.
+    val begin_timestamp: Timestamp = Timestamp.now(),
     @PropertyName("end_time")
-    val end_time: String = "",
+    val end_timetimestamp: Timestamp = Timestamp.now(),
     @PropertyName("timezone_name")
     val timezone_name: String = "",
-) : Parcelable {
-
-    // parse the String using the timezone to a Date then convert to a Timestamp.
-    val begin: Timestamp
-        get() = Timestamp(parseDateWithTimeZone(begin_time, timezone_name)!!)
-
-    val end: Timestamp
-        get() = Timestamp(parseDateWithTimeZone(end_time, timezone_name)!!)
-
-    private fun parseDateWithTimeZone(dateString: String, timeZone: String): Date? {
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-        format.timeZone = TimeZone.getTimeZone(timeZone)
-        return format.parse(dateString)
-    }
-}
+) : Parcelable
