@@ -19,9 +19,9 @@ data class FirebaseSession(
     val recordingpolicy_id: Long? = null,
     @PropertyName("session_id")
     val session_id: Long = -1,
-    @PropertyName("begin_time")
+    @PropertyName("begin_timestamp")
     val begin_timestamp: Timestamp = Timestamp.now(),
-    @PropertyName("end_time")
+    @PropertyName("end_timestamp")
     val end_timetimestamp: Timestamp = Timestamp.now(),
     @PropertyName("timezone_name")
     val timezone_name: String = "",
