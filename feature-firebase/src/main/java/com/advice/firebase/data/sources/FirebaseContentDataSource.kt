@@ -28,11 +28,6 @@ class FirebaseContentDataSource(
             .collection("content")
             .document(id.toString())
             .get()
-                it.addOnCompleteListener {
-                    Timber.e("addOnCompleteListener: ${it.result}, ${it.isSuccessful}")
-                    Timber.e("addOnCompleteListener: ${it.result?.data}")
-                }
-            }
             .await()
 
         val tags = tagsDataSource.get().first()
@@ -41,11 +36,6 @@ class FirebaseContentDataSource(
         val bookmarks = bookmarkedEventsDataSource.get().first()
 
         val event = snapshot.toObjectOrNull(FirebaseEvent::class.java)
-        Timber.e("STARTING MAPPING: ${snapshot.data}")
-
-        val toObjectOrNull = snapshot.toObjectOrNull(FirebaseEvent::class.java)
-        Timber.e("toObjectOrNull: $toObjectOrNull")
-        val event = toObjectOrNull
             ?.toEvents(
                 conference = conference,
                 tags = tags,
@@ -54,7 +44,6 @@ class FirebaseContentDataSource(
                 locations = locations
             )
 
-        Timber.e("event: $event")
         if (event.isNullOrEmpty()) {
             Timber.e("Event with id $id not found")
             return null
