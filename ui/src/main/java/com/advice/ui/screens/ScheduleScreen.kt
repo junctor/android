@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Location
+import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.TimeUtil
@@ -212,8 +213,8 @@ private fun ScheduleScreenContent(
                         item(key = it.id) {
                             EventRowView(
                                 title = it.title,
-                                time = TimeUtil.getTimeStamp(context, it),
-                                location = it.location.name,
+                                time = TimeUtil.getTimeStamp(context, it.session),
+                                location = it.session.location.name,
                                 tags = it.types,
                                 isBookmarked = it.isBookmarked,
                                 onEventPressed = {
@@ -246,11 +247,19 @@ private fun ScheduleScreenPreview() {
                 "May 19" to listOf(
                     Event(
                         conference = "THOTCON 0xC",
-                        timeZone = "America/Chicago",
                         title = "DOORS OPEN 喝一杯",
                         description = "",
-                        start = Instant.now(),
-                        end = Instant.now(),
+                        session = Session(
+                            timeZone = "America/Chicago",
+                            start = Instant.now(),
+                            end = Instant.now(),
+                            location = Location(
+                                -1L,
+                                "LOC://AUD - Track 1 / Первый Трек",
+                                "Track 1 / Первый Трек",
+                                "THOCON 0xC"
+                            ),
+                        ),
                         updated = Instant.now(),
                         speakers = emptyList(),
                         types = listOf(
@@ -262,15 +271,8 @@ private fun ScheduleScreenPreview() {
                                 -1
                             )
                         ),
-                        location = Location(
-                            -1L,
-                            "LOC://AUD - Track 1 / Первый Трек",
-                            "Track 1 / Первый Трек",
-                            "THOCON 0xC"
-                        ),
                         urls = emptyList(),
-
-                        )
+                    )
                 )
             )
         )

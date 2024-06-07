@@ -17,7 +17,7 @@ class ReminderManager(
     }
 
     fun setReminder(event: Event) {
-        val start = event.start
+        val start = event.session.start
         val now = Time.now()
 
         val delay = start.toEpochMilli() - now.time - TWENTY_MINUTES_BEFORE

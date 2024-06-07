@@ -5,11 +5,11 @@ import kotlinx.coroutines.flow.first
 
 class SpeakerRepository(
     private val speakersRepository: SpeakersRepository,
-    private val eventsRepository: EventsRepository,
+    private val contentRepository: ContentRepository,
 ) {
     suspend fun getSpeakerDetails(id: Long): SpeakerState {
         val speaker = speakersRepository.speakers.first().find { it.id == id }!!
-        val events = eventsRepository.events.first().filter {
+        val events = contentRepository.content.first().events.filter {
             it.speakers.any { it.id == id }
         }
         return SpeakerState.Success(speaker, events)

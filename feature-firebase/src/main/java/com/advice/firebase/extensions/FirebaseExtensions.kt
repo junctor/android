@@ -7,6 +7,7 @@ import com.advice.core.local.Affiliation
 import com.advice.core.local.Bookmark
 import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceMap
+import com.advice.core.local.Content
 import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
@@ -21,6 +22,7 @@ import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
 import com.advice.core.local.OrganizationLocation
 import com.advice.core.local.OrganizationMedia
+import com.advice.core.local.Session
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
@@ -159,13 +161,13 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? {
     }
 }
 
-fun FirebaseEvent.toEvent(
+fun FirebaseEvent.toEvents(
     conference: String,
     tags: List<TagType>,
     speakers: List<Speaker>,
-    isBookmarked: Boolean = false,
+    bookmarkedEvents: List<Bookmark>,
     locations: List<Location>
-): Event? {
+): List<Event>? {
     try {
         val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
 
@@ -183,41 +185,92 @@ fun FirebaseEvent.toEvent(
             .mapNotNull { it.second }
 
         if (types.isEmpty()) {
-            return null
+            Timber.e("Could not find tags for event: $title")
+            return emptyList()
         }
 
-        // todo: return something if we don't have any sessions
-        if (sessions.isEmpty()) {
-            Timber.e("Could not find session for event: $title")
-            return null
-        }
-
-        // todo: return multiple events
         return sessions.mapNotNull { session ->
             // if we cannot find the location, ignore this session
-            val location = locations.find { it.id == session.location_id } ?: run {
-                Timber.e("Could not find location for session: $title session.title}")
+            val location = locations.find { it.id == session.location_id }
+
+            if (location == null) {
+                Timber.e("Could not find location for session: $title")
                 return@mapNotNull null
             }
 
-            Event(
-                id,
-                conference,
+            // todo: this should probably use event id
+            val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == id.toString() }
+
+            val session = Session(
                 session.timezone_name,
-                title,
-                description,
                 session.begin_timestamp.toDate().toInstant(),
                 session.end_timetimestamp.toDate().toInstant(),
-                updated_timestamp.toDate().toInstant(),
-                speakers,
-                types,
                 location,
-                links,
-                isBookmarked
             )
-        }.first()
+
+            Event(
+                id = id,
+                conference = conference,
+                title = title,
+                description = description,
+                session = session,
+                updated = updated_timestamp.toDate().toInstant(),
+                speakers = speakers,
+                types = types,
+                urls = links,
+                isBookmarked = isBookmarked
+            ).also {
+                Timber.d("Event: $it")
+            }
+        }
     } catch (ex: Exception) {
         Timber.e("Could not map data to Event: ${ex.message}")
+        return null
+    }
+}
+
+fun FirebaseEvent.toContents(
+    conference: String,
+    tags: List<TagType>,
+    speakers: List<Speaker>,
+    bookmarkedEvents: List<Bookmark>,
+): Content? {
+    try {
+        val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
+
+        val links = links.map { it.toAction() }
+        val types = tag_ids.mapNotNull { id ->
+            list.find { it.id == id }
+        }.sortedBy { list.indexOf(it) }
+
+        val speakers = people
+            .map { person ->
+                val role = list.find { it.id == person.tag_id }
+                val speaker = speakers.find { it.id == person.person_id }
+                person to speaker?.copy(roles = listOfNotNull(role))
+            }.sortedWith(compareBy({ it.first.sort_order }, { it.second?.name }))
+            .mapNotNull { it.second }
+
+        if (types.isEmpty()) {
+            Timber.e("Could not find tags for content: $title")
+            return null
+        }
+
+        val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == id.toString() }
+        return Content(
+            id = id,
+            conference = conference,
+            title = title,
+            description = description,
+            updated = updated_timestamp.toDate().toInstant(),
+            speakers = speakers,
+            types = types,
+            urls = links,
+            isBookmarked = isBookmarked
+        )
+
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to Content: ${ex.message}")
         return null
     }
 }

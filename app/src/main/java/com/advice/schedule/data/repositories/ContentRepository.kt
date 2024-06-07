@@ -1,18 +1,18 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Event
-import com.advice.data.sources.EventDataSource
+import com.advice.data.sources.ContentDataSource
 import com.advice.data.sources.EventsDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 
-class EventsRepository(
-    private val eventDataSource: EventDataSource,
+class ContentRepository(
+    private val contentDataSource: ContentDataSource,
     private val eventsDataSource: EventsDataSource,
 ) {
-    val events = eventsDataSource.get()
+    val content = eventsDataSource.get()
         .shareIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Eagerly,
@@ -20,7 +20,7 @@ class EventsRepository(
         )
 
     suspend fun get(conference: String, id: Long): Event? {
-        return eventDataSource.get(conference, id)
+        return contentDataSource.get(conference, id)
     }
 
     suspend fun bookmark(event: Event) {

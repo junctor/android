@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.advice.core.utils.NotificationHelper
-import com.advice.data.sources.EventDataSource
+import com.advice.data.sources.ContentDataSource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
@@ -14,7 +14,7 @@ class ReminderWorker(
     params: WorkerParameters,
 ) : CoroutineWorker(context, params), KoinComponent {
 
-    private val eventsDataSource by inject<EventDataSource>()
+    private val eventsDataSource by inject<ContentDataSource>()
     private val notificationHelper by inject<NotificationHelper>()
 
     override suspend fun doWork(): Result {

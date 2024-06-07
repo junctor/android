@@ -8,10 +8,9 @@ import com.advice.data.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.SharedPreferencesBookmarkDataSource
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
-import com.advice.data.sources.BookmarkedEventsDataSource
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.DocumentsDataSource
-import com.advice.data.sources.EventDataSource
+import com.advice.data.sources.ContentDataSource
 import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.FAQDataSource
 import com.advice.data.sources.LocationsDataSource
@@ -27,7 +26,7 @@ import com.advice.data.sources.VillagesDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
-import com.advice.firebase.data.sources.FirebaseEventDataSource
+import com.advice.firebase.data.sources.FirebaseContentDataSource
 import com.advice.firebase.data.sources.FirebaseEventsDataSource
 import com.advice.firebase.data.sources.FirebaseFAQDataSource
 import com.advice.firebase.data.sources.FirebaseLocationsDataSource
@@ -47,7 +46,7 @@ import com.advice.play.AppManager
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.reminder.ReminderManager
-import com.advice.schedule.data.repositories.EventsRepository
+import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.data.repositories.FAQRepository
 import com.advice.schedule.data.repositories.FiltersRepository
 import com.advice.schedule.data.repositories.HomeRepository
@@ -114,7 +113,7 @@ val appModule = module {
     single { ScheduleRepository(get(), get(), get()) }
     single { HomeRepository(get(), get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
-    single { EventsRepository(get(), get()) }
+    single { ContentRepository(get(), get()) }
     single { SpeakerRepository(get(), get()) }
     single { FiltersRepository(get(), get(named("tags"))) }
     single { FAQRepository(get()) }
@@ -156,8 +155,8 @@ val appModule = module {
             get<FirebaseFirestore>()
         )
     }
-    single<EventDataSource> {
-        FirebaseEventDataSource(
+    single<ContentDataSource> {
+        FirebaseContentDataSource(
             get(),
             get(),
             get(),

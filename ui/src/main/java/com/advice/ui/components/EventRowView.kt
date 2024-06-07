@@ -59,8 +59,8 @@ fun EventRow(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Title(event.title)
-            Location(event.location.name)
-            DateTime(TimeUtil.getDateTimeStamp(context, event))
+            Location(event.session.location.name)
+            DateTime(TimeUtil.getDateTimeStamp(context, event.session))
             Categories(event.types)
         }
     }

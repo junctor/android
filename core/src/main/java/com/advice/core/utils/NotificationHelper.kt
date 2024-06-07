@@ -39,7 +39,7 @@ class NotificationHelper(private val context: Context) {
 
     private fun getStartingSoonNotification(event: Event): Notification = notification {
         setContentTitle(event.title)
-        setContentText(context.getString(R.string.notification_text, event.location.name))
+        setContentText(context.getString(R.string.notification_text, event.session.location.name))
         setContentIntent(getPendingIntent(event))
     }
 

@@ -8,10 +8,3 @@ data class QRCodeData(
     @SerializedName("i")
     val products: List<QRCodeProduct>,
 )
-
-data class QRCodeProduct(
-    @SerializedName("q")
-    val quantity: Int,
-    @SerializedName("v")
-    val variant: Long,
-)

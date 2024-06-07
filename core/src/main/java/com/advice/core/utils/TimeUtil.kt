@@ -2,8 +2,8 @@ package com.advice.core.utils
 
 import android.content.Context
 import com.advice.core.local.Conference
-import com.advice.core.local.Event
 import com.advice.core.local.LocationSchedule
+import com.advice.core.local.Session
 import com.shortstack.core.BuildConfig
 import timber.log.Timber
 import java.time.Instant
@@ -38,35 +38,35 @@ object TimeUtil {
         return ZoneId.of(TimeZone.getDefault().id)
     }
 
-    fun getDateStamp(event: Event, forceTimeZone: Boolean): String {
-        val zoneId = getZoneId(forceTimeZone, event.timeZone)
+    fun getDateStamp(session: Session, forceTimeZone: Boolean): String {
+        val zoneId = getZoneId(forceTimeZone, session.timeZone)
 
         val formatter = DateTimeFormatter.ofPattern("MMMM d")
-        val localDateTime = event.start.atZone(zoneId)
+        val localDateTime = session.start.atZone(zoneId)
         return formatter.format(localDateTime)
     }
 
-    fun getEventDateStamp(context: Context, event: Event): String {
-        val zoneId = getZoneId(context, event.timeZone)
+    fun getEventDateStamp(context: Context, session: Session): String {
+        val zoneId = getZoneId(context, session.timeZone)
 
         val suffixFormat = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy")
 
         // If the event is on the same day, we don't need to show the date twice.
-        if (isSameDay(event.start, event.end)) {
-            return suffixFormat.format(event.start.atZone(zoneId))
+        if (isSameDay(session.start, session.end)) {
+            return suffixFormat.format(session.start.atZone(zoneId))
         }
 
         val prefixFormat = DateTimeFormatter.ofPattern("EEE, MMM d")
         // Show the date range.
-        return prefixFormat.format(event.start.atZone(zoneId)) + " - " + suffixFormat.format(
-            event.end.atZone(
+        return prefixFormat.format(session.start.atZone(zoneId)) + " - " + suffixFormat.format(
+            session.end.atZone(
                 zoneId
             )
         )
     }
 
-    fun getEventTimeStamp(context: Context, event: Event): String {
-        val zoneId = getZoneId(context, event.timeZone)
+    fun getEventTimeStamp(context: Context, session: Session): String {
+        val zoneId = getZoneId(context, session.timeZone)
         val is24HourFormat = android.text.format.DateFormat.is24HourFormat(context)
         val pattern = if (is24HourFormat) {
             "HH:mm"
@@ -77,19 +77,19 @@ object TimeUtil {
         val timeFormat = DateTimeFormatter.ofPattern(pattern)
 
         // If the start time and end time are the same, we don't need to show the end time.
-        if (event.start == event.end) {
-            return timeFormat.format(event.start.atZone(zoneId))
+        if (session.start == session.end) {
+            return timeFormat.format(session.start.atZone(zoneId))
         }
 
-        return timeFormat.format(event.start.atZone(zoneId)) + " - " + timeFormat.format(
-            event.end.atZone(
+        return timeFormat.format(session.start.atZone(zoneId)) + " - " + timeFormat.format(
+            session.end.atZone(
                 zoneId
             )
         )
     }
 
-    fun getDateTimeStamp(context: Context, event: Event): String {
-        val zoneId = getZoneId(context, event.timeZone)
+    fun getDateTimeStamp(context: Context, session: Session): String {
+        val zoneId = getZoneId(context, session.timeZone)
         val is24HourFormat = android.text.format.DateFormat.is24HourFormat(context)
 
         val s = if (is24HourFormat) {
@@ -100,15 +100,15 @@ object TimeUtil {
 
         val dayFormat = DateTimeFormatter.ofPattern("EEEE, MMMM d")
 
-        val prefix = dayFormat.format(event.start.atZone(zoneId))
+        val prefix = dayFormat.format(session.start.atZone(zoneId))
         val timeFormat = DateTimeFormatter.ofPattern(s)
-        return prefix + " - " + timeFormat.format(event.start.atZone(zoneId)) + " to " + timeFormat.format(
-            event.end.atZone(zoneId)
+        return prefix + " - " + timeFormat.format(session.start.atZone(zoneId)) + " to " + timeFormat.format(
+            session.end.atZone(zoneId)
         )
     }
 
-    fun getTimeStamp(context: Context, event: Event): String {
-        val zoneId = getZoneId(context, event.timeZone)
+    fun getTimeStamp(context: Context, session: Session): String {
+        val zoneId = getZoneId(context, session.timeZone)
         val is24HourFormat = android.text.format.DateFormat.is24HourFormat(context)
 
         val pattern = if (is24HourFormat) {
@@ -117,7 +117,7 @@ object TimeUtil {
             "h:mm a"
         }
         val formatter = DateTimeFormatter.ofPattern(pattern)
-        val localDateTime = event.start.atZone(zoneId)
+        val localDateTime = session.start.atZone(zoneId)
         return formatter.format(localDateTime)
     }
 

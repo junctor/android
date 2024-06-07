@@ -55,18 +55,4 @@ data class Location(
             else -> LocationStatus.Unknown
         }
     }
-
-    override fun toString(): String {
-        var s =
-            "  " + "--".repeat(
-                max(
-                    0,
-                    depth - 1
-                )
-            ) + "> $name - isExpanded: $isExpanded, isVisible: $isVisible"
-//        children.map {
-//            s = "$s\n  $it"
-//        }
-        return s
-    }
 }

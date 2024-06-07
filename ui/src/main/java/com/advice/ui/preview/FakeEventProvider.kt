@@ -1,8 +1,11 @@
 package com.advice.ui.preview
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.advice.core.local.Event
 import com.advice.core.local.Location
+import com.advice.core.local.Session
 import java.time.Instant
 
 class FakeEventProvider : PreviewParameterProvider<Event> {
@@ -14,15 +17,17 @@ class FakeEventProvider : PreviewParameterProvider<Event> {
         Event(
             0,
             "DEFCON",
-            "America/Los_Angeles",
             "Payment Hacking Challenge",
             "Try yourself in ATM, Online bank, POST and Cards hacking challenges.\nPlease join the DEF CON Discord and see the #payv-labs-text channel for more information.",
-            Instant.now(),
-            Instant.now(),
+            Session(
+                "America/Los_Angeles",
+                Instant.now(),
+                Instant.now(),
+                Location(-1, "Caesars Forum - Track 1", "Track 1", "DEFCON")
+            ),
             Instant.now(),
             SpeakerProvider.speakers.take(2),
             TagProvider.tags.take(2),
-            Location(-1, "Caesars Forum - Track 1", "Track 1", "DEFCON"),
             listOf(),
             false
         )

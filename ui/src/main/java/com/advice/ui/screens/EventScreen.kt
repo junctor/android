@@ -259,12 +259,12 @@ private fun EventScreenContent(
         HeaderSection(
             title = event.title,
             categories = event.types,
-            date = TimeUtil.getEventDateStamp(context, event),
-            time = TimeUtil.getEventTimeStamp(context, event),
-            location = getLocation(event.location),
+            date = TimeUtil.getEventDateStamp(context, event.session),
+            time = TimeUtil.getEventTimeStamp(context, event.session),
+            location = getLocation(event.session.location),
             onTagClicked = onTagClicked
         ) {
-            onLocationClicked(event.location)
+            onLocationClicked(event.session.location)
         }
         if (event.types.size > 1) {
             FlowRow(

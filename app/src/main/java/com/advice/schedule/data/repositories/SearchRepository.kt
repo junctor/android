@@ -1,6 +1,5 @@
 package com.advice.schedule.data.repositories
 
-import com.advice.core.local.Conference
 import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
@@ -28,7 +27,7 @@ data class SearchResults(
 
 class SearchRepository(
     userSession: UserSession,
-    eventsDataSource: EventsRepository,
+    eventsDataSource: ContentRepository,
     speakersDataSource: SpeakersRepository,
     organizationsDataSource: OrganizationsRepository,
     faqDataSource: FAQRepository,
@@ -41,7 +40,7 @@ class SearchRepository(
 
     val state: Flow<SearchState> = combine(
         query,
-        eventsDataSource.events,
+        eventsDataSource.content,
         speakersDataSource.speakers,
         organizationsDataSource.organizations,
         faqDataSource.faqs,

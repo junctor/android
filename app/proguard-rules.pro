@@ -22,6 +22,7 @@
 
 -keep class com.advice.core.local.** { *; }
 -keep class com.advice.firebase.models.** { *; }
+-keep class com.advice.products.models.** { *; }
 
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**

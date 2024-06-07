@@ -1,10 +1,9 @@
 package com.advice.firebase.data.sources
 
 import com.advice.core.local.Conference
+import com.advice.core.local.ConferenceContent
+import com.advice.core.local.Content
 import com.advice.core.local.Event
-import com.advice.core.local.Location
-import com.advice.core.local.Speaker
-import com.advice.core.local.TagType
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.EventsDataSource
@@ -12,7 +11,8 @@ import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.snapshotFlow
-import com.advice.firebase.extensions.toEvent
+import com.advice.firebase.extensions.toContents
+import com.advice.firebase.extensions.toEvents
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseEvent
 import com.google.firebase.firestore.FirebaseFirestore
@@ -51,7 +51,14 @@ class FirebaseEventsDataSource(
         tagsDataSource.get(),
         speakersDataSource.get(),
         locationsDataSource.get(),
-    ) { conference, tags, speakers, locations -> ConferenceState(conference, tags, speakers, locations) }
+    ) { conference, tags, speakers, locations ->
+        ConferenceState(
+            conference,
+            tags,
+            speakers,
+            locations
+        )
+    }
         .shareIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Lazily,
@@ -65,33 +72,37 @@ class FirebaseEventsDataSource(
                 observeConferenceEvents(conference),
                 bookmarkedEventsDataSource.get()
             ) { firebaseEvents, bookmarkedEvents ->
-                firebaseEvents.mapNotNull {
-                    it.toEvent(
-                        conference = conference.code,
-                        tags = tags,
-                        speakers = speakers,
-                        isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == it.id.toString() },
-                        locations = locations
-                    )
-                }
-            }
-        }
-            .shareIn(
-                scope = CoroutineScope(Dispatchers.IO),
-                started = SharingStarted.Lazily,
-                replay = 1
-            )
+                val (unscheduled, scheduled) = firebaseEvents.partition { it.sessions.isEmpty() }
 
-    override fun get(): Flow<List<Event>> = _eventsFlow
+                ConferenceContent(
+                    events = scheduled.mapNotNull {
+                        it.toEvents(
+                            conference = conference.code,
+                            tags = tags,
+                            speakers = speakers,
+                            bookmarkedEvents = bookmarkedEvents,
+                            locations = locations
+                        )
+                    }.flatten(),
+                    content = unscheduled.mapNotNull {
+                        it.toContents(
+                            conference.name,
+                            tags,
+                            speakers,
+                            bookmarkedEvents,
+                        )
+                    }
+                )
+            }
+        }.shareIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            replay = 1
+        )
+
+    override fun get(): Flow<ConferenceContent> = _eventsFlow
 
     override suspend fun bookmark(event: Event) {
         bookmarkedEventsDataSource.bookmark(event.id, isBookmarked = !event.isBookmarked)
     }
 }
-
-data class ConferenceState(
-    val conference: Conference,
-    val tags: List<TagType>,
-    val speakers: List<Speaker>,
-    val locations: List<Location>,
-)

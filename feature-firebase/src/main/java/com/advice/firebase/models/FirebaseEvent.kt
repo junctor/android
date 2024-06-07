@@ -9,9 +9,6 @@ import kotlinx.parcelize.Parcelize
 data class FirebaseEvent(
     @PropertyName("id")
     val id: Long = -1,
-    @PropertyName("conference")
-    val conference: String = "",
-
     @PropertyName("title")
     val title: String = "",
     @PropertyName("description")
