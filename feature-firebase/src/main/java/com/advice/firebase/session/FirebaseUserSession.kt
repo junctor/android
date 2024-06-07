@@ -47,14 +47,18 @@ class FirebaseUserSession(
         }
 
         CoroutineScope(Job()).launch {
-            val it = auth.signInAnonymously().await()
-            val user = it.user
-            if (user != null) {
-                Timber.d("User uid: ${user.uid}")
-                _user.value = User(user.uid)
-            } else {
-                crashlytics.log("user cannot be signed in")
-                Timber.e("User could not be signed in")
+            try {
+                val it = auth.signInAnonymously().await()
+                val user = it.user
+                if (user != null) {
+                    Timber.d("User uid: ${user.uid}")
+                    _user.value = User(user.uid)
+                } else {
+                    crashlytics.log("user cannot be signed in")
+                    Timber.e("User could not be signed in")
+                }
+            } catch (ex: Exception) {
+                Timber.e(ex, "Could not sign in anonymously")
             }
         }
     }
