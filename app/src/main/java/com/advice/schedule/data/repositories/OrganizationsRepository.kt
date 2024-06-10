@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.shareIn
 class OrganizationsRepository(
     private val organizationsDataSource: OrganizationsDataSource,
 ) {
-    suspend fun getOrganization(id: Long): Organization? {
+    suspend fun find(id: Long): Organization? {
         return organizations.first().find { it.id == id }
     }
 

@@ -11,7 +11,6 @@ import org.koin.core.component.inject
 import timber.log.Timber
 
 class OrganizationsViewModel : ViewModel(), KoinComponent {
-
     private val repository by inject<OrganizationsRepository>()
 
     fun getState(id: String): Flow<List<Organization>> {
@@ -28,7 +27,7 @@ class OrganizationsViewModel : ViewModel(), KoinComponent {
                 return@flow
             }
 
-            val value = repository.getOrganization(id)
+            val value = repository.find(id)
             emit(value)
         }
     }
