@@ -1,4 +1,4 @@
-package com.advice.firebase.models
+package com.advice.firebase.models.organization
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -15,22 +15,4 @@ data class FirebaseOrganization(
     val media: List<FirebaseOrganizationMedia> = emptyList(),
     val tag_id_as_organizer: Long? = null,
     val tag_ids: List<Long> = emptyList(),
-) : Parcelable
-
-@Parcelize
-data class FirebaseOrganizationLocation(
-    val location_id: Long = -1L,
-) : Parcelable
-
-@Parcelize
-data class FirebaseLink(
-    val label: String = "",
-    val type: String = "link",
-    val url: String = "",
-) : Parcelable
-
-@Parcelize
-data class FirebaseOrganizationMedia(
-    val asset_id: Long = -1L,
-    val url: String = "",
 ) : Parcelable

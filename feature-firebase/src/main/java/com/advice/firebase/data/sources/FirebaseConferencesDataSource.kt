@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.map
 class FirebaseConferencesDataSource(
     private val firestore: FirebaseFirestore,
 ) : ConferencesDataSource {
-
     override fun get(): Flow<List<Conference>> {
         return firestore.collection("conferences")
             .snapshotFlow()

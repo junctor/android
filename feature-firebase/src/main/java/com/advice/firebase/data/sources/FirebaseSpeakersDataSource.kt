@@ -8,13 +8,13 @@ import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toSpeaker
 import com.advice.firebase.models.FirebaseSpeaker
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import java.util.Locale
 
-@OptIn(FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseSpeakersDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,

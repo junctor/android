@@ -11,7 +11,6 @@ data class FirebaseTag(
     val color_background: String? = null,
     val color_foreground: String? = null,
     val sort_order: Int = 0,
-
     // todo: move to client model
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
 ) : Parcelable

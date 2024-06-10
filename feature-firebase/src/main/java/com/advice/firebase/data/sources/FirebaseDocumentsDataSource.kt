@@ -8,17 +8,16 @@ import com.advice.firebase.extensions.toDocument
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseDocument
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 
-@OptIn(FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseDocumentsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
 ) : DocumentsDataSource {
-
     override fun get(): Flow<List<Document>> {
         return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")

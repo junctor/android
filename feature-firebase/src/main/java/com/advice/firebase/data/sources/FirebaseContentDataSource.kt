@@ -21,28 +21,32 @@ class FirebaseContentDataSource(
     private val locationsDataSource: LocationsDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : ContentDataSource {
-
-    override suspend fun get(conference: String, id: Long): Event? {
-        val snapshot = firestore.collection("conferences")
-            .document(conference)
-            .collection("content")
-            .document(id.toString())
-            .get()
-            .await()
+    override suspend fun get(
+        conference: String,
+        id: Long,
+    ): Event? {
+        val snapshot =
+            firestore.collection("conferences")
+                .document(conference)
+                .collection("content")
+                .document(id.toString())
+                .get()
+                .await()
 
         val tags = tagsDataSource.get().first()
         val speakers = speakersDataSource.get().first()
         val locations = locationsDataSource.get().first()
         val bookmarks = bookmarkedEventsDataSource.get().first()
 
-        val event = snapshot.toObjectOrNull(FirebaseContent::class.java)
-            ?.toEvents(
-                conference = conference,
-                tags = tags,
-                speakers = speakers,
-                bookmarkedEvents = bookmarks,
-                locations = locations
-            )
+        val event =
+            snapshot.toObjectOrNull(FirebaseContent::class.java)
+                ?.toEvents(
+                    conference = conference,
+                    tags = tags,
+                    speakers = speakers,
+                    bookmarkedEvents = bookmarks,
+                    locations = locations,
+                )
 
         if (event.isNullOrEmpty()) {
             Timber.e("Event with id $id not found")

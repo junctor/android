@@ -4,10 +4,6 @@ import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
 import kotlinx.parcelize.Parcelize
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 
 @Parcelize
 data class FirebaseSession(

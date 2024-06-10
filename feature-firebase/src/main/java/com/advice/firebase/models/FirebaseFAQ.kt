@@ -5,5 +5,5 @@ data class FirebaseFAQ(
     val conference: String = "",
     val question: String = "",
     val answer: String = "",
-    val updated_at: String? = null
+    val updated_at: String? = null,
 )

@@ -8,17 +8,16 @@ import com.advice.firebase.extensions.toMerch
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.products.FirebaseProduct
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 
-@OptIn(FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseProductsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
 ) : ProductsDataSource {
-
     override fun get(): Flow<List<Product>> {
         return userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")

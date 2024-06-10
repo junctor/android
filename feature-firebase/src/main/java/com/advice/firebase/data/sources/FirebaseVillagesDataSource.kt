@@ -9,7 +9,6 @@ class FirebaseVillagesDataSource(
     private val organizationsDataSource: OrganizationsDataSource,
     private val tagsDataSource: TagsDataSource,
 ) : VillagesDataSource {
-
     override fun get() =
         combine(organizationsDataSource.get(), tagsDataSource.get()) { organizations, tags ->
             val vendor =

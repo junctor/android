@@ -12,5 +12,5 @@ data class FirebaseVendor(
     val partner: Boolean = false,
     val updatedAt: String = "",
     val conference: String = "",
-    val hidden: Boolean = false
+    val hidden: Boolean = false,
 ) : Parcelable

@@ -1,7 +1,6 @@
 package com.advice.firebase.extensions
 
 import android.annotation.SuppressLint
-import androidx.annotation.NonNull
 import com.advice.core.local.Action
 import com.advice.core.local.Affiliation
 import com.advice.core.local.Bookmark
@@ -13,7 +12,6 @@ import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Link
 import com.advice.core.local.Location
-import com.advice.firebase.models.FirebaseLocationSchedule
 import com.advice.core.local.LocationSchedule
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
@@ -23,38 +21,39 @@ import com.advice.core.local.OrganizationLink
 import com.advice.core.local.OrganizationLocation
 import com.advice.core.local.OrganizationMedia
 import com.advice.core.local.Session
-import com.advice.core.local.products.Product
-import com.advice.core.local.products.ProductMedia
-import com.advice.core.local.products.ProductVariant
 import com.advice.core.local.Speaker
 import com.advice.core.local.StockStatus
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.Vendor
+import com.advice.core.local.products.Product
+import com.advice.core.local.products.ProductMedia
+import com.advice.core.local.products.ProductVariant
 import com.advice.firebase.models.FirebaseAction
 import com.advice.firebase.models.FirebaseAffiliation
 import com.advice.firebase.models.FirebaseArticle
 import com.advice.firebase.models.FirebaseBookmark
 import com.advice.firebase.models.FirebaseConference
-import com.advice.firebase.models.FirebaseDocument
 import com.advice.firebase.models.FirebaseContent
+import com.advice.firebase.models.FirebaseDocument
 import com.advice.firebase.models.FirebaseFAQ
-import com.advice.firebase.models.FirebaseLink
-import com.advice.firebase.models.FirebaseLocation
 import com.advice.firebase.models.FirebaseMap
-import com.advice.firebase.models.FirebaseMenu
-import com.advice.firebase.models.FirebaseMenuItem
-import com.advice.firebase.models.FirebaseOrganization
-import com.advice.firebase.models.FirebaseOrganizationLocation
-import com.advice.firebase.models.FirebaseOrganizationMedia
-import com.advice.firebase.models.products.FirebaseProduct
-import com.advice.firebase.models.products.FirebaseProductMedia
-import com.advice.firebase.models.products.FirebaseProductVariant
 import com.advice.firebase.models.FirebaseSpeaker
 import com.advice.firebase.models.FirebaseSpeakerLink
 import com.advice.firebase.models.FirebaseTag
 import com.advice.firebase.models.FirebaseTagType
 import com.advice.firebase.models.FirebaseVendor
+import com.advice.firebase.models.location.FirebaseLocation
+import com.advice.firebase.models.location.FirebaseLocationSchedule
+import com.advice.firebase.models.menu.FirebaseMenu
+import com.advice.firebase.models.menu.FirebaseMenuItem
+import com.advice.firebase.models.organization.FirebaseLink
+import com.advice.firebase.models.organization.FirebaseOrganization
+import com.advice.firebase.models.organization.FirebaseOrganizationLocation
+import com.advice.firebase.models.organization.FirebaseOrganizationMedia
+import com.advice.firebase.models.products.FirebaseProduct
+import com.advice.firebase.models.products.FirebaseProductMedia
+import com.advice.firebase.models.products.FirebaseProductVariant
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -64,7 +63,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import java.text.SimpleDateFormat
 
-fun <T> QuerySnapshot.toObjectsOrEmpty(@NonNull clazz: Class<T>): List<T> {
+fun <T> QuerySnapshot.toObjectsOrEmpty(clazz: Class<T>): List<T> {
     return try {
         toObjects(clazz)
     } catch (ex: Exception) {
@@ -73,7 +72,7 @@ fun <T> QuerySnapshot.toObjectsOrEmpty(@NonNull clazz: Class<T>): List<T> {
     }
 }
 
-fun <T> DocumentSnapshot.toObjectOrNull(@NonNull clazz: Class<T>): T? {
+fun <T> DocumentSnapshot.toObjectOrNull(clazz: Class<T>): T? {
     return try {
         toObject(clazz)
     } catch (ex: Exception) {
@@ -82,20 +81,23 @@ fun <T> DocumentSnapshot.toObjectOrNull(@NonNull clazz: Class<T>): T? {
     }
 }
 
-fun Query.snapshotFlow(): Flow<QuerySnapshot> = callbackFlow {
-    val listenerRegistration = addSnapshotListener { value, error ->
-        if (error != null) {
-            Timber.e("Could not create snapshotFlow: ${error.message}")
-            close()
-            return@addSnapshotListener
+fun Query.snapshotFlow(): Flow<QuerySnapshot> =
+    callbackFlow {
+        val listenerRegistration =
+            addSnapshotListener { value, error ->
+                if (error != null) {
+                    Timber.e("Could not create snapshotFlow: ${error.message}")
+                    close()
+                    return@addSnapshotListener
+                }
+                if (value != null) {
+                    trySend(value)
+                }
+            }
+        awaitClose {
+            listenerRegistration.remove()
         }
-        if (value != null)
-            trySend(value)
     }
-    awaitClose {
-        listenerRegistration.remove()
-    }
-}
 
 fun FirebaseConference.toConference(): Conference? {
     return try {
@@ -115,7 +117,7 @@ fun FirebaseConference.toConference(): Conference? {
                 "enable_merch" to enable_merch,
                 "enable_merch_cart" to enable_merch_cart,
                 "enable_wifi" to enable_wifi,
-            )
+            ),
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Conference: ${ex.message}")
@@ -137,7 +139,7 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
             parent_id,
             peer_sort_order,
             schedule?.mapNotNull { it.toSchedule() },
-            children
+            children,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Location: ${ex.message}")
@@ -153,7 +155,7 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? {
             format.parse(begin).toInstant(),
             format.parse(end).toInstant(),
             notes,
-            status
+            status,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to LocationSchedule: ${ex.message}")
@@ -166,23 +168,25 @@ fun FirebaseContent.toEvents(
     tags: List<TagType>,
     speakers: List<Speaker>,
     bookmarkedEvents: List<Bookmark>,
-    locations: List<Location>
+    locations: List<Location>,
 ): List<Event>? {
     try {
         val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
 
         val links = links.map { it.toAction() }
-        val types = tag_ids.mapNotNull { id ->
-            list.find { it.id == id }
-        }.sortedBy { list.indexOf(it) }
+        val types =
+            tag_ids.mapNotNull { id ->
+                list.find { it.id == id }
+            }.sortedBy { list.indexOf(it) }
 
-        val speakers = people
-            .map { person ->
-                val role = list.find { it.id == person.tag_id }
-                val speaker = speakers.find { it.id == person.person_id }
-                person to speaker?.copy(roles = listOfNotNull(role))
-            }.sortedWith(compareBy({ it.first.sort_order }, { it.second?.name }))
-            .mapNotNull { it.second }
+        val speakers =
+            people
+                .map { person ->
+                    val role = list.find { it.id == person.tag_id }
+                    val speaker = speakers.find { it.id == person.person_id }
+                    person to speaker?.copy(roles = listOfNotNull(role))
+                }.sortedWith(compareBy({ it.first.sort_order }, { it.second?.name }))
+                .mapNotNull { it.second }
 
         if (types.isEmpty()) {
             Timber.e("Could not find tags for event: $title")
@@ -201,12 +205,13 @@ fun FirebaseContent.toEvents(
             // todo: this should probably use event id
             val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == id.toString() }
 
-            val session = Session(
-                session.timezone_name,
-                session.begin_timestamp.toDate().toInstant(),
-                session.end_timetimestamp.toDate().toInstant(),
-                location,
-            )
+            val session =
+                Session(
+                    session.timezone_name,
+                    session.begin_timestamp.toDate().toInstant(),
+                    session.end_timetimestamp.toDate().toInstant(),
+                    location,
+                )
 
             Event(
                 id = id,
@@ -218,7 +223,7 @@ fun FirebaseContent.toEvents(
                 speakers = speakers,
                 types = types,
                 urls = links,
-                isBookmarked = isBookmarked
+                isBookmarked = isBookmarked,
             ).also {
                 Timber.d("Event: $it")
             }
@@ -239,17 +244,19 @@ fun FirebaseContent.toContents(
         val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
 
         val links = links.map { it.toAction() }
-        val types = tag_ids.mapNotNull { id ->
-            list.find { it.id == id }
-        }.sortedBy { list.indexOf(it) }
+        val types =
+            tag_ids.mapNotNull { id ->
+                list.find { it.id == id }
+            }.sortedBy { list.indexOf(it) }
 
-        val speakers = people
-            .map { person ->
-                val role = list.find { it.id == person.tag_id }
-                val speaker = speakers.find { it.id == person.person_id }
-                person to speaker?.copy(roles = listOfNotNull(role))
-            }.sortedWith(compareBy({ it.first.sort_order }, { it.second?.name }))
-            .mapNotNull { it.second }
+        val speakers =
+            people
+                .map { person ->
+                    val role = list.find { it.id == person.tag_id }
+                    val speaker = speakers.find { it.id == person.person_id }
+                    person to speaker?.copy(roles = listOfNotNull(role))
+                }.sortedWith(compareBy({ it.first.sort_order }, { it.second?.name }))
+                .mapNotNull { it.second }
 
         if (types.isEmpty()) {
             Timber.e("Could not find tags for content: $title")
@@ -266,17 +273,15 @@ fun FirebaseContent.toContents(
             speakers = speakers,
             types = types,
             urls = links,
-            isBookmarked = isBookmarked
+            isBookmarked = isBookmarked,
         )
-
     } catch (ex: Exception) {
         Timber.e("Could not map data to Content: ${ex.message}")
         return null
     }
 }
 
-private fun FirebaseAction.toAction() =
-    Action(this.label, this.url)
+private fun FirebaseAction.toAction() = Action(this.label, this.url)
 
 fun FirebaseTag.toTag(): Tag? {
     return try {
@@ -285,7 +290,7 @@ fun FirebaseTag.toTag(): Tag? {
             label,
             description,
             color_background,
-            sort_order
+            sort_order,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Speaker: ${ex.message}")
@@ -301,9 +306,10 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? {
             pronouns = pronouns,
             description = description,
             affiliations = affiliations.mapNotNull { it.toAffiliation() },
-            links = links
-                .sortedBy { it.sort_order }
-                .mapNotNull { it.toLink() },
+            links =
+                links
+                    .sortedBy { it.sort_order }
+                    .mapNotNull { it.toLink() },
             roles = emptyList(),
         )
     } catch (ex: Exception) {
@@ -325,7 +331,7 @@ fun FirebaseSpeakerLink.toLink(): Link? {
     return try {
         Link(
             title,
-            url
+            url,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Link: ${ex.message}")
@@ -340,7 +346,7 @@ fun FirebaseVendor.toVendor(): Vendor? {
             name,
             description,
             link,
-            partner
+            partner,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Vendor: ${ex.message}")
@@ -445,18 +451,20 @@ fun FirebaseMenu.toMenu(): Menu? {
 fun FirebaseMenuItem.toMenuItem(): MenuItem? {
     return try {
         when (function) {
-            "section_heading" -> MenuItem.SectionHeading(
-                title_text,
-            )
+            "section_heading" ->
+                MenuItem.SectionHeading(
+                    title_text,
+                )
 
             "divider" -> MenuItem.Divider
 
-            "document" -> MenuItem.Document(
-                google_materialsymbol,
-                title_text,
-                description,
-                document ?: error("null document id: $title_text"),
-            )
+            "document" ->
+                MenuItem.Document(
+                    google_materialsymbol,
+                    title_text,
+                    description,
+                    document ?: error("null document id: $title_text"),
+                )
 
             "schedule" -> {
                 if (applied_tag_ids.isEmpty()) error("empty tags: $title_text")
@@ -468,26 +476,29 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? {
                 )
             }
 
-            "menu" -> MenuItem.Menu(
-                google_materialsymbol,
-                title_text,
-                description,
-                menu_id ?: error("null menu id: $title_text"),
-            )
+            "menu" ->
+                MenuItem.Menu(
+                    google_materialsymbol,
+                    title_text,
+                    description,
+                    menu_id ?: error("null menu id: $title_text"),
+                )
 
-            "people", "locations", "products", "news", "faq" -> MenuItem.Navigation(
-                google_materialsymbol,
-                title_text,
-                description,
-                function,
-            )
+            "people", "locations", "products", "news", "faq" ->
+                MenuItem.Navigation(
+                    google_materialsymbol,
+                    title_text,
+                    description,
+                    function,
+                )
 
-            "organizations" -> MenuItem.Organization(
-                google_materialsymbol,
-                title_text,
-                description,
-                applied_tag_ids.first(),
-            )
+            "organizations" ->
+                MenuItem.Organization(
+                    google_materialsymbol,
+                    title_text,
+                    description,
+                    applied_tag_ids.first(),
+                )
 
             else -> error("Unknown menu item function: $title_text, $function")
         }
@@ -512,7 +523,8 @@ fun FirebaseMap.toMap(): ConferenceMap? {
 fun FirebaseBookmark.toBookmark(): Bookmark? {
     return try {
         Bookmark(
-            id, value
+            id,
+            value,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Bookmark: ${ex.message}")
@@ -523,7 +535,12 @@ fun FirebaseBookmark.toBookmark(): Bookmark? {
 fun FirebaseTagType.toTagType(): TagType? {
     return try {
         TagType(
-            id, label, category, is_browsable, sort_order, tags.mapNotNull { it.toTag() }
+            id,
+            label,
+            category,
+            is_browsable,
+            sort_order,
+            tags.mapNotNull { it.toTag() },
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Bookmark: ${ex.message}")
@@ -540,7 +557,7 @@ fun FirebaseProduct.toMerch(): Product? {
             label = title,
             baseCost = price_min,
             variants = variants.map { it.toMerchOption(price_min) },
-            media = media.map { it.toProductMedia() }
+            media = media.map { it.toProductMedia() },
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Merch: ${ex.message}")

@@ -11,10 +11,8 @@ data class FirebaseSpeakerWithEvents(
     val link: String = "",
     val twitter: String = "",
     val title: String = "",
-
     val conference: String? = null,
     val updated_at: String? = null,
     val events: List<FirebaseContent>? = null,
-
-    val hidden: Boolean = false
+    val hidden: Boolean = false,
 ) : Parcelable

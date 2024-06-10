@@ -20,30 +20,30 @@ class FirebaseMapsDataSource(
     private val filesDir: File?,
     private val firebaseStorage: FirebaseStorage,
 ) : MapsDataSource {
-
-    private val _mapsFlow: Flow<List<MapFile>> = userSession.getConference()
-        .map { conference ->
-            conference.maps.map {
-                val file = File(filesDir, it.filename)
-                if (!file.exists()) {
-                    val path = "/${conference.code}/${it.filename}"
-                    Timber.e("Loading map: $path")
-                    val map = firebaseStorage.reference.child(path)
-                    try {
-                        map.getFile(file).await()
-                    } catch (ex: Exception) {
-                        Timber.e("Could not download map: ${ex.message}")
+    private val _mapsFlow: Flow<List<MapFile>> =
+        userSession.getConference()
+            .map { conference ->
+                conference.maps.map {
+                    val file = File(filesDir, it.filename)
+                    if (!file.exists()) {
+                        val path = "/${conference.code}/${it.filename}"
+                        Timber.e("Loading map: $path")
+                        val map = firebaseStorage.reference.child(path)
+                        try {
+                            map.getFile(file).await()
+                        } catch (ex: Exception) {
+                            Timber.e("Could not download map: ${ex.message}")
+                        }
                     }
+                    MapFile(it.name, file)
                 }
-                MapFile(it.name, file)
             }
-        }
-        .distinctUntilChanged()
-        .shareIn(
-            CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Lazily,
-            replay = 1,
-        )
+            .distinctUntilChanged()
+            .shareIn(
+                CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
 
     override fun get(): Flow<List<MapFile>> = _mapsFlow
 }

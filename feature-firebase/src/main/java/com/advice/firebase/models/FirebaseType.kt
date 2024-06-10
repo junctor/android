@@ -15,5 +15,5 @@ data class FirebaseType(
     val youtube_url: String? = null,
     val eventdescriptionfooter: String? = null,
     val updated_at: String? = null,
-    val tags: String? = null
+    val tags: String? = null,
 ) : Parcelable

@@ -11,9 +11,7 @@ data class FirebaseSpeaker(
     val description: String = "",
     val affiliations: List<FirebaseAffiliation> = emptyList(),
     val links: List<FirebaseSpeakerLink> = emptyList(),
-
     val conference: String? = null,
     val updated_at: String? = null,
-
-    val hidden: Boolean = false
+    val hidden: Boolean = false,
 ) : Parcelable

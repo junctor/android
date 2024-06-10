@@ -9,24 +9,34 @@ import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toTagType
 import com.advice.firebase.models.FirebaseTagType
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseTagsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : TagsDataSource {
-
     override fun get(): Flow<List<TagType>> {
         return combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
-            val temp = tags.toMutableList()
-                .sortedBy { it.sortOrder }
-                .map {
-                    it.copy(tags = it.tags.sortedWith(compareBy({ it.sortOrder }, { it.label })))
-                }
+            val temp =
+                tags.toMutableList()
+                    .sortedBy { it.sortOrder }
+                    .map {
+                        it.copy(
+                            tags =
+                                it.tags.sortedWith(
+                                    compareBy(
+                                        { it.sortOrder },
+                                        { it.label },
+                                    ),
+                                ),
+                        )
+                    }
 
             // clearing any previous set selections
             temp.flatMap { it.tags }.forEach {

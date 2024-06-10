@@ -27,7 +27,6 @@ class FirebaseUserSession(
     conferencesDataSource: ConferencesDataSource,
     private val preferences: Storage,
 ) : UserSession {
-
     private val _user = MutableStateFlow<User?>(null)
     override var user: Flow<User?> = _user
 
@@ -63,7 +62,10 @@ class FirebaseUserSession(
         }
     }
 
-    private fun getConference(preferred: Long, conferences: List<Conference>): Conference? {
+    private fun getConference(
+        preferred: Long,
+        conferences: List<Conference>,
+    ): Conference? {
         if (conferences.isEmpty()) {
             Timber.e("Could not load conferences.")
             return null
@@ -101,16 +103,19 @@ class FirebaseUserSession(
         get() = _user.value
 }
 
-fun Task<AuthResult>.snapshotFlow(): Flow<AuthResult> = callbackFlow {
-    val listenerRegistration = addOnCompleteListener {
-        if (!it.isSuccessful) {
-            close()
-            return@addOnCompleteListener
+fun Task<AuthResult>.snapshotFlow(): Flow<AuthResult> =
+    callbackFlow {
+        val listenerRegistration =
+            addOnCompleteListener {
+                if (!it.isSuccessful) {
+                    close()
+                    return@addOnCompleteListener
+                }
+                if (it.result != null) {
+                    trySend(it.result)
+                }
+            }
+        awaitClose {
+            listenerRegistration
         }
-        if (it.result != null)
-            trySend(it.result)
     }
-    awaitClose {
-        listenerRegistration
-    }
-}

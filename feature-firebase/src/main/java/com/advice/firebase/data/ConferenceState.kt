@@ -1,4 +1,4 @@
-package com.advice.firebase.data.sources
+package com.advice.firebase.data
 
 import com.advice.core.local.Conference
 import com.advice.core.local.Location

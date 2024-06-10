@@ -15,17 +15,14 @@ data class FirebaseContent(
     val description: String = "",
     @PropertyName("people")
     val people: ArrayList<FirebasePerson> = ArrayList(),
-
     @PropertyName("sessions")
     val sessions: ArrayList<FirebaseSession> = ArrayList(),
-
     @PropertyName("links")
     val links: List<FirebaseAction> = emptyList(),
     @PropertyName("tag_ids")
     val tag_ids: List<Long> = emptyList(),
-
     @PropertyName("updated_at")
     val updated_timestamp: Timestamp = Timestamp.now(),
     @PropertyName("hidden")
-    val hidden: Boolean = false
+    val hidden: Boolean = false,
 ) : Parcelable
