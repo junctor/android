@@ -13,6 +13,10 @@ class AppManager(context: Context) {
     private val appUpdateManager = AppUpdateManagerFactory.create(context)
 
     suspend fun isUpdateAvailable(): Boolean {
+        if (BuildConfig.DEBUG) {
+            return false
+        }
+
         return suspendCoroutine {
             appUpdateManager.appUpdateInfo
                 .addOnCompleteListener { task ->
@@ -26,6 +30,10 @@ class AppManager(context: Context) {
     }
 
     fun checkForUpdate(activity: Activity, requestCode: Int) {
+        if (BuildConfig.DEBUG) {
+            return
+        }
+
         appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 appUpdateManager.startUpdateFlowForResult(
