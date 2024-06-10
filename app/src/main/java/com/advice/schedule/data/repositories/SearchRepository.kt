@@ -1,5 +1,6 @@
 package com.advice.schedule.data.repositories
 
+import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
@@ -54,7 +55,7 @@ class SearchRepository(
         SearchState.Results(
             SearchResults(
                 query = query,
-                events = (values[EVENTS_INDEX] as List<Event>).filter { event ->
+                events = ((values[EVENTS_INDEX] as ConferenceContent).events).filter { event ->
                     event.title.contains(query, ignoreCase = true) ||
                             event.description.contains(query, ignoreCase = true)
                 },
