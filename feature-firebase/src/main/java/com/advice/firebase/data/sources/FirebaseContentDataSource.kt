@@ -1,6 +1,7 @@
 package com.advice.firebase.data.sources
 
 import com.advice.core.local.Event
+import com.advice.core.local.Location
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ContentDataSource
 import com.advice.data.sources.LocationsDataSource
@@ -35,7 +36,7 @@ class FirebaseContentDataSource(
 
         val tags = tagsDataSource.get().first()
         val speakers = speakersDataSource.get().first()
-        val locations = locationsDataSource.get().first()
+        val locations = locationsDataSource.get().first().flatten()
         val bookmarks = bookmarkedEventsDataSource.get().first()
 
         val event =
@@ -49,11 +50,18 @@ class FirebaseContentDataSource(
                 )
 
         if (event.isNullOrEmpty()) {
-            Timber.e("Event with id $id not found")
+            Timber.e("Could not find Content with id: $id")
             return null
         }
 
         // todo: handle multiple events with the same id
         return event.first()
+    }
+}
+
+// todo: this needs to be recursive.
+private fun List<Location>.flatten(): List<Location> {
+    return flatMap { location ->
+        listOf(location) + location.children.flatten()
     }
 }

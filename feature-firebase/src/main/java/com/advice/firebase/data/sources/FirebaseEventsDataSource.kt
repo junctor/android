@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Event
+import com.advice.core.local.Location
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.EventsDataSource
@@ -57,7 +58,7 @@ class FirebaseEventsDataSource(
                 conference,
                 tags,
                 speakers,
-                locations,
+                locations.flatten(),
             )
         }
             .shareIn(
@@ -106,5 +107,12 @@ class FirebaseEventsDataSource(
 
     override suspend fun bookmark(event: Event) {
         bookmarkedEventsDataSource.bookmark(event.id, isBookmarked = !event.isBookmarked)
+    }
+}
+
+// todo: this needs to be recursive.
+private fun List<Location>.flatten(): List<Location> {
+    return flatMap { location ->
+        listOf(location) + location.children.flatten()
     }
 }
