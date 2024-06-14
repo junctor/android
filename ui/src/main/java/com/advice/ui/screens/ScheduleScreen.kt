@@ -249,6 +249,7 @@ private fun ScheduleScreenPreview() {
                         title = "DOORS OPEN 喝一杯",
                         description = "",
                         session = Session(
+                            id = 1,
                             timeZone = "America/Chicago",
                             start = Instant.now(),
                             end = Instant.now(),

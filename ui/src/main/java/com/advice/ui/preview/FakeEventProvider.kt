@@ -20,6 +20,7 @@ class FakeEventProvider : PreviewParameterProvider<Event> {
             "Payment Hacking Challenge",
             "Try yourself in ATM, Online bank, POST and Cards hacking challenges.\nPlease join the DEF CON Discord and see the #payv-labs-text channel for more information.",
             Session(
+                id = 1,
                 "America/Los_Angeles",
                 Instant.now(),
                 Instant.now(),
