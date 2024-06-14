@@ -2,7 +2,6 @@ package com.advice.core.local
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.lang.Math.max
 import java.time.Instant
 
 @Parcelize
@@ -10,7 +9,6 @@ data class Location(
     val id: Long,
     val name: String,
     val shortName: String?,
-    val conference: String,
     // Schedule
     val defaultStatus: String? = null,
     val depth: Int = -1,
@@ -23,7 +21,6 @@ data class Location(
     var isVisible: Boolean = true,
     var isExpanded: Boolean = false,
 ) : Parcelable {
-
     val hasChildren: Boolean
         get() = children.isNotEmpty()
 
@@ -45,9 +42,10 @@ data class Location(
     private fun getCurrentStatus(): LocationStatus {
         val now = Instant.now()
 
-        val status = schedule?.firstOrNull {
-            it.start.compareTo(now) == -1 && it.end.compareTo(now) == 1
-        }?.status ?: defaultStatus
+        val status =
+            schedule?.firstOrNull {
+                it.start.compareTo(now) == -1 && it.end.compareTo(now) == 1
+            }?.status ?: defaultStatus
 
         return when (status) {
             "open" -> LocationStatus.Open

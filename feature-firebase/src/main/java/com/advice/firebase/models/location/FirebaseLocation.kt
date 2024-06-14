@@ -7,7 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class FirebaseLocation(
     val id: Long = -1,
     val name: String = "",
-    val conference: String = "",
     // Schedule
     val default_status: String? = null,
     val hier_depth: Int = -1,
@@ -17,5 +16,4 @@ data class FirebaseLocation(
     val peer_sort_order: Int = -1,
     val schedule: List<FirebaseLocationSchedule>? = null,
     val short_name: String? = null,
-    val updated_at: String? = null,
 ) : Parcelable
