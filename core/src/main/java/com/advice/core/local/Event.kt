@@ -6,6 +6,7 @@ import java.time.Instant
 
 @Parcelize
 data class Session(
+    val id: Long,
     val timeZone: String,
     val start: Instant,
     val end: Instant,

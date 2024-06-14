@@ -209,8 +209,7 @@ private fun ScheduleScreenContent(
                     }
                     // Events
                     for (it in day.value) {
-                        val event = it
-                        item(key = it.id) {
+                        item(key = it.session.id) {
                             EventRowView(
                                 title = it.title,
                                 time = TimeUtil.getTimeStamp(context, it.session),
