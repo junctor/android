@@ -21,7 +21,7 @@ data class FirebaseContent(
     val links: List<FirebaseAction> = emptyList(),
     @PropertyName("tag_ids")
     val tag_ids: List<Long> = emptyList(),
-    @PropertyName("updated_at")
+    @PropertyName("updated_timestamp")
     val updated_timestamp: Timestamp = Timestamp.now(),
     @PropertyName("hidden")
     val hidden: Boolean = false,
