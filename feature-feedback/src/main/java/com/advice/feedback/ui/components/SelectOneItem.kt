@@ -14,6 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun SelectOneItem(
@@ -22,7 +24,7 @@ fun SelectOneItem(
 ) {
     var choice by remember { mutableStateOf(options[0]) }
 
-    Column {
+    Column(Modifier.fillMaxWidth()) {
         Text(caption)
 
         if (options.size > 3) {
@@ -52,5 +54,27 @@ fun SelectOneItem(
                 }
             }
         }
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun SelectOneItemPreview() {
+    ScheduleTheme {
+        SelectOneItem(
+            caption = "Select one item",
+            options = listOf("Option 1", "Option 2", "Option 3"),
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun SelectOneItemVerticalPreview() {
+    ScheduleTheme {
+        SelectOneItem(
+            caption = "Select one item",
+            options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
+        )
     }
 }

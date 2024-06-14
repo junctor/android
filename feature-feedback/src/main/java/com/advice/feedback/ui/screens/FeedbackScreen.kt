@@ -19,49 +19,22 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.advice.feedback.models.FeedbackForm
-import com.advice.feedback.models.FeedbackItem
 import com.advice.feedback.models.FeedbackType
 import com.advice.feedback.ui.components.DisplayOnlyItem
+import com.advice.feedback.ui.components.MultiSelectItem
 import com.advice.feedback.ui.components.SelectOneItem
 import com.advice.feedback.ui.components.TextBoxItem
+import com.advice.feedback.ui.preview.FeedbackFormProvider
 import com.advice.ui.preview.LightDarkPreview
 import com.advice.ui.theme.ScheduleTheme
 
-private val form =
-    FeedbackForm(
-        id = 1,
-        items =
-            listOf(
-                FeedbackItem(
-                    100,
-                    caption = "Thank you so much for attending Policy @ DEF CON, and for taking the time to leave feedback.",
-                    type = FeedbackType.DisplayOnly,
-                ),
-                FeedbackItem(
-                    id = 1,
-                    caption = "How do you feel?",
-                    type =
-                        FeedbackType.SelectOne(
-                            options = listOf("Good", "Bad", "Neutral"),
-                        ),
-                ),
-                FeedbackItem(
-                    id = 2,
-                    caption = "What do you think?",
-                    type =
-                        FeedbackType.TextBox(
-                            value = "",
-                        ),
-                ),
-            ),
-    )
-
 @Composable
 fun FeedbackScreen(navController: NavController) {
-    FeedbackScreen(form)
+    TODO()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,6 +88,7 @@ fun FeedbackScreen(form: FeedbackForm) {
                 when (val type = item.type) {
                     FeedbackType.DisplayOnly -> DisplayOnlyItem(item.caption)
                     is FeedbackType.SelectOne -> SelectOneItem(item.caption, type.options)
+                    is FeedbackType.MultiSelect -> MultiSelectItem(item.caption, type.options)
                     is FeedbackType.TextBox -> TextBoxItem(item.caption, type.value)
                 }
             }
@@ -128,8 +102,10 @@ fun FeedbackScreen(form: FeedbackForm) {
 
 @LightDarkPreview
 @Composable
-private fun FeedbackScreenPreview() {
+private fun FeedbackScreenPreview(
+    @PreviewParameter(FeedbackFormProvider::class) feedback: FeedbackForm,
+) {
     ScheduleTheme {
-        FeedbackScreen(form)
+        FeedbackScreen(feedback)
     }
 }

@@ -5,5 +5,7 @@ sealed class FeedbackType {
 
     data class SelectOne(val options: List<String>) : FeedbackType()
 
+    data class MultiSelect(val options: List<String>) : FeedbackType()
+
     data class TextBox(val value: String) : FeedbackType()
 }
