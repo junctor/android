@@ -8,18 +8,23 @@ import com.advice.firebase.extensions.toLocation
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.location.FirebaseLocation
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseLocationsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
 ) : LocationsDataSource {
-    override fun get(): Flow<List<Location>> {
-        return userSession.getConference().flatMapMerge { conference ->
+    private val locations: StateFlow<List<Location>> =
+        userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("locations")
@@ -31,8 +36,13 @@ class FirebaseLocationsDataSource(
 
                     getChildrenNodes(locations, parent = 0)
                 }
-        }
-    }
+        }.stateIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            initialValue = emptyList(),
+        )
+
+    override fun get(): Flow<List<Location>> = locations
 
     private fun getChildrenNodes(
         locations: List<FirebaseLocation>,

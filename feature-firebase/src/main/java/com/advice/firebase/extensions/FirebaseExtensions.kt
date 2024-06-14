@@ -131,7 +131,6 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
             id,
             name,
             short_name,
-            conference,
             default_status,
             hier_depth,
             hier_extent_left,
@@ -207,6 +206,7 @@ fun FirebaseContent.toEvents(
 
             val session =
                 Session(
+                    session.session_id,
                     session.timezone_name,
                     session.begin_timestamp.toDate().toInstant(),
                     session.end_timetimestamp.toDate().toInstant(),
