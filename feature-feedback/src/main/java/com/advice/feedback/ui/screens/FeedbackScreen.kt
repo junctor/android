@@ -34,7 +34,7 @@ import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun FeedbackScreen(navController: NavController) {
-    TODO()
+    FeedbackScreen(FeedbackFormProvider.element)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

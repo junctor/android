@@ -250,6 +250,15 @@ internal fun NavHost(navController: NavHostController) {
         ) { backStackEntry ->
             OrganizationScreen(backStackEntry, navController)
         }
+        composable(
+            "feedback/{id}",
+            arguments =
+                listOf(
+                    navArgument("id") { type = NavType.StringType },
+                ),
+        ) { backStackEntry ->
+            FeedbackScreen(navController)
+        }
     }
 }
 
