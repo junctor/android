@@ -30,6 +30,7 @@ import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.core.ui.ScheduleFilter
 import com.advice.documents.presentation.viewmodel.DocumentsViewModel
+import com.advice.feedback.ui.screens.FeedbackScreen
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.organizations.ui.screens.OrganizationScreen
 import com.advice.products.presentation.viewmodel.ProductsViewModel
