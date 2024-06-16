@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -43,7 +43,7 @@ fun PromoSwitch(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 fun PromoSwitchPreview() {
     ScheduleTheme {

@@ -33,7 +33,7 @@ import com.advice.core.local.products.Product
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -131,7 +131,7 @@ private fun FeaturedProduct(product: Product, onProductClicked: (Product) -> Uni
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun FeaturedProductsPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {

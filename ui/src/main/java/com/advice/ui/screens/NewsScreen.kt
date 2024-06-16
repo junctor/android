@@ -21,21 +21,25 @@ import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.home.ArticleView
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsScreen(label: String?, news: List<NewsArticle>?, onBackPressed: () -> Unit) {
+fun NewsScreen(
+    label: String?,
+    news: List<NewsArticle>?,
+    onBackPress: () -> Unit,
+) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = { Text(label ?: "News") },
             navigationIcon =
-            {
-                IconButton(onClick = { onBackPressed() }) {
-                    Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
-                }
-            }
+                {
+                    IconButton(onClick = { onBackPress() }) {
+                        Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
+                    }
+                },
         )
     }) {
         Box(Modifier.padding(it)) {
@@ -63,13 +67,14 @@ fun NewsScreen(label: String?, news: List<NewsArticle>?, onBackPressed: () -> Un
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun NewsScreenPreview() {
     ScheduleTheme {
         NewsScreen(
             label = "Announcements",
-            news = emptyList()
-        ) {}
+            news = emptyList(),
+            onBackPress = {},
+        )
     }
 }

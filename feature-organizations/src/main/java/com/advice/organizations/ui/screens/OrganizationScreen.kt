@@ -28,7 +28,7 @@ import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
 import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.Paragraph
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.screens.ImageScaffold
 import com.advice.ui.theme.ScheduleTheme
 
@@ -125,7 +125,7 @@ fun Header(label: String) {
     )
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun OrganizationScreenPreview() {
     ScheduleTheme {

@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -36,7 +36,7 @@ fun MultiSelectItem(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun MultiSelectItemPreview() {
     ScheduleTheme {

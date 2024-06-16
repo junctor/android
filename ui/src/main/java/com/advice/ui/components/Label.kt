@@ -6,20 +6,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun Label(text: String, modifier: Modifier = Modifier) {
+fun Label(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text,
-        modifier = modifier
-            .padding(16.dp),
+        modifier =
+            modifier
+                .padding(16.dp),
         textAlign = TextAlign.Center,
     )
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun LabelPreview() {
     ScheduleTheme {

@@ -17,26 +17,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.components.Paragraph
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 @Composable
-fun ArticleView(title: String, text: String, date: Date?, onDismiss: (() -> Unit)? = null) {
+fun ArticleView(
+    title: String,
+    text: String,
+    date: Date?,
+    onDismiss: (() -> Unit)? = null,
+) {
     HomeCard {
         Column(horizontalAlignment = Alignment.End) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     title,
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 16.dp, end = 16.dp)
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                            .weight(1f),
                     fontWeight = FontWeight.Black,
                 )
                 if (onDismiss != null) {
@@ -50,9 +55,10 @@ fun ArticleView(title: String, text: String, date: Date?, onDismiss: (() -> Unit
             if (date != null) {
                 Text(
                     text = TimeUtil.getNewsTimestamp(date),
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
                     textAlign = TextAlign.End,
                 )
             }
@@ -60,7 +66,7 @@ fun ArticleView(title: String, text: String, date: Date?, onDismiss: (() -> Unit
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ArticleViewPreview() {
     ScheduleTheme {
@@ -68,7 +74,7 @@ private fun ArticleViewPreview() {
             title = "DEFCON 28",
             text = "Welcome to DEFCON 28!",
             date = Date(),
-            onDismiss = {}
+            onDismiss = {},
         )
     }
 }

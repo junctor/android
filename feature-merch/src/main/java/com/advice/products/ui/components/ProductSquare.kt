@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -36,7 +35,7 @@ import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.R
 import com.advice.products.utils.toCurrency
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -147,7 +146,7 @@ internal fun OutOfStock() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ProductSquarePreview() {
     val variants = listOf(

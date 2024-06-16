@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -19,18 +19,19 @@ fun ConferenceDropdown(
     conferences: List<Conference>,
     onConferenceClick: (Conference) -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
         visible = expanded,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         Column(Modifier.padding(bottom = 64.dp)) {
             for (conference in conferences) {
                 ConferenceSelectorView(
-                    conference
+                    conference,
                 ) {
                     onConferenceClick(conference)
                 }
@@ -39,7 +40,7 @@ fun ConferenceDropdown(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ConferenceDropdownPreview() {
     ScheduleTheme {

@@ -11,34 +11,37 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun EmptyMessage(message: String, modifier: Modifier = Modifier) {
+fun EmptyMessage(
+    message: String,
+    modifier: Modifier = Modifier,
+) {
     Box(modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Alignment.Center),
         ) {
             Text(
                 "404",
                 fontWeight = FontWeight.Black,
                 fontFamily = FontFamily.Monospace,
-                style = MaterialTheme.typography.displayLarge
+                style = MaterialTheme.typography.displayLarge,
             )
             Text(
                 message,
                 fontWeight = FontWeight.Black,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.Monospace,
             )
         }
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-fun EmptyViewPreview() {
+private fun EmptyViewPreview() {
     ScheduleTheme {
         Surface {
             EmptyMessage("Maps not found")

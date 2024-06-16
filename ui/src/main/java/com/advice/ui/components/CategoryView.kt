@@ -18,16 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.createTag
 import com.advice.ui.utils.parseColor
-
-sealed class CategorySize {
-    object Small : CategorySize()
-    object Medium : CategorySize()
-    object Large : CategorySize()
-}
 
 @Composable
 internal fun CategoryView(
@@ -36,57 +30,65 @@ internal fun CategoryView(
     hasIcon: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
-    val style = when (size) {
-        CategorySize.Large -> MaterialTheme.typography.bodyLarge
-        CategorySize.Medium -> MaterialTheme.typography.bodyMedium
-        CategorySize.Small -> MaterialTheme.typography.bodySmall
-    }
+    val style =
+        when (size) {
+            CategorySize.Large -> MaterialTheme.typography.bodyLarge
+            CategorySize.Medium -> MaterialTheme.typography.bodyMedium
+            CategorySize.Small -> MaterialTheme.typography.bodySmall
+        }
 
-    val fontWeight = when (size) {
-        CategorySize.Large -> FontWeight.ExtraBold
-        CategorySize.Medium -> MaterialTheme.typography.bodyMedium.fontWeight
-        CategorySize.Small -> FontWeight.Medium
-    }
+    val fontWeight =
+        when (size) {
+            CategorySize.Large -> FontWeight.ExtraBold
+            CategorySize.Medium -> MaterialTheme.typography.bodyMedium.fontWeight
+            CategorySize.Small -> FontWeight.Medium
+        }
 
-    val padding = when (size) {
-        CategorySize.Large -> 8.dp
-        CategorySize.Medium -> 6.dp
-        CategorySize.Small -> 4.dp
-    }
+    val padding =
+        when (size) {
+            CategorySize.Large -> 8.dp
+            CategorySize.Medium -> 6.dp
+            CategorySize.Small -> 4.dp
+        }
 
-    val iconSize = when (size) {
-        CategorySize.Large -> 16.dp
-        CategorySize.Medium -> 12.dp
-        CategorySize.Small -> 8.dp
-    }
+    val iconSize =
+        when (size) {
+            CategorySize.Large -> 16.dp
+            CategorySize.Medium -> 12.dp
+            CategorySize.Small -> 8.dp
+        }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(
-            start = 0.dp,
-            end = if (hasIcon) padding else 0.dp,
-            top = padding / 2,
-            bottom = padding / 2,
-        ),
-        horizontalArrangement = Arrangement.spacedBy(padding)
+        modifier =
+            modifier.padding(
+                start = 0.dp,
+                end = if (hasIcon) padding else 0.dp,
+                top = padding / 2,
+                bottom = padding / 2,
+            ),
+        horizontalArrangement = Arrangement.spacedBy(padding),
     ) {
         if (hasIcon) {
             Box(
                 Modifier
                     .size(iconSize)
                     .clip(CircleShape)
-                    .background(parseColor(tag.color))
+                    .background(parseColor(tag.color)),
             )
         }
         Text(
             tag.label,
             color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = fontWeight, style = style, maxLines = 1, overflow = TextOverflow.Ellipsis
+            fontWeight = fontWeight,
+            style = style,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun CategoryViewPreview() {
     val tag = createTag(label = "Talk", color = "#EE11EE")

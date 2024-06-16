@@ -63,7 +63,7 @@ import com.advice.products.ui.components.PagerDots
 import com.advice.products.ui.components.QuantityAdjuster
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.shortstack.core.R
@@ -340,7 +340,7 @@ private fun ImageGallery(media: List<ProductMedia>) {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 fun ProductScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {

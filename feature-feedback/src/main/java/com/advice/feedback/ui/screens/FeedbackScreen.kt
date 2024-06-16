@@ -29,7 +29,7 @@ import com.advice.feedback.ui.components.MultiSelectItem
 import com.advice.feedback.ui.components.SelectOneItem
 import com.advice.feedback.ui.components.TextBoxItem
 import com.advice.feedback.ui.preview.FeedbackFormProvider
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -100,7 +100,7 @@ fun FeedbackScreen(form: FeedbackForm) {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun FeedbackScreenPreview(
     @PreviewParameter(FeedbackFormProvider::class) feedback: FeedbackForm,

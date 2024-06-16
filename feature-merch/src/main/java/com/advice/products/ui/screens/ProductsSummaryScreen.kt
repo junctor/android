@@ -1,7 +1,6 @@
 package com.advice.products.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,13 +26,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
-import com.advice.products.R
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.EditableProduct
 import com.advice.products.ui.components.OutOfStockLabel
@@ -42,7 +38,7 @@ import com.advice.products.ui.components.QRCodeImage
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
 import com.advice.ui.components.EmptyMessage
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -160,7 +156,7 @@ private fun getSubtotal(list: List<Product>): Long {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ProductsSummaryScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
@@ -168,7 +164,7 @@ private fun ProductsSummaryScreenPreview(@PreviewParameter(ProductsProvider::cla
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ProductsSummaryScreenErrorPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     val state = state.copy(json = null)

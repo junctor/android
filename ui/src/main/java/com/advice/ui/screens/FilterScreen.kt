@@ -23,19 +23,25 @@ import com.advice.core.local.TagType
 import com.advice.core.ui.FiltersScreenState
 import com.advice.ui.components.Category
 import com.advice.ui.components.SectionHeader
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.preview.TagTypeProvider
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreen(state: FiltersScreenState, onClick: (Tag) -> Unit, onClear: () -> Unit) {
+fun FilterScreen(
+    state: FiltersScreenState,
+    onClick: (Tag) -> Unit,
+    onClear: () -> Unit,
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Filter") }, actions = {
                 val showClearButton =
-                    state is FiltersScreenState.Success && state.filters.flatMap { it.tags }
-                        .any { it.isSelected }
+                    state is FiltersScreenState.Success &&
+                        state.filters
+                            .flatMap { it.tags }
+                            .any { it.isSelected }
                 if (showClearButton) {
                     IconButton(onClear) {
                         Icon(Icons.Default.Close, null)
@@ -43,7 +49,7 @@ fun FilterScreen(state: FiltersScreenState, onClick: (Tag) -> Unit, onClear: () 
                 }
             })
         },
-        modifier = Modifier.clip(RoundedCornerShape(16.dp))
+        modifier = Modifier.clip(RoundedCornerShape(16.dp)),
     ) {
         Box(Modifier.padding(it)) {
             when (state) {
@@ -62,7 +68,7 @@ fun FilterScreen(state: FiltersScreenState, onClick: (Tag) -> Unit, onClear: () 
 fun FilterScreenContent(
     tags: List<TagType>,
     modifier: Modifier = Modifier,
-    onClick: (Tag) -> Unit
+    onClick: (Tag) -> Unit,
 ) {
     LazyColumn(modifier = modifier) {
         item {
@@ -85,10 +91,10 @@ fun FilterScreenContent(
     }
 }
 
-@LightDarkPreview()
+@PreviewLightDark()
 @Composable
 private fun FilterScreenViewPreview(
-    @PreviewParameter(TagTypeProvider::class) tagType: TagType
+    @PreviewParameter(TagTypeProvider::class) tagType: TagType,
 ) {
     ScheduleTheme {
         val state = FiltersScreenState.Success(listOf(tagType))

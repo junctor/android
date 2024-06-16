@@ -20,16 +20,17 @@ fun TimeView() {
             text = "10:00\nAM",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         )
     }
 }
 
 @Preview
 @Composable
-fun TimeViewPreview() {
+private fun TimeViewPreview() {
     ScheduleTheme {
         TimeView()
     }

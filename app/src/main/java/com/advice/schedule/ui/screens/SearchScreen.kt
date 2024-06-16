@@ -2,7 +2,6 @@ package com.advice.schedule.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -41,7 +39,7 @@ import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
 import com.advice.ui.components.Speaker
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.shortstack.core.R
 import timber.log.Timber
@@ -197,7 +195,7 @@ private fun HeaderRow(label: String) {
     Label(label, modifier = Modifier.fillMaxWidth())
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun SearchScreenPreview() {
     ScheduleTheme {

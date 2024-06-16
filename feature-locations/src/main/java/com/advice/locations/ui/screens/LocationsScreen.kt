@@ -1,11 +1,9 @@
 package com.advice.locations.ui.screens
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -34,7 +31,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,10 +44,9 @@ import com.advice.locations.ui.components.Location
 import com.advice.locations.ui.components.LocationRow
 import com.advice.locations.ui.preview.LocationRowProvider
 import com.advice.ui.R
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -181,7 +176,7 @@ internal fun LocationsScreenContent(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun LocationsScreenViewPreview(
     @PreviewParameter(LocationRowProvider::class) location: LocationRow,
@@ -192,7 +187,7 @@ private fun LocationsScreenViewPreview(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun BottomSheetPreview() {
     val context = LocalContext.current

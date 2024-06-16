@@ -10,23 +10,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-internal fun HomeCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+internal fun HomeCard(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
     Surface(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
         shape = RoundedCornerShape(12.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
     ) {
         content()
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun HomeCard() {
     ScheduleTheme {

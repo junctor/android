@@ -23,21 +23,24 @@ import com.advice.ui.components.FreqAskedQuestion
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.SearchBar
 import com.advice.ui.preview.FAQProvider
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FAQScreen(faqs: List<FAQ>?, onBackPressed: () -> Unit) {
+fun FAQScreen(
+    faqs: List<FAQ>?,
+    onBackPress: () -> Unit,
+) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = { Text("FAQ") },
             navigationIcon =
-            {
-                IconButton(onClick = { onBackPressed() }) {
-                    Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
-                }
-            }
+                {
+                    IconButton(onClick = { onBackPress() }) {
+                        Icon(painterResource(R.drawable.arrow_back), contentDescription = null)
+                    }
+                },
         )
     }) {
         Box(Modifier.padding(it)) {
@@ -59,7 +62,10 @@ fun FAQScreen(faqs: List<FAQ>?, onBackPressed: () -> Unit) {
 }
 
 @Composable
-private fun FAQScreenContent(faqs: List<FAQ>, modifier: Modifier = Modifier) {
+private fun FAQScreenContent(
+    faqs: List<FAQ>,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier) {
         LazyColumn {
             item {
@@ -80,10 +86,10 @@ private fun TopBar() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun FAQScreenViewPreview(
-    @PreviewParameter(FAQProvider::class) faq: FAQ
+    @PreviewParameter(FAQProvider::class) faq: FAQ,
 ) {
     ScheduleTheme {
         FAQScreen(listOf(faq)) {}

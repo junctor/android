@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -30,38 +30,42 @@ internal fun ProductCard(
 ) {
     HomeCard {
         Column(
-            modifier = Modifier.clickable {
-                onMerchClick()
-            }
+            modifier =
+                Modifier.clickable {
+                    onMerchClick()
+                },
         ) {
             Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(12.dp)),
             ) {
                 if (media != null) {
                     AsyncImage(
                         model = media,
                         contentDescription = "logo",
-                        modifier = Modifier
-                            .background(Color.White)
-                            .aspectRatio(2f),
+                        modifier =
+                            Modifier
+                                .background(Color.White)
+                                .aspectRatio(2f),
                         contentScale = ContentScale.Crop,
                     )
                 } else {
-
-                    val colors = listOf(
-                        Color(0xFFEABEBE),
-                        Color(0xFFBABEEA),
-                    )
+                    val colors =
+                        listOf(
+                            Color(0xFFEABEBE),
+                            Color(0xFFBABEEA),
+                        )
                     val gradient = Brush.verticalGradient(colors)
 
                     Box(
-                        modifier = modifier
-                            .aspectRatio(2f)
-                            .background(
-                                gradient // Gradient background
-                            ),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .aspectRatio(2f)
+                                .background(
+                                    gradient, // Gradient background
+                                ),
+                        contentAlignment = Alignment.Center,
                     ) {
                         // Empty or additional content as needed
                     }
@@ -69,10 +73,11 @@ internal fun ProductCard(
             }
 
             Column(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
             ) {
                 Text(
                     "Browse Merch",
@@ -80,14 +85,14 @@ internal fun ProductCard(
                 )
                 Text(
                     "Browse the DEF CON 31 merch store",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun MerchCardViewPreview() {
     ScheduleTheme {

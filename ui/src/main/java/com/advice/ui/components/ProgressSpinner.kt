@@ -6,7 +6,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -16,7 +16,7 @@ fun ProgressSpinner() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ProgressSpinnerPreview() {
     ScheduleTheme {

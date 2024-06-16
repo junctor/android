@@ -1,6 +1,6 @@
 package com.advice.schedule.data.repositories
 
-import com.advice.ui.screens.SpeakerState
+import com.advice.ui.states.SpeakerState
 import kotlinx.coroutines.flow.first
 
 class SpeakerRepository(

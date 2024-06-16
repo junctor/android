@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -23,38 +23,39 @@ fun CountdownView(time: Long) {
 
     Surface(
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 "$days days".uppercase(),
                 fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.displaySmall,
             )
             Text(
                 "${hours % 24} hours".uppercase(),
                 fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.displaySmall,
             )
             Text(
                 "${minutes % 60} minutes".uppercase(),
                 fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.displaySmall,
             )
             Text(
                 "${seconds % 60} seconds".uppercase(),
                 fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.displaySmall,
             )
         }
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-fun CountdownViewPreview() {
+private fun CountdownViewPreview() {
     ScheduleTheme {
         CountdownView(152_352_123)
     }

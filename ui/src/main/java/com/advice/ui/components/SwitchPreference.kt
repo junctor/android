@@ -20,7 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -30,7 +30,7 @@ fun SwitchPreference(
     summary: String? = null,
     summaryOn: String? = null,
     summaryOff: String? = null,
-    onPreferenceChanged: (Boolean) -> Unit
+    onPreferenceChanged: (Boolean) -> Unit,
 ) {
     var checked by rememberSaveable {
         mutableStateOf(isChecked)
@@ -41,16 +41,15 @@ fun SwitchPreference(
             .clickable {
                 checked = !checked
                 onPreferenceChanged(checked)
-            }
-            .fillMaxWidth()
+            }.fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         Column(
             Modifier
                 .weight(1f)
                 .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Text(title)
             when {
@@ -69,15 +68,16 @@ fun SwitchPreference(
                 checked = it
                 onPreferenceChanged(it)
             },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                uncheckedThumbColor = Color.White
-            )
+            colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    uncheckedThumbColor = Color.White,
+                ),
         )
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun SwitchPreferencePreview() {
     ScheduleTheme {
@@ -86,7 +86,7 @@ private fun SwitchPreferencePreview() {
                 "Events in (EUROPE/HELSINKI)",
                 true,
                 summaryOn = "Using conference's timezone",
-                summaryOff = "Using device's timezone"
+                summaryOff = "Using device's timezone",
             ) {
             }
             SwitchPreference("Show filter button", false) {}

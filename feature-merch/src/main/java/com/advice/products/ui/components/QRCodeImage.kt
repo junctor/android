@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
 import com.advice.products.utils.generateQRCode
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -19,7 +19,7 @@ internal fun QRCodeImage(json: String, modifier: Modifier = Modifier) {
     )
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Preview
 @Composable
 private fun QRCodeImagePreview() {

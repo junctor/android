@@ -54,8 +54,8 @@ import java.time.Instant
 @Composable
 fun ScheduleScreen(
     state: ScheduleScreenState?,
-    onMenuClicked: () -> Unit,
-    onFabClicked: () -> Unit,
+    onMenuClick: () -> Unit,
+    onFabClick: () -> Unit,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event, Boolean) -> Unit,
 ) {
@@ -66,20 +66,20 @@ fun ScheduleScreen(
                     Text("Schedule")
                 },
                 navigationIcon = {
-
-                    IconButton(onClick = onMenuClicked) {
+                    IconButton(onClick = onMenuClick) {
                         Icon(Icons.Default.Menu, "Menu")
                     }
-                }
+                },
             )
         },
         floatingActionButton = {
-            FloatingActionButton(shape = CircleShape, onClick = onFabClicked) {
+            FloatingActionButton(shape = CircleShape, onClick = onFabClick) {
                 Icon(painterResource(R.drawable.baseline_filter_list_24), "Filter Schedule")
             }
         },
-        modifier = Modifier
-            .clip(roundedCornerShape)
+        modifier =
+            Modifier
+                .clip(roundedCornerShape),
     ) {
         ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
     }
@@ -90,7 +90,7 @@ fun ScheduleScreen(
 fun ScheduleScreen(
     state: ScheduleScreenState?,
     label: String?,
-    onBackPressed: () -> Unit,
+    onBackPress: () -> Unit,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event, Boolean) -> Unit,
 ) {
@@ -101,13 +101,13 @@ fun ScheduleScreen(
                     Text(label?.replace("\\", "/") ?: "Schedule")
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
+                    IconButton(onClick = onBackPress) {
                         Icon(
                             painterResource(id = R.drawable.arrow_back),
-                            "Back"
+                            "Back",
                         )
                     }
-                }
+                },
             )
         },
     ) {
@@ -164,9 +164,10 @@ private fun ScheduleScreenContent(
     val coroutineScope = rememberCoroutineScope()
     val scrollContext = rememberScrollContext(listState = listState)
 
-    val elements = remember(key1 = days) {
-        days.flatMap { listOf(it.key) + it.value }
-    }
+    val elements =
+        remember(key1 = days) {
+            days.flatMap { listOf(it.key) + it.value }
+        }
 
     // Scrolling to the first event that is not started
     LaunchedEffect(key1 = days) {
@@ -183,10 +184,13 @@ private fun ScheduleScreenContent(
         }
     }
 
-    val temp = remember(key1 = elements) {
-        elements.mapIndexed { index, any -> index to any }.filter { it.second is String }
-            .map { it.first }
-    }
+    val temp =
+        remember(key1 = elements) {
+            elements
+                .mapIndexed { index, any -> index to any }
+                .filter { it.second is String }
+                .map { it.first }
+        }
 
     val start = temp.indexOfLast { it <= scrollContext.start }
     val end = temp.indexOfLast { it <= scrollContext.end }
@@ -240,42 +244,47 @@ private fun ScheduleScreenContent(
 @Composable
 private fun ScheduleScreenPreview() {
     ScheduleTheme {
-        val state = ScheduleScreenState.Success(
-            ScheduleFilter.Default,
-            mapOf(
-                "May 19" to listOf(
-                    Event(
-                        conference = "THOTCON 0xC",
-                        title = "DOORS OPEN 喝一杯",
-                        description = "",
-                        session = Session(
-                            id = 1,
-                            timeZone = "America/Chicago",
-                            start = Instant.now(),
-                            end = Instant.now(),
-                            location = Location(
-                                -1L,
-                                "LOC://AUD - Track 1 / Первый Трек",
-                                "Track 1 / Первый Трек",
-                                "THOCON 0xC"
+        val state =
+            ScheduleScreenState.Success(
+                ScheduleFilter.Default,
+                mapOf(
+                    "May 19" to
+                        listOf(
+                            Event(
+                                conference = "THOTCON 0xC",
+                                title = "DOORS OPEN 喝一杯",
+                                description = "",
+                                session =
+                                    Session(
+                                        id = 1,
+                                        timeZone = "America/Chicago",
+                                        start = Instant.now(),
+                                        end = Instant.now(),
+                                        location =
+                                            Location(
+                                                -1L,
+                                                "LOC://AUD - Track 1 / Первый Трек",
+                                                "Track 1 / Первый Трек",
+                                                "THOCON 0xC",
+                                            ),
+                                    ),
+                                updated = Instant.now(),
+                                speakers = emptyList(),
+                                types =
+                                    listOf(
+                                        Tag(
+                                            -1L,
+                                            "Misc",
+                                            "",
+                                            "#e73dd2",
+                                            -1,
+                                        ),
+                                    ),
+                                urls = emptyList(),
                             ),
                         ),
-                        updated = Instant.now(),
-                        speakers = emptyList(),
-                        types = listOf(
-                            Tag(
-                                -1L,
-                                "Misc",
-                                "",
-                                "#e73dd2",
-                                -1
-                            )
-                        ),
-                        urls = emptyList(),
-                    )
-                )
+                ),
             )
-        )
 
         ScheduleScreen(state, {}, {}, {}, { event, isBookmarked -> })
     }

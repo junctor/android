@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -23,7 +23,7 @@ internal fun WiFiCard(onConnectClicked: () -> Unit) {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun WiFiCardPreview() {
     ScheduleTheme {

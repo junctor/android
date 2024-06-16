@@ -35,26 +35,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
-fun SearchBar(onQuery: (String) -> Unit, onDismiss: () -> Unit) {
+fun SearchBar(
+    onQuery: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
     var text by remember { mutableStateOf("") }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     keyboardController?.show()
 
     TextField(
-        value = text, onValueChange = { newText ->
+        value = text,
+        onValueChange = { newText ->
             onQuery(newText)
             text = newText
         },
-        modifier = Modifier
-            .systemBarsPadding()
-            .fillMaxWidth()
-            .height(64.dp),
+        modifier =
+            Modifier
+                .systemBarsPadding()
+                .fillMaxWidth()
+                .height(64.dp),
         leadingIcon = {
             IconButton(onClick = {
                 onQuery("")
@@ -74,19 +79,22 @@ fun SearchBar(onQuery: (String) -> Unit, onDismiss: () -> Unit) {
                 }
             }
         },
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                keyboardController?.hide()
-                // todo: search?
-            }
-        ),
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            focusedIndicatorColor = Color.White
-        )
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = ImeAction.Search,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    // todo: search?
+                },
+            ),
+        colors =
+            TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                focusedIndicatorColor = Color.White,
+            ),
     )
 }
 
@@ -96,7 +104,8 @@ fun SearchBar(
     query: String,
     placeholder: String,
     modifier: Modifier = Modifier,
-    onQuery: (String) -> Unit) {
+    onQuery: (String) -> Unit,
+) {
     var text by remember { mutableStateOf(query) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -108,8 +117,9 @@ fun SearchBar(
             onQuery(newText)
             text = newText
         },
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth(),
         leadingIcon = {
             Icon(Icons.Default.Search, null)
         },
@@ -123,27 +133,29 @@ fun SearchBar(
                 }
             }
         },
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                keyboardController?.hide()
-                // todo: search?
-            }
-        ),
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = ImeAction.Search,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    // todo: search?
+                },
+            ),
         placeholder = { Text(placeholder) },
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
     )
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-fun SearchBarPreview() {
+private fun SearchBarPreview() {
     ScheduleTheme {
         Column(
             Modifier
-                .padding(4.dp)
+                .padding(4.dp),
         ) {
             SearchBar(onQuery = {}, onDismiss = {})
             Spacer(modifier = Modifier.height(4.dp))

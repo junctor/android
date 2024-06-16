@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -28,7 +28,7 @@ internal fun LocationRow(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun LocationBottomSheetPreview() {
     ScheduleTheme {

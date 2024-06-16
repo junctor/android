@@ -36,7 +36,10 @@ import com.advice.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference) -> Unit) {
+fun ConferenceSelector(
+    state: HomeState.Loaded?,
+    onConferenceClick: (Conference) -> Unit,
+) {
     if (state == null) {
         CenterAlignedTopAppBar(title = { Text("Home") })
         return
@@ -49,20 +52,21 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
     Column(
         Modifier
             .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         Box(
-            modifier = Modifier
-                .clickable {
-                    expanded = !expanded
-                }
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .clickable {
+                        expanded = !expanded
+                    }.fillMaxWidth(),
         ) {
             Row(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = state.conference.name,
@@ -72,9 +76,10 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     null,
-                    modifier = Modifier
-                        .size(12.dp)
-                        .rotate(-90f)
+                    modifier =
+                        Modifier
+                            .size(12.dp)
+                            .rotate(-90f),
                 )
             }
         }
@@ -87,13 +92,13 @@ fun ConferenceSelector(state: HomeState.Loaded?, onConferenceClick: (Conference)
             },
             onDismiss = {
                 expanded = false
-            }
+            },
         )
         Box(
             Modifier
                 .background(Color.Yellow)
                 .fillMaxSize()
-                .background(Color.Red)
+                .background(Color.Red),
         )
     }
 }

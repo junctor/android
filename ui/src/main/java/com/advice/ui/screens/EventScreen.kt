@@ -61,7 +61,7 @@ import com.advice.ui.components.Paragraph
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.Speaker
 import com.advice.ui.preview.FakeEventProvider
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
 
@@ -78,9 +78,7 @@ fun EventScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    val alpha = remember {
-        Animatable(0f)
-    }
+    val alpha = remember { Animatable(0f) }
 
     Scaffold(
         topBar = {
@@ -90,7 +88,7 @@ fun EventScreen(
                         event?.title ?: "",
                         modifier = Modifier.alpha(alpha.value),
                         maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                 },
                 navigationIcon = {
@@ -105,25 +103,26 @@ fun EventScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = getContainerColour(event).copy(alpha = alpha.value),
-                )
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = getContainerColour(event).copy(alpha = alpha.value),
+                    ),
             )
-        }
+        },
     ) { contentPadding ->
         if (event == null) {
             Box(
                 Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 ProgressSpinner()
             }
         } else {
             Box(
                 Modifier
-                    .verticalScroll(scrollState)
+                    .verticalScroll(scrollState),
             ) {
                 EventScreenContent(
                     event,
@@ -131,7 +130,7 @@ fun EventScreen(
                     onLocationClicked,
                     onUrlClicked,
                     onSpeakerClicked,
-                    modifier = Modifier.padding(contentPadding)
+                    modifier = Modifier.padding(contentPadding),
                 )
             }
         }
@@ -139,19 +138,21 @@ fun EventScreen(
 
     LaunchedEffect(scrollState) {
         snapshotFlow { scrollState.value }.collect { scrollPosition ->
-            val temp = if (scrollPosition > 0) {
-                1f
-            } else {
-                0f
-            }
+            val temp =
+                if (scrollPosition > 0) {
+                    1f
+                } else {
+                    0f
+                }
             alpha.animateTo(temp)
         }
     }
 }
 
 fun getContainerColour(event: Event?): Color {
-    if (event == null)
+    if (event == null) {
         return Color.Transparent
+    }
     return parseColor(event.types.first().color)
 }
 
@@ -172,21 +173,20 @@ private fun HeaderSection(
                 drawRoundRect(
                     color,
                     // need to add extra height for padding
-                    cornerRadius = CornerRadius(16.dp.toPx())
+                    cornerRadius = CornerRadius(16.dp.toPx()),
                 )
-            }
+            },
     ) {
         val statusBarHeight = 48.dp
         val toolbarHeight = 48.dp
         Spacer(Modifier.height(statusBarHeight + toolbarHeight))
 
         Column(Modifier.padding(16.dp)) {
-
             Text(
                 title,
                 color = Color.White,
                 fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
             )
 
             Box(Modifier.padding(vertical = 8.dp)) {
@@ -194,7 +194,7 @@ private fun HeaderSection(
                     categories.first(),
                     size = CategorySize.Large,
                     hasIcon = false,
-                    modifier = Modifier.clickable { onTagClicked(categories.first()) }
+                    modifier = Modifier.clickable { onTagClicked(categories.first()) },
                 )
             }
 
@@ -206,7 +206,7 @@ private fun HeaderSection(
             DetailsCard(
                 icon = Icons.Default.LocationOn,
                 text = location,
-                onClick = onLocationClicked
+                onClick = onLocationClicked,
             )
         }
     }
@@ -222,15 +222,17 @@ private fun DetailsCard(
     val isClickable = onClick != null
     Surface(
         shape = RoundedCornerShape(12.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 0.dp, vertical = 4.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 0.dp, vertical = 4.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable(enabled = isClickable, onClick = onClick ?: {})
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .clickable(enabled = isClickable, onClick = onClick ?: {})
+                    .padding(16.dp),
         ) {
             Icon(icon, null)
             Spacer(Modifier.width(8.dp))
@@ -251,7 +253,7 @@ private fun EventScreenContent(
 ) {
     val context = LocalContext.current
     Column(
-        Modifier
+        Modifier,
     ) {
         HeaderSection(
             title = event.title,
@@ -259,7 +261,7 @@ private fun EventScreenContent(
             date = TimeUtil.getEventDateStamp(context, event.session),
             time = TimeUtil.getEventTimeStamp(context, event.session),
             location = getLocation(event.session.location),
-            onTagClicked = onTagClicked
+            onTagClicked = onTagClicked,
         ) {
             onLocationClicked(event.session.location)
         }
@@ -275,9 +277,10 @@ private fun EventScreenContent(
                     CategoryView(
                         category,
                         size = CategorySize.Medium,
-                        modifier = Modifier.clickable {
-                            onTagClicked(category)
-                        }
+                        modifier =
+                            Modifier.clickable {
+                                onTagClicked(category)
+                            },
                     )
                 }
             }
@@ -286,7 +289,7 @@ private fun EventScreenContent(
         if (event.description.isNotBlank()) {
             Paragraph(
                 event.description,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(horizontal = 8.dp),
             )
         }
         if (event.urls.isNotEmpty()) {
@@ -297,7 +300,8 @@ private fun EventScreenContent(
                     url = action.url,
                     onClick = {
                         onUrlClicked(action.url)
-                    }, modifier = Modifier.padding(horizontal = 16.dp)
+                    },
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
         }
@@ -328,7 +332,7 @@ private fun getLocation(location: Location): String {
     return location.name
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun EventScreenPreview(
     @PreviewParameter(FakeEventProvider::class) event: Event,
@@ -337,4 +341,3 @@ private fun EventScreenPreview(
         EventScreen(event, {}, {}, {}, {}, {}, {})
     }
 }
-    

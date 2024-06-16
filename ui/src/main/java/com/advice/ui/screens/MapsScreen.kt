@@ -54,7 +54,10 @@ import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
+fun MapsScreen(
+    state: MapsScreenState,
+    onBackPress: () -> Unit,
+) {
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
 
@@ -86,13 +89,13 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
                 sheetContent = {
                     MapsBottomSheet(
                         files = maps.map { it.name },
-                        onMapChanged = {
+                        onMapClick = {
                             file = it
                             coroutineScope.launch {
                                 bottomSheetState.hide()
                             }
                         },
-                        modifier = Modifier.navigationBarsPadding()
+                        modifier = Modifier.navigationBarsPadding(),
                     )
                 },
                 sheetState = bottomSheetState,
@@ -105,10 +108,11 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
                             title = { },
                             actions = {
                                 IconButton(
-                                    onClick = onBackPressed,
-                                    colors = IconButtonDefaults.iconButtonColors(
-                                        containerColor = Color.Black.copy(0.40f),
-                                    ),
+                                    onClick = onBackPress,
+                                    colors =
+                                        IconButtonDefaults.iconButtonColors(
+                                            containerColor = Color.Black.copy(0.40f),
+                                        ),
                                 ) {
                                     Icon(
                                         Icons.Default.Close,
@@ -117,10 +121,11 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
                                     )
                                 }
                             },
-                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                containerColor = Color.Transparent,
-                                navigationIconContentColor = Color.Black,
-                            ),
+                            colors =
+                                TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                    containerColor = Color.Transparent,
+                                    navigationIconContentColor = Color.Black,
+                                ),
                         )
                     },
                     floatingActionButton = {
@@ -145,14 +150,14 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
                         temp.file!!,
                         Modifier
                             .padding(it)
-                            .fillMaxSize()
+                            .fillMaxSize(),
                     )
                 }
             }
         }
 
         is MapsScreenState.Error -> {
-            EmptyScreen(onBackPressed)
+            EmptyScreen(onBackPress)
         }
     }
 }
@@ -160,24 +165,25 @@ fun MapsScreen(state: MapsScreenState, onBackPressed: () -> Unit) {
 @Composable
 private fun MapsBottomSheet(
     files: List<String>,
-    onMapChanged: (String) -> Unit,
+    onMapClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp),
     ) {
         files.forEach {
             Text(
                 it,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .clickable {
-                        onMapChanged(it)
-                    }
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .clickable {
+                            onMapClick(it)
+                        }.fillMaxWidth()
+                        .padding(16.dp),
             )
         }
     }
@@ -194,14 +200,15 @@ private fun EmptyScreen(onBackPressed: () -> Unit) {
                     IconButton(onClick = onBackPressed) {
                         Icon(
                             painterResource(id = R.drawable.arrow_back),
-                            null
+                            null,
                         )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    navigationIconContentColor = Color.Black,
-                ),
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent,
+                        navigationIconContentColor = Color.Black,
+                    ),
             )
         },
     ) {

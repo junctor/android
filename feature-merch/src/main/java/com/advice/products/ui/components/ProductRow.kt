@@ -34,7 +34,7 @@ import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.utils.toCurrency
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -96,7 +96,7 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 fun ProductViewPreview() {
     val variants = listOf(

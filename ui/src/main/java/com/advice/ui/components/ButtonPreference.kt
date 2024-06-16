@@ -1,6 +1,5 @@
 package com.advice.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,19 +19,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
-data class ThemeOption(val title: String, val theme: String)
-
 @Composable
-fun ButtonPreference(onPreferenceChanged: (String) -> Unit) {
+fun ButtonPreference(onPreferenceChange: (String) -> Unit) {
     val title = "Choose theme"
-    val options = listOf(
-        ThemeOption("Light", "light"),
-        ThemeOption("Dark", "dark"),
-        ThemeOption("System default", "system")
-    )
+    val options =
+        listOf(
+            ThemeOption("Light", "light"),
+            ThemeOption("Dark", "dark"),
+            ThemeOption("System default", "system"),
+        )
 
     var dialogOpen by remember { mutableStateOf(false) }
 
@@ -40,32 +38,33 @@ fun ButtonPreference(onPreferenceChanged: (String) -> Unit) {
         Dialog(
             title = title,
             options = options,
-            onOptionSelected = {
-                onPreferenceChanged(it)
+            onOptionSelect = {
+                onPreferenceChange(it)
                 dialogOpen = false
             },
             onDismiss = {
                 dialogOpen = false
-            }
+            },
         )
     }
 
-    Row(Modifier
-        .clickable {
-            dialogOpen = true
-        }
-        .fillMaxWidth()
-        .height(IntrinsicSize.Min)
-        .padding(16.dp)) {
+    Row(
+        Modifier
+            .clickable {
+                dialogOpen = true
+            }
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+            .padding(16.dp),
+    ) {
         Column(
             Modifier
                 .weight(1f)
                 .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Text(title)
         }
-
     }
 }
 
@@ -73,7 +72,7 @@ fun ButtonPreference(onPreferenceChanged: (String) -> Unit) {
 private fun Dialog(
     title: String,
     options: List<ThemeOption>,
-    onOptionSelected: (String) -> Unit,
+    onOptionSelect: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
     AlertDialog(
@@ -82,7 +81,7 @@ private fun Dialog(
         text = {
             Column {
                 for (option in options) {
-                    TextButton(onClick = { onOptionSelected(option.theme) }) {
+                    TextButton(onClick = { onOptionSelect(option.theme) }) {
                         Text(option.title, modifier = Modifier.fillMaxWidth())
                     }
                 }
@@ -93,7 +92,7 @@ private fun Dialog(
     )
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ButtonPreferencePreview() {
     ScheduleTheme {
@@ -101,15 +100,16 @@ private fun ButtonPreferencePreview() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ButtonPreferenceDarkPreview() {
     val title = "Choose theme"
-    val options = listOf(
-        ThemeOption("Light", "light"),
-        ThemeOption("Dark", "dark"),
-        ThemeOption("System default", "system")
-    )
+    val options =
+        listOf(
+            ThemeOption("Light", "light"),
+            ThemeOption("Dark", "dark"),
+            ThemeOption("System default", "system"),
+        )
 
     ScheduleTheme {
         Dialog(title, options, {}, {})

@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -83,7 +83,7 @@ fun ImageScaffold(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ImageScreenPreview() {
     ScheduleTheme {

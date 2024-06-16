@@ -17,20 +17,25 @@ import com.advice.ui.R
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-internal fun Navigation(label: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+internal fun Navigation(
+    label: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
     Row(
         modifier
             .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 24.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(label, Modifier.weight(1f))
         Icon(
             painterResource(id = R.drawable.arrow_back),
             null,
-            modifier = Modifier
-                .size(16.dp)
-                .rotate(180f)
+            modifier =
+                Modifier
+                    .size(16.dp)
+                    .rotate(180f),
         )
     }
 }

@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.HotPink
 import com.advice.ui.theme.ScheduleTheme
 import com.halilibo.richtext.markdown.Markdown
@@ -19,23 +19,27 @@ fun Paragraph(
     modifier: Modifier = Modifier,
 ) {
     Material3RichText(
-        modifier = modifier
-            .padding(16.dp),
-        style = RichTextStyle(
-            stringStyle = RichTextStringStyle(
-                linkStyle = SpanStyle(
-                    color = HotPink,
-                ),
+        modifier =
+            modifier
+                .padding(16.dp),
+        style =
+            RichTextStyle(
+                stringStyle =
+                    RichTextStringStyle(
+                        linkStyle =
+                            SpanStyle(
+                                color = HotPink,
+                            ),
+                    ),
             ),
-        ),
     ) {
         Markdown(text)
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-fun ParagraphPreview() {
+private fun ParagraphPreview() {
     ScheduleTheme {
         Paragraph(
             "DEF CON provides a forum for open discussion between participants, where radical viewpoints are welcome and a high degree of skepticism is expected." +
@@ -44,9 +48,9 @@ fun ParagraphPreview() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-fun ParagraphWebsitePreview() {
+private fun ParagraphWebsitePreview() {
     ScheduleTheme {
         Paragraph(
             "wifireg.defcon.org/android.html<br/><br/>In order to access the DEF CON 30 Wireless Network, you must have already registered.<br/>",

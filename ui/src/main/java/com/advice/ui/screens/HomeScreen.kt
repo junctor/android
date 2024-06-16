@@ -32,7 +32,7 @@ import com.advice.ui.components.home.ConferenceSelector
 import com.advice.ui.components.home.ConferenceView
 import com.advice.ui.components.home.CountdownView
 import com.advice.ui.components.home.HomeCard
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 import com.advice.ui.utils.MenuIcon
@@ -47,14 +47,15 @@ fun HomeScreen(
 ) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
-        modifier = Modifier.clip(roundedCornerShape)
+        modifier = Modifier.clip(roundedCornerShape),
     ) { contentPadding ->
         HomeScreenContent(
             state,
             onNavigationClick,
             onDismissNews,
-            modifier = Modifier
-                .padding(contentPadding)
+            modifier =
+                Modifier
+                    .padding(contentPadding),
         )
     }
 }
@@ -105,7 +106,7 @@ private fun HomeScreen(
             ArticleView(
                 title = news.name,
                 text = news.text,
-                date = news.date
+                date = news.date,
             ) { onDismissNews(news) }
         }
 
@@ -137,28 +138,28 @@ private fun Divider() {
             .padding(vertical = 16.dp, horizontal = 16.dp)
             .height(1.dp)
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.outline)
-
+            .background(MaterialTheme.colorScheme.outline),
     )
 }
 
 @Composable
 private fun MenuItem(
     menuItem: MenuItem,
-    onNavigationClick: (String) -> Unit
+    onNavigationClick: (String) -> Unit,
 ) {
     HomeCard {
-        Column(Modifier
-            .clickable(enabled = menuItem.url != null) {
-                val url = menuItem.url
-                if (url != null) {
-                    onNavigationClick(url)
-                }
-            }
-            .padding(16.dp)) {
+        Column(
+            Modifier
+                .clickable(enabled = menuItem.url != null) {
+                    val url = menuItem.url
+                    if (url != null) {
+                        onNavigationClick(url)
+                    }
+                }.padding(16.dp),
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 MenuIcon(menuItem.icon)
                 Text(menuItem.label)
@@ -167,34 +168,37 @@ private fun MenuItem(
             if (description != null) {
                 Text(
                     description,
-                    modifier = Modifier
-                        .padding(start = 0.dp, top = 8.dp)
-                        .fillMaxWidth()
+                    modifier =
+                        Modifier
+                            .padding(start = 0.dp, top = 8.dp)
+                            .fillMaxWidth(),
                 )
             }
         }
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun HomeScreenViewPreview() {
     ScheduleTheme {
         HomeScreen(
-            state = HomeState.Loaded(
-                conferences = listOf(Conference.Zero),
-                conference = Conference.Zero,
-                menu = Menu(-1, "Home", listOf()),
-                news = null,
-                countdown = Date().time / 1000L,
-                forceTimeZone = false
-            ),
-            {}, {}
+            state =
+                HomeState.Loaded(
+                    conferences = listOf(Conference.Zero),
+                    conference = Conference.Zero,
+                    menu = Menu(-1, "Home", listOf()),
+                    news = null,
+                    countdown = Date().time / 1000L,
+                    forceTimeZone = false,
+                ),
+            {},
+            {},
         )
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun MenuItemPreview() {
     ScheduleTheme {
@@ -205,7 +209,7 @@ private fun MenuItemPreview() {
                 description = "This is a description",
                 function = "news",
             ),
-            {}
+            {},
         )
     }
 }

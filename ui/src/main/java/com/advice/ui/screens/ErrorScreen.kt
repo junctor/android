@@ -17,15 +17,15 @@ import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorScreen(onBackPressed: () -> Unit) {
+fun ErrorScreen(onBackPress: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Error") }, navigationIcon = {
-                IconButton(onClick = onBackPressed) {
+                IconButton(onClick = onBackPress) {
                     Icon(Icons.Default.ArrowBack, null)
                 }
             })
-        }
+        },
     ) { contentPadding ->
         EmptyMessage("Whoops", modifier = Modifier.padding(contentPadding))
     }
@@ -36,7 +36,7 @@ fun ErrorScreen(onBackPressed: () -> Unit) {
 private fun ErrorScreenViewPreview() {
     ScheduleTheme {
         ErrorScreen(
-            onBackPressed = {}
+            onBackPress = {},
         )
     }
 }

@@ -16,7 +16,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun BookmarkButton(isBookmarked: Boolean, onCheckChanged: (Boolean) -> Unit) {
+fun BookmarkButton(
+    isBookmarked: Boolean,
+    onCheckChange: (Boolean) -> Unit,
+) {
     var state by remember {
         mutableStateOf(isBookmarked)
     }
@@ -27,12 +30,13 @@ fun BookmarkButton(isBookmarked: Boolean, onCheckChanged: (Boolean) -> Unit) {
         checked = state,
         onCheckedChange = {
             state = !state
-            onCheckChanged(it)
+            onCheckChange(it)
         },
-        colors = IconButtonDefaults.iconToggleButtonColors(
-            checkedContentColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-        )
+        colors =
+            IconButtonDefaults.iconToggleButtonColors(
+                checkedContentColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     ) {
         Icon(icon, contentDescription = null)
     }
@@ -40,18 +44,22 @@ fun BookmarkButton(isBookmarked: Boolean, onCheckChanged: (Boolean) -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun BookmarkButtonPreview() {
+private fun BookmarkButtonPreview() {
     ScheduleTheme {
-        BookmarkButton(isBookmarked = false) {
-        }
+        BookmarkButton(
+            isBookmarked = false,
+            onCheckChange = {},
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun BookmarkButtonCheckedPreview() {
+private fun BookmarkButtonCheckedPreview() {
     ScheduleTheme {
-        BookmarkButton(isBookmarked = true) {
-        }
+        BookmarkButton(
+            isBookmarked = true,
+            onCheckChange = {},
+        )
     }
 }

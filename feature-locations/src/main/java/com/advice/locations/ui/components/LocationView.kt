@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Location
 import com.advice.core.local.LocationStatus
 import com.advice.locations.ui.preview.LocationProvider
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -80,7 +80,7 @@ internal fun Location(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun LocationPreview(
     @PreviewParameter(LocationProvider::class) location: Location,

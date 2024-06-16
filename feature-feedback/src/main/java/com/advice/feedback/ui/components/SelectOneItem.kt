@@ -14,7 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -57,7 +57,7 @@ fun SelectOneItem(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun SelectOneItemPreview() {
     ScheduleTheme {
@@ -68,7 +68,7 @@ private fun SelectOneItemPreview() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun SelectOneItemVerticalPreview() {
     ScheduleTheme {

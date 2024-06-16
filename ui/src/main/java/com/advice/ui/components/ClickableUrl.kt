@@ -14,23 +14,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun ClickableUrl(label: String, url: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun ClickableUrl(
+    label: String,
+    url: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Surface(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
         shape = RoundedCornerShape(12.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 0.dp, vertical = 4.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 0.dp, vertical = 4.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable(onClick = onClick)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .clickable(onClick = onClick)
+                    .padding(16.dp),
         ) {
             Column(Modifier.fillMaxWidth()) {
                 Text(label)
@@ -40,7 +47,7 @@ fun ClickableUrl(label: String, url: String, onClick: () -> Unit, modifier: Modi
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ClickableUrlPreview() {
     ScheduleTheme {

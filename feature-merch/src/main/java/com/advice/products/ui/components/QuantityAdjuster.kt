@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.products.R
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -66,11 +66,10 @@ fun QuantityAdjuster(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 fun QuantityViewPreview() {
     ScheduleTheme {
         QuantityAdjuster(1, {}, canDelete = true)
     }
 }
-    

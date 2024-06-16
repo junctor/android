@@ -3,7 +3,7 @@ package com.advice.schedule.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.schedule.data.repositories.SpeakerRepository
-import com.advice.ui.screens.SpeakerState
+import com.advice.ui.states.SpeakerState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

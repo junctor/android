@@ -6,5 +6,5 @@ data class TagType(
     val category: String,
     val isBrowsable: Boolean,
     val sortOrder: Int,
-    val tags: List<Tag>
+    val tags: List<Tag>,
 )

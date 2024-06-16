@@ -29,7 +29,7 @@ import com.advice.core.local.Event
 import com.advice.core.local.Tag
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.preview.FakeEventProvider
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.createTag
 import com.advice.ui.utils.parseColor
@@ -44,11 +44,11 @@ fun EventRow(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .clickable {
-                onEventPressed()
-            }
-            .fillMaxWidth()
+        modifier =
+            modifier
+                .clickable {
+                    onEventPressed()
+                }.fillMaxWidth(),
     ) {
         CategoryDash(event.types)
         Spacer(Modifier.width(24.dp))
@@ -56,7 +56,7 @@ fun EventRow(
             Modifier
                 .weight(1f)
                 .padding(vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Title(event.title)
             Location(event.session.location.name)
@@ -79,17 +79,17 @@ fun EventRowView(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .clickable {
-                onEventPressed()
-            }
-            .fillMaxWidth()
+        modifier =
+            modifier
+                .clickable {
+                    onEventPressed()
+                }.fillMaxWidth(),
     ) {
         CategoryDash(tags)
         Text(
             time.replace(" ", "\n"),
             textAlign = TextAlign.Center,
-            modifier = Modifier.width(85.dp)
+            modifier = Modifier.width(85.dp),
         )
         Column(
             Modifier
@@ -111,12 +111,13 @@ fun EventRowView(
 private fun CategoryDash(tags: List<Tag>) {
     if (tags.isNotEmpty()) {
         Box(
-            modifier = Modifier
-                .width(8.dp)
-                .padding(start = 4.dp, top = 4.dp, bottom = 4.dp)
-                .height(80.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(parseColor(tags.first().color))
+            modifier =
+                Modifier
+                    .width(8.dp)
+                    .padding(start = 4.dp, top = 4.dp, bottom = 4.dp)
+                    .height(80.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(parseColor(tags.first().color)),
         )
     }
 }
@@ -127,7 +128,7 @@ private fun Categories(tags: List<Tag>) {
     val padding = 4.dp
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(padding),
-        verticalArrangement = Arrangement.spacedBy(padding)
+        verticalArrangement = Arrangement.spacedBy(padding),
     ) {
         for (tag in tags) {
             CategoryView(tag)
@@ -150,9 +151,11 @@ private fun DateTime(text: String) {
     Text(text, style = MaterialTheme.typography.bodyMedium)
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-private fun EventRowPreview(@PreviewParameter(FakeEventProvider::class) event: Event) {
+private fun EventRowPreview(
+    @PreviewParameter(FakeEventProvider::class) event: Event,
+) {
     ScheduleTheme {
         EventRow(
             event = event,
@@ -161,7 +164,7 @@ private fun EventRowPreview(@PreviewParameter(FakeEventProvider::class) event: E
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun EventRowViewPreview() {
     ScheduleTheme {
@@ -170,9 +173,10 @@ private fun EventRowViewPreview() {
                 title = "Compelled Decryption",
                 time = "5:30\nAM",
                 location = "Track 1",
-                tags = listOf(
-                    createTag(label = "Introduction", color = "#EEAAFF"),
-                ),
+                tags =
+                    listOf(
+                        createTag(label = "Introduction", color = "#EEAAFF"),
+                    ),
                 isBookmarked = true,
                 onEventPressed = {},
                 onBookmark = {},
@@ -181,10 +185,11 @@ private fun EventRowViewPreview() {
                 title = "Compelled Decryption",
                 time = "6:00\nAM",
                 location = "Track 1",
-                tags = listOf(
-                    createTag(label = "Talk", color = "#FF61EEAA"),
-                    createTag(label = "Introduction", color = "#EEAAFF"),
-                ),
+                tags =
+                    listOf(
+                        createTag(label = "Talk", color = "#FF61EEAA"),
+                        createTag(label = "Introduction", color = "#EEAAFF"),
+                    ),
                 isBookmarked = false,
                 onEventPressed = {},
                 onBookmark = {},

@@ -19,10 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -63,7 +61,7 @@ import com.advice.ui.states.MapsScreenState
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.screens.SettingScreen
 import com.advice.ui.screens.SpeakerScreen
-import com.advice.ui.screens.SpeakerState
+import com.advice.ui.states.SpeakerState
 import com.advice.ui.screens.SpeakersScreen
 import com.advice.ui.states.ScheduleScreenState
 import com.advice.wifi.suggestNetwork
@@ -433,8 +431,8 @@ private fun SpeakersScreen(navController: NavHostController) {
     val state = viewModel.speakers.collectAsState(initial = null).value
     SpeakersScreen(
         speakers = state,
-        onBackPressed = { navController.popBackStack() },
-        onSpeakerClicked = { navController.navigate("speaker/${it.id}/${it.name}") },
+        onBackPress = { navController.popBackStack() },
+        onSpeakerClick = { navController.navigate("speaker/${it.id}/${it.name}") },
     )
 }
 
@@ -460,7 +458,7 @@ private fun FAQScreen(navController: NavHostController) {
     val state = viewModel.faqs.collectAsState(initial = null).value
     FAQScreen(
         faqs = state,
-        onBackPressed = {
+        onBackPress = {
             navController.popBackStack()
         }
     )
@@ -529,11 +527,11 @@ fun SpeakerScreen(
     SpeakerScreen(
         name = name ?: "",
         state = speakerDetails,
-        onBackPressed = {
+        onBackPress = {
             navController.popBackStack()
         },
-        onLinkClicked = onLinkClicked,
-        onEventClicked = {
+        onLinkClick = onLinkClicked,
+        onEventClick = {
             navController.navigate("event/${it.conference}/${it.id}")
         }
     )
@@ -550,7 +548,7 @@ fun LocationScreen(navController: NavHostController, id: String?, label: String?
     ScheduleScreen(
         state = state,
         label = label,
-        onBackPressed = {
+        onBackPress = {
             navController.popBackStack()
         },
         onEventClick = {
@@ -574,7 +572,7 @@ fun TagScreen(navController: NavHostController, id: String?, label: String?) {
     ScheduleScreen(
         state = state,
         label = label,
-        onBackPressed = {
+        onBackPress = {
             navController.popBackStack()
         },
         onEventClick = {
@@ -598,7 +596,7 @@ fun TagsScreen(navController: NavHostController, id: String?, label: String?) {
     ScheduleScreen(
         state = state,
         label = label,
-        onBackPressed = {
+        onBackPress = {
             navController.popBackStack()
         },
         onEventClick = {
@@ -625,10 +623,10 @@ fun SettingsScreen(navController: NavHostController) {
         enableEasterEggs = state.enableEasterEggs,
         enableAnalytics = state.enableAnalytics,
         showTwitterHandle = state.showTwitterHandle,
-        onPreferenceChanged = { id, value ->
+        onPreferenceChange = { id, value ->
             viewModel.onPreferenceChanged(id, value)
         },
-        onThemeChanged = {
+        onThemeChange = {
             if (viewModel.onThemeChanged(it)) {
                 // Recreate the Activity if the theme has changed
                 (context as MainActivity).recreate()
@@ -638,7 +636,7 @@ fun SettingsScreen(navController: NavHostController) {
             viewModel.onVersionClick()
             (context as MainActivity).openLink("https://www.youtube.com/watch?v=xvFZjo5PgG0")
         },
-        onBackPressed = { navController.popBackStack() }
+        onBackPress = { navController.popBackStack() }
     )
 }
 
@@ -691,10 +689,10 @@ private fun HomeScreen(navController: NavHostController) {
             mainPanel = {
                 ScheduleScreen(
                     state = scheduleScreenState,
-                    onMenuClicked = {
+                    onMenuClick = {
                         mainViewModel.setAnchor(DragAnchors.Start)
                     },
-                    onFabClicked = {
+                    onFabClick = {
                         mainViewModel.setAnchor(DragAnchors.End)
                     },
                     onEventClick = {

@@ -19,7 +19,7 @@ import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.Speaker
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.preview.SpeakerProvider
 import com.advice.ui.theme.ScheduleTheme
 
@@ -27,12 +27,12 @@ import com.advice.ui.theme.ScheduleTheme
 @Composable
 fun SpeakersScreen(
     speakers: List<Speaker>?,
-    onBackPressed: () -> Unit,
-    onSpeakerClicked: (Speaker) -> Unit
+    onBackPress: () -> Unit,
+    onSpeakerClick: (Speaker) -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("Speakers") }, navigationIcon = {
-            IconButton(onClick = onBackPressed) {
+            IconButton(onClick = onBackPress) {
                 Icon(painterResource(id = R.drawable.arrow_back), null)
             }
         })
@@ -48,7 +48,7 @@ fun SpeakersScreen(
                 }
 
                 else -> {
-                    SpeakersScreenContent(speakers, onSpeakerClicked)
+                    SpeakersScreenContent(speakers, onSpeakerClick)
                 }
             }
         }
@@ -58,24 +58,26 @@ fun SpeakersScreen(
 @Composable
 private fun SpeakersScreenContent(
     speakers: List<Speaker>?,
-    onSpeakerClicked: (Speaker) -> Unit
+    onSpeakerClick: (Speaker) -> Unit,
 ) {
-    LazyColumn() {
+    LazyColumn {
         if (speakers != null) {
             items(speakers) {
                 Speaker(
                     name = it.name,
                     title = it.title,
-                    onSpeakerClicked = { onSpeakerClicked(it) }
+                    onSpeakerClicked = { onSpeakerClick(it) },
                 )
             }
         }
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-private fun SpeakersScreenViewPreview(@PreviewParameter(SpeakerProvider::class) speaker: Speaker) {
+private fun SpeakersScreenViewPreview(
+    @PreviewParameter(SpeakerProvider::class) speaker: Speaker,
+) {
     ScheduleTheme {
         SpeakersScreen(listOf(speaker), {}, {})
     }

@@ -34,22 +34,17 @@ import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.SpeakerProvider
+import com.advice.ui.states.SpeakerState
 import com.advice.ui.theme.ScheduleTheme
-
-sealed class SpeakerState {
-    object Loading : SpeakerState()
-    data class Success(val speaker: Speaker, val events: List<Event>) : SpeakerState()
-    object Error : SpeakerState()
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakerScreen(
     name: String,
     state: SpeakerState,
-    onBackPressed: () -> Unit,
-    onLinkClicked: (String) -> Unit,
-    onEventClicked: (Event) -> Unit
+    onBackPress: () -> Unit,
+    onLinkClick: (String) -> Unit,
+    onEventClick: (Event) -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = {
@@ -60,13 +55,13 @@ fun SpeakerScreen(
                     if (pronouns != null) {
                         Text(
                             pronouns,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 }
             }
         }, navigationIcon = {
-            IconButton(onClick = onBackPressed) {
+            IconButton(onClick = onBackPress) {
                 Icon(painterResource(id = R.drawable.arrow_back), null)
             }
         })
@@ -82,8 +77,8 @@ fun SpeakerScreen(
                     SpeakerScreenContent(
                         state.speaker,
                         state.events,
-                        onLinkClicked,
-                        onEventClicked,
+                        onLinkClick,
+                        onEventClick,
                     )
                 }
             }
@@ -95,8 +90,8 @@ fun SpeakerScreen(
 fun SpeakerScreenContent(
     speaker: Speaker,
     events: List<Event>,
-    onLinkClicked: (String) -> Unit,
-    onEventClicked: (Event) -> Unit,
+    onLinkClick: (String) -> Unit,
+    onEventClick: (Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
@@ -125,48 +120,47 @@ fun SpeakerScreenContent(
             Spacer(Modifier.height(16.dp))
             speaker.links.forEach {
                 ClickableUrl(label = it.title, url = it.url, onClick = {
-                    onLinkClicked(it.url)
+                    onLinkClick(it.url)
                 }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
-                }
             }
+        }
 
-            if (events.isNotEmpty()) {
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    "Events", textAlign = TextAlign.Center,
-                    modifier = Modifier
+        if (events.isNotEmpty()) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "Events",
+                textAlign = TextAlign.Center,
+                modifier =
+                    Modifier
                         .padding(16.dp)
-                        .fillMaxWidth()
-                )
+                        .fillMaxWidth(),
+            )
 
-                for (event in events) {
-                    EventRow(
-                        event = event,
-                        onEventPressed = {
-                            onEventClicked(event)
-                        },
-                    )
-                }
+            for (event in events) {
+                EventRow(
+                    event = event,
+                    onEventPressed = {
+                        onEventClick(event)
+                    },
+                )
             }
         }
     }
+}
 
-    @Preview(showBackground = true)
-    @Composable
-    fun SpeakerScreenPreview(
-        @PreviewParameter(SpeakerProvider::class) speaker: Speaker,
-    ) {
-        ScheduleTheme {
-            val state = SpeakerState.Success(speaker, emptyList())
-            SpeakerScreen(
-                name = speaker.name,
-                state = state,
-                onBackPressed = {},
-                onEventClicked = {
-                },
-                onLinkClicked = {
-                },
-            )
-        }
+@Preview(showBackground = true)
+@Composable
+private fun SpeakerScreenPreview(
+    @PreviewParameter(SpeakerProvider::class) speaker: Speaker,
+) {
+    ScheduleTheme {
+        val state = SpeakerState.Success(speaker, emptyList())
+        SpeakerScreen(
+            name = speaker.name,
+            state = state,
+            onBackPress = {},
+            onEventClick = {},
+            onLinkClick = {},
+        )
     }
-    
+}

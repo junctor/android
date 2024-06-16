@@ -30,13 +30,18 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (String) -> Unit) {
+fun DaySelectorView(
+    days: List<String>,
+    start: Int,
+    end: Int,
+    onDaySelected: (String) -> Unit,
+) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -48,21 +53,25 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
         mutableStateOf(IntSize.Zero)
     }
 
-    val startPosition = remember {
-        Animatable(-1f)
-    }
+    val startPosition =
+        remember {
+            Animatable(-1f)
+        }
 
-    val endPosition = remember {
-        Animatable(-1f)
-    }
+    val endPosition =
+        remember {
+            Animatable(-1f)
+        }
 
-    val positions: Array<IntSize> = remember {
-        Array(12) { IntSize.Zero }
-    }
+    val positions: Array<IntSize> =
+        remember {
+            Array(12) { IntSize.Zero }
+        }
 
-    val alpha = remember {
-        Animatable(if (hasSetup) 1f else 0f)
-    }
+    val alpha =
+        remember {
+            Animatable(if (hasSetup) 1f else 0f)
+        }
     LaunchedEffect(key1 = "alpha", block = {
         alpha.animateTo(1f)
         hasSetup = true
@@ -95,42 +104,42 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
             .alpha(alpha.value)
             .onGloballyPositioned {
                 size = it.size
-            }
+            },
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(scrollState)
-                .drawBehind {
-                    val verticalPadding = size.height * 0.25f
-                    translate(left = startPosition.value + 8.dp.toPx(), top = verticalPadding) {
-                        drawRoundRect(
-                            color,
-                            size = Size(
-                                width = endPosition.value - startPosition.value,
-                                height = size.height - (verticalPadding * 2)
-                            ),
-                            cornerRadius = CornerRadius(60f)
-                        )
-                    }
-                }
-                .padding(horizontal = 8.dp, vertical = 16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(scrollState)
+                    .drawBehind {
+                        val verticalPadding = size.height * 0.25f
+                        translate(left = startPosition.value + 8.dp.toPx(), top = verticalPadding) {
+                            drawRoundRect(
+                                color,
+                                size =
+                                    Size(
+                                        width = endPosition.value - startPosition.value,
+                                        height = size.height - (verticalPadding * 2),
+                                    ),
+                                cornerRadius = CornerRadius(60f),
+                            )
+                        }
+                    }.padding(horizontal = 8.dp, vertical = 16.dp),
         ) {
             days.forEachIndexed { index, it ->
                 Box(
-                    modifier = Modifier
-                        .clickable {
-                            onDaySelected(it)
-                        }
-                        .onGloballyPositioned {
-                            positions[index] = it.size
-                        }
-                        .padding(10.dp)
+                    modifier =
+                        Modifier
+                            .clickable {
+                                onDaySelected(it)
+                            }.onGloballyPositioned {
+                                positions[index] = it.size
+                            }.padding(10.dp),
                 ) {
                     Text(
                         it,
                         modifier = Modifier.padding(horizontal = 12.dp),
-                        color = if (index in start..end) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                        color = if (index in start..end) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
@@ -138,7 +147,10 @@ fun DaySelectorView(days: List<String>, start: Int, end: Int, onDaySelected: (St
     }
 }
 
-private fun Animatable<Float, AnimationVector1D>.set(value: Float, coroutineScope: CoroutineScope) {
+private fun Animatable<Float, AnimationVector1D>.set(
+    value: Float,
+    coroutineScope: CoroutineScope,
+) {
     coroutineScope.launch {
         if (this@set.value == -1f) {
             snapTo(value)
@@ -148,9 +160,9 @@ private fun Animatable<Float, AnimationVector1D>.set(value: Float, coroutineScop
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-fun DaySelectorViewPreview() {
+private fun DaySelectorViewPreview() {
     ScheduleTheme {
         DaySelectorView(listOf("May 31", "June 1", "June 2"), 0, 1) {
         }

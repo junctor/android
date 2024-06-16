@@ -28,11 +28,15 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.FAQ
 import com.advice.ui.preview.FAQProvider
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun FreqAskedQuestion(question: String, answer: String, expanded: Boolean = false) {
+fun FreqAskedQuestion(
+    question: String,
+    answer: String,
+    expanded: Boolean = false,
+) {
     var isExpanded by rememberSaveable {
         mutableStateOf(value = expanded)
     }
@@ -40,23 +44,22 @@ fun FreqAskedQuestion(question: String, answer: String, expanded: Boolean = fals
     Surface(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
     ) {
-
         Column {
             Row(
                 Modifier
                     .clickable {
                         isExpanded = !isExpanded
-                    }
-                    .padding(start = 16.dp, top = 4.dp, bottom = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    }.padding(start = 16.dp, top = 4.dp, bottom = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = question,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = 8.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(vertical = 8.dp),
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Spacer(Modifier.width(8.dp))
@@ -67,7 +70,7 @@ fun FreqAskedQuestion(question: String, answer: String, expanded: Boolean = fals
                     Icon(
                         Icons.Default.KeyboardArrowDown,
                         null,
-                        modifier = Modifier.rotate(rotation)
+                        modifier = Modifier.rotate(rotation),
                     )
                 }
             }
@@ -83,9 +86,11 @@ private fun Answer(answer: String) {
     Text(answer, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
-private fun FreqAskedQuestionPreview(@PreviewParameter(FAQProvider::class) faq: FAQ) {
+private fun FreqAskedQuestionPreview(
+    @PreviewParameter(FAQProvider::class) faq: FAQ,
+) {
     ScheduleTheme {
         Column {
             FreqAskedQuestion(faq.question, faq.answer)

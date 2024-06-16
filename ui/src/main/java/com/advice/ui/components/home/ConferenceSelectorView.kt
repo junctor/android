@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -33,17 +33,18 @@ fun ConferenceSelectorView(
     val context = LocalContext.current
 
     Row(
-        modifier = modifier
-            .clickable { onConferenceClick() }
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .clickable { onConferenceClick() }
+                .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         val alpha = if (conference.hasFinished) 0.6f else 1.0f
         Column(
             Modifier
                 .weight(1f)
                 .padding(16.dp)
-                .alpha(alpha)
+                .alpha(alpha),
         ) {
             Text(
                 conference.name,
@@ -53,27 +54,28 @@ fun ConferenceSelectorView(
             )
             Text(
                 TimeUtil.getConferenceDateRange(context, conference),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
         Icon(
             painterResource(R.drawable.arrow_back),
             null,
-            modifier = Modifier
-                .padding(16.dp)
-                .size(12.dp)
-                .rotate(180f)
+            modifier =
+                Modifier
+                    .padding(16.dp)
+                    .size(12.dp)
+                    .rotate(180f),
         )
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ConferenceSelectorViewPreview() {
     ScheduleTheme {
         ConferenceSelectorView(
             conference = Conference.Zero,
-            onConferenceClick = {}
+            onConferenceClick = {},
         )
     }
 }

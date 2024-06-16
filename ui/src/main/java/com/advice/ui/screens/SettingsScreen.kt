@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.ui.R
 import com.advice.ui.components.ButtonPreference
 import com.advice.ui.components.SwitchPreference
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,14 +54,14 @@ fun SettingScreen(
     enableEasterEggs: Boolean,
     enableAnalytics: Boolean,
     showTwitterHandle: Boolean,
-    onPreferenceChanged: (String, Boolean) -> Unit,
-    onThemeChanged: (String) -> Unit,
+    onPreferenceChange: (String, Boolean) -> Unit,
+    onThemeChange: (String) -> Unit,
     onVersionClick: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPress: () -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("Settings") }, navigationIcon = {
-            IconButton(onClick = onBackPressed) {
+            IconButton(onClick = onBackPress) {
                 Icon(painterResource(id = R.drawable.arrow_back), null)
             }
         })
@@ -75,8 +75,8 @@ fun SettingScreen(
             enableEasterEggs,
             enableAnalytics,
             showTwitterHandle,
-            onPreferenceChanged,
-            onThemeChanged,
+            onPreferenceChange,
+            onThemeChange,
             onVersionClick,
             Modifier.padding(it),
         )
@@ -93,31 +93,31 @@ private fun SettingsScreenContent(
     enableEasterEggs: Boolean,
     enableAnalytics: Boolean,
     showTwitterHandle: Boolean,
-    onPreferenceChanged: (String, Boolean) -> Unit,
-    onThemeChanged: (String) -> Unit,
+    onPreferenceChange: (String, Boolean) -> Unit,
+    onThemeChange: (String) -> Unit,
     onVersionClick: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
 ) {
     var enableEasterEggs by remember { mutableStateOf(enableEasterEggs) }
 
     Column(modifier) {
-        ButtonPreference(onPreferenceChanged = {
-            onThemeChanged(it)
+        ButtonPreference(onPreferenceChange = {
+            onThemeChange(it)
         })
         SwitchPreference(
             "Events in ($timeZone)",
             isChecked = useConferenceTimeZone,
             summaryOn = "Using conference's timezone",
-            summaryOff = "Using device's timezone"
+            summaryOff = "Using device's timezone",
         ) {
-            onPreferenceChanged("force_time_zone", it)
+            onPreferenceChange("force_time_zone", it)
         }
         SwitchPreference("Send anonymous usage statistics", isChecked = enableAnalytics) {
-            onPreferenceChanged("allow_analytics", it)
+            onPreferenceChange("allow_analytics", it)
         }
         SwitchPreference("Easter Eggs", summary = "???", isChecked = enableEasterEggs) {
             enableEasterEggs = it
-            onPreferenceChanged("easter_eggs", it)
+            onPreferenceChange("easter_eggs", it)
         }
         DeveloperSection()
         if (showTwitterHandle) {
@@ -137,35 +137,37 @@ private fun VersionNumber(
 
     Text(
         "Version $version",
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = enableEasterEggs) {
-                clickCount++
-                if (clickCount == 10) {
-                    clickCount = 0
-                    onVersionClick()
-                }
-            }
-            .padding(16.dp),
-        textAlign = TextAlign.Center
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(enabled = enableEasterEggs) {
+                    clickCount++
+                    if (clickCount == 10) {
+                        clickCount = 0
+                        onVersionClick()
+                    }
+                }.padding(16.dp),
+        textAlign = TextAlign.Center,
     )
 }
 
 @Composable
 private fun DeveloperSection() {
-    val text = buildAnnotatedString {
-        append("Android client is built with ♥ by ")
-        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-            append("advice")
+    val text =
+        buildAnnotatedString {
+            append("Android client is built with ♥ by ")
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                append("advice")
+            }
         }
-    }
 
     Text(
         text,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        textAlign = TextAlign.Center
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -176,10 +178,11 @@ private fun TwitterBadge() {
             Image(
                 painterResource(R.drawable.doggo),
                 null,
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(CircleShape)
-                    .background(Color.White)
+                modifier =
+                    Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -201,7 +204,7 @@ private fun TwitterBadge() {
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun SettingScreenViewDarkPreview() {
     ScheduleTheme {
@@ -214,10 +217,10 @@ private fun SettingScreenViewDarkPreview() {
             enableEasterEggs = false,
             enableAnalytics = true,
             showTwitterHandle = false,
-            onPreferenceChanged = { _, _ -> },
-            onThemeChanged = {},
+            onPreferenceChange = { _, _ -> },
+            onThemeChange = {},
             onVersionClick = {},
-            onBackPressed = {},
+            onBackPress = {},
         )
     }
 }

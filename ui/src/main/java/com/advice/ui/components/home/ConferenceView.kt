@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.utils.TimeUtil
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -30,27 +30,29 @@ internal fun ConferenceView(
     val context = LocalContext.current
     Surface(
         shape = RoundedCornerShape(8.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 140.dp)
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 140.dp)
+                .padding(horizontal = 16.dp, vertical = 4.dp),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
         ) {
             Text(
                 conference.name,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
             )
             Spacer(Modifier.height(16.dp))
             Text(
                 TimeUtil.getConferenceDateRange(context, conference = conference),
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
             Text(conference.timezone, style = MaterialTheme.typography.bodyLarge)
 
@@ -60,14 +62,14 @@ internal fun ConferenceView(
                 Text(
                     tagline,
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun ConferenceViewPreview() {
     val conference = Conference.Zero

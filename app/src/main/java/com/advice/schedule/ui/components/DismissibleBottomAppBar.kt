@@ -22,8 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.advice.ui.R
-import com.advice.ui.preview.LightDarkPreview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
@@ -48,7 +47,7 @@ fun DismissibleBottomAppBar(
     }
 }
 
-@LightDarkPreview
+@PreviewLightDark
 @Composable
 private fun DismissibleBottomAppBarPreview() {
     ScheduleTheme {
