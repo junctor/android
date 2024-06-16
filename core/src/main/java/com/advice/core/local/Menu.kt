@@ -6,7 +6,11 @@ data class Menu(
     val items: List<MenuItem>,
 )
 
-sealed class MenuItem(val icon: String?, val label: String, val description: String? = null) {
+sealed class MenuItem(
+    val icon: String?,
+    val label: String,
+    val description: String? = null,
+) {
     class SectionHeading(
         label: String,
     ) : MenuItem(null, label)
@@ -47,7 +51,6 @@ sealed class MenuItem(val icon: String?, val label: String, val description: Str
         description: String?,
         val tags: List<Int>,
     ) : MenuItem(icon, label, description)
-
 
     val url: String?
         get() = when (this) {

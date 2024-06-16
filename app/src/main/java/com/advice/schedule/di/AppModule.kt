@@ -9,8 +9,8 @@ import com.advice.data.SharedPreferencesBookmarkDataSource
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ConferencesDataSource
-import com.advice.data.sources.DocumentsDataSource
 import com.advice.data.sources.ContentDataSource
+import com.advice.data.sources.DocumentsDataSource
 import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.FAQDataSource
 import com.advice.data.sources.LocationsDataSource
@@ -25,8 +25,8 @@ import com.advice.data.sources.VendorsDataSource
 import com.advice.data.sources.VillagesDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
-import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
 import com.advice.firebase.data.sources.FirebaseContentDataSource
+import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
 import com.advice.firebase.data.sources.FirebaseEventsDataSource
 import com.advice.firebase.data.sources.FirebaseFAQDataSource
 import com.advice.firebase.data.sources.FirebaseLocationsDataSource
@@ -152,7 +152,7 @@ val appModule = module {
             get<SpeakersDataSource>(),
             get<LocationsDataSource>(),
             get<BookmarkedElementDataSource>(named("events")),
-            get<FirebaseFirestore>()
+            get<FirebaseFirestore>(),
         )
     }
     single<ContentDataSource> {
@@ -161,7 +161,7 @@ val appModule = module {
             get(),
             get(),
             get<LocationsDataSource>(),
-            get(named("events"))
+            get(named("events")),
         )
     }
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }

@@ -111,11 +111,10 @@ fun ProductScreen(
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent,
-                )
+                ),
             )
         },
         floatingActionButton = {
-
         },
         floatingActionButtonPosition = FabPosition.Center,
     ) {
@@ -131,7 +130,7 @@ fun ProductScreen(
             onQuantityChanged = {
                 quantity = it
             },
-            modifier = Modifier.padding(it)
+            modifier = Modifier.padding(it),
         )
     }
 }
@@ -146,15 +145,14 @@ fun Product(
     onAddClicked: (ProductSelection) -> Unit,
     onSelectionChanged: (String) -> Unit,
     onQuantityChanged: (Int) -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         Box(
             Modifier
                 .aspectRatio(0.9f)
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp)),
         ) {
-
             val media = product.media.firstOrNull()
             if (media != null) {
                 ImageGallery(product.media)
@@ -166,20 +164,20 @@ fun Product(
                 LowStockLabel(
                     modifier = Modifier
                         .padding(16.dp)
-                        .align(Alignment.BottomEnd)
+                        .align(Alignment.BottomEnd),
                 )
             }
             if (product.stockStatus == StockStatus.OUT_OF_STOCK) {
                 OutOfStockLabel(
                     modifier = Modifier
                         .padding(16.dp)
-                        .align(Alignment.BottomEnd)
+                        .align(Alignment.BottomEnd),
                 )
             }
         }
         Column {
             Column(
-                Modifier.padding(16.dp)
+                Modifier.padding(16.dp),
             ) {
                 Text(product.label, fontWeight = FontWeight.SemiBold)
                 Text(product.baseCost.toCurrency())
@@ -189,7 +187,7 @@ fun Product(
                 Row(Modifier.padding(16.dp)) {
                     Text(
                         stringResource(com.advice.products.R.string.variants_label),
-                        Modifier.weight(1.0f)
+                        Modifier.weight(1.0f),
                     )
                     if (canAdd) {
                         Text(stringResource(com.advice.products.R.string.variant_required))
@@ -203,21 +201,24 @@ fun Product(
                         Modifier
                             .clickable(enabled = inStock) {
                                 onSelectionChanged(option.label)
-                            }
-                            .alpha(if (inStock) 1.0f else 0.64f)
+                            }.alpha(if (inStock) 1.0f else 0.64f)
                             .defaultMinSize(minHeight = 64.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Column(
                             modifier = Modifier
                                 .weight(1.0f)
-                                .padding(16.dp)
+                                .padding(16.dp),
                         ) {
                             val label =
-                                if (option.extraCost > 0) option.label + stringResource(
-                                    com.advice.products.R.string.label_with_variant,
-                                    option.extraCost.toCurrency()
-                                ) else option.label
+                                if (option.extraCost > 0) {
+                                    option.label + stringResource(
+                                        com.advice.products.R.string.label_with_variant,
+                                        option.extraCost.toCurrency(),
+                                    )
+                                } else {
+                                    option.label
+                                }
                             Text(label, style = MaterialTheme.typography.bodyMedium)
                             if (option.stockStatus == StockStatus.LOW_STOCK) {
                                 Spacer(modifier = Modifier.height(4.dp))
@@ -244,7 +245,7 @@ fun Product(
                     quantity = quantity,
                     onQuantityChanged = onQuantityChanged,
                     canDelete = false,
-                    Modifier.padding(16.dp)
+                    Modifier.padding(16.dp),
                 )
 
                 val enabled = selection != null
@@ -256,7 +257,7 @@ fun Product(
                                     id = product.id,
                                     quantity = quantity,
                                     selectionOption = selection,
-                                )
+                                ),
                             )
                         }
                     },
@@ -272,7 +273,7 @@ fun Product(
                         stringResource(
                             com.advice.products.R.string.add_to_cart,
                             quantity,
-                            cost.toCurrency()
+                            cost.toCurrency(),
                         )
                     } else {
                         stringResource(com.advice.products.R.string.add_to_cart_disabled)
@@ -293,13 +294,13 @@ private fun PlaceHolderImage() {
         Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.50f))
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo_glitch),
             contentDescription = null,
             modifier = Modifier
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         )
     }
 }
@@ -333,16 +334,19 @@ private fun ImageGallery(media: List<ProductMedia>) {
             )
         }
         PagerDots(
-            state, modifier = Modifier
+            state,
+            modifier = Modifier
                 .padding(16.dp)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
         )
     }
 }
 
 @PreviewLightDark
 @Composable
-fun ProductScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun ProductScreenPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         ProductScreen(state.products.first(), true, {}) {}
     }

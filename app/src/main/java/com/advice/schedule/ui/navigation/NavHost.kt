@@ -57,13 +57,13 @@ import com.advice.ui.screens.EventScreen
 import com.advice.ui.screens.FAQScreen
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
-import com.advice.ui.states.MapsScreenState
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.screens.SettingScreen
 import com.advice.ui.screens.SpeakerScreen
-import com.advice.ui.states.SpeakerState
 import com.advice.ui.screens.SpeakersScreen
+import com.advice.ui.states.MapsScreenState
 import com.advice.ui.states.ScheduleScreenState
+import com.advice.ui.states.SpeakerState
 import com.advice.wifi.suggestNetwork
 
 @Composable
@@ -80,52 +80,38 @@ internal fun NavHost(navController: NavHostController) {
         }
         composable(
             "news/{label}",
-            arguments = listOf(
-                navArgument("label") { type = NavType.StringType }
-            ),
+            arguments = listOf(navArgument("label") { type = NavType.StringType }),
         ) { backStackEntry ->
             NewsScreen(navController, backStackEntry.arguments?.getString("label"))
         }
         composable("search") {
             Search(navController)
         }
-        composable("locations/{label}",
-            arguments = listOf(
-                navArgument("label") { type = NavType.StringType }
-            )
-        ) {
+        composable(route = "locations/{label}",
+            arguments = listOf(navArgument("label") { type = NavType.StringType })) {
             LocationsScreen(navController)
         }
         composable("event/{conference}/{id}",
-            arguments = listOf(
-                navArgument("conference") { type = NavType.StringType },
-                navArgument("id") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
+            arguments = listOf(navArgument("conference") { type = NavType.StringType },
+                navArgument("id") { type = NavType.StringType })) { backStackEntry ->
             EventScreen(
                 navController,
                 backStackEntry.arguments?.getString("conference"),
                 backStackEntry.arguments?.getString("id")
             )
         }
-        composable("location/{id}/{label}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType },
-                navArgument("label") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
+        composable(route = "location/{id}/{label}",
+            arguments = listOf(navArgument("id") { type = NavType.StringType },
+                navArgument("label") { type = NavType.StringType })) { backStackEntry ->
             LocationScreen(
                 navController = navController,
                 id = backStackEntry.arguments?.getString("id"),
                 label = backStackEntry.arguments?.getString("label")
             )
         }
-        composable("tag/{id}/{label}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType },
-                navArgument("label") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
+        composable(route = "tag/{id}/{label}",
+            arguments = listOf(navArgument("id") { type = NavType.StringType },
+                navArgument("label") { type = NavType.StringType })) { backStackEntry ->
             TagScreen(
                 navController = navController,
                 id = backStackEntry.arguments?.getString("id"),
@@ -133,11 +119,9 @@ internal fun NavHost(navController: NavHostController) {
             )
         }
         composable(
-            "schedule/{label}/{ids}",
-            arguments = listOf(
-                navArgument("label") { type = NavType.StringType },
-                navArgument("ids") { type = NavType.StringType }
-            ),
+            route = "schedule/{label}/{ids}",
+            arguments = listOf(navArgument("label") { type = NavType.StringType },
+                navArgument("ids") { type = NavType.StringType }),
         ) {
             TagsScreen(
                 navController = navController,
@@ -146,11 +130,9 @@ internal fun NavHost(navController: NavHostController) {
             )
         }
         composable(
-            "speaker/{id}/{name}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType },
-                navArgument("name") { type = NavType.StringType }
-            ),
+            route = "speaker/{id}/{name}",
+            arguments = listOf(navArgument("id") { type = NavType.StringType },
+                navArgument("name") { type = NavType.StringType }),
         ) { backStackEntry ->
             val context = (LocalContext.current as MainActivity)
             SpeakerScreen(
@@ -171,10 +153,8 @@ internal fun NavHost(navController: NavHostController) {
         }
         composable(
             "menu/{label}/{id}",
-            arguments = listOf(
-                navArgument("label") { type = NavType.StringType },
-                navArgument("id") { type = NavType.StringType }
-            ),
+            arguments = listOf(navArgument("label") { type = NavType.StringType },
+                navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             MenuScreen(
                 navController = navController,
@@ -198,10 +178,8 @@ internal fun NavHost(navController: NavHostController) {
         ) { FAQScreen(navController) }
         composable(
             "organizations/{label}/{id}",
-            arguments = listOf(
-                navArgument("label") { type = NavType.StringType },
-                navArgument("id") { type = NavType.StringType }
-            ),
+            arguments = listOf(navArgument("label") { type = NavType.StringType },
+                navArgument("id") { type = NavType.StringType }),
         ) {
             OrganizationsScreen(
                 navController = navController,
@@ -211,24 +189,18 @@ internal fun NavHost(navController: NavHostController) {
         }
         composable(
             "people/{label}",
-            arguments = listOf(
-                navArgument("label") { type = NavType.StringType }
-            ),
+            arguments = listOf(navArgument("label") { type = NavType.StringType }),
         ) { SpeakersScreen(navController) }
 
         composable(
             "products/{label}",
-            arguments = listOf(
-                navArgument("label") { type = NavType.StringType }
-            ),
+            arguments = listOf(navArgument("label") { type = NavType.StringType }),
         ) {
             ProductsScreen(navController, productsViewModel)
         }
         composable(
             "merch/{id}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType }
-            ),
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             ProductScreen(
                 navController,
@@ -243,18 +215,15 @@ internal fun NavHost(navController: NavHostController) {
         }
         composable(
             "organization/{id}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType }
-            ),
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
         ) { backStackEntry ->
             OrganizationScreen(backStackEntry, navController)
         }
         composable(
             "feedback/{id}",
-            arguments =
-                listOf(
-                    navArgument("id") { type = NavType.StringType },
-                ),
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+            ),
         ) { backStackEntry ->
             FeedbackScreen(navController)
         }
@@ -263,8 +232,7 @@ internal fun NavHost(navController: NavHostController) {
 
 @Composable
 private fun OrganizationScreen(
-    backStackEntry: NavBackStackEntry,
-    navController: NavHostController
+    backStackEntry: NavBackStackEntry, navController: NavHostController
 ) {
     val context = LocalContext.current
 
@@ -274,18 +242,13 @@ private fun OrganizationScreen(
     val flow = remember(id) { viewModel.getOrganization(id?.toLong()) }
     val organization = flow.collectAsState(initial = null).value
 
-    OrganizationScreen(
-        organization = organization,
-        onBackPressed = {
-            navController.popBackStack()
-        },
-        onLinkClicked = {
-            (context as MainActivity).openLink(it)
-        },
-        onScheduleClicked = { id, label ->
-            navController.navigate("schedule/${label}/${id}")
-        }
-    )
+    OrganizationScreen(organization = organization, onBackPressed = {
+        navController.popBackStack()
+    }, onLinkClicked = {
+        (context as MainActivity).openLink(it)
+    }, onScheduleClicked = { id, label ->
+        navController.navigate("schedule/${label}/${id}")
+    })
 }
 
 @Composable
@@ -314,17 +277,12 @@ private fun ProductScreen(
 ) {
     val state = viewModel.state.collectAsState(null).value ?: return
     val product = state.products.find { it.id == id } ?: return
-    ProductScreen(
-        product = product,
-        canAdd = state.canAdd,
-        onAddClicked = {
-            viewModel.addToCart(it)
-            navController.popBackStack()
-        },
-        onBackPressed = {
-            navController.popBackStack()
-        }
-    )
+    ProductScreen(product = product, canAdd = state.canAdd, onAddClicked = {
+        viewModel.addToCart(it)
+        navController.popBackStack()
+    }, onBackPressed = {
+        navController.popBackStack()
+    })
 }
 
 @Composable
@@ -383,16 +341,14 @@ private fun MenuScreen(
     val menus = viewModel.menu.collectAsState(initial = null).value ?: return
     val menu = menus.find { it.id.toString() == id } ?: return
 
-    com.advice.documents.ui.screens.MenuScreen(
-        menu = menu,
+    com.advice.documents.ui.screens.MenuScreen(menu = menu,
         label = label ?: "",
         onNavigationClick = {
             navController.navigate(it)
         },
         onBackPressed = {
             navController.popBackStack()
-        }
-    )
+        })
 }
 
 @Composable
@@ -400,29 +356,22 @@ private fun DocumentScreen(navController: NavHostController, id: String? = null)
     val viewModel = navController.navGraphViewModel<DocumentsViewModel>()
     val documents = viewModel.documents.collectAsState(initial = null).value ?: return
     val document = documents.find { it.id == id?.toLong() } ?: return
-    com.advice.documents.ui.screens.DocumentScreen(
-        document = document,
-        onBackPressed = { navController.popBackStack() }
-    )
+    com.advice.documents.ui.screens.DocumentScreen(document = document,
+        onBackPressed = { navController.popBackStack() })
 }
 
 @Composable
 private fun LocationsScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<LocationsViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value ?: return
-    com.advice.locations.ui.screens.LocationsScreen(
-        containers = state.list,
-        onToggleClicked = {
-            viewModel.toggle(it)
-        },
-        onScheduleClicked = {
-            // todo: this should URL encode the title
-            navController.navigate("location/${it.id}/${it.title.replace("/", "-")}")
-        },
-        onBackPressed = {
-            navController.popBackStack()
-        }
-    )
+    com.advice.locations.ui.screens.LocationsScreen(containers = state.list, onToggleClicked = {
+        viewModel.toggle(it)
+    }, onScheduleClicked = {
+        // todo: this should URL encode the title
+        navController.navigate("location/${it.id}/${it.title.replace("/", "-")}")
+    }, onBackPressed = {
+        navController.popBackStack()
+    })
 }
 
 @Composable
@@ -456,12 +405,9 @@ private fun OrganizationsScreen(navController: NavHostController, label: String?
 private fun FAQScreen(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<FAQViewModel>()
     val state = viewModel.faqs.collectAsState(initial = null).value
-    FAQScreen(
-        faqs = state,
-        onBackPress = {
-            navController.popBackStack()
-        }
-    )
+    FAQScreen(faqs = state, onBackPress = {
+        navController.popBackStack()
+    })
 }
 
 @Composable
@@ -481,33 +427,24 @@ fun EventScreen(navController: NavHostController, conference: String?, id: Strin
     val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
     val flow = remember(conference, id) { viewModel.getEvent(conference, id?.toLong()) }
     val event = flow.collectAsState(initial = null).value
-    EventScreen(
-        event = event,
-        onBookmark = {
-            if (event != null) {
-                viewModel.bookmark(event, it)
-                (context as MainActivity).requestNotificationPermission()
-            }
-        },
-        onBackPressed = { navController.popBackStack() },
-        onTagClicked = {
-            navController.navigate("tag/${it.id}/${it.label}")
-        },
-        onLocationClicked = { location ->
-            navController.navigate(
-                "location/${location.id}/${
-                    location.shortName?.replace(
-                        "/",
-                        "\\"
-                    )
-                }"
-            )
-        },
-        onUrlClicked = { url ->
-            (context as MainActivity).openLink(url)
-        },
-        onSpeakerClicked = { navController.navigate("speaker/${it.id}/${it.name}") }
-    )
+    EventScreen(event = event, onBookmark = {
+        if (event != null) {
+            viewModel.bookmark(event, it)
+            (context as MainActivity).requestNotificationPermission()
+        }
+    }, onBackPressed = { navController.popBackStack() }, onTagClicked = {
+        navController.navigate("tag/${it.id}/${it.label}")
+    }, onLocationClicked = { location ->
+        navController.navigate(
+            "location/${location.id}/${
+                location.shortName?.replace(
+                    "/", "\\"
+                )
+            }"
+        )
+    }, onUrlClicked = { url ->
+        (context as MainActivity).openLink(url)
+    }, onSpeakerClicked = { navController.navigate("speaker/${it.id}/${it.name}") })
 }
 
 @Composable
@@ -524,17 +461,11 @@ fun SpeakerScreen(
         viewModel.fetchSpeakerDetails(id)
     }
 
-    SpeakerScreen(
-        name = name ?: "",
-        state = speakerDetails,
-        onBackPress = {
-            navController.popBackStack()
-        },
-        onLinkClick = onLinkClicked,
-        onEventClick = {
-            navController.navigate("event/${it.conference}/${it.id}")
-        }
-    )
+    SpeakerScreen(name = name ?: "", state = speakerDetails, onBackPress = {
+        navController.popBackStack()
+    }, onLinkClick = onLinkClicked, onEventClick = {
+        navController.navigate("event/${it.conference}/${it.id}")
+    })
 }
 
 @Composable
@@ -614,8 +545,7 @@ fun SettingsScreen(navController: NavHostController) {
     val context = LocalContext.current
     val viewModel = navController.navGraphViewModel<SettingsViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value ?: return
-    SettingScreen(
-        timeZone = state.timezone,
+    SettingScreen(timeZone = state.timezone,
         version = state.version,
         useConferenceTimeZone = state.useConferenceTimeZone,
         showSchedule = state.showSchedule,
@@ -636,8 +566,7 @@ fun SettingsScreen(navController: NavHostController) {
             viewModel.onVersionClick()
             (context as MainActivity).openLink("https://www.youtube.com/watch?v=xvFZjo5PgG0")
         },
-        onBackPress = { navController.popBackStack() }
-    )
+        onBackPress = { navController.popBackStack() })
 }
 
 @Composable
@@ -660,61 +589,46 @@ private fun HomeScreen(navController: NavHostController) {
 
 
     Box {
-        OverlappingPanelsView(
-            viewState.currentAnchor,
-            leftPanel = {
-                HomeScreen(
-                    state = homeState,
-                    onConferenceClick = {
-                        homeViewModel.setConference(it)
-                    },
-                    onNavigationClick = {
-                        navController.navigate(it)
-                    },
-                    onDismissNews = {
-                        homeViewModel.markLatestNewsAsRead(it)
-                    }
-                )
-            },
-            rightPanel = {
-                FilterScreen(
-                    state = filtersScreenState,
-                    onClick = {
-                        filtersViewModel.toggle(it)
-                    }, onClear = {
-                        filtersViewModel.clearBookmarks()
-                    }
-                )
-            },
-            mainPanel = {
-                ScheduleScreen(
-                    state = scheduleScreenState,
-                    onMenuClick = {
-                        mainViewModel.setAnchor(DragAnchors.Start)
-                    },
-                    onFabClick = {
-                        mainViewModel.setAnchor(DragAnchors.End)
-                    },
-                    onEventClick = {
-                        navController.navigate("event/${it.conference}/${it.id}")
-                    },
-                    onBookmarkClick = { event, isBookmarked ->
-                        scheduleViewModel.bookmark(event, isBookmarked)
-                        (context as MainActivity).requestNotificationPermission()
-                    },
-                )
-            },
-            onPanelChangedListener = { panel ->
-                mainViewModel.setAnchor(panel)
-            }
-        )
+        OverlappingPanelsView(viewState.currentAnchor, leftPanel = {
+            HomeScreen(state = homeState, onConferenceClick = {
+                homeViewModel.setConference(it)
+            }, onNavigationClick = {
+                navController.navigate(it)
+            }, onDismissNews = {
+                homeViewModel.markLatestNewsAsRead(it)
+            })
+        }, rightPanel = {
+            FilterScreen(state = filtersScreenState, onClick = {
+                filtersViewModel.toggle(it)
+            }, onClear = {
+                filtersViewModel.clearBookmarks()
+            })
+        }, mainPanel = {
+            ScheduleScreen(
+                state = scheduleScreenState,
+                onMenuClick = {
+                    mainViewModel.setAnchor(DragAnchors.Start)
+                },
+                onFabClick = {
+                    mainViewModel.setAnchor(DragAnchors.End)
+                },
+                onEventClick = {
+                    navController.navigate("event/${it.conference}/${it.id}")
+                },
+                onBookmarkClick = { event, isBookmarked ->
+                    scheduleViewModel.bookmark(event, isBookmarked)
+                    (context as MainActivity).requestNotificationPermission()
+                },
+            )
+        }, onPanelChangedListener = { panel ->
+            mainViewModel.setAnchor(panel)
+        })
         DismissibleBottomAppBar(
             Modifier.align(Alignment.BottomCenter),
             isShown = viewState.isShown,
         ) {
             Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 IconButton(onClick = {
                     mainViewModel.setAnchor(DragAnchors.Center)
@@ -722,8 +636,7 @@ private fun HomeScreen(navController: NavHostController) {
                     Icon(
                         painterResource(
                             id = com.shortstack.core.R.drawable.logo_glitch
-                        ),
-                        contentDescription = "Logo"
+                        ), contentDescription = "Logo"
                     )
                 }
                 IconButton(onClick = {
@@ -732,8 +645,7 @@ private fun HomeScreen(navController: NavHostController) {
                     Icon(
                         painterResource(
                             id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp
-                        ),
-                        contentDescription = "Maps"
+                        ), contentDescription = "Maps"
                     )
                 }
                 IconButton(onClick = { navController.navigate("search") }) {

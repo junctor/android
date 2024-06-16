@@ -5,10 +5,10 @@ import com.advice.core.local.LocationRow
 import com.advice.data.sources.LocationsDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import timber.log.Timber
 
-class LocationRepository(private val locationsDataSource: LocationsDataSource) {
-
+class LocationRepository(
+    private val locationsDataSource: LocationsDataSource,
+) {
     private val expanded = MutableStateFlow(emptyList<Long>())
 
     val locations = combine(
@@ -32,7 +32,6 @@ class LocationRepository(private val locationsDataSource: LocationsDataSource) {
             }
         }
 
-
         return@combine updated.filter { it.isVisible }.map {
             LocationRow(
                 id = it.id,
@@ -41,7 +40,7 @@ class LocationRepository(private val locationsDataSource: LocationsDataSource) {
                 depth = it.depth,
                 hasChildren = it.hasChildren,
                 isExpanded = it.isExpanded,
-                schedule = it.schedule ?: emptyList()
+                schedule = it.schedule ?: emptyList(),
             )
         }
     }
@@ -49,15 +48,17 @@ class LocationRepository(private val locationsDataSource: LocationsDataSource) {
     private fun isVisible(
         location: Location,
         expandedIds: List<Long>,
-        locations: List<Location>
+        locations: List<Location>,
     ): Boolean {
         // Root is always visible
-        if (location.parent == 0L)
+        if (location.parent == 0L) {
             return true
+        }
 
         // Nothing is expanded or collapsed
-        if (expandedIds.isEmpty())
+        if (expandedIds.isEmpty()) {
             return true
+        }
 
         return (location.allParents(locations) { id in expandedIds } && location.parent in expandedIds)
     }
@@ -75,7 +76,7 @@ class LocationRepository(private val locationsDataSource: LocationsDataSource) {
 
     private fun Location.allParents(
         locations: List<Location>,
-        predicate: Location.() -> Boolean
+        predicate: Location.() -> Boolean,
     ): Boolean {
         var node: Location? = locations.find { it.id == parent }
         while (node != null) {

@@ -72,7 +72,7 @@ internal fun SearchScreen(
                 Modifier
                     .statusBarsPadding()
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
             ) {
                 IconButton(onClick = {
                     // clear the search
@@ -81,21 +81,21 @@ internal fun SearchScreen(
                 }) {
                     Icon(
                         painterResource(
-                            id = com.advice.ui.R.drawable.arrow_back
+                            id = com.advice.ui.R.drawable.arrow_back,
                         ),
-                        contentDescription = "Back"
+                        contentDescription = "Back",
                     )
                 }
 
                 SearchBar(
                     query = (state as? SearchState.Results)?.results?.query ?: "",
                     placeholder = "Search " + (conference?.name ?: " anywhere"),
-                    modifier = Modifier.focusRequester(focusRequested)
+                    modifier = Modifier.focusRequester(focusRequested),
                 ) {
                     onQueryChanged(it)
                 }
             }
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             when (state) {
@@ -120,7 +120,7 @@ internal fun SearchScreen(
 private fun SearchResults(
     scrollState: LazyListState,
     results: SearchResults,
-    navController: NavController
+    navController: NavController,
 ) {
     LazyColumn(state = scrollState) {
         if (results.faq.isNotEmpty()) {
@@ -156,7 +156,7 @@ private fun SearchResults(
                 title = it.title,
                 onSpeakerClicked = {
                     navController.navigate("speaker/${it.id}/${it.name}")
-                }
+                },
             )
         }
         if (results.organizations.isNotEmpty()) {
@@ -167,7 +167,7 @@ private fun SearchResults(
         results.organizations.windowed(
             2,
             2,
-            partialWindows = true
+            partialWindows = true,
         ) { organizations ->
             item {
                 OrganizationRow(organizations, onOrganizationPressed = {
@@ -185,7 +185,7 @@ private fun PlaceholderImage() {
             painter = painterResource(id = R.drawable.logo_glitch),
             contentDescription = null,
             modifier = Modifier
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         )
     }
 }
@@ -199,9 +199,13 @@ private fun HeaderRow(label: String) {
 @Composable
 private fun SearchScreenPreview() {
     ScheduleTheme {
-        SearchScreen(navController = rememberNavController(), conference =
-        Conference.Zero, state = SearchState.Idle, onQueryChanged = {
-
-        })
+        SearchScreen(
+            navController = rememberNavController(),
+            conference =
+                Conference.Zero,
+            state = SearchState.Idle,
+            onQueryChanged = {
+            },
+        )
     }
 }

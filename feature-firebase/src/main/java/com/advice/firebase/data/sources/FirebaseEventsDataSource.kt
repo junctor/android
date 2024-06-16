@@ -36,16 +36,17 @@ class FirebaseEventsDataSource(
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
     private val firestore: FirebaseFirestore,
 ) : EventsDataSource {
-    private fun observeConferenceEvents(conference: Conference): Flow<List<FirebaseContent>> {
-        return firestore.collection("conferences")
+    private fun observeConferenceEvents(conference: Conference): Flow<List<FirebaseContent>> =
+        firestore
+            .collection("conferences")
             .document(conference.code)
             .collection("content")
             .snapshotFlow()
             .map { querySnapshot ->
-                querySnapshot.toObjectsOrEmpty(FirebaseContent::class.java)
+                querySnapshot
+                    .toObjectsOrEmpty(FirebaseContent::class.java)
                     .filter { (!it.hidden || userSession.isDeveloper) }
             }
-    }
 
     private val conferenceAndTagsFlow =
         combine(
@@ -60,48 +61,49 @@ class FirebaseEventsDataSource(
                 speakers,
                 locations.flatten(),
             )
-        }
-            .shareIn(
-                scope = CoroutineScope(Dispatchers.IO),
-                started = SharingStarted.Lazily,
-                replay = 1,
-            )
-
-    private val _eventsFlow =
-        conferenceAndTagsFlow.flatMapLatest { (conference, tags, speakers, locations) ->
-            combine(
-                observeConferenceEvents(conference),
-                bookmarkedEventsDataSource.get(),
-            ) { firebaseEvents, bookmarkedEvents ->
-                val (unscheduled, scheduled) = firebaseEvents.partition { it.sessions.isEmpty() }
-
-                ConferenceContent(
-                    events =
-                        scheduled.mapNotNull {
-                            it.toEvents(
-                                conference = conference.code,
-                                tags = tags,
-                                speakers = speakers,
-                                bookmarkedEvents = bookmarkedEvents,
-                                locations = locations,
-                            )
-                        }.flatten(),
-                    content =
-                        unscheduled.mapNotNull {
-                            it.toContents(
-                                conference.name,
-                                tags,
-                                speakers,
-                                bookmarkedEvents,
-                            )
-                        },
-                )
-            }
         }.shareIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Lazily,
             replay = 1,
         )
+
+    private val _eventsFlow =
+        conferenceAndTagsFlow
+            .flatMapLatest { (conference, tags, speakers, locations) ->
+                combine(
+                    observeConferenceEvents(conference),
+                    bookmarkedEventsDataSource.get(),
+                ) { firebaseEvents, bookmarkedEvents ->
+                    val (unscheduled, scheduled) = firebaseEvents.partition { it.sessions.isEmpty() }
+
+                    ConferenceContent(
+                        events =
+                            scheduled
+                                .mapNotNull {
+                                    it.toEvents(
+                                        conference = conference.code,
+                                        tags = tags,
+                                        speakers = speakers,
+                                        bookmarkedEvents = bookmarkedEvents,
+                                        locations = locations,
+                                    )
+                                }.flatten(),
+                        content =
+                            unscheduled.mapNotNull {
+                                it.toContents(
+                                    conference.name,
+                                    tags,
+                                    speakers,
+                                    bookmarkedEvents,
+                                )
+                            },
+                    )
+                }
+            }.shareIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
 
     override fun get(): Flow<ConferenceContent> = _eventsFlow
 
@@ -111,8 +113,7 @@ class FirebaseEventsDataSource(
 }
 
 // todo: this needs to be recursive.
-private fun List<Location>.flatten(): List<Location> {
-    return flatMap { location ->
+private fun List<Location>.flatten(): List<Location> =
+    flatMap { location ->
         listOf(location) + location.children.flatten()
     }
-}

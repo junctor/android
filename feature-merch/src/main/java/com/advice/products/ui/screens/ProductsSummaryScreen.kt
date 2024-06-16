@@ -82,19 +82,19 @@ private fun ProductsSummaryContent(
         Box(
             Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             Box(
                 Modifier
                     .size(256.dp)
-                    .align(Alignment.Center)
+                    .align(Alignment.Center),
             ) {
                 if (json != null) {
                     QRCodeImage(
                         json,
                         Modifier
                             .fillMaxSize()
-                            .align(Alignment.Center)
+                            .align(Alignment.Center),
                     )
                 } else {
                     Surface(
@@ -108,7 +108,6 @@ private fun ProductsSummaryContent(
                             Modifier.fillMaxSize(),
                         )
                     }
-
                 }
             }
         }
@@ -139,26 +138,27 @@ private fun ProductsSummaryContent(
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text("Subtotal", style = MaterialTheme.typography.titleLarge)
             Text(
                 getSubtotal(list).toCurrency(),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
         }
     }
 }
 
-private fun getSubtotal(list: List<Product>): Long {
-    return list.sumOf { element ->
+private fun getSubtotal(list: List<Product>): Long =
+    list.sumOf { element ->
         element.cost
     }
-}
 
 @PreviewLightDark
 @Composable
-private fun ProductsSummaryScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun ProductsSummaryScreenPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         ProductsSummaryScreen(state, { _, _, _ -> }, {})
     }
@@ -166,7 +166,9 @@ private fun ProductsSummaryScreenPreview(@PreviewParameter(ProductsProvider::cla
 
 @PreviewLightDark
 @Composable
-private fun ProductsSummaryScreenErrorPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun ProductsSummaryScreenErrorPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     val state = state.copy(json = null)
     ScheduleTheme {
         ProductsSummaryScreen(state, { _, _, _ -> }, {})

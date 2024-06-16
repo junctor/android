@@ -50,9 +50,10 @@ fun OrganizationScreen(
                 title = { },
                 navigationIcon = {
                     IconButton(
-                        onClick = onBackPressed, colors = IconButtonDefaults.iconButtonColors(
+                        onClick = onBackPressed,
+                        colors = IconButtonDefaults.iconButtonColors(
                             containerColor = Color.Black.copy(0.40f),
-                        )
+                        ),
                     ) {
                         Icon(
                             painterResource(id = com.advice.ui.R.drawable.arrow_back),
@@ -64,10 +65,11 @@ fun OrganizationScreen(
                     containerColor = Color.Transparent,
                 ),
             )
-        }) {
+        },
+    ) {
         Column(
             modifier = Modifier.padding(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             if (organization != null) {
                 Header(organization.name)
@@ -77,15 +79,15 @@ fun OrganizationScreen(
                     Box(
                         Modifier
                             .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     ) {
                         OutlinedButton(
                             onClick = { onScheduleClicked(tag, organization.name) },
                             Modifier
                                 .fillMaxWidth()
                                 .align(
-                                    Alignment.CenterEnd
-                                )
+                                    Alignment.CenterEnd,
+                                ),
                         ) {
                             Text("Show Schedule")
                         }
@@ -138,9 +140,7 @@ private fun OrganizationScreenPreview() {
                 OrganizationLink("Website", "website", "https://www.google.com"),
                 OrganizationLink("Website", "website", "https://www.google.com"),
             ),
-            media = listOf(
-
-            ),
+            media = listOf(),
             tag = 1,
             tags = listOf(1),
         )
@@ -149,7 +149,6 @@ private fun OrganizationScreenPreview() {
             onBackPressed = {},
             onLinkClicked = {},
             onScheduleClicked = { _, _ ->
-
             },
         )
     }

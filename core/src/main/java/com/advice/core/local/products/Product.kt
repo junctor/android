@@ -15,7 +15,6 @@ data class Product(
     val cost: Long = baseCost * quantity,
     val selectedOption: String? = null,
 ) : Parcelable {
-
     val stockStatus: StockStatus
         get() {
             if (variants.all { it.stockStatus == StockStatus.OUT_OF_STOCK }) {
@@ -24,9 +23,10 @@ data class Product(
             if (variants.all {
                     it.stockStatus in listOf(
                         StockStatus.LOW_STOCK,
-                        StockStatus.OUT_OF_STOCK
+                        StockStatus.OUT_OF_STOCK,
                     )
-                }) {
+                }
+            ) {
                 return StockStatus.LOW_STOCK
             }
             return StockStatus.IN_STOCK
@@ -44,9 +44,7 @@ data class Product(
     val totalCost: Long
         get() = variantCost * quantity
 
-    fun update(
-        selection: ProductSelection,
-    ): Product {
+    fun update(selection: ProductSelection): Product {
         val extraCost = if (selection.selectionOption != null) {
             variants.find { it.label == selection.selectionOption }?.extraCost ?: 0
         } else {

@@ -40,7 +40,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FeaturedProducts(products: List<Product>, onProductClicked: (Product) -> Unit) {
+fun FeaturedProducts(
+    products: List<Product>,
+    onProductClicked: (Product) -> Unit,
+) {
     val scope = rememberCoroutineScope()
     val state = rememberPagerState {
         products.size
@@ -67,7 +70,10 @@ fun FeaturedProducts(products: List<Product>, onProductClicked: (Product) -> Uni
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PagerDots(state: PagerState, modifier: Modifier = Modifier) {
+fun PagerDots(
+    state: PagerState,
+    modifier: Modifier = Modifier,
+) {
     // Don't show dots if there is only one page
     if (state.pageCount < 2) return
 
@@ -79,22 +85,27 @@ fun PagerDots(state: PagerState, modifier: Modifier = Modifier) {
                     .size(8.dp)
                     .clip(RoundedCornerShape(4.dp))
                     .background(
-                        if (state.currentPage == i) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                    )
+                        if (state.currentPage == i) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                    ),
             )
         }
     }
 }
 
 @Composable
-private fun FeaturedProduct(product: Product, onProductClicked: (Product) -> Unit) {
-    Column(modifier = Modifier.clickable {
-        onProductClicked(product)
-    }) {
+private fun FeaturedProduct(
+    product: Product,
+    onProductClicked: (Product) -> Unit,
+) {
+    Column(
+        modifier = Modifier.clickable {
+            onProductClicked(product)
+        },
+    ) {
         Box(
             Modifier
                 .aspectRatio(0.9f)
-                .background(Color.Black)
+                .background(Color.Black),
         ) {
             AsyncImage(
                 model = product.media.first().url,
@@ -105,7 +116,7 @@ private fun FeaturedProduct(product: Product, onProductClicked: (Product) -> Uni
             Box(
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(16.dp)
+                    .padding(16.dp),
             ) {
                 when (product.stockStatus) {
                     StockStatus.IN_STOCK -> {
@@ -124,7 +135,8 @@ private fun FeaturedProduct(product: Product, onProductClicked: (Product) -> Uni
         }
         Column(Modifier.padding(16.dp)) {
             Text(
-                product.label, fontWeight = FontWeight.SemiBold,
+                product.label,
+                fontWeight = FontWeight.SemiBold,
             )
             Text(product.baseCost.toCurrency())
         }
@@ -133,12 +145,14 @@ private fun FeaturedProduct(product: Product, onProductClicked: (Product) -> Uni
 
 @PreviewLightDark
 @Composable
-private fun FeaturedProductsPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun FeaturedProductsPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         FeaturedProducts(
             products = state.products,
             onProductClicked = {
-
-            })
+            },
+        )
     }
 }

@@ -13,21 +13,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.advice.products.R
 
-
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 internal fun LowStockLabel(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Badge(containerColor = MaterialTheme.colorScheme.errorContainer) {
             Text(stringResource(R.string.badge_alert))
         }
         Text(
             stringResource(R.string.low_stock_message),
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
         )
     }
 }

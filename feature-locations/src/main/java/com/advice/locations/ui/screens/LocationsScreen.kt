@@ -55,7 +55,7 @@ fun LocationsScreen(
     containers: List<LocationRow>,
     onToggleClicked: (LocationRow) -> Unit,
     onScheduleClicked: (LocationRow) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -63,7 +63,7 @@ fun LocationsScreen(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.Hidden,
             skipHiddenState = false,
-        )
+        ),
     )
 
     var location by remember {
@@ -90,16 +90,17 @@ fun LocationsScreen(
                     IconButton(onClick = onBackPressed) {
                         Icon(painterResource(id = R.drawable.arrow_back), null)
                     }
-                }
+                },
             )
         },
         modifier = Modifier
             .fillMaxSize(),
     ) {
         Box(
-            Modifier
+            Modifier,
         ) {
-            LocationsScreenContent(containers,
+            LocationsScreenContent(
+                containers,
                 onScheduleClicked = {
                     if (it.hasChildren) {
                         onToggleClicked(it)
@@ -109,11 +110,13 @@ fun LocationsScreen(
                             scaffoldState.bottomSheetState.expand()
                         }
                     }
-                }, onScroll = {
+                },
+                onScroll = {
                     coroutineScope.launch {
                         scaffoldState.bottomSheetState.hide()
                     }
-                })
+                },
+            )
         }
     }
 }
@@ -126,7 +129,7 @@ private fun ScheduleBottomSheet(
 ) {
     Column(
         Modifier
-            .padding(start = 32.dp, end = 32.dp, bottom = 64.dp)
+            .padding(start = 32.dp, end = 32.dp, bottom = 64.dp),
     ) {
         Text(
             text = row.title,
@@ -137,7 +140,7 @@ private fun ScheduleBottomSheet(
         for (schedule in row.schedule) {
             LocationRow(
                 date = TimeUtil.getScheduleDateStamp(context, schedule),
-                time = TimeUtil.getScheduleTimestamp(context, schedule)
+                time = TimeUtil.getScheduleTimestamp(context, schedule),
             )
         }
         OutlinedButton(onClick = onScheduleClicked, Modifier.fillMaxWidth()) {
@@ -167,7 +170,7 @@ internal fun LocationsScreenContent(
                 it.status,
                 it.hasChildren,
                 it.isExpanded,
-                it.depth
+                it.depth,
             ) { onScheduleClicked(it) }
         }
         item {
@@ -198,11 +201,10 @@ private fun BottomSheetPreview() {
         1,
         true,
         true,
-        listOf(LocationSchedule(Instant.now(), Instant.now(), "test", "open"))
+        listOf(LocationSchedule(Instant.now(), Instant.now(), "test", "open")),
     )
     ScheduleTheme {
         ScheduleBottomSheet(context, row, {
-
         })
     }
 }

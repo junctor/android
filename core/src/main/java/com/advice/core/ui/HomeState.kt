@@ -2,11 +2,11 @@ package com.advice.core.ui
 
 import com.advice.core.local.Conference
 import com.advice.core.local.Menu
-import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
 
 sealed class HomeState {
     object Loading : HomeState()
+
     data class Loaded(
         val conferences: List<Conference>,
         val conference: Conference,
@@ -17,5 +17,7 @@ sealed class HomeState {
         val isUpdateAvailable: Boolean = false,
     ) : HomeState()
 
-    data class Error(val ex: Exception) : HomeState()
+    data class Error(
+        val ex: Exception,
+    ) : HomeState()
 }

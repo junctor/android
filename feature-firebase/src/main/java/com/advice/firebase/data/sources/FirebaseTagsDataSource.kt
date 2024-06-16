@@ -21,10 +21,11 @@ class FirebaseTagsDataSource(
     private val firestore: FirebaseFirestore,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : TagsDataSource {
-    override fun get(): Flow<List<TagType>> {
-        return combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
+    override fun get(): Flow<List<TagType>> =
+        combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
             val temp =
-                tags.toMutableList()
+                tags
+                    .toMutableList()
                     .sortedBy { it.sortOrder }
                     .map {
                         it.copy(
@@ -49,19 +50,19 @@ class FirebaseTagsDataSource(
             }
             temp
         }
-    }
 
-    private fun getTagTypes(): Flow<List<TagType>> {
-        return userSession.getConference().flatMapMerge { conference ->
-            firestore.collection("conferences")
+    private fun getTagTypes(): Flow<List<TagType>> =
+        userSession.getConference().flatMapMerge { conference ->
+            firestore
+                .collection("conferences")
                 .document(conference.code)
                 .collection("tagtypes")
                 .snapshotFlow()
                 .map { querySnapshot ->
-                    querySnapshot.toObjectsOrEmpty(FirebaseTagType::class.java)
+                    querySnapshot
+                        .toObjectsOrEmpty(FirebaseTagType::class.java)
                         .sortedBy { it.sort_order }
                         .mapNotNull { it.toTagType() }
                 }
         }
-    }
 }

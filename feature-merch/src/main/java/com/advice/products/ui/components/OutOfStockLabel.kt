@@ -19,21 +19,20 @@ import com.advice.products.R
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
-
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 internal fun OutOfStockLabel(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Badge(containerColor = MaterialTheme.colorScheme.errorContainer) {
             Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(8.dp))
         }
         Text(
             stringResource(R.string.out_of_stock_message),
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
         )
     }
 }

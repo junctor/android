@@ -99,8 +99,8 @@ fun Query.snapshotFlow(): Flow<QuerySnapshot> =
         }
     }
 
-fun FirebaseConference.toConference(): Conference? {
-    return try {
+fun FirebaseConference.toConference(): Conference? =
+    try {
         Conference(
             id,
             name,
@@ -123,10 +123,9 @@ fun FirebaseConference.toConference(): Conference? {
         Timber.e("Could not map data to Conference: ${ex.message}")
         null
     }
-}
 
-fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Location? {
-    return try {
+fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Location? =
+    try {
         Location(
             id,
             name,
@@ -144,11 +143,10 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
         Timber.e("Could not map data to Location: ${ex.message}")
         null
     }
-}
 
 @SuppressLint("SimpleDateFormat")
-fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? {
-    return try {
+fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? =
+    try {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
         LocationSchedule(
             format.parse(begin).toInstant(),
@@ -160,7 +158,6 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? {
         Timber.e("Could not map data to LocationSchedule: ${ex.message}")
         null
     }
-}
 
 fun FirebaseContent.toEvents(
     conference: String,
@@ -174,9 +171,10 @@ fun FirebaseContent.toEvents(
 
         val links = links.map { it.toAction() }
         val types =
-            tag_ids.mapNotNull { id ->
-                list.find { it.id == id }
-            }.sortedBy { list.indexOf(it) }
+            tag_ids
+                .mapNotNull { id ->
+                    list.find { it.id == id }
+                }.sortedBy { list.indexOf(it) }
 
         val speakers =
             people
@@ -243,9 +241,10 @@ fun FirebaseContent.toContents(
 
         val links = links.map { it.toAction() }
         val types =
-            tag_ids.mapNotNull { id ->
-                list.find { it.id == id }
-            }.sortedBy { list.indexOf(it) }
+            tag_ids
+                .mapNotNull { id ->
+                    list.find { it.id == id }
+                }.sortedBy { list.indexOf(it) }
 
         val speakers =
             people
@@ -281,8 +280,8 @@ fun FirebaseContent.toContents(
 
 private fun FirebaseAction.toAction() = Action(this.label, this.url)
 
-fun FirebaseTag.toTag(): Tag? {
-    return try {
+fun FirebaseTag.toTag(): Tag? =
+    try {
         Tag(
             id,
             label,
@@ -294,10 +293,9 @@ fun FirebaseTag.toTag(): Tag? {
         Timber.e("Could not map data to Speaker: ${ex.message}")
         null
     }
-}
 
-fun FirebaseSpeaker.toSpeaker(): Speaker? {
-    return try {
+fun FirebaseSpeaker.toSpeaker(): Speaker? =
+    try {
         Speaker(
             id = id,
             name = name,
@@ -314,19 +312,17 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? {
         Timber.e("Could not map data to Speaker: ${ex.message}")
         null
     }
-}
 
-fun FirebaseAffiliation.toAffiliation(): Affiliation? {
-    return try {
+fun FirebaseAffiliation.toAffiliation(): Affiliation? =
+    try {
         Affiliation(organization, title)
     } catch (ex: Exception) {
         Timber.e("Could not map data to Affiliation: ${ex.message}")
         null
     }
-}
 
-fun FirebaseSpeakerLink.toLink(): Link? {
-    return try {
+fun FirebaseSpeakerLink.toLink(): Link? =
+    try {
         Link(
             title,
             url,
@@ -335,10 +331,9 @@ fun FirebaseSpeakerLink.toLink(): Link? {
         Timber.e("Could not map data to Link: ${ex.message}")
         null
     }
-}
 
-fun FirebaseVendor.toVendor(): Vendor? {
-    return try {
+fun FirebaseVendor.toVendor(): Vendor? =
+    try {
         Vendor(
             id,
             name,
@@ -350,10 +345,9 @@ fun FirebaseVendor.toVendor(): Vendor? {
         Timber.e("Could not map data to Vendor: ${ex.message}")
         null
     }
-}
 
-fun FirebaseOrganization.toOrganization(): Organization? {
-    return try {
+fun FirebaseOrganization.toOrganization(): Organization? =
+    try {
         Organization(
             id,
             name,
@@ -368,10 +362,9 @@ fun FirebaseOrganization.toOrganization(): Organization? {
         Timber.e("Could not map data to Organization: ${ex.message}")
         null
     }
-}
 
-fun FirebaseOrganizationLocation.toLocation(): OrganizationLocation? {
-    return try {
+fun FirebaseOrganizationLocation.toLocation(): OrganizationLocation? =
+    try {
         OrganizationLocation(
             location_id,
         )
@@ -379,10 +372,9 @@ fun FirebaseOrganizationLocation.toLocation(): OrganizationLocation? {
         Timber.e("Could not map data to OrganizationLocation: ${ex.message}")
         null
     }
-}
 
-fun FirebaseLink.toLink(): OrganizationLink? {
-    return try {
+fun FirebaseLink.toLink(): OrganizationLink? =
+    try {
         OrganizationLink(
             label,
             type,
@@ -392,10 +384,9 @@ fun FirebaseLink.toLink(): OrganizationLink? {
         Timber.e("Could not map data to Link: ${ex.message}")
         null
     }
-}
 
-fun FirebaseOrganizationMedia.toMedia(): OrganizationMedia? {
-    return try {
+fun FirebaseOrganizationMedia.toMedia(): OrganizationMedia? =
+    try {
         OrganizationMedia(
             asset_id,
             url,
@@ -404,10 +395,9 @@ fun FirebaseOrganizationMedia.toMedia(): OrganizationMedia? {
         Timber.e("Could not map data to Media: ${ex.message}")
         null
     }
-}
 
-fun FirebaseDocument.toDocument(): Document? {
-    return try {
+fun FirebaseDocument.toDocument(): Document? =
+    try {
         Document(
             id,
             title_text,
@@ -417,10 +407,9 @@ fun FirebaseDocument.toDocument(): Document? {
         Timber.e("Could not map data to Document: ${ex.message}")
         null
     }
-}
 
-fun FirebaseArticle.toArticle(): NewsArticle? {
-    return try {
+fun FirebaseArticle.toArticle(): NewsArticle? =
+    try {
         NewsArticle(
             id,
             name,
@@ -431,10 +420,9 @@ fun FirebaseArticle.toArticle(): NewsArticle? {
         Timber.e("Could not map data to Article: ${ex.message}")
         null
     }
-}
 
-fun FirebaseMenu.toMenu(): Menu? {
-    return try {
+fun FirebaseMenu.toMenu(): Menu? =
+    try {
         Menu(
             id,
             title_text,
@@ -444,10 +432,9 @@ fun FirebaseMenu.toMenu(): Menu? {
         Timber.e("Could not map data to Menu: ${ex.message}")
         null
     }
-}
 
-fun FirebaseMenuItem.toMenuItem(): MenuItem? {
-    return try {
+fun FirebaseMenuItem.toMenuItem(): MenuItem? =
+    try {
         when (function) {
             "section_heading" ->
                 MenuItem.SectionHeading(
@@ -504,10 +491,9 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? {
         Timber.e("Could not map data to MenuItem: ${ex.message}")
         null
     }
-}
 
-fun FirebaseMap.toMap(): ConferenceMap? {
-    return try {
+fun FirebaseMap.toMap(): ConferenceMap? =
+    try {
         ConferenceMap(
             name_text,
             filename,
@@ -516,10 +502,9 @@ fun FirebaseMap.toMap(): ConferenceMap? {
         Timber.e("Could not map data to Map: ${ex.message}")
         null
     }
-}
 
-fun FirebaseBookmark.toBookmark(): Bookmark? {
-    return try {
+fun FirebaseBookmark.toBookmark(): Bookmark? =
+    try {
         Bookmark(
             id,
             value,
@@ -528,10 +513,9 @@ fun FirebaseBookmark.toBookmark(): Bookmark? {
         Timber.e("Could not map data to Bookmark: ${ex.message}")
         null
     }
-}
 
-fun FirebaseTagType.toTagType(): TagType? {
-    return try {
+fun FirebaseTagType.toTagType(): TagType? =
+    try {
         TagType(
             id,
             label,
@@ -544,12 +528,11 @@ fun FirebaseTagType.toTagType(): TagType? {
         Timber.e("Could not map data to Bookmark: ${ex.message}")
         null
     }
-}
 
 fun FirebaseFAQ.toFAQ() = FAQ(question, answer)
 
-fun FirebaseProduct.toMerch(): Product? {
-    return try {
+fun FirebaseProduct.toMerch(): Product? =
+    try {
         Product(
             id = id,
             label = title,
@@ -561,21 +544,18 @@ fun FirebaseProduct.toMerch(): Product? {
         Timber.e("Could not map data to Merch: ${ex.message}")
         null
     }
-}
 
-fun FirebaseProductVariant.toMerchOption(basePrice: Long): ProductVariant {
-    return ProductVariant(
+fun FirebaseProductVariant.toMerchOption(basePrice: Long): ProductVariant =
+    ProductVariant(
         id = variant_id,
         label = title,
         tags = tags,
         extraCost = price - basePrice,
         stockStatus = StockStatus.fromString(stock_status) ?: StockStatus.IN_STOCK,
     )
-}
 
-fun FirebaseProductMedia.toProductMedia(): ProductMedia {
-    return ProductMedia(
+fun FirebaseProductMedia.toProductMedia(): ProductMedia =
+    ProductMedia(
         url = url,
         sortOrder = sort_order,
     )
-}
