@@ -181,9 +181,9 @@ fun FirebaseContent.toEvents(
         val speakers =
             people
                 .map { person ->
-                    val role = list.find { it.id == person.tag_id }
+                    val roles = person.tag_ids.mapNotNull { id -> list.find { it.id == id } }
                     val speaker = speakers.find { it.id == person.person_id }
-                    person to speaker?.copy(roles = listOfNotNull(role))
+                    person to speaker?.copy(roles = roles)
                 }.sortedWith(compareBy({ it.first.sort_order }, { it.second?.name }))
                 .mapNotNull { it.second }
 
@@ -209,7 +209,7 @@ fun FirebaseContent.toEvents(
                     session.session_id,
                     session.timezone_name,
                     session.begin_timestamp.toDate().toInstant(),
-                    session.end_timetimestamp.toDate().toInstant(),
+                    session.end_timestamp.toDate().toInstant(),
                     location,
                 )
 
@@ -224,9 +224,7 @@ fun FirebaseContent.toEvents(
                 types = types,
                 urls = links,
                 isBookmarked = isBookmarked,
-            ).also {
-                Timber.d("Event: $it")
-            }
+            )
         }
     } catch (ex: Exception) {
         Timber.e("Could not map data to Event: ${ex.message}")
@@ -252,9 +250,9 @@ fun FirebaseContent.toContents(
         val speakers =
             people
                 .map { person ->
-                    val role = list.find { it.id == person.tag_id }
+                    val roles = person.tag_ids.mapNotNull { id -> list.find { it.id == id } }
                     val speaker = speakers.find { it.id == person.person_id }
-                    person to speaker?.copy(roles = listOfNotNull(role))
+                    person to speaker?.copy(roles = roles)
                 }.sortedWith(compareBy({ it.first.sort_order }, { it.second?.name }))
                 .mapNotNull { it.second }
 

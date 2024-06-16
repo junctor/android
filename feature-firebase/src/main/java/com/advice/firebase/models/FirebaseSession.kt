@@ -18,7 +18,7 @@ data class FirebaseSession(
     @PropertyName("begin_timestamp")
     val begin_timestamp: Timestamp = Timestamp.now(),
     @PropertyName("end_timestamp")
-    val end_timetimestamp: Timestamp = Timestamp.now(),
+    val end_timestamp: Timestamp = Timestamp.now(),
     @PropertyName("timezone_name")
     val timezone_name: String = "",
 ) : Parcelable
