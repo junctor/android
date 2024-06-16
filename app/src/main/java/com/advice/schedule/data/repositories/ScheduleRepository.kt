@@ -13,10 +13,10 @@ class ScheduleRepository(
     private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
 ) {
-
-    suspend fun getEvent(conference: String, id: Long): Event? {
-        return contentRepository.get(conference, id)
-    }
+    suspend fun getEvent(
+        conference: String,
+        id: Long,
+    ): Event? = contentRepository.get(conference, id)
 
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
         return combine(contentRepository.content, tagsRepository.tags) { content, tags ->
@@ -30,7 +30,10 @@ class ScheduleRepository(
                 }
 
                 is ScheduleFilter.Location -> {
-                    sortedEvents.filter { it.session.location.id.toString() == filter.id }
+                    sortedEvents.filter {
+                        it.session.location.id
+                            .toString() == filter.id
+                    }
                 }
 
                 is ScheduleFilter.Tag -> {
@@ -68,7 +71,10 @@ class ScheduleRepository(
             }
     }
 
-    suspend fun bookmark(event: Event, isBookmarked: Boolean) {
+    suspend fun bookmark(
+        event: Event,
+        isBookmarked: Boolean,
+    ) {
         contentRepository.bookmark(event)
         if (isBookmarked) {
             reminderManager.setReminder(event)

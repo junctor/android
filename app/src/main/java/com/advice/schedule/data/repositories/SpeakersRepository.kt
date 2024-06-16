@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.shareIn
 class SpeakersRepository(
     speakersDataSource: SpeakersDataSource,
 ) {
-    val speakers: SharedFlow<List<Speaker>> = speakersDataSource.get()
+    val speakers: SharedFlow<List<Speaker>> = speakersDataSource
+        .get()
         .shareIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Eagerly,

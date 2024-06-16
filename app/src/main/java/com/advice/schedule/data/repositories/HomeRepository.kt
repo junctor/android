@@ -18,7 +18,6 @@ class HomeRepository(
     newsRepository: NewsDataSource,
     private val storage: Storage,
 ) {
-
     private val _countdown = MutableStateFlow(-1L)
 
     val contents = combine(
@@ -38,7 +37,7 @@ class HomeRepository(
             menu = menu.find { it.id == conference.homeMenuId } ?: menu.firstOrNull() ?: Menu(
                 -1,
                 "Nothing",
-                emptyList()
+                emptyList(),
             ),
             news = latest,
             countdown = countdown,

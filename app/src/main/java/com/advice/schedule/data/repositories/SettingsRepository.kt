@@ -23,7 +23,10 @@ class SettingsRepository(
         )
     }
 
-    fun onPreferenceChanged(id: String, checked: Boolean) {
+    fun onPreferenceChanged(
+        id: String,
+        checked: Boolean,
+    ) {
         when (id) {
             "force_time_zone" -> preferences.forceTimeZone = checked
             "show_schedule" -> preferences.showSchedule = checked

@@ -14,7 +14,10 @@ import kotlinx.coroutines.flow.combine
 
 sealed class SearchState {
     object Idle : SearchState()
-    data class Results(val results: SearchResults) : SearchState()
+
+    data class Results(
+        val results: SearchResults,
+    ) : SearchState()
 }
 
 data class SearchResults(
@@ -34,7 +37,6 @@ class SearchRepository(
     faqDataSource: FAQRepository,
     documentsDataSource: DocumentsRepository,
 ) {
-
     val conference = userSession.getConference()
 
     private var query = MutableStateFlow("")
@@ -57,7 +59,7 @@ class SearchRepository(
                 query = query,
                 events = ((values[EVENTS_INDEX] as ConferenceContent).events).filter { event ->
                     event.title.contains(query, ignoreCase = true) ||
-                            event.description.contains(query, ignoreCase = true)
+                        event.description.contains(query, ignoreCase = true)
                 },
                 speakers = (values[SPEAKERS_INDEX] as List<Speaker>).filter { speaker ->
                     speaker.name.contains(query, ignoreCase = true)
@@ -67,11 +69,11 @@ class SearchRepository(
                 },
                 faq = (values[FAQ_INDEX] as List<FAQ>).filter { faq ->
                     faq.question.contains(query, ignoreCase = true) ||
-                            faq.answer.contains(query, ignoreCase = true)
+                        faq.answer.contains(query, ignoreCase = true)
                 },
                 documents = (values[DOCUMENTS_INDEX] as List<Document>).filter { document ->
                     document.title.contains(query, ignoreCase = true) ||
-                            document.description.contains(query, ignoreCase = true)
+                        document.description.contains(query, ignoreCase = true)
                 },
             ),
         )

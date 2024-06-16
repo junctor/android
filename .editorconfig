@@ -8,3 +8,6 @@ indent_size = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
 end_of_line = lf
+ktlint_standard_discouraged-comment-location = disabled
+ktlint_standard_block-comment-initial-star-alignment = enabled
+ktlint_standard_multiline-expression-wrapping = disabled

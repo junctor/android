@@ -12,16 +12,18 @@ class ContentRepository(
     private val contentDataSource: ContentDataSource,
     private val eventsDataSource: EventsDataSource,
 ) {
-    val content = eventsDataSource.get()
+    val content = eventsDataSource
+        .get()
         .shareIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Eagerly,
             replay = 1,
         )
 
-    suspend fun get(conference: String, id: Long): Event? {
-        return contentDataSource.get(conference, id)
-    }
+    suspend fun get(
+        conference: String,
+        id: Long,
+    ): Event? = contentDataSource.get(conference, id)
 
     suspend fun bookmark(event: Event) {
         eventsDataSource.bookmark(event)
