@@ -175,9 +175,15 @@ internal fun NavHost(navController: NavHostController) {
         }
         composable(
             "content/{conference}/{id}",
-            arguments = listOf(navArgument("conference") { type = NavType.StringType }, navArgument("id") { type = NavType.StringType })
+            arguments = listOf(
+                navArgument("conference") { type = NavType.StringType },
+                navArgument("id") { type = NavType.StringType })
         ) {
-            ContentScreen(navController, it.arguments?.getString("conference"), it.arguments?.getString("id"))
+            ContentScreen(
+                navController,
+                it.arguments?.getString("conference"),
+                it.arguments?.getString("id")
+            )
         }
 
 
@@ -601,7 +607,9 @@ fun ContentListScreen(navController: NavHostController, label: String?) {
     com.advice.ui.screens.ContentListScreen(
         state = state,
         label = label,
-        onMenuClick = {},
+        onMenuClick = {
+            navController.popBackStack()
+        },
         onContentClick = {
             navController.navigate("content/${it.conference}/${it.id}")
         }
@@ -611,7 +619,6 @@ fun ContentListScreen(navController: NavHostController, label: String?) {
 @Composable
 fun ContentScreen(navController: NavHostController, conference: String?, id: String?) {
     val context = LocalContext.current
-    // todo: this should be another ViewModel
     val viewModel = navController.navGraphViewModel<ContentViewModel>()
     val flow = remember(conference, id) { viewModel.getContent(conference, id?.toLong()) }
     val content = flow.collectAsState(initial = null).value
@@ -619,12 +626,19 @@ fun ContentScreen(navController: NavHostController, conference: String?, id: Str
     com.advice.ui.screens.ContentScreen(
         event = content,
         onBookmark = {},
-        onBackPressed = { /*TODO*/ },
-        onTagClicked = {},
-        onUrlClicked = {},
-    ) {
-
-    }
+        onBackPressed = {
+            navController.popBackStack()
+        },
+        onTagClicked = {
+                       
+        },
+        onUrlClicked = { url ->
+            (context as MainActivity).openLink(url)
+        },
+        onSpeakerClicked = {
+            navController.navigate("speaker/${it.id}/${it.name}")
+        },
+    )
 }
 
 @Composable
