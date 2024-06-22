@@ -11,7 +11,6 @@ data class MainViewState(
 )
 
 class MainViewModel : ViewModel() {
-
     val state = MutableStateFlow(MainViewState())
 
     fun setAnchor(anchor: DragAnchors) {

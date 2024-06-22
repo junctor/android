@@ -160,7 +160,7 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? =
     }
 
 fun FirebaseContent.toEvents(
-    conference: String,
+    code: String,
     tags: List<TagType>,
     speakers: List<Speaker>,
     bookmarkedEvents: List<Bookmark>,
@@ -213,7 +213,7 @@ fun FirebaseContent.toEvents(
 
             Event(
                 id = id,
-                conference = conference,
+                conference = code,
                 title = title,
                 description = description,
                 session = session,
@@ -231,10 +231,11 @@ fun FirebaseContent.toEvents(
 }
 
 fun FirebaseContent.toContents(
-    conference: String,
+    code: String,
     tags: List<TagType>,
     speakers: List<Speaker>,
     bookmarkedEvents: List<Bookmark>,
+    locations: List<Location>,
 ): Content? {
     try {
         val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
@@ -260,10 +261,28 @@ fun FirebaseContent.toContents(
             return null
         }
 
+        val new_sessions = sessions.mapNotNull { session ->
+            // if we cannot find the location, ignore this session
+            val location = locations.find { it.id == session.location_id }
+
+            if (location == null) {
+                Timber.e("Could not find location for session: $title")
+                return@mapNotNull null
+            }
+
+            Session(
+                session.session_id,
+                session.timezone_name,
+                session.begin_timestamp.toDate().toInstant(),
+                session.end_timestamp.toDate().toInstant(),
+                location,
+            )
+        }.sortedBy { it.start }
+
         val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == id.toString() }
         return Content(
             id = id,
-            conference = conference,
+            conference = code,
             title = title,
             description = description,
             updated = updated_timestamp.toDate().toInstant(),
@@ -271,6 +290,7 @@ fun FirebaseContent.toContents(
             types = types,
             urls = links,
             isBookmarked = isBookmarked,
+            sessions = new_sessions,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Content: ${ex.message}")
@@ -303,9 +323,9 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? =
             description = description,
             affiliations = affiliations.mapNotNull { it.toAffiliation() },
             links =
-                links
-                    .sortedBy { it.sort_order }
-                    .mapNotNull { it.toLink() },
+            links
+                .sortedBy { it.sort_order }
+                .mapNotNull { it.toLink() },
             roles = emptyList(),
         )
     } catch (ex: Exception) {
@@ -426,7 +446,9 @@ fun FirebaseMenu.toMenu(): Menu? =
         Menu(
             id,
             title_text,
-            items.sortedBy { it.sort_order }.mapNotNull { it.toMenuItem() },
+            items
+                .sortedBy { it.sort_order }
+                .mapNotNull { it.toMenuItem() },
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Menu: ${ex.message}")
@@ -483,6 +505,13 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
                     title_text,
                     description,
                     applied_tag_ids.first(),
+                )
+
+            "content" ->
+                MenuItem.Content(
+                    google_materialsymbol,
+                    title_text,
+                    description,
                 )
 
             else -> error("Unknown menu item function: $title_text, $function")

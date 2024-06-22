@@ -30,7 +30,7 @@ class ReminderWorker(
             return Result.failure()
         }
 
-        val event = eventsDataSource.get(conference, id)
+        val event = eventsDataSource.getEvent(conference, id)
         if (event == null) {
             Timber.e("Could not find the target event.")
             return Result.failure()

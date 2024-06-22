@@ -74,29 +74,29 @@ class FirebaseEventsDataSource(
                     observeConferenceEvents(conference),
                     bookmarkedEventsDataSource.get(),
                 ) { firebaseEvents, bookmarkedEvents ->
-                    val (unscheduled, scheduled) = firebaseEvents.partition { it.sessions.isEmpty() }
+                    val scheduled = firebaseEvents.filter { it.sessions.isNotEmpty() }
 
+                    val events = scheduled.mapNotNull {
+                        it.toEvents(
+                            code = conference.code,
+                            tags = tags,
+                            speakers = speakers,
+                            bookmarkedEvents = bookmarkedEvents,
+                            locations = locations,
+                        )
+                    }.flatten()
+                    val content = firebaseEvents.mapNotNull {
+                        it.toContents(
+                            code = conference.code,
+                            tags = tags,
+                            speakers = speakers,
+                            bookmarkedEvents = bookmarkedEvents,
+                            locations = locations,
+                        )
+                    }
                     ConferenceContent(
-                        events =
-                            scheduled
-                                .mapNotNull {
-                                    it.toEvents(
-                                        conference = conference.code,
-                                        tags = tags,
-                                        speakers = speakers,
-                                        bookmarkedEvents = bookmarkedEvents,
-                                        locations = locations,
-                                    )
-                                }.flatten(),
-                        content =
-                            unscheduled.mapNotNull {
-                                it.toContents(
-                                    conference.name,
-                                    tags,
-                                    speakers,
-                                    bookmarkedEvents,
-                                )
-                            },
+                        events = events,
+                        content = content,
                     )
                 }
             }.shareIn(

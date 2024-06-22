@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -26,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -39,15 +35,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.advice.core.local.Event
-import com.advice.core.local.Location
+import com.advice.core.local.Content
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
 import com.advice.core.utils.TimeUtil
@@ -60,19 +53,15 @@ import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.Speaker
-import com.advice.ui.preview.FakeEventProvider
-import com.advice.ui.preview.PreviewLightDark
-import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventScreen(
-    event: Event?,
+fun ContentScreen(
+    event: Content?,
     onBookmark: (Boolean) -> Unit,
     onBackPressed: () -> Unit,
     onTagClicked: (Tag) -> Unit,
-    onLocationClicked: (Location) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
 ) {
@@ -104,9 +93,9 @@ fun EventScreen(
                     }
                 },
                 colors =
-                    TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = getContainerColour(event).copy(alpha = alpha.value),
-                    ),
+                TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = getContainerColour(event).copy(alpha = alpha.value),
+                ),
             )
         },
     ) { contentPadding ->
@@ -124,10 +113,9 @@ fun EventScreen(
                 Modifier
                     .verticalScroll(scrollState),
             ) {
-                EventScreenContent(
+                ContentScreenContent(
                     event,
                     onTagClicked,
-                    onLocationClicked,
                     onUrlClicked,
                     onSpeakerClicked,
                     modifier = Modifier.padding(contentPadding),
@@ -149,7 +137,7 @@ fun EventScreen(
     }
 }
 
-fun getContainerColour(event: Event?): Color {
+fun getContainerColour(event: Content?): Color {
     if (event == null) {
         return Color.Transparent
     }
@@ -160,15 +148,13 @@ fun getContainerColour(event: Event?): Color {
 private fun HeaderSection(
     title: String,
     categories: List<Tag>,
-    date: String,
-    time: String,
-    location: String,
     onTagClicked: (Tag) -> Unit,
     onLocationClicked: () -> Unit,
 ) {
     val color = parseColor(categories.first().color)
     Column(
         Modifier
+            .fillMaxWidth()
             .drawBehind {
                 drawRoundRect(
                     color,
@@ -197,56 +183,15 @@ private fun HeaderSection(
                     modifier = Modifier.clickable { onTagClicked(categories.first()) },
                 )
             }
-
-            DetailsCard(
-                icon = Icons.Default.DateRange,
-                text = date + "\n" + time,
-            )
-
-            DetailsCard(
-                icon = Icons.Default.LocationOn,
-                text = location,
-                onClick = onLocationClicked,
-            )
-        }
-    }
-}
-
-@Composable
-internal fun DetailsCard(
-    icon: ImageVector,
-    text: String,
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
-) {
-    val isClickable = onClick != null
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = 0.dp, vertical = 4.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier =
-                Modifier
-                    .clickable(enabled = isClickable, onClick = onClick ?: {})
-                    .padding(16.dp),
-        ) {
-            Icon(icon, null)
-            Spacer(Modifier.width(8.dp))
-            Text(text, modifier = Modifier.weight(1f))
         }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun EventScreenContent(
-    event: Event,
+private fun ContentScreenContent(
+    event: Content,
     onTagClicked: (Tag) -> Unit,
-    onLocationClicked: (Location) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
     modifier: Modifier = Modifier,
@@ -258,12 +203,9 @@ private fun EventScreenContent(
         HeaderSection(
             title = event.title,
             categories = event.types,
-            date = TimeUtil.getEventDateStamp(context, event.session),
-            time = TimeUtil.getEventTimeStamp(context, event.session),
-            location = getLocation(event.session.location),
             onTagClicked = onTagClicked,
         ) {
-            onLocationClicked(event.session.location)
+
         }
         if (event.types.size > 1) {
             FlowRow(
@@ -278,11 +220,36 @@ private fun EventScreenContent(
                         category,
                         size = CategorySize.Medium,
                         modifier =
-                            Modifier.clickable {
-                                onTagClicked(category)
-                            },
+                        Modifier.clickable {
+                            onTagClicked(category)
+                        },
                     )
                 }
+            }
+        }
+
+        if (event.sessions.isNotEmpty()) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "Sessions",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            event.sessions.forEach { session ->
+                val date = TimeUtil.getEventDateStamp(context, session)
+                val time = TimeUtil.getEventTimeStamp(context, session)
+                val location = getLocation(session.location)
+
+                DetailsCard(
+                    icon = Icons.Default.DateRange,
+                    text = date + "\n" + time,
+                )
+
+                DetailsCard(
+                    icon = Icons.Default.LocationOn,
+                    text = location,
+                    onClick = { },
+                )
             }
         }
 
@@ -292,6 +259,10 @@ private fun EventScreenContent(
                 modifier = Modifier.padding(horizontal = 8.dp),
             )
         }
+
+
+
+
         if (event.urls.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             for (action in event.urls) {
@@ -323,21 +294,12 @@ private fun EventScreenContent(
     }
 }
 
-internal fun getLocation(location: Location): String {
-    // Find the dash within name and replace it with a newline.
-    val index = location.name.indexOf(" - " + location.shortName)
-    if (index != -1) {
-        return location.name.substring(0, index) + "\n" + location.shortName
-    }
-    return location.name
-}
-
-@PreviewLightDark
-@Composable
-private fun EventScreenPreview(
-    @PreviewParameter(FakeEventProvider::class) event: Event,
-) {
-    ScheduleTheme {
-        EventScreen(event, {}, {}, {}, {}, {}, {})
-    }
-}
+//@PreviewLightDark
+//@Composable
+//private fun EventScreenPreview(
+//    @PreviewParameter(FakeEventProvider::class) event: Event,
+//) {
+//    ScheduleTheme {
+//        EventScreen(event, {}, {}, {}, {}, {}, {})
+//    }
+//}

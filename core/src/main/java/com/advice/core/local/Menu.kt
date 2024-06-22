@@ -52,6 +52,13 @@ sealed class MenuItem(
         val tags: List<Int>,
     ) : MenuItem(icon, label, description)
 
+    class Content(
+        icon: String,
+        label: String,
+        description: String?,
+    ) : MenuItem(icon, label, description)
+
+    // todo: this should have a sealed class to map with NavHost
     val url: String?
         get() = when (this) {
             Divider -> null
@@ -60,6 +67,7 @@ sealed class MenuItem(
             is Navigation -> "$function/$label"
             is Organization -> "organizations/$label/$organizationId"
             is Schedule -> "schedule/$label/${tags.joinToString(",")}"
+            is Content -> "content/$label"
             is SectionHeading -> null
         }
 }

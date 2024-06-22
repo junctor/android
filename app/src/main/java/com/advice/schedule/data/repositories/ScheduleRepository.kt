@@ -16,7 +16,7 @@ class ScheduleRepository(
     suspend fun getEvent(
         conference: String,
         id: Long,
-    ): Event? = contentRepository.get(conference, id)
+    ): Event? = contentRepository.getEvent(conference, id)
 
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
         return combine(contentRepository.content, tagsRepository.tags) { content, tags ->

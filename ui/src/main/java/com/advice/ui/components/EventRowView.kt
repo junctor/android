@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Tag
@@ -108,14 +109,14 @@ fun EventRowView(
 }
 
 @Composable
-private fun CategoryDash(tags: List<Tag>) {
+internal fun CategoryDash(tags: List<Tag>, height: Dp = 80.dp) {
     if (tags.isNotEmpty()) {
         Box(
             modifier =
                 Modifier
                     .width(8.dp)
                     .padding(start = 4.dp, top = 4.dp, bottom = 4.dp)
-                    .height(80.dp)
+                    .height(height)
                     .clip(RoundedCornerShape(4.dp))
                     .background(parseColor(tags.first().color)),
         )
@@ -124,7 +125,7 @@ private fun CategoryDash(tags: List<Tag>) {
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun Categories(tags: List<Tag>) {
+internal fun Categories(tags: List<Tag>) {
     val padding = 4.dp
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(padding),
@@ -137,17 +138,17 @@ private fun Categories(tags: List<Tag>) {
 }
 
 @Composable
-private fun Title(title: String) {
+internal fun Title(title: String) {
     Text(title, fontWeight = FontWeight.Black, style = MaterialTheme.typography.bodyMedium)
 }
 
 @Composable
-private fun Location(location: String) {
+internal fun Location(location: String) {
     Text(location, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodyMedium)
 }
 
 @Composable
-private fun DateTime(text: String) {
+internal fun DateTime(text: String) {
     Text(text, style = MaterialTheme.typography.bodyMedium)
 }
 

@@ -51,4 +51,5 @@ data class Content(
     val types: List<Tag>,
     val urls: List<Action>,
     var isBookmarked: Boolean = false,
+    val sessions: List<Session>,
 ) : Parcelable
