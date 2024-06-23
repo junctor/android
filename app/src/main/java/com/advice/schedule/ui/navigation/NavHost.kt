@@ -2,6 +2,7 @@ package com.advice.schedule.ui.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,10 +23,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.core.ui.ScheduleFilter
@@ -67,222 +68,105 @@ import com.advice.ui.states.MapsScreenState
 import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.states.SpeakerState
 import com.advice.wifi.suggestNetwork
-
-sealed class Navigation {
-    object Home : Navigation()
-    object Maps : Navigation()
-    data class News(val label: String) : Navigation()
-    object Search : Navigation()
-    data class Locations(val label: String) : Navigation()
-    data class Event(val conference: String, val id: String) : Navigation()
-    data class Location(val id: String, val label: String) : Navigation()
-    data class Tag(val id: String, val label: String) : Navigation()
-    data class Schedule(val label: String, val ids: String) : Navigation()
-    data class Content(val label: String) : Navigation()
-    data class Speaker(val id: String, val name: String) : Navigation()
-    object Settings : Navigation()
-    object Wifi : Navigation()
-    data class Menu(val label: String, val id: String) : Navigation()
-    data class Document(val id: String) : Navigation()
-    data class FAQ(val label: String) : Navigation()
-    data class Organizations(val label: String, val id: String) : Navigation()
-    data class People(val label: String) : Navigation()
-    data class Products(val label: String) : Navigation()
-    data class Merch(val id: Long) : Navigation()
-    data class Organization(val id: Long) : Navigation()
-    object Feedback : Navigation()
-}
+import timber.log.Timber
 
 @Composable
 internal fun NavHost(navController: NavHostController) {
     val productsViewModel = viewModel<ProductsViewModel>()
-
     androidx.navigation.compose.NavHost(navController = navController, startDestination = "home") {
-        composable("home") {
+        // Home
+        register(Navigation.Home) {
             HomeScreen(navController)
         }
-        composable("maps") {
+        // Maps
+        register(Navigation.Maps) {
             MapsScreen(navController)
         }
-
-        composable(
-            "news/{label}",
-            arguments = listOf(navArgument("label") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            NewsScreen(navController, backStackEntry.arguments?.getString("label"))
+        // News
+        register(Navigation.News()) {
+            NewsScreen(navController, it.label)
         }
-        composable("search") {
+        // Search
+        register(Navigation.Search) {
             Search(navController)
         }
-        composable(
-            route = "locations/{label}",
-            arguments = listOf(navArgument("label") { type = NavType.StringType })
-        ) {
+        // Locations
+        register(Navigation.Locations()) {
             LocationsScreen(navController)
         }
-        composable(
-            "event/{conference}/{id}",
-            arguments = listOf(navArgument("conference") { type = NavType.StringType },
-                navArgument("id") { type = NavType.StringType })
-        ) { backStackEntry ->
-            EventScreen(
-                navController,
-                backStackEntry.arguments?.getString("conference"),
-                backStackEntry.arguments?.getString("id")
-            )
-        }
-        composable(
-            route = "location/{id}/{label}",
-            arguments = listOf(navArgument("id") { type = NavType.StringType },
-                navArgument("label") { type = NavType.StringType })
-        ) { backStackEntry ->
-            LocationScreen(
-                navController = navController,
-                id = backStackEntry.arguments?.getString("id"),
-                label = backStackEntry.arguments?.getString("label")
-            )
-        }
-        composable(
-            route = "tag/{id}/{label}",
-            arguments = listOf(navArgument("id") { type = NavType.StringType },
-                navArgument("label") { type = NavType.StringType })
-        ) { backStackEntry ->
-            TagScreen(
-                navController = navController,
-                id = backStackEntry.arguments?.getString("id"),
-                label = backStackEntry.arguments?.getString("label")
-            )
-        }
-        composable(
-            route = "schedule/{label}/{ids}",
-            arguments = listOf(navArgument("label") { type = NavType.StringType },
-                navArgument("ids") { type = NavType.StringType }),
-        ) {
-            TagsScreen(
-                navController = navController,
-                id = it.arguments?.getString("ids"),
-                label = it.arguments?.getString("label"),
-            )
-        }
-        composable(
-            "content/{label}",
-            arguments = listOf(navArgument("label") { type = NavType.StringType })
-        ) {
-            ContentListScreen(
-                navController = navController,
-                label = it.arguments?.getString("label")
-            )
-        }
-        composable(
-            "content/{conference}/{id}",
-            arguments = listOf(
-                navArgument("conference") { type = NavType.StringType },
-                navArgument("id") { type = NavType.StringType })
-        ) {
-            ContentScreen(
-                navController,
-                it.arguments?.getString("conference"),
-                it.arguments?.getString("id")
-            )
+        register(Navigation.Location()) {
+            LocationScreen(navController, it.id, it.label)
         }
 
-
-        composable(
-            route = "speaker/{id}/{name}",
-            arguments = listOf(navArgument("id") { type = NavType.StringType },
-                navArgument("name") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            val context = (LocalContext.current as MainActivity)
-            SpeakerScreen(
-                navController = navController,
-                id = backStackEntry.arguments?.getString("id"),
-                name = backStackEntry.arguments?.getString("name"),
-                onLinkClicked = {
-                    context.openLink(it)
-                },
-            )
+        // Schedule
+        register(Navigation.Schedule()) {
+            TagsScreen(navController, it.ids, it.label)
         }
-        composable("settings") {
+        // Events
+        register(Navigation.Event()) {
+            EventScreen(navController, it.conference, it.id)
+        }
+        // Content
+        register(Navigation.Content()) {
+            ContentListScreen(navController, it.label)
+        }
+        register(Navigation.ContentDetails()) {
+            ContentScreen(navController, it.conference, it.id)
+        }
+
+        // Tags
+        register(Navigation.Tag()) {
+            TagScreen(navController, it.id, it.label)
+        }
+
+        register(Navigation.Speaker()) {
+            SpeakerScreen(navController, it.id, it.name) { url ->
+                (navController.context as MainActivity).openLink(url)
+            }
+        }
+
+        register(Navigation.Settings) {
             SettingsScreen(navController)
         }
 
-        composable("wifi") {
+        register(Navigation.Wifi) {
             WifiScreen(navController)
         }
-        composable(
-            "menu/{label}/{id}",
-            arguments = listOf(navArgument("label") { type = NavType.StringType },
-                navArgument("id") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            MenuScreen(
-                navController = navController,
-                id = backStackEntry.arguments?.getString("id"),
-                label = backStackEntry.arguments?.getString("label"),
-            )
-        }
-        composable(
-            "document/{id}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType },
-            ),
-        ) { backStackEntry ->
-            DocumentScreen(navController, backStackEntry.arguments?.getString("id"))
-        }
-        composable(
-            "faq/{label}",
-            arguments = listOf(
-                navArgument("label") { type = NavType.StringType },
-            ),
-        ) { FAQScreen(navController) }
-        composable(
-            "organizations/{label}/{id}",
-            arguments = listOf(navArgument("label") { type = NavType.StringType },
-                navArgument("id") { type = NavType.StringType }),
-        ) {
-            OrganizationsScreen(
-                navController = navController,
-                id = it.arguments?.getString("id"),
-                label = it.arguments?.getString("label"),
-            )
-        }
-        composable(
-            "people/{label}",
-            arguments = listOf(navArgument("label") { type = NavType.StringType }),
-        ) { SpeakersScreen(navController) }
 
-        composable(
-            "products/{label}",
-            arguments = listOf(navArgument("label") { type = NavType.StringType }),
-        ) {
+        register(Navigation.Menu()) {
+            MenuScreen(navController, it.label, it.id)
+        }
+
+        register(Navigation.Document()) {
+            DocumentScreen(navController, it.id)
+        }
+
+        register(Navigation.FAQ()) {
+            FAQScreen(navController)
+        }
+
+        register(Navigation.Organizations()) {
+            OrganizationsScreen(navController, it.label, it.id)
+        }
+
+        register(Navigation.People()) {
+            SpeakersScreen(navController)
+        }
+
+        register(Navigation.Products()) {
             ProductsScreen(navController, productsViewModel)
         }
-        composable(
-            "merch/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            ProductScreen(
-                navController,
-                productsViewModel,
-                backStackEntry.arguments?.getString("id")?.toLong()
-            )
+
+        register(Navigation.Merch()) {
+            ProductScreen(navController, productsViewModel, it.id)
         }
-        composable(
-            "merch/summary",
-        ) {
-            ProductsSummary(navController, productsViewModel)
+
+        register(Navigation.Organization()) {
+            OrganizationScreen(navController, it.id)
         }
-        composable(
-            "organization/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            OrganizationScreen(backStackEntry, navController)
-        }
-        composable(
-            "feedback/{id}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType },
-            ),
-        ) { backStackEntry ->
+
+        // Feedback
+        register(Navigation.Feedback) {
             FeedbackScreen(navController)
         }
     }
@@ -290,11 +174,11 @@ internal fun NavHost(navController: NavHostController) {
 
 @Composable
 private fun OrganizationScreen(
-    backStackEntry: NavBackStackEntry, navController: NavHostController
+    navController: NavHostController,
+    id: String?,
 ) {
     val context = LocalContext.current
 
-    val id = backStackEntry.arguments?.getString("id")
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
 
     val flow = remember(id) { viewModel.getOrganization(id?.toLong()) }
@@ -630,7 +514,7 @@ fun ContentScreen(navController: NavHostController, conference: String?, id: Str
             navController.popBackStack()
         },
         onTagClicked = {
-                       
+
         },
         onUrlClicked = { url ->
             (context as MainActivity).openLink(url)
