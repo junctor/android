@@ -1,7 +1,6 @@
 package com.advice.firebase.models
 
 import android.os.Parcelable
-import com.advice.firebase.models.organization.FirebaseOrganizationMedia
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -12,7 +11,7 @@ data class FirebaseSpeaker(
     val description: String = "",
     val affiliations: List<FirebaseAffiliation> = emptyList(),
     val links: List<FirebaseSpeakerLink> = emptyList(),
-    val media: List<FirebaseOrganizationMedia> = emptyList(),
+    val media: List<FirebaseMedia> = emptyList(),
     val conference: String? = null,
     val content_ids: List<Long> = emptyList(),
     val updated_at: String? = null,

@@ -13,6 +13,8 @@ data class FirebaseContent(
     val title: String = "",
     @PropertyName("description")
     val description: String = "",
+    @PropertyName("media")
+    val media: List<FirebaseMedia> = emptyList(),
     @PropertyName("people")
     val people: ArrayList<FirebasePerson> = ArrayList(),
     @PropertyName("sessions")

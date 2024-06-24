@@ -50,7 +50,7 @@ import com.advice.firebase.models.menu.FirebaseMenuItem
 import com.advice.firebase.models.organization.FirebaseLink
 import com.advice.firebase.models.organization.FirebaseOrganization
 import com.advice.firebase.models.organization.FirebaseOrganizationLocation
-import com.advice.firebase.models.organization.FirebaseOrganizationMedia
+import com.advice.firebase.models.FirebaseMedia
 import com.advice.firebase.models.products.FirebaseProduct
 import com.advice.firebase.models.products.FirebaseProductMedia
 import com.advice.firebase.models.products.FirebaseProductVariant
@@ -405,7 +405,7 @@ fun FirebaseLink.toLink(): OrganizationLink? =
         null
     }
 
-fun FirebaseOrganizationMedia.toMedia(): OrganizationMedia? =
+fun FirebaseMedia.toMedia(): OrganizationMedia? =
     try {
         OrganizationMedia(
             asset_id,

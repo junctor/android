@@ -9,19 +9,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 class ScheduleRepository(
-    private val contentRepository: ContentRepository,
+    private val eventRepository: EventRepository,
     private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
 ) {
     suspend fun getEvent(
         conference: String,
         id: Long,
-    ): Event? = contentRepository.getEvent(conference, id)
+    ): Event? = eventRepository.getEvent(conference, id)
 
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
-        return combine(contentRepository.content, tagsRepository.tags) { content, tags ->
+        return combine(eventRepository.events, tagsRepository.tags) { events, tags ->
 
-            val sortedEvents = content.events.sortedBy { it.session.start }
+            val sortedEvents = events.sortedBy { it.session.start }
 
             return@combine when (filter) {
                 ScheduleFilter.Default -> {
@@ -75,7 +75,7 @@ class ScheduleRepository(
         event: Event,
         isBookmarked: Boolean,
     ) {
-        contentRepository.bookmark(event)
+        eventRepository.bookmark(event)
         if (isBookmarked) {
             reminderManager.setReminder(event)
         } else {

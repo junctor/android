@@ -11,7 +11,6 @@ import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.ContentDataSource
 import com.advice.data.sources.DocumentsDataSource
-import com.advice.data.sources.EventsDataSource
 import com.advice.data.sources.FAQDataSource
 import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.MapsDataSource
@@ -27,7 +26,6 @@ import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseContentDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
-import com.advice.firebase.data.sources.FirebaseEventsDataSource
 import com.advice.firebase.data.sources.FirebaseFAQDataSource
 import com.advice.firebase.data.sources.FirebaseLocationsDataSource
 import com.advice.firebase.data.sources.FirebaseMapsDataSource
@@ -47,6 +45,7 @@ import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.reminder.ReminderManager
 import com.advice.schedule.data.repositories.ContentRepository
+import com.advice.schedule.data.repositories.EventRepository
 import com.advice.schedule.data.repositories.FAQRepository
 import com.advice.schedule.data.repositories.FiltersRepository
 import com.advice.schedule.data.repositories.HomeRepository
@@ -113,7 +112,8 @@ val appModule = module {
     single { ScheduleRepository(get(), get(), get()) }
     single { HomeRepository(get(), get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
-    single { ContentRepository(get(), get()) }
+    single { ContentRepository(get()) }
+    single { EventRepository(get()) }
     single { SpeakerRepository(get(), get()) }
     single { FiltersRepository(get(), get(named("tags"))) }
     single { FAQRepository(get()) }
@@ -145,18 +145,9 @@ val appModule = module {
     single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
-    single<EventsDataSource> {
-        FirebaseEventsDataSource(
-            get<UserSession>(),
-            get<TagsDataSource>(),
-            get<SpeakersDataSource>(),
-            get<LocationsDataSource>(),
-            get<BookmarkedElementDataSource>(named("events")),
-            get<FirebaseFirestore>(),
-        )
-    }
     single<ContentDataSource> {
         FirebaseContentDataSource(
+            get(),
             get(),
             get(),
             get(),
