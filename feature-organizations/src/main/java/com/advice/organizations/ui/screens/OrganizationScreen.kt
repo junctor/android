@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
+import com.advice.ui.R
 import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.Paragraph
 import com.advice.ui.preview.PreviewLightDark
@@ -56,7 +57,7 @@ fun OrganizationScreen(
                         ),
                     ) {
                         Icon(
-                            painterResource(id = com.advice.ui.R.drawable.arrow_back),
+                            painterResource(id = R.drawable.arrow_back),
                             contentDescription = "Back",
                         )
                     }

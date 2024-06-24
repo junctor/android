@@ -26,12 +26,13 @@ import com.advice.ui.theme.ScheduleTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakersScreen(
+    label: String,
     speakers: List<Speaker>?,
     onBackPress: () -> Unit,
     onSpeakerClick: (Speaker) -> Unit,
 ) {
     Scaffold(topBar = {
-        CenterAlignedTopAppBar(title = { Text("Speakers") }, navigationIcon = {
+        CenterAlignedTopAppBar(title = { Text(label) }, navigationIcon = {
             IconButton(onClick = onBackPress) {
                 Icon(painterResource(id = R.drawable.arrow_back), null)
             }
@@ -79,6 +80,6 @@ private fun SpeakersScreenViewPreview(
     @PreviewParameter(SpeakerProvider::class) speaker: Speaker,
 ) {
     ScheduleTheme {
-        SpeakersScreen(listOf(speaker), {}, {})
+        SpeakersScreen("People", listOf(speaker), {}, {})
     }
 }

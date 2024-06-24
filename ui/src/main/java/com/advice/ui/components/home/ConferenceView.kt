@@ -23,7 +23,7 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-internal fun ConferenceView(
+fun ConferenceView(
     conference: Conference,
     modifier: Modifier = Modifier,
 ) {

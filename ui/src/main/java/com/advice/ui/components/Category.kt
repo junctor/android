@@ -31,7 +31,7 @@ import com.advice.ui.utils.parseColor
 import kotlin.math.min
 
 @Composable
-internal fun Category(
+fun Category(
     tag: Tag,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,

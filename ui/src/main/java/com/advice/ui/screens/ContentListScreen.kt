@@ -20,16 +20,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Content
 import com.advice.ui.components.ContentRow
+import com.advice.ui.states.ContentScreenState
 import com.advice.ui.theme.roundedCornerShape
-
-data class ContentScreen(
-    val content: List<Content>,
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentListScreen(
-    state: ContentScreen,
+    state: ContentScreenState,
     label: String?,
     onMenuClick: () -> Unit,
     onContentClick: (Content) -> Unit,
@@ -57,7 +54,7 @@ fun ContentListScreen(
 
 @Composable
 fun ContentScreenContent(
-    state: ContentScreen,
+    state: ContentScreenState,
     onContentClick: (Content) -> Unit,
     modifier: Modifier = Modifier,
 ) {

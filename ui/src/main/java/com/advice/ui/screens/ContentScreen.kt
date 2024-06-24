@@ -260,9 +260,6 @@ private fun ContentScreenContent(
             )
         }
 
-
-
-
         if (event.urls.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
             for (action in event.urls) {
@@ -293,13 +290,3 @@ private fun ContentScreenContent(
         Spacer(modifier = Modifier.height(64.dp))
     }
 }
-
-//@PreviewLightDark
-//@Composable
-//private fun EventScreenPreview(
-//    @PreviewParameter(FakeEventProvider::class) event: Event,
-//) {
-//    ScheduleTheme {
-//        EventScreen(event, {}, {}, {}, {}, {}, {})
-//    }
-//}

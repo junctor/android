@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Content
 import com.advice.schedule.data.repositories.ContentRepository
-import com.advice.ui.screens.ContentScreen
+import com.advice.ui.states.ContentScreenState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -18,13 +18,13 @@ class ContentViewModel :
     KoinComponent {
     private val repository by inject<ContentRepository>()
 
-    private val _state = MutableStateFlow<ContentScreen>(ContentScreen(emptyList()))
-    val state: Flow<ContentScreen> = _state
+    private val _state = MutableStateFlow<ContentScreenState>(ContentScreenState(emptyList()))
+    val state: Flow<ContentScreenState> = _state
 
     init {
         viewModelScope.launch {
             repository.content.collect {
-                _state.value = ContentScreen(it.content)
+                _state.value = ContentScreenState(it.content)
             }
         }
     }

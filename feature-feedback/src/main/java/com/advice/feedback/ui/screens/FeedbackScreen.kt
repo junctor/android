@@ -33,13 +33,13 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun FeedbackScreen(navController: NavController) {
-    FeedbackScreen(FeedbackFormProvider.element)
+fun Feedback(navController: NavController) {
+    Feedback(FeedbackFormProvider.element)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FeedbackScreen(form: FeedbackForm) {
+fun Feedback(form: FeedbackForm) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = {
@@ -106,6 +106,6 @@ private fun FeedbackScreenPreview(
     @PreviewParameter(FeedbackFormProvider::class) feedback: FeedbackForm,
 ) {
     ScheduleTheme {
-        FeedbackScreen(feedback)
+        Feedback(feedback)
     }
 }

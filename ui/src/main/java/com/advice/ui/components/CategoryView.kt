@@ -24,7 +24,7 @@ import com.advice.ui.utils.createTag
 import com.advice.ui.utils.parseColor
 
 @Composable
-internal fun CategoryView(
+fun CategoryView(
     tag: Tag,
     size: CategorySize = CategorySize.Small,
     hasIcon: Boolean = true,

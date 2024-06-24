@@ -14,7 +14,7 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-internal fun HomeCard(
+fun HomeCard(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
