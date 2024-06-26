@@ -24,20 +24,20 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     private val repository by inject<ScheduleRepository>()
     private val contentRepository by inject<ContentRepository>()
 
-    fun getEvent(conference: String?, id: Long?): Flow<EventScreenState> {
+    fun getEvent(conference: String?, id: Long?, session: Long?): Flow<EventScreenState> {
         return flow {
             emit(EventScreenState.Loading)
 
-            Timber.e("Getting event $id")
+            Timber.i("Getting content $id with session $session")
 
             if (conference == null || id == null) {
-                Timber.e("Conference or id is null")
+                Timber.e("Could not find Event: conference or id is null")
                 emit(EventScreenState.Error("Invalid event id"))
                 return@flow
             }
 
             val content = contentRepository.getContent(conference, id)
-            val event = repository.getEvent(conference, id)
+
 
             if (content == null) {
                 Timber.e("Content not found")
@@ -45,37 +45,10 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
                 return@flow
             }
 
-            if (event == null) {
-                Timber.e("Event not found")
-                emit(EventScreenState.Error("Event not found"))
-                return@flow
-            }
+            // Find the session, if session is not null.
+            val session = content.sessions.find { it.id == session }
 
-            emit(EventScreenState.Success(content, event.session))
-        }
-    }
-
-    fun getContent(conference: String?, id: Long?): Flow<EventScreenState> {
-        return flow {
-            emit(EventScreenState.Loading)
-
-            Timber.e("Getting content $id")
-
-            if (conference == null || id == null) {
-                Timber.e("Conference or id is null")
-                emit(EventScreenState.Error("Invalid content id"))
-                return@flow
-            }
-
-            val content = contentRepository.getContent(conference, id)
-
-            if (content == null) {
-                Timber.e("Content not found")
-                emit(EventScreenState.Error("Content not found"))
-                return@flow
-            }
-
-            emit(EventScreenState.Success(content, null))
+            emit(EventScreenState.Success(content, session))
         }
     }
 

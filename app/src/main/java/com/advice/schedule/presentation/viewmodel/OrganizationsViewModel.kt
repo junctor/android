@@ -22,7 +22,7 @@ class OrganizationsViewModel : ViewModel(), KoinComponent {
     fun getOrganization(id: Long?): Flow<Organization?> {
         return flow {
             if (id == null) {
-                Timber.e("Conference or id is null")
+                Timber.e("Could not find Organization: id is null")
                 emit(null)
                 return@flow
             }

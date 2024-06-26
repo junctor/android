@@ -13,15 +13,12 @@ class ScheduleRepository(
     private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
 ) {
-    suspend fun getContent(
-        conference: String,
-        id: Long,
-    ): Event? = eventRepository.getEvent(conference, id)
 
     suspend fun getEvent(
         conference: String,
         id: Long,
-    ): Event? = eventRepository.getEvent(conference, id)
+        session: Long,
+    ): Event? = eventRepository.getEvent(conference, id, session)
 
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
         return combine(eventRepository.events, tagsRepository.tags) { content, tags ->

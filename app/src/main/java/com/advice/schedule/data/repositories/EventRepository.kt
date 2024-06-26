@@ -16,12 +16,14 @@ class EventRepository(
 
     suspend fun getEvent(
         conference: String,
+        // session id
         id: Long,
+        session: Long,
     ): Event? {
-        events.first().find { it.conference == conference && it.id == id }?.let {
-            return Event(it, it.sessions.first())
-        }
-        return null
+        val content =
+            events.first().find { it.conference == conference && it.sessions.any { it.id == id } }
+                ?: return null
+        return Event(content, content.sessions.find { it.id == id }!!)
     }
 
     suspend fun bookmark(event: Event) {

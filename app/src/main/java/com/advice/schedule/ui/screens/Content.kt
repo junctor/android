@@ -35,48 +35,24 @@ fun Contents(navController: NavHostController, label: String?) {
             navController.popBackStack()
         },
         onContentClick = {
-            navController.navigate("content/${it.conference}/${it.id}")
+            navController.navigate(Navigation.Event(it.conference, it.id.toString()))
         }
     )
 }
 
 @Composable
-fun Content(navController: NavHostController, conference: String?, id: String?) {
-    val context = LocalContext.current
-    val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
-    val flow = remember(conference, id) { viewModel.getContent(conference, id?.toLong()) }
-    val content = flow.collectAsState(initial = EventScreenState.Loading).value
-
-    when (content) {
-        is EventScreenState.Error -> {
-            ErrorScreen {
-                // todo: implement
-            }
-        }
-
-        EventScreenState.Loading -> {
-            Box(
-                Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                ProgressSpinner()
-            }
-        }
-
-        is EventScreenState.Success -> extracted(content, context, navController)
-    }
-}
-
-@Composable
-fun Event(navController: NavHostController, conference: String?, id: String?) {
+fun Event(navController: NavHostController, conference: String?, id: String?, session: String?) {
     val context = LocalContext.current
     // todo: this should be another ViewModel
     val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
-    val flow = remember(conference, id) { viewModel.getEvent(conference, id?.toLong()) }
-    val event = flow.collectAsState(initial = EventScreenState.Loading).value
-
-    when (event) {
+    val flow = remember(conference, id) {
+        viewModel.getEvent(
+            conference,
+            id?.toLongOrNull(),
+            session?.toLongOrNull()
+        )
+    }
+    when (val event = flow.collectAsState(initial = EventScreenState.Loading).value) {
         is EventScreenState.Error -> {
             ErrorScreen {
                 // todo: implement
@@ -93,12 +69,14 @@ fun Event(navController: NavHostController, conference: String?, id: String?) {
             }
         }
 
-        is EventScreenState.Success -> extracted(event, context, navController)
+        is EventScreenState.Success -> {
+            Content(event, context, navController)
+        }
     }
 }
 
 @Composable
-private fun extracted(
+private fun Content(
     event: EventScreenState.Success,
     context: Context,
     navController: NavHostController

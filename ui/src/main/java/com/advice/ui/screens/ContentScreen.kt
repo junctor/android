@@ -248,7 +248,7 @@ internal fun DetailsCard(
                 .padding(16.dp),
         ) {
             Icon(icon, null)
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(12.dp))
             Text(text, modifier = Modifier.weight(1f))
         }
     }
@@ -298,25 +298,17 @@ private fun EventScreenContent(
             }
         }
 
-        event.sessions.filter { it != session }.forEach {
-            val date = TimeUtil.getEventDateStamp(LocalContext.current, it)
-            val time = TimeUtil.getEventTimeStamp(LocalContext.current, it)
-            val location = getLocation(it)
-            DetailsCard(
-                icon = Icons.Default.DateRange,
-                text = date + "\n" + time,
-                onClick = {
-                    onSessionClicked(it)
+        val otherSessions = event.sessions.filter { it != session }
+        if (otherSessions.isNotEmpty()) {
+            Column(Modifier.padding(8.dp)) {
+                Text(
+                    if (session == null) "Sessions" else "Other Sessions",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                )
+                otherSessions.forEach {
+                    SessionRow(it, onSessionClicked, onLocationClicked)
                 }
-            )
-
-            DetailsCard(
-                icon = Icons.Default.LocationOn,
-                text = location,
-                onClick = {
-                    onLocationClicked(it.location)
-                },
-            )
+            }
         }
 
         if (event.description.isNotBlank()) {
@@ -354,6 +346,24 @@ private fun EventScreenContent(
         }
         Spacer(modifier = Modifier.height(64.dp))
     }
+}
+
+@Composable
+private fun SessionRow(
+    it: Session,
+    onSessionClicked: (Session) -> Unit,
+    onLocationClicked: (Location) -> Unit
+) {
+    val date = TimeUtil.getEventDateStamp(LocalContext.current, it)
+    val time = TimeUtil.getEventTimeStamp(LocalContext.current, it)
+    val location = getLocation(it)
+    DetailsCard(
+        icon = Icons.Default.DateRange,
+        text = date + "\n" + time + "\n" + location,
+        onClick = {
+            onSessionClicked(it)
+        }
+    )
 }
 
 internal fun getLocation(session: Session?): String {

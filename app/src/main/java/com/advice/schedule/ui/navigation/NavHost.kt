@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import com.advice.feedback.ui.screens.Feedback
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.schedule.ui.activity.MainActivity
-import com.advice.schedule.ui.screens.Content
 import com.advice.schedule.ui.screens.Contents
 import com.advice.schedule.ui.screens.Document
 import com.advice.schedule.ui.screens.Event
@@ -63,21 +62,16 @@ internal fun NavHost(navController: NavHostController) {
         }
         // Events
         register(Navigation.Event()) {
-            Event(navController, it.conference, it.id)
+            Event(navController, it.conference, it.id, it.session)
         }
         // Content
         register(Navigation.Content()) {
             Contents(navController, it.label)
         }
-        register(Navigation.ContentDetails()) {
-            Content(navController, it.conference, it.id)
-        }
-
         // Tags
         register(Navigation.Tag()) {
             Tag(navController, it.id, it.label)
         }
-
 
         register(Navigation.Settings) {
             Settings(navController)

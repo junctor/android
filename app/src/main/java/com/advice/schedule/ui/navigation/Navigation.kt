@@ -48,6 +48,7 @@ sealed class Navigation {
         override fun destination(): String = "content/$label"
     }
 
+    @Deprecated("Use Event instead.")
     data class ContentDetails(val conference: String = "", val id: String = "") : Navigation() {
         override fun route(): String = "content/{conference}/{id}"
         override fun destination(): String = "content/$conference/$id"
