@@ -6,7 +6,9 @@ import com.advice.core.local.Event
 import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.Storage
 import com.advice.core.utils.TimeUtil
+import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.data.repositories.ScheduleRepository
+import com.advice.ui.states.EventScreenState
 import com.advice.ui.states.ScheduleScreenState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,17 +22,60 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
 
     private val storage by inject<Storage>()
     private val repository by inject<ScheduleRepository>()
+    private val contentRepository by inject<ContentRepository>()
 
-    fun getEvent(conference: String?, id: Long?): Flow<Event?> {
+    fun getEvent(conference: String?, id: Long?): Flow<EventScreenState> {
         return flow {
+            emit(EventScreenState.Loading)
+
+            Timber.e("Getting event $id")
+
             if (conference == null || id == null) {
                 Timber.e("Conference or id is null")
-                emit(null)
+                emit(EventScreenState.Error("Invalid event id"))
                 return@flow
             }
 
-            val value = repository.getEvent(conference, id)
-            emit(value)
+            val content = contentRepository.getContent(conference, id)
+            val event = repository.getEvent(conference, id)
+
+            if (content == null) {
+                Timber.e("Content not found")
+                emit(EventScreenState.Error("Content not found"))
+                return@flow
+            }
+
+            if (event == null) {
+                Timber.e("Event not found")
+                emit(EventScreenState.Error("Event not found"))
+                return@flow
+            }
+
+            emit(EventScreenState.Success(content, event.session))
+        }
+    }
+
+    fun getContent(conference: String?, id: Long?): Flow<EventScreenState> {
+        return flow {
+            emit(EventScreenState.Loading)
+
+            Timber.e("Getting content $id")
+
+            if (conference == null || id == null) {
+                Timber.e("Conference or id is null")
+                emit(EventScreenState.Error("Invalid content id"))
+                return@flow
+            }
+
+            val content = contentRepository.getContent(conference, id)
+
+            if (content == null) {
+                Timber.e("Content not found")
+                emit(EventScreenState.Error("Content not found"))
+                return@flow
+            }
+
+            emit(EventScreenState.Success(content, null))
         }
     }
 

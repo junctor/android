@@ -11,6 +11,8 @@ import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
+import com.advice.schedule.ui.navigation.Navigation
+import com.advice.schedule.ui.navigation.navigate
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
 
@@ -43,7 +45,7 @@ fun Location(navController: NavHostController, id: String?, label: String?) {
             navController.popBackStack()
         },
         onEventClick = {
-            navController.navigate("event/${it.conference}/${it.id}")
+            navController.navigate(Navigation.Event(it.conference, it.content.id.toString(), it.id.toString()))
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)

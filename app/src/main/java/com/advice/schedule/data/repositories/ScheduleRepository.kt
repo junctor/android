@@ -13,13 +13,24 @@ class ScheduleRepository(
     private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
 ) {
+    suspend fun getContent(
+        conference: String,
+        id: Long,
+    ): Event? = eventRepository.getEvent(conference, id)
+
     suspend fun getEvent(
         conference: String,
         id: Long,
     ): Event? = eventRepository.getEvent(conference, id)
 
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
-        return combine(eventRepository.events, tagsRepository.tags) { events, tags ->
+        return combine(eventRepository.events, tagsRepository.tags) { content, tags ->
+
+            val events: List<Event> = content.flatMap { content ->
+                content.sessions.map { session ->
+                    Event(content, session)
+                }
+            }
 
             val sortedEvents = events.sortedBy { it.session.start }
 

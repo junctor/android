@@ -77,17 +77,6 @@ class FirebaseContentDataSource(
                     observeConferenceEvents(conference),
                     bookmarkedEventsDataSource.get(),
                 ) { firebaseEvents, bookmarkedEvents ->
-                    val scheduled = firebaseEvents.filter { it.sessions.isNotEmpty() }
-
-                    val events = scheduled.mapNotNull {
-                        it.toEvents(
-                            code = conference.code,
-                            tags = tags,
-                            speakers = speakers,
-                            bookmarkedEvents = bookmarkedEvents,
-                            locations = locations,
-                        )
-                    }.flatten()
                     val content = firebaseEvents.mapNotNull {
                         it.toContents(
                             code = conference.code,
@@ -98,7 +87,6 @@ class FirebaseContentDataSource(
                         )
                     }
                     ConferenceContent(
-                        events = events,
                         content = content,
                     )
                 }

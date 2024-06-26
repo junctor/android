@@ -5,6 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ConferenceContent(
-    val events: List<Event>,
     val content: List<Content>,
 ) : Parcelable

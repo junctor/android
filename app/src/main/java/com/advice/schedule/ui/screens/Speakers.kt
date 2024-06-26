@@ -8,6 +8,8 @@ import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
+import com.advice.schedule.ui.navigation.Navigation
+import com.advice.schedule.ui.navigation.navigate
 import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreen
 import com.advice.ui.states.SpeakerState
@@ -38,9 +40,21 @@ fun Speaker(
         viewModel.fetchSpeakerDetails(id)
     }
 
-    SpeakerScreen(name = name ?: "", state = speakerDetails, onBackPress = {
-        navController.popBackStack()
-    }, onLinkClick = onLinkClicked, onEventClick = {
-        navController.navigate("event/${it.conference}/${it.id}")
-    })
+    SpeakerScreen(
+        name = name ?: "",
+        state = speakerDetails,
+        onBackPress = {
+            navController.popBackStack()
+        },
+        onLinkClick = onLinkClicked,
+        onEventClick = {
+            navController.navigate(
+                Navigation.Event(
+                    it.conference,
+                    it.content.id.toString(),
+                    it.id.toString()
+                )
+            )
+        }
+    )
 }

@@ -81,7 +81,8 @@ internal fun Home(navController: NavHostController) {
                     mainViewModel.setAnchor(DragAnchors.End)
                 },
                 onEventClick = {
-                    navController.navigate(Navigation.Event(it.conference, it.id.toString()))
+                    // passing the content id and the session id
+                    navController.navigate(Navigation.Event(it.conference, it.content.id.toString(), it.id.toString()))
                 },
                 onBookmarkClick = { event, isBookmarked ->
                     scheduleViewModel.bookmark(event, isBookmarked)

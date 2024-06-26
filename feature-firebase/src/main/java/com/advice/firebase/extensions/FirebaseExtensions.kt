@@ -38,6 +38,7 @@ import com.advice.firebase.models.FirebaseContent
 import com.advice.firebase.models.FirebaseDocument
 import com.advice.firebase.models.FirebaseFAQ
 import com.advice.firebase.models.FirebaseMap
+import com.advice.firebase.models.FirebaseMedia
 import com.advice.firebase.models.FirebaseSpeaker
 import com.advice.firebase.models.FirebaseSpeakerLink
 import com.advice.firebase.models.FirebaseTag
@@ -50,7 +51,6 @@ import com.advice.firebase.models.menu.FirebaseMenuItem
 import com.advice.firebase.models.organization.FirebaseLink
 import com.advice.firebase.models.organization.FirebaseOrganization
 import com.advice.firebase.models.organization.FirebaseOrganizationLocation
-import com.advice.firebase.models.FirebaseMedia
 import com.advice.firebase.models.products.FirebaseProduct
 import com.advice.firebase.models.products.FirebaseProductMedia
 import com.advice.firebase.models.products.FirebaseProductVariant
@@ -212,15 +212,8 @@ fun FirebaseContent.toEvents(
                 )
 
             Event(
-                id = id,
-                conference = code,
-                title = title,
-                description = description,
+                content = TODO(),
                 session = session,
-                updated = updated_timestamp.toDate().toInstant(),
-                speakers = speakers,
-                types = types,
-                urls = links,
                 isBookmarked = isBookmarked,
             )
         }

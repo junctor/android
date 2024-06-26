@@ -1,6 +1,7 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.ConferenceContent
+import com.advice.core.local.Content
 import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.advice.core.local.FAQ
@@ -22,12 +23,18 @@ sealed class SearchState {
 
 data class SearchResults(
     val query: String,
-    val events: List<Event>,
+    val contents: List<Content>,
     val speakers: List<Speaker>,
     val organizations: List<Organization>,
     val faq: List<FAQ>,
     val documents: List<Document>,
-)
+) {
+    val events = contents.flatMap { content ->
+        content.sessions.map { session ->
+            Event(content, session)
+        }
+    }
+}
 
 class SearchRepository(
     userSession: UserSession,
@@ -57,7 +64,7 @@ class SearchRepository(
         SearchState.Results(
             SearchResults(
                 query = query,
-                events = ((values[EVENTS_INDEX] as ConferenceContent).events).filter { event ->
+                contents = ((values[EVENTS_INDEX] as ConferenceContent).content).filter { event ->
                     event.title.contains(query, ignoreCase = true) ||
                         event.description.contains(query, ignoreCase = true)
                 },

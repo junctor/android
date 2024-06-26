@@ -30,11 +30,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
-import com.advice.core.local.Location
-import com.advice.core.local.Session
-import com.advice.core.local.Tag
 import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
@@ -43,12 +41,12 @@ import com.advice.ui.components.DaySelectorView
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 import kotlinx.coroutines.launch
-import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,8 +76,8 @@ fun ScheduleScreen(
             }
         },
         modifier =
-            Modifier
-                .clip(roundedCornerShape),
+        Modifier
+            .clip(roundedCornerShape),
     ) {
         ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
     }
@@ -242,47 +240,13 @@ private fun ScheduleScreenContent(
 
 @Preview
 @Composable
-private fun ScheduleScreenPreview() {
+private fun ScheduleScreenPreview(@PreviewParameter(FakeEventProvider::class) event: Event) {
     ScheduleTheme {
         val state =
             ScheduleScreenState.Success(
                 ScheduleFilter.Default,
                 mapOf(
-                    "May 19" to
-                        listOf(
-                            Event(
-                                conference = "THOTCON 0xC",
-                                title = "DOORS OPEN 喝一杯",
-                                description = "",
-                                session =
-                                    Session(
-                                        id = 1,
-                                        timeZone = "America/Chicago",
-                                        start = Instant.now(),
-                                        end = Instant.now(),
-                                        location =
-                                            Location(
-                                                -1L,
-                                                "LOC://AUD - Track 1 / Первый Трек",
-                                                "Track 1 / Первый Трек",
-                                                "THOCON 0xC",
-                                            ),
-                                    ),
-                                updated = Instant.now(),
-                                speakers = emptyList(),
-                                types =
-                                    listOf(
-                                        Tag(
-                                            -1L,
-                                            "Misc",
-                                            "",
-                                            "#e73dd2",
-                                            -1,
-                                        ),
-                                    ),
-                                urls = emptyList(),
-                            ),
-                        ),
+                    "May 19" to listOf(event),
                 ),
             )
 

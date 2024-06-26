@@ -23,9 +23,9 @@ sealed class Navigation {
         override fun destination(): String = "locations/$label"
     }
 
-    data class Event(val conference: String = "", val id: String = "") : Navigation() {
+    data class Event(val conference: String = "", val id: String = "", val session: String = "") : Navigation() {
         override fun route(): String = "event/{conference}/{id}"
-        override fun destination(): String = "event/$conference/$id"
+        override fun destination(): String = "event/$conference/$id-$session"
     }
 
     data class Location(val id: String = "", val label: String = "") : Navigation() {

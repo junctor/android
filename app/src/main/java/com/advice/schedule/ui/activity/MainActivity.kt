@@ -18,6 +18,8 @@ import androidx.navigation.compose.rememberNavController
 import com.advice.core.utils.Storage
 import com.advice.play.AppManager
 import com.advice.schedule.ui.navigation.NavHost
+import com.advice.schedule.ui.navigation.Navigation
+import com.advice.schedule.ui.navigation.navigate
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.shortstack.hackertracker.BuildConfig
@@ -109,9 +111,9 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         if (intent != null && intent.data != null) {
             val uri: Uri? = intent.data
             Timber.e("onNewIntent: $uri")
-            val conference = uri?.getQueryParameter("c")
-            val event = uri?.getQueryParameter("e")
-            navController.navigate("event/$conference/$event")
+            val conference = uri?.getQueryParameter("c") ?: return
+            val event = uri.getQueryParameter("e") ?: return
+            navController.navigate(Navigation.Event(conference, event, ""))
         }
     }
 

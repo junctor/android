@@ -57,8 +57,11 @@ object TimeUtil {
 
     fun getEventDateStamp(
         context: Context,
-        session: Session,
+        session: Session?,
     ): String {
+        if (session == null)
+            return ""
+
         val zoneId = getZoneId(context, session.timeZone)
 
         val suffixFormat = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy")
@@ -79,8 +82,11 @@ object TimeUtil {
 
     fun getEventTimeStamp(
         context: Context,
-        session: Session,
+        session: Session?,
     ): String {
+        if (session == null)
+            return ""
+
         val zoneId = getZoneId(context, session.timeZone)
         val is24HourFormat = android.text.format.DateFormat
             .is24HourFormat(context)

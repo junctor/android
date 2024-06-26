@@ -33,6 +33,8 @@ import com.advice.core.local.Conference
 import com.advice.organizations.ui.components.OrganizationRow
 import com.advice.schedule.data.repositories.SearchResults
 import com.advice.schedule.data.repositories.SearchState
+import com.advice.schedule.ui.navigation.Navigation
+import com.advice.schedule.ui.navigation.navigate
 import com.advice.ui.components.EventRow
 import com.advice.ui.components.FreqAskedQuestion
 import com.advice.ui.components.Label
@@ -141,7 +143,13 @@ private fun SearchResults(
             EventRow(
                 event = it,
                 onEventPressed = {
-                    navController.navigate("event/${it.conference}/${it.id}")
+                    navController.navigate(
+                        Navigation.Event(
+                            it.conference,
+                            it.content.id.toString(),
+                            it.id.toString()
+                        )
+                    )
                 },
             )
         }
@@ -202,7 +210,7 @@ private fun SearchScreenPreview() {
         SearchScreen(
             navController = rememberNavController(),
             conference =
-                Conference.Zero,
+            Conference.Zero,
             state = SearchState.Idle,
             onQueryChanged = {
             },

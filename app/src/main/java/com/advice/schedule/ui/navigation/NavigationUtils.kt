@@ -16,10 +16,10 @@ internal fun <T : Navigation> NavGraphBuilder.register(
     navigation: T,
     content: @Composable AnimatedContentScope.(T) -> Unit
 ) {
-    Timber.e("Registering ${navigation.route()}")
+    //Timber.e("Registering ${navigation.route()}")
     composable(navigation.route()) {
         val arguments = navigation.withArguments(it) as T
-        Timber.e("Navigating to ${arguments.destination()}")
+        //Timber.e("Navigating to ${arguments.destination()}")
         content(arguments)
     }
 }
@@ -47,7 +47,11 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
             val conference =
                 backStackEntry.arguments?.getString("conference") ?: error("conference is required")
             val id = backStackEntry.arguments?.getString("id") ?: error("id is required")
-            copy(conference = conference, id = id)
+
+            Timber.e("Navigating to event $conference $id")
+
+            val (content, session) = id.split("-")
+            copy(conference = conference, id = content, session = session)
         }
 
         is Navigation.FAQ -> {

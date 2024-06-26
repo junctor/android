@@ -21,17 +21,34 @@ data class Session(
 
 @Parcelize
 data class Event(
-    val id: Long = -1,
-    val conference: String,
-    val title: String,
-    val description: String,
+    val content: Content,
     val session: Session,
-    val updated: Instant,
-    val speakers: List<Speaker>,
-    val types: List<Tag>,
-    val urls: List<Action>,
     var isBookmarked: Boolean = false,
 ) : Parcelable {
+
+    val id: Long
+        get() = session.id
+
+    val conference: String
+        get() = content.conference
+
+    val title: String
+        get() = content.title
+
+    val description: String
+        get() = content.description
+
+    val updated: Instant
+        get() = content.updated
+
+    val speakers: List<Speaker>
+        get() = content.speakers
+
+    val types: List<Tag>
+        get() = content.types
+
+    val urls: List<Action>
+        get() = content.urls
 
     val hasStarted: Boolean
         get() = session.hasStarted
