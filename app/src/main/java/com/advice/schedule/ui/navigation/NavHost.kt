@@ -18,6 +18,7 @@ import com.advice.schedule.ui.screens.Organization
 import com.advice.schedule.ui.screens.Organizations
 import com.advice.schedule.ui.screens.Product
 import com.advice.schedule.ui.screens.Products
+import com.advice.schedule.ui.screens.ProductsSummary
 import com.advice.schedule.ui.screens.Search
 import com.advice.schedule.ui.screens.Settings
 import com.advice.schedule.ui.screens.Speaker
@@ -115,9 +116,14 @@ internal fun NavigationManager.setRoutes(navController: NavHostController) {
             Products(navController)
         }
 
-        register(Navigation.Merch()) {
+        register(Navigation.Product()) {
             Product(navController, it.id)
         }
+
+        register(Navigation.ProductsSummary) {
+            ProductsSummary(navController)
+        }
+
 
         // Feedback
         register(Navigation.Feedback) {

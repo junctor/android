@@ -21,15 +21,19 @@ internal fun Speakers(navController: NavHostController, label: String) {
     SpeakersScreen(
         label = label,
         speakers = state,
-        onBackPress = { navController.popBackStack() },
-        onSpeakerClick = { navController.navigate("speaker/${it.id}/${it.name}") },
+        onBackPress = {
+            navController.popBackStack()
+        },
+        onSpeakerClick = {
+            navController.navigate(Navigation.Speaker(it.id, it.name))
+        },
     )
 }
 
 @Composable
 fun Speaker(
     navController: NavHostController,
-    id: String?,
+    id: Long?,
     name: String?,
     onLinkClicked: (String) -> Unit,
 ) {

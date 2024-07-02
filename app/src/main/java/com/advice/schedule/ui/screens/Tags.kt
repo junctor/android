@@ -16,7 +16,7 @@ import com.advice.ui.states.ScheduleScreenState
 
 
 @Composable
-fun Tag(navController: NavHostController, id: String?, label: String?) {
+fun Tag(navController: NavHostController, id: Long?, label: String?) {
     val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
     val state = remember {
@@ -40,11 +40,11 @@ fun Tag(navController: NavHostController, id: String?, label: String?) {
 }
 
 @Composable
-fun Tags(navController: NavHostController, id: String?, label: String?) {
+fun Tags(navController: NavHostController, ids: List<Long>?, label: String?) {
     val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
     val state = remember {
-        viewModel.getState(ScheduleFilter.Tags(id!!.split(",")))
+        viewModel.getState(ScheduleFilter.Tags(ids))
     }.collectAsState(initial = ScheduleScreenState.Loading).value
 
     ScheduleScreen(

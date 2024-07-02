@@ -584,25 +584,35 @@ fun FirebaseProduct.toMerch(): Product? =
             id = id,
             label = title,
             baseCost = price_min,
-            variants = variants.map { it.toMerchOption(price_min) },
-            media = media.map { it.toProductMedia() },
+            variants = variants.mapNotNull { it.toMerchOption(price_min) },
+            media = media.mapNotNull { it.toProductMedia() },
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Merch: ${ex.message}")
         null
     }
 
-fun FirebaseProductVariant.toMerchOption(basePrice: Long): ProductVariant =
-    ProductVariant(
-        id = variant_id,
-        label = title,
-        tags = tags,
-        extraCost = price - basePrice,
-        stockStatus = StockStatus.fromString(stock_status) ?: StockStatus.IN_STOCK,
-    )
+fun FirebaseProductVariant.toMerchOption(basePrice: Long): ProductVariant? =
+    try {
+        ProductVariant(
+            id = variant_id,
+            label = title,
+            tags = tags,
+            extraCost = price - basePrice,
+            stockStatus = StockStatus.fromString(stock_status) ?: StockStatus.IN_STOCK,
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to MerchOption: ${ex.message}")
+        null
+    }
 
-fun FirebaseProductMedia.toProductMedia(): ProductMedia =
-    ProductMedia(
-        url = url,
-        sortOrder = sort_order,
-    )
+fun FirebaseProductMedia.toProductMedia(): ProductMedia? =
+    try {
+        ProductMedia(
+            url = url,
+            sortOrder = sort_order,
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to ProductMedia: ${ex.message}")
+        null
+    }

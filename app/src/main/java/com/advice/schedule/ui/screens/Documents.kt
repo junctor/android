@@ -7,10 +7,10 @@ import com.advice.documents.presentation.viewmodel.DocumentsViewModel
 import com.advice.schedule.extensions.navGraphViewModel
 
 @Composable
-internal fun Document(navController: NavHostController, id: String? = null) {
+internal fun Document(navController: NavHostController, id: Long? = null) {
     val viewModel = navController.navGraphViewModel<DocumentsViewModel>()
     val documents = viewModel.documents.collectAsState(initial = null).value ?: return
-    val document = documents.find { it.id == id?.toLong() } ?: return
+    val document = documents.find { it.id == id } ?: return
     com.advice.documents.ui.screens.DocumentScreen(document = document,
         onBackPressed = { navController.popBackStack() })
 }

@@ -89,14 +89,15 @@ private fun Content(
         },
         onBackPressed = { navController.popBackStack() },
         onTagClicked = {
-            navController.navigate(Navigation.Tag(it.id.toString(), it.label))
+            navController.navigate(Navigation.Tag(it.id, it.label))
         },
         onLocationClicked = { location ->
+            // todo: move this logic into the Navigation class.
             val label = location.shortName?.replace(
                 "/", "\\"
             ) ?: ""
             navController.navigate(
-                Navigation.Location(location.id.toString(), label)
+                Navigation.Location(location.id, label)
             )
         },
         onSessionClicked = {
@@ -112,7 +113,7 @@ private fun Content(
             (context as MainActivity).openLink(url)
         },
         onSpeakerClicked = {
-            navController.navigate(Navigation.Speaker(it.id.toString(), it.name))
+            navController.navigate(Navigation.Speaker(it.id, it.name))
         }
     )
 }

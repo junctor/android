@@ -13,9 +13,9 @@ import timber.log.Timber
 class OrganizationsViewModel : ViewModel(), KoinComponent {
     private val repository by inject<OrganizationsRepository>()
 
-    fun getState(id: String): Flow<List<Organization>> {
+    fun getState(id: Long): Flow<List<Organization>> {
         return repository.organizations.map {
-            it.filter { organization -> organization.tags.contains(id.toLong()) }
+            it.filter { organization -> organization.tags.contains(id) }
         }
     }
 

@@ -11,11 +11,11 @@ import com.advice.schedule.presentation.viewmodel.MenuViewModel
 internal fun Menu(
     navController: NavHostController,
     label: String?,
-    id: String?,
+    id: Long?,
 ) {
     val viewModel = navController.navGraphViewModel<MenuViewModel>()
     val menus = viewModel.menu.collectAsState(initial = null).value ?: return
-    val menu = menus.find { it.id.toString() == id } ?: return
+    val menu = menus.find { it.id == id } ?: return
 
     com.advice.documents.ui.screens.MenuScreen(menu = menu,
         label = label ?: "",

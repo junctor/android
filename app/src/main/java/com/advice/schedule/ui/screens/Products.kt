@@ -8,6 +8,8 @@ import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.products.ui.screens.ProductScreen
 import com.advice.products.ui.screens.ProductsScreen
 import com.advice.products.ui.screens.ProductsSummaryScreen
+import com.advice.schedule.ui.navigation.Navigation
+import com.advice.schedule.ui.navigation.navigate
 
 @Composable
 fun Product(
@@ -52,10 +54,10 @@ fun Products(navController: NavHostController) {
     ProductsScreen(
         state = state,
         onSummaryClicked = {
-            navController.navigate("merch/summary")
+            navController.navigate(Navigation.ProductsSummary)
         },
         onProductClicked = {
-            navController.navigate("merch/${it.id}")
+            navController.navigate(Navigation.Product(it.id))
         },
         onBackPressed = {
             navController.popBackStack()
@@ -63,7 +65,7 @@ fun Products(navController: NavHostController) {
         onLearnMore = {
             val merchDocument = state?.merchDocument
             if (merchDocument != null) {
-                navController.navigate("document/$merchDocument")
+                navController.navigate(Navigation.Document(merchDocument))
             }
         },
         onDismiss = {

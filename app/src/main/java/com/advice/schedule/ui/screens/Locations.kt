@@ -24,14 +24,15 @@ internal fun Locations(navController: NavHostController) {
         viewModel.toggle(it)
     }, onScheduleClicked = {
         // todo: this should URL encode the title
-        navController.navigate("location/${it.id}/${it.title.replace("/", "-")}")
+
+        navController.navigate(Navigation.Location(it.id, it.title))
     }, onBackPressed = {
         navController.popBackStack()
     })
 }
 
 @Composable
-fun Location(navController: NavHostController, id: String?, label: String?) {
+fun Location(navController: NavHostController, id: Long?, label: String?) {
     val context = LocalContext.current
     val viewModel = viewModel<ScheduleViewModel>()
     val state = remember {

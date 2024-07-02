@@ -17,14 +17,14 @@ class SpeakerViewModel : ViewModel(), KoinComponent {
     private val _speakerDetails = MutableStateFlow<SpeakerState>(SpeakerState.Loading)
     val speakerDetails: Flow<SpeakerState> get() = _speakerDetails
 
-    fun fetchSpeakerDetails(id: String?) {
+    fun fetchSpeakerDetails(id: Long?) {
         if (id == null) {
             _speakerDetails.value = SpeakerState.Error
             return
         }
 
         viewModelScope.launch {
-            val details = repository.getSpeakerDetails(id.toLong())
+            val details = repository.getSpeakerDetails(id)
             _speakerDetails.value = details
         }
     }

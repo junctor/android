@@ -8,9 +8,11 @@ import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.ui.activity.MainActivity
+import com.advice.schedule.ui.navigation.Navigation
+import com.advice.schedule.ui.navigation.navigate
 
 @Composable
-internal fun Organizations(navController: NavHostController, label: String?, id: String?) {
+internal fun Organizations(navController: NavHostController, label: String?, id: Long?) {
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
     val state = viewModel.getState(id!!).collectAsState(initial = null).value
     com.advice.organizations.ui.screens.OrganizationsScreen(
@@ -20,7 +22,7 @@ internal fun Organizations(navController: NavHostController, label: String?, id:
             navController.popBackStack()
         },
         onOrganizationPressed = {
-            navController.navigate("organization/${it.id}")
+            navController.navigate(Navigation.Organization(it.id))
         },
     )
 }
@@ -29,13 +31,13 @@ internal fun Organizations(navController: NavHostController, label: String?, id:
 @Composable
 internal fun Organization(
     navController: NavHostController,
-    id: String?,
+    id: Long?,
 ) {
     val context = LocalContext.current
 
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
 
-    val flow = remember(id) { viewModel.getOrganization(id?.toLong()) }
+    val flow = remember(id) { viewModel.getOrganization(id) }
     val organization = flow.collectAsState(initial = null).value
 
     com.advice.organizations.ui.screens.OrganizationScreen(
@@ -47,6 +49,6 @@ internal fun Organization(
             (context as MainActivity).openLink(it)
         },
         onScheduleClicked = { id, label ->
-            navController.navigate("schedule/${label}/${id}")
+            navController.navigate(Navigation.Schedule(label, listOf(id)))
         })
 }

@@ -39,18 +39,17 @@ class ScheduleRepository(
 
                 is ScheduleFilter.Location -> {
                     sortedEvents.filter {
-                        it.session.location.id
-                            .toString() == filter.id
+                        it.session.location.id == filter.id
                     }
                 }
 
                 is ScheduleFilter.Tag -> {
-                    sortedEvents.filter { it.types.any { it.id.toString() == filter.id } }
+                    sortedEvents.filter { it.types.any { it.id == filter.id } }
                 }
 
                 is ScheduleFilter.Tags -> {
                     // Any content that have any of the selected tags
-                    sortedEvents.filter { it.types.any { it.id.toString() in filter.ids } }
+                    sortedEvents.filter { it.types.any { it.id in (filter.ids ?: emptyList()) } }
                 }
             }
         }

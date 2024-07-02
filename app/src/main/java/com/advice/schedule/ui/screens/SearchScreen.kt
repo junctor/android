@@ -163,7 +163,7 @@ private fun SearchResults(
                 name = it.name,
                 title = it.title,
                 onSpeakerClicked = {
-                    navController.navigate("speaker/${it.id}/${it.name}")
+                    navController.navigate(Navigation.Speaker(it.id, it.name))
                 },
             )
         }
@@ -179,7 +179,7 @@ private fun SearchResults(
         ) { organizations ->
             item {
                 OrganizationRow(organizations, onOrganizationPressed = {
-                    navController.navigate("organization/${it.id}")
+                    navController.navigate(Navigation.Organization(it.id))
                 })
             }
         }
