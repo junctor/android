@@ -1,5 +1,6 @@
 package com.advice.schedule.ui.screens
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -12,43 +13,8 @@ import com.advice.schedule.ui.navigation.Navigation
 import com.advice.schedule.ui.navigation.navigate
 
 @Composable
-fun Product(
-    navController: NavHostController,
-    id: Long?,
-) {
-    val viewModel = viewModel<ProductsViewModel>()
-    val state = viewModel.state.collectAsState(null).value ?: return
-    val product = state.products.find { it.id == id } ?: return
-
-    ProductScreen(
-        product = product,
-        canAdd = state.canAdd,
-        onAddClicked = {
-            viewModel.addToCart(it)
-            navController.popBackStack()
-        },
-        onBackPressed = {
-            navController.popBackStack()
-        })
-}
-
-@Composable
-fun ProductsSummary(navController: NavHostController) {
-    val viewModel = viewModel<ProductsViewModel>()
-    val state = viewModel.state.collectAsState(null).value ?: return
-
-    ProductsSummaryScreen(
-        state = state,
-        onQuantityChanged = { id, quantity, variant ->
-            viewModel.setQuantity(id, quantity, variant)
-        },
-        onBackPressed = { navController.popBackStack() },
-    )
-}
-
-@Composable
-fun Products(navController: NavHostController) {
-    val viewModel = viewModel<ProductsViewModel>()
+fun Products(context: AppCompatActivity, navController: NavHostController) {
+    val viewModel = viewModel<ProductsViewModel>(context)
     val state = viewModel.state.collectAsState(null).value
 
     ProductsScreen(
@@ -73,3 +39,40 @@ fun Products(navController: NavHostController) {
         },
     )
 }
+
+@Composable
+fun Product(
+    context: AppCompatActivity,
+    navController: NavHostController,
+    id: Long?,
+) {
+    val viewModel = viewModel<ProductsViewModel>(context)
+    val state = viewModel.state.collectAsState(null).value ?: return
+    val product = state.products.find { it.id == id } ?: return
+
+    ProductScreen(
+        product = product,
+        canAdd = state.canAdd,
+        onAddClicked = {
+            viewModel.addToCart(it)
+            navController.popBackStack()
+        },
+        onBackPressed = {
+            navController.popBackStack()
+        })
+}
+
+@Composable
+fun ProductsSummary(context: AppCompatActivity,navController: NavHostController) {
+    val viewModel = viewModel<ProductsViewModel>(context)
+    val state = viewModel.state.collectAsState(null).value ?: return
+
+    ProductsSummaryScreen(
+        state = state,
+        onQuantityChanged = { id, quantity, variant ->
+            viewModel.setQuantity(id, quantity, variant)
+        },
+        onBackPressed = { navController.popBackStack() },
+    )
+}
+

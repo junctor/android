@@ -18,7 +18,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     private val repository by inject<ProductsRepository>()
     private val storage by inject<Storage>()
 
-    private val selections = mutableListOf<ProductSelection>()
+    private val list by inject<ProductList>()
 
     private val _state = MutableStateFlow(ProductsState.EMPTY)
     val state: Flow<ProductsState> = _state
@@ -46,18 +46,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     fun addToCart(selection: ProductSelection) {
         viewModelScope.launch {
-            // Look to see if it already exists in our selection
-            val indexOf =
-                selections.indexOfFirst { it.id == selection.id && it.selectionOption == selection.selectionOption }
-            if (indexOf != -1) {
-                // add the two together
-                selections[indexOf] =
-                    selections[indexOf].copy(quantity = selections[indexOf].quantity + selection.quantity)
-            } else {
-                // add to the end of the list
-                selections.add(selection)
-            }
-
+            list.add(selection)
             updateList()
             updateSummary()
         }
@@ -66,7 +55,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     private suspend fun updateList() {
         // merging the merch list with the selections
         val list = _state.value.products.map { model ->
-            val quantity = selections.filter { it.id == model.id }.sumOf { it.quantity }
+            val quantity = list.getSelections().filter { it.id == model.id }.sumOf { it.quantity }
             model.copy(quantity = quantity)
         }
 
@@ -75,7 +64,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     private suspend fun updateSummary() {
         // updating the summary broke down based on selections
-        val summary = selections.map { selection ->
+        val summary = list.getSelections().map { selection ->
             val element = _state.value.products.find { it.id == selection.id }!!
             element.update(selection)
         }
@@ -90,17 +79,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     fun setQuantity(id: Long, quantity: Int, selectedOption: String?) {
         viewModelScope.launch {
-            val indexOf =
-                selections.indexOfFirst { it.id == id && it.selectionOption == selectedOption }
-            if (indexOf != -1) {
-                val element = selections[indexOf]
-                if (quantity == 0) {
-                    selections.removeAt(indexOf)
-                } else {
-                    selections[indexOf] = element.copy(quantity = quantity)
-                }
-            }
-
+            list.setQuantity(id, quantity, selectedOption)
             updateList()
             updateSummary()
         }

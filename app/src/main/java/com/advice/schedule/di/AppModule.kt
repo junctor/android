@@ -42,6 +42,7 @@ import com.advice.locations.data.repositories.LocationRepository
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.play.AppManager
 import com.advice.products.data.repositories.ProductsRepository
+import com.advice.products.presentation.viewmodel.ProductList
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.reminder.ReminderManager
 import com.advice.schedule.data.repositories.ContentRepository
@@ -185,6 +186,9 @@ val appModule = module {
     single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get(), get()) }
 
     single<MenuDataSource> { FirebaseMenuDataSource(get(), get(), get()) }
+
+    // Products
+    single<ProductList> { ProductList() }
 
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }

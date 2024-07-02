@@ -23,7 +23,6 @@ import com.advice.schedule.ui.navigation.navigate
 import com.advice.schedule.ui.navigation.setRoutes
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.shortstack.hackertracker.BuildConfig
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             navController = rememberNavController()
 
             ScheduleTheme {
-                navigation.setRoutes(navController = navController as NavHostController)
+                navigation.setRoutes(this, navController = navController as NavHostController)
             }
         }
 
