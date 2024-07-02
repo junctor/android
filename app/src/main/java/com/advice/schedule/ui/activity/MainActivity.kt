@@ -17,13 +17,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.advice.core.utils.Storage
 import com.advice.play.AppManager
-import com.advice.schedule.ui.navigation.NavHost
 import com.advice.schedule.ui.navigation.Navigation
+import com.advice.schedule.ui.navigation.NavigationManager
 import com.advice.schedule.ui.navigation.navigate
+import com.advice.schedule.ui.navigation.setRoutes
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.shortstack.hackertracker.BuildConfig
-import java.util.jar.Manifest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     private val appManager by inject<AppManager>()
     private val storage by inject<Storage>()
+    private val navigation by inject<NavigationManager>()
     private val REQUEST_CODE_UPDATE = 9003
 
     // todo: fix this - this is a hack to get the navController to work
@@ -63,7 +65,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             navController = rememberNavController()
 
             ScheduleTheme {
-                NavHost(navController as NavHostController)
+                navigation.setRoutes(navController = navController as NavHostController)
             }
         }
 

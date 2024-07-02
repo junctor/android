@@ -8,19 +8,46 @@ import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toTagType
 import com.advice.firebase.models.FirebaseTagType
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseTagsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
+    private val analytics: FirebaseAnalytics,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : TagsDataSource {
+
+    private val tagTypes: StateFlow<List<TagType>> =
+        userSession.getConference().flatMapMerge { conference ->
+            firestore
+                .collection("conferences")
+                .document(conference.code)
+                .collection("tagtypes")
+                .snapshotFlow(analytics)
+                .map { querySnapshot ->
+                    querySnapshot
+                        .toObjectsOrEmpty(FirebaseTagType::class.java)
+                        .sortedBy { it.sort_order }
+                        .mapNotNull { it.toTagType() }
+                }
+        }.stateIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            initialValue = emptyList(),
+        )
+
     override fun get(): Flow<List<TagType>> =
         combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
             val temp =
@@ -30,12 +57,12 @@ class FirebaseTagsDataSource(
                     .map {
                         it.copy(
                             tags =
-                                it.tags.sortedWith(
-                                    compareBy(
-                                        { it.sortOrder },
-                                        { it.label },
-                                    ),
+                            it.tags.sortedWith(
+                                compareBy(
+                                    { it.sortOrder },
+                                    { it.label },
                                 ),
+                            ),
                         )
                     }
 
@@ -51,18 +78,5 @@ class FirebaseTagsDataSource(
             temp
         }
 
-    private fun getTagTypes(): Flow<List<TagType>> =
-        userSession.getConference().flatMapMerge { conference ->
-            firestore
-                .collection("conferences")
-                .document(conference.code)
-                .collection("tagtypes")
-                .snapshotFlow()
-                .map { querySnapshot ->
-                    querySnapshot
-                        .toObjectsOrEmpty(FirebaseTagType::class.java)
-                        .sortedBy { it.sort_order }
-                        .mapNotNull { it.toTagType() }
-                }
-        }
+    private fun getTagTypes(): Flow<List<TagType>> = tagTypes
 }

@@ -1,10 +1,8 @@
 package com.advice.schedule.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.feedback.ui.screens.Feedback
-import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.screens.Contents
 import com.advice.schedule.ui.screens.Document
@@ -29,9 +27,8 @@ import com.advice.schedule.ui.screens.Tags
 import com.advice.schedule.ui.screens.Wifi
 
 @Composable
-internal fun NavHost(navController: NavHostController) {
-    val productsViewModel = viewModel<ProductsViewModel>()
-    androidx.navigation.compose.NavHost(navController = navController, startDestination = "home") {
+internal fun NavigationManager.setRoutes(navController: NavHostController) {
+    set(navController, startDestination = Navigation.Home) {
         // Home
         register(Navigation.Home) {
             Home(navController)
@@ -115,11 +112,11 @@ internal fun NavHost(navController: NavHostController) {
 
         // Merch
         register(Navigation.Products()) {
-            Products(navController, productsViewModel)
+            Products(navController)
         }
 
         register(Navigation.Merch()) {
-            Product(navController, productsViewModel, it.id)
+            Product(navController, it.id)
         }
 
         // Feedback

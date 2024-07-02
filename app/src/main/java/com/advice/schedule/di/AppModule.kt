@@ -71,6 +71,8 @@ import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
+import com.advice.schedule.ui.navigation.NavigationManager
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
@@ -95,6 +97,7 @@ val appModule = module {
     single { FirebaseFirestore.getInstance() }
     single { FirebaseAuth.getInstance() }
     single { FirebaseStorage.getInstance() }
+    single { FirebaseAnalytics.getInstance(androidContext()) }
 
     // work manager
     single { WorkManager.getInstance(androidContext()) }
@@ -107,6 +110,9 @@ val appModule = module {
     // reminder
     single { NotificationHelper(get()) }
     single { ReminderManager(get()) }
+
+    // navigation
+    single { NavigationManager(get()) }
 
     // repo
     single { ScheduleRepository(get(), get(), get()) }
@@ -143,10 +149,11 @@ val appModule = module {
     }
 
     single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
-    single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
-    single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
+    single<NewsDataSource> { FirebaseNewsDataSource(get(), get(), get()) }
+    single<ConferencesDataSource> { FirebaseConferencesDataSource(get(), get()) }
     single<ContentDataSource> {
         FirebaseContentDataSource(
+            get(),
             get(),
             get(),
             get(),
@@ -155,9 +162,9 @@ val appModule = module {
             get(named("events")),
         )
     }
-    single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
-    single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
-    single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
+    single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(), get(named("tags"))) }
+    single<FAQDataSource> { FirebaseFAQDataSource(get(), get(), get()) }
+    single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get(), get()) }
     single<MapsDataSource> {
         FirebaseMapsDataSource(
             get(),
@@ -166,18 +173,18 @@ val appModule = module {
         )
     }
 
-    single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
-    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get()) }
+    single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get(), get()) }
+    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get(), get()) }
 
     // Organizations
-    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get()) }
+    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get(), get()) }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<VillagesDataSource> { FirebaseVillagesDataSource(get(), get()) }
 
     // Documents
-    single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get()) }
+    single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get(), get()) }
 
-    single<MenuDataSource> { FirebaseMenuDataSource(get(), get()) }
+    single<MenuDataSource> { FirebaseMenuDataSource(get(), get(), get()) }
 
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }

@@ -1,6 +1,7 @@
 package com.advice.firebase.extensions
 
 import android.annotation.SuppressLint
+import androidx.core.os.bundleOf
 import com.advice.core.local.Action
 import com.advice.core.local.Affiliation
 import com.advice.core.local.Bookmark
@@ -54,14 +55,18 @@ import com.advice.firebase.models.organization.FirebaseOrganizationLocation
 import com.advice.firebase.models.products.FirebaseProduct
 import com.advice.firebase.models.products.FirebaseProductMedia
 import com.advice.firebase.models.products.FirebaseProductVariant
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import java.text.SimpleDateFormat
+
 
 fun <T> QuerySnapshot.toObjectsOrEmpty(clazz: Class<T>): List<T> {
     return try {
@@ -81,16 +86,18 @@ fun <T> DocumentSnapshot.toObjectOrNull(clazz: Class<T>): T? {
     }
 }
 
-fun Query.snapshotFlow(): Flow<QuerySnapshot> =
-    callbackFlow {
+fun CollectionReference.snapshotFlow(analytics: FirebaseAnalytics): Flow<QuerySnapshot> {
+    val path = this.path
+    return callbackFlow {
         val listenerRegistration =
             addSnapshotListener { value, error ->
                 if (error != null) {
-                    Timber.e("Could not create snapshotFlow: ${error.message}")
+                    logFailure(path, error)
                     close()
                     return@addSnapshotListener
                 }
                 if (value != null) {
+                    analytics.logSnapshot(path, value)
                     trySend(value)
                 }
             }
@@ -98,6 +105,24 @@ fun Query.snapshotFlow(): Flow<QuerySnapshot> =
             listenerRegistration.remove()
         }
     }
+}
+
+private fun logFailure(path: String, error: FirebaseFirestoreException) {
+    val crashlytics = FirebaseCrashlytics.getInstance()
+    Timber.e("Failed to get snapshot for path: $path, ${error.message}")
+    crashlytics.log("Failed to get snapshot for path: $path")
+    crashlytics.recordException(error)
+}
+
+private fun FirebaseAnalytics.logSnapshot(path: String?, value: QuerySnapshot) {
+    Timber.i("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
+    val bundle = bundleOf(
+        "path" to path,
+        "count" to value.size(),
+        "is_from_cache" to value.metadata.isFromCache,
+    )
+    logEvent("document_read", bundle)
+}
 
 fun FirebaseConference.toConference(): Conference? =
     try {

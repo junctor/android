@@ -14,12 +14,12 @@ fun NavController.navigate(navigation: Navigation) {
 
 internal fun <T : Navigation> NavGraphBuilder.register(
     navigation: T,
-    content: @Composable AnimatedContentScope.(T) -> Unit
+    content: @Composable() (AnimatedContentScope.(T) -> Unit)
 ) {
-    //Timber.e("Registering ${navigation.route()}")
+    Timber.i("Registering: ${navigation.route()}")
     composable(navigation.route()) {
         val arguments = navigation.withArguments(it) as T
-        //Timber.e("Navigating to ${arguments.destination()}")
+        Timber.i("Rendering: ${arguments.destination()}")
         content(arguments)
     }
 }

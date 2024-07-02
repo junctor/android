@@ -7,6 +7,7 @@ import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toLocation
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.location.FirebaseLocation
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,13 +23,14 @@ import kotlinx.coroutines.flow.stateIn
 class FirebaseLocationsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
+    private val analytics: FirebaseAnalytics,
 ) : LocationsDataSource {
     private val locations: StateFlow<List<Location>> =
         userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("locations")
-                .snapshotFlow()
+                .snapshotFlow(analytics)
                 .map { querySnapshot ->
                     val locations =
                         querySnapshot.toObjectsOrEmpty(FirebaseLocation::class.java)

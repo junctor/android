@@ -18,6 +18,7 @@ import com.advice.firebase.extensions.toEvents
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseContent
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +34,7 @@ import kotlinx.coroutines.tasks.await
 class FirebaseContentDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
+    private val analytics: FirebaseAnalytics,
     private val tagsDataSource: TagsDataSource,
     private val speakersDataSource: SpeakersDataSource,
     private val locationsDataSource: LocationsDataSource,
@@ -44,7 +46,7 @@ class FirebaseContentDataSource(
             .collection("conferences")
             .document(conference.code)
             .collection("content")
-            .snapshotFlow()
+            .snapshotFlow(analytics)
             .map { querySnapshot ->
                 querySnapshot
                     .toObjectsOrEmpty(FirebaseContent::class.java)

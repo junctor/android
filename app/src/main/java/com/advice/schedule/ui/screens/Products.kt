@@ -2,6 +2,7 @@ package com.advice.schedule.ui.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.products.ui.screens.ProductScreen
@@ -11,9 +12,9 @@ import com.advice.products.ui.screens.ProductsSummaryScreen
 @Composable
 fun Product(
     navController: NavHostController,
-    viewModel: ProductsViewModel,
     id: Long?,
 ) {
+    val viewModel = viewModel<ProductsViewModel>()
     val state = viewModel.state.collectAsState(null).value ?: return
     val product = state.products.find { it.id == id } ?: return
 
@@ -30,7 +31,8 @@ fun Product(
 }
 
 @Composable
-fun ProductsSummary(navController: NavHostController, viewModel: ProductsViewModel) {
+fun ProductsSummary(navController: NavHostController) {
+    val viewModel = viewModel<ProductsViewModel>()
     val state = viewModel.state.collectAsState(null).value ?: return
 
     ProductsSummaryScreen(
@@ -43,7 +45,8 @@ fun ProductsSummary(navController: NavHostController, viewModel: ProductsViewMod
 }
 
 @Composable
-fun Products(navController: NavHostController, viewModel: ProductsViewModel) {
+fun Products(navController: NavHostController) {
+    val viewModel = viewModel<ProductsViewModel>()
     val state = viewModel.state.collectAsState(null).value
 
     ProductsScreen(

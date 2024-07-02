@@ -7,6 +7,7 @@ import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toSpeaker
 import com.advice.firebase.models.FirebaseSpeaker
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +24,14 @@ import java.util.Locale
 class FirebaseSpeakersDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
+    private val analytics: FirebaseAnalytics,
 ) : SpeakersDataSource {
     private val speakers: StateFlow<List<Speaker>> =
         userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("speakers")
-                .snapshotFlow()
+                .snapshotFlow(analytics)
                 .map { querySnapshot ->
                     querySnapshot.toObjectsOrEmpty(FirebaseSpeaker::class.java)
                         .filter { !it.hidden || userSession.isDeveloper }
