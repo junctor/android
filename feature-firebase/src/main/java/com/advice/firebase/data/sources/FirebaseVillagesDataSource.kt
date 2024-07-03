@@ -1,5 +1,6 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.local.TagType
 import com.advice.data.sources.OrganizationsDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.data.sources.VillagesDataSource
@@ -11,8 +12,13 @@ class FirebaseVillagesDataSource(
 ) : VillagesDataSource {
     override fun get() =
         combine(organizationsDataSource.get(), tagsDataSource.get()) { organizations, tags ->
-            val vendor =
-                tags.find { it.label == "Organization Type" }?.tags?.find { it.label == "Village" }
-            organizations.filter { vendor == null || it.tags.contains(vendor.id) }
+            val village = tags.findTagByLabel("Village")
+            organizations.filter { village == null || it.tags.contains(village.id) }
         }
+
+    private fun List<TagType>.findTagByLabel(
+        label: String
+    ) = find { it.label == "Organization Type" }?.tags?.find {
+        it.label == label
+    }
 }

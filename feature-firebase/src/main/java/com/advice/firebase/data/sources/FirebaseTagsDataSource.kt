@@ -49,22 +49,21 @@ class FirebaseTagsDataSource(
         )
 
     override fun get(): Flow<List<TagType>> =
-        combine(getTagTypes(), bookmarkedEventsDataSource.get()) { tags, bookmarks ->
-            val temp =
-                tags
-                    .toMutableList()
-                    .sortedBy { it.sortOrder }
-                    .map {
-                        it.copy(
-                            tags =
-                            it.tags.sortedWith(
-                                compareBy(
-                                    { it.sortOrder },
-                                    { it.label },
-                                ),
+        combine(tagTypes, bookmarkedEventsDataSource.get()) { tags, bookmarks ->
+            val temp = tags
+                .toMutableList()
+                .sortedBy { it.sortOrder }
+                .map {
+                    it.copy(
+                        tags =
+                        it.tags.sortedWith(
+                            compareBy(
+                                { it.sortOrder },
+                                { it.label },
                             ),
-                        )
-                    }
+                        ),
+                    )
+                }
 
             // clearing any previous set selections
             temp.flatMap { it.tags }.forEach {
@@ -77,6 +76,4 @@ class FirebaseTagsDataSource(
             }
             temp
         }
-
-    private fun getTagTypes(): Flow<List<TagType>> = tagTypes
 }
