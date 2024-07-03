@@ -2,7 +2,7 @@ package com.advice.products.presentation.viewmodel
 
 import com.advice.core.local.products.ProductSelection
 
-class ProductList {
+class ProductCart {
 
     private val selections = mutableListOf<ProductSelection>()
 

@@ -14,6 +14,6 @@ inline fun <reified VM : ViewModel> NavHostController.navGraphViewModel(): VM {
     return navBackStackEntry?.let {
         viewModel(viewModelStoreOwner = it)
     } ?: viewModel<VM>().also {
-        Timber.e("Creating new ViewModel: ${VM::class.java.simpleName}")
+        Timber.i("Creating ViewModel: ${VM::class.java.simpleName}")
     }
 }

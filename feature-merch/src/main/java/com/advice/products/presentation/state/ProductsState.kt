@@ -10,8 +10,4 @@ data class ProductsState(
     val canAdd: Boolean = false,
     val cart: List<Product> = emptyList(),
     val json: String? = null,
-) {
-    companion object {
-        val EMPTY = ProductsState(emptyList(), emptyList())
-    }
-}
+)

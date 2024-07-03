@@ -4,16 +4,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
+import com.advice.schedule.presentation.viewmodel.FAQScreenState
 import com.advice.schedule.presentation.viewmodel.FAQViewModel
+import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.screens.ErrorScreen
 import com.advice.ui.screens.FAQScreen
 
 @Composable
 internal fun FAQ(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<FAQViewModel>()
 
-    val state = viewModel.faqs.collectAsState(initial = null).value
+    val state = viewModel.state.collectAsState(initial = FAQScreenState.Loading).value
 
-    FAQScreen(faqs = state, onBackPress = {
-        navController.popBackStack()
-    })
+    when (state) {
+        FAQScreenState.Error -> {
+            ErrorScreen {
+
+            }
+        }
+
+        FAQScreenState.Loading -> {
+            ProgressSpinner()
+        }
+
+        is FAQScreenState.Success -> {
+            FAQScreen(faqs = state.faqs, onBackPress = {
+                navController.popBackStack()
+            })
+        }
+    }
 }
