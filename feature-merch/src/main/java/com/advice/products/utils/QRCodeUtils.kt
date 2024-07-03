@@ -19,6 +19,10 @@ fun List<Product>.toJson(): String? {
     try {
         // if the product is out of stock, we can't generate a QR code
         if (any { it.variant?.stockStatus == StockStatus.OUT_OF_STOCK }) {
+            Timber.e("summary contains a product that is out of stock, can't generate QR code.")
+            find { it.variant?.stockStatus == StockStatus.OUT_OF_STOCK }?.let {
+                Timber.e("Product: ${it.label} is out of stock")
+            }
             return null
         }
 
