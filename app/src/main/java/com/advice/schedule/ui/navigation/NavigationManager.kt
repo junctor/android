@@ -28,16 +28,16 @@ class NavigationManager(
 
     fun <T : Navigation> NavGraphBuilder.register(
         navigation: T,
-        content: @Composable() (AnimatedContentScope.(T) -> Unit)
+        content: @Composable (AnimatedContentScope.(T) -> Unit)
     ) {
         Timber.i("Registering: ${navigation.route()}")
         composable(navigation.route()) {
-            analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-                param(FirebaseAnalytics.Param.SCREEN_NAME, navigation.destination())
-                param(FirebaseAnalytics.Param.SCREEN_CLASS, navigation::class.java.name)
-            }
             val arguments = navigation.withArguments(it) as T
             Timber.i("Rendering: ${arguments.destination()}")
+            analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+                param(FirebaseAnalytics.Param.SCREEN_NAME, arguments.destination())
+                param(FirebaseAnalytics.Param.SCREEN_CLASS, navigation::class.java.name)
+            }
             content(arguments)
         }
     }
