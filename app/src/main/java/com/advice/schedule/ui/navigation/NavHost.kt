@@ -1,10 +1,8 @@
 package com.advice.schedule.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.feedback.ui.screens.Feedback
-import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.screens.Contents
 import com.advice.schedule.ui.screens.Document
@@ -34,8 +32,6 @@ internal fun NavigationManager.setRoutes(
     context: MainActivity,
     navController: NavHostController
 ) {
-    val viewModel = viewModel<ProductsViewModel>(context)
-
     set(navController, startDestination = Navigation.Home) {
         // Home
         register(Navigation.Home) {

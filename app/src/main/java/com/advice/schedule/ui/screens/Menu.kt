@@ -5,6 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.presentation.viewmodel.MenuViewModel
+import com.advice.schedule.ui.navigation.navigate
+import com.advice.schedule.ui.navigation.toNavigation
 
 
 @Composable
@@ -17,12 +19,13 @@ internal fun Menu(
     val menus = viewModel.menu.collectAsState(initial = null).value ?: return
     val menu = menus.find { it.id == id } ?: return
 
-    com.advice.documents.ui.screens.MenuScreen(menu = menu,
+    MenuScreen(menu = menu,
         label = label ?: "",
         onNavigationClick = {
-            navController.navigate(it)
+            navController.navigate(it.toNavigation())
         },
         onBackPressed = {
             navController.popBackStack()
-        })
+        }
+    )
 }

@@ -488,7 +488,7 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
                     google_materialsymbol,
                     title_text,
                     description,
-                    document ?: error("null document id: $title_text"),
+                    document_id ?: error("null document id: $title_text"),
                 )
 
             "schedule" -> {

@@ -1,4 +1,4 @@
-package com.advice.documents.ui.screens
+package com.advice.schedule.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Menu
+import com.advice.core.local.MenuItem
 import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
@@ -36,7 +37,7 @@ fun MenuScreen(
     label: String,
     menu: Menu?,
     onBackPressed: () -> Unit,
-    onNavigationClick: (String) -> Unit,
+    onNavigationClick: (MenuItem) -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text(label) }, navigationIcon = {
@@ -75,12 +76,10 @@ fun MenuScreen(
                                 Row(
                                     Modifier
                                         .fillMaxWidth()
-                                        .clickable(enabled = it.url != null) {
-                                            val url = it.url
-                                            if (url != null) {
-                                                onNavigationClick(url)
-                                            }
-                                        }.padding(16.dp),
+                                        .clickable {
+                                            onNavigationClick(it)
+                                        }
+                                        .padding(16.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 ) {

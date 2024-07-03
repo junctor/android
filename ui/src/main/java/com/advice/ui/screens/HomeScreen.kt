@@ -42,7 +42,7 @@ import java.util.Date
 fun HomeScreen(
     state: HomeState?,
     onConferenceClick: (Conference) -> Unit,
-    onNavigationClick: (String) -> Unit,
+    onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
 ) {
     Scaffold(
@@ -54,8 +54,8 @@ fun HomeScreen(
             onNavigationClick,
             onDismissNews,
             modifier =
-                Modifier
-                    .padding(contentPadding),
+            Modifier
+                .padding(contentPadding),
         )
     }
 }
@@ -63,7 +63,7 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenContent(
     state: HomeState?,
-    onNavigationClick: (String) -> Unit,
+    onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -89,7 +89,7 @@ private fun HomeScreenContent(
 @Composable
 private fun HomeScreen(
     state: HomeState.Loaded,
-    onNavigationClick: (String) -> Unit,
+    onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -121,7 +121,9 @@ private fun HomeScreen(
                 }
 
                 else -> {
-                    MenuItem(it, onNavigationClick)
+                    MenuItem(it) {
+                        onNavigationClick(it)
+                    }
                 }
             }
         }
@@ -145,17 +147,13 @@ private fun Divider() {
 @Composable
 private fun MenuItem(
     menuItem: MenuItem,
-    onNavigationClick: (String) -> Unit,
+    onNavigationClick: () -> Unit,
 ) {
     HomeCard {
         Column(
             Modifier
-                .clickable(enabled = menuItem.url != null) {
-                    val url = menuItem.url
-                    if (url != null) {
-                        onNavigationClick(url)
-                    }
-                }.padding(16.dp),
+                .clickable(onClick = onNavigationClick)
+                .padding(16.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -169,9 +167,9 @@ private fun MenuItem(
                 Text(
                     description,
                     modifier =
-                        Modifier
-                            .padding(start = 0.dp, top = 8.dp)
-                            .fillMaxWidth(),
+                    Modifier
+                        .padding(start = 0.dp, top = 8.dp)
+                        .fillMaxWidth(),
                 )
             }
         }
@@ -184,14 +182,14 @@ private fun HomeScreenViewPreview() {
     ScheduleTheme {
         HomeScreen(
             state =
-                HomeState.Loaded(
-                    conferences = listOf(Conference.Zero),
-                    conference = Conference.Zero,
-                    menu = Menu(-1, "Home", listOf()),
-                    news = null,
-                    countdown = Date().time / 1000L,
-                    forceTimeZone = false,
-                ),
+            HomeState.Loaded(
+                conferences = listOf(Conference.Zero),
+                conference = Conference.Zero,
+                menu = Menu(-1, "Home", listOf()),
+                news = null,
+                countdown = Date().time / 1000L,
+                forceTimeZone = false,
+            ),
             {},
             {},
         )

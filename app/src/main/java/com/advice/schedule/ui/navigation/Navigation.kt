@@ -47,6 +47,7 @@ sealed class Navigation {
         }
     }
 
+    @Deprecated("Use Event instead.")
     data class Content(val label: String = "") : Navigation() {
         override fun route(): String = "content/{label}"
         override fun destination(): String = "content/$label"
@@ -74,6 +75,11 @@ sealed class Navigation {
     data class Menu(val label: String = "", val id: Long = 0) : Navigation() {
         override fun route(): String = "menu/{label}/{id}"
         override fun destination(): String = "menu/$label/$id"
+    }
+
+    data class Function(val function: String = "", val label: String = "") : Navigation() {
+        override fun route(): String = "{function}/{label}"
+        override fun destination(): String = "$function/$label"
     }
 
     data class Document(val id: Long = 0) : Navigation() {

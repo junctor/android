@@ -21,14 +21,14 @@ sealed class MenuItem(
         icon: String,
         label: String,
         description: String?,
-        val documentId: Int,
+        val documentId: Long,
     ) : MenuItem(icon, label, description)
 
     class Menu(
         icon: String,
         label: String,
         description: String?,
-        val menuId: Int,
+        val menuId: Long,
     ) : MenuItem(icon, label, description)
 
     class Navigation(
@@ -42,14 +42,14 @@ sealed class MenuItem(
         icon: String,
         label: String,
         description: String?,
-        val organizationId: Int,
+        val organizationId: Long,
     ) : MenuItem(icon, label, description)
 
     class Schedule(
         icon: String,
         label: String,
         description: String?,
-        val tags: List<Int>,
+        val tags: List<Long>,
     ) : MenuItem(icon, label, description)
 
     class Content(
@@ -57,17 +57,4 @@ sealed class MenuItem(
         label: String,
         description: String?,
     ) : MenuItem(icon, label, description)
-
-    // todo: this should have a sealed class to map with NavHost
-    val url: String?
-        get() = when (this) {
-            Divider -> null
-            is Document -> "document/$documentId"
-            is Menu -> "menu/$label/$menuId"
-            is Navigation -> "$function/$label"
-            is Organization -> "organizations/$label/$organizationId"
-            is Schedule -> "schedule/$label/${tags.joinToString(",")}"
-            is Content -> "content/$label"
-            is SectionHeading -> null
-        }
 }

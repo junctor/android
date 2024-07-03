@@ -30,6 +30,7 @@ import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
 import com.advice.schedule.ui.navigation.Navigation
 import com.advice.schedule.ui.navigation.navigate
+import com.advice.schedule.ui.navigation.toNavigation
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
@@ -61,7 +62,7 @@ internal fun Home(navController: NavHostController) {
             HomeScreen(state = homeState, onConferenceClick = {
                 homeViewModel.setConference(it)
             }, onNavigationClick = {
-                navController.navigate(it)
+                navController.navigate(it.toNavigation())
             }, onDismissNews = {
                 homeViewModel.markLatestNewsAsRead(it)
             })

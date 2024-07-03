@@ -2,9 +2,14 @@ package com.advice.schedule.ui.navigation
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.advice.core.local.MenuItem
 import timber.log.Timber
 
-fun NavController.navigate(navigation: Navigation) {
+fun NavController.navigate(navigation: Navigation?) {
+    if (navigation == null) {
+        Timber.e("Navigation is null")
+        return
+    }
     navigate(navigation.destination())
 }
 
@@ -72,6 +77,13 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
             copy(id = id, label = label)
         }
 
+        is Navigation.Function -> {
+            val function =
+                backStackEntry.arguments?.getString("function") ?: error("function is required")
+            val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
+            copy(function = function, label = label)
+        }
+
         is Navigation.Product -> {
             val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             copy(id = id)
@@ -136,5 +148,18 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         Navigation.Wifi -> {
             Navigation.Wifi
         }
+    }
+}
+
+internal fun MenuItem.toNavigation(): Navigation? {
+    return when (this) {
+        is MenuItem.Content -> Navigation.Content(label)
+        is MenuItem.Divider -> null
+        is MenuItem.Document -> Navigation.Document(documentId)
+        is MenuItem.Menu -> Navigation.Menu(label, menuId)
+        is MenuItem.Navigation -> Navigation.Function(label, function)
+        is MenuItem.Organization -> Navigation.Organizations(label, organizationId)
+        is MenuItem.Schedule -> Navigation.Schedule(label, tags)
+        is MenuItem.SectionHeading -> null
     }
 }
