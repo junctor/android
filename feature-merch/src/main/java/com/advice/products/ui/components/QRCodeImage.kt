@@ -2,6 +2,9 @@ package com.advice.products.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
@@ -11,9 +14,11 @@ import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 internal fun QRCodeImage(json: String, modifier: Modifier = Modifier) {
-    val qrCodeBitmap = generateQRCode(json)
+    val bitmap by remember(json) {
+        mutableStateOf(generateQRCode(json))
+    }
     Image(
-        bitmap = qrCodeBitmap.asImageBitmap(),
+        bitmap = bitmap.asImageBitmap(),
         contentDescription = "QR Code",
         modifier = modifier
     )
