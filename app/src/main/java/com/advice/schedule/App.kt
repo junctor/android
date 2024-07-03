@@ -24,8 +24,8 @@ class App : Application() {
             modules(appModule)
         }
 
-        if (BuildConfig.DEBUG) {
+//        if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
-        }
+//        }
     }
 }
