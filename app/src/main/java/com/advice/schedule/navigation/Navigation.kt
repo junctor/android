@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.navigation
+package com.advice.schedule.navigation
 
 sealed class Navigation {
     object Home : Navigation() {

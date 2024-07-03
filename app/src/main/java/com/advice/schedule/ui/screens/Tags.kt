@@ -9,8 +9,8 @@ import androidx.navigation.NavHostController
 import com.advice.core.ui.ScheduleFilter
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
-import com.advice.schedule.ui.navigation.Navigation
-import com.advice.schedule.ui.navigation.navigate
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigate
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
 

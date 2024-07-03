@@ -5,8 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.presentation.viewmodel.MenuViewModel
-import com.advice.schedule.ui.navigation.navigate
-import com.advice.schedule.ui.navigation.toNavigation
+import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.toNavigation
 
 
 @Composable

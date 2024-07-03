@@ -8,8 +8,8 @@ import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.ui.activity.MainActivity
-import com.advice.schedule.ui.navigation.Navigation
-import com.advice.schedule.ui.navigation.navigate
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigate
 
 @Composable
 internal fun Organizations(navController: NavHostController, label: String?, id: Long?) {

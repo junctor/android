@@ -11,11 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigate
+import com.advice.schedule.presentation.viewmodel.ContentViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
-import com.advice.schedule.ui.navigation.ContentViewModel
-import com.advice.schedule.ui.navigation.Navigation
-import com.advice.schedule.ui.navigation.navigate
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ContentListScreen
 import com.advice.ui.screens.ContentScreen

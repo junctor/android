@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.navigation
+package com.advice.schedule.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

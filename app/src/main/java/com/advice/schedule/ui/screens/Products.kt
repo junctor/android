@@ -9,8 +9,8 @@ import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.products.ui.screens.ProductScreen
 import com.advice.products.ui.screens.ProductsScreen
 import com.advice.products.ui.screens.ProductsSummaryScreen
-import com.advice.schedule.ui.navigation.Navigation
-import com.advice.schedule.ui.navigation.navigate
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigate
 
 @Composable
 fun Products(context: AppCompatActivity, navController: NavHostController) {

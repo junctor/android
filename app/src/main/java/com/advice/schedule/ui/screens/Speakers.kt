@@ -8,8 +8,8 @@ import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
-import com.advice.schedule.ui.navigation.Navigation
-import com.advice.schedule.ui.navigation.navigate
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigate
 import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreen
 import com.advice.ui.states.SpeakerState

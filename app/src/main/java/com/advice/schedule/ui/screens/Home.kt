@@ -28,9 +28,9 @@ import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DismissibleBottomAppBar
 import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
-import com.advice.schedule.ui.navigation.Navigation
-import com.advice.schedule.ui.navigation.navigate
-import com.advice.schedule.ui.navigation.toNavigation
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.toNavigation
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen

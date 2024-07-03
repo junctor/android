@@ -72,7 +72,7 @@ import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
-import com.advice.schedule.ui.navigation.NavigationManager
+import com.advice.schedule.navigation.NavigationManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics

@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.navigation
+package com.advice.schedule.navigation
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -28,7 +28,8 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         }
 
         is Navigation.Document -> {
-            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             copy(id = id)
         }
 
@@ -57,7 +58,8 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         }
 
         is Navigation.Location -> {
-            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
             copy(id = id, label = label)
         }
@@ -72,7 +74,8 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         }
 
         is Navigation.Menu -> {
-            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
             copy(id = id, label = label)
         }
@@ -85,7 +88,8 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         }
 
         is Navigation.Product -> {
-            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             copy(id = id)
         }
 
@@ -95,12 +99,14 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         }
 
         is Navigation.Organization -> {
-            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             copy(id = id)
         }
 
         is Navigation.Organizations -> {
-            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
             copy(label = label, id = id)
         }
@@ -120,7 +126,8 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         }
 
         is Navigation.Schedule -> {
-            val ids = backStackEntry.arguments?.getString("ids")?.split(",")?.mapNotNull { it.toLongOrNull() } ?: error("ids is required")
+            val ids = backStackEntry.arguments?.getString("ids")?.split(",")
+                ?.mapNotNull { it.toLongOrNull() } ?: error("ids is required")
             val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
             copy(ids = ids, label = label)
         }
@@ -134,13 +141,15 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         }
 
         is Navigation.Speaker -> {
-            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             val name = backStackEntry.arguments?.getString("name") ?: error("name is required")
             copy(id = id, name = name)
         }
 
         is Navigation.Tag -> {
-            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
             copy(id = id, label = label)
         }
@@ -151,13 +160,27 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
     }
 }
 
+
+//
+// todo: this should have a sealed class to map with NavHost
+//val url: String?
+//    get() = when (this) {
+//        Divider -> null
+//        is Document -> "document/$documentId"
+//        is Menu -> "menu/$label/$menuId"
+//        is Navigation -> "$function/$label"
+//        is Organization -> "organizations/$label/$organizationId"
+//        is Schedule -> "schedule/$label/${tags.joinToString(",")}"
+//        is Content -> "content/$label"
+//        is SectionHeading -> null
+//    }
 internal fun MenuItem.toNavigation(): Navigation? {
     return when (this) {
         is MenuItem.Content -> Navigation.Content(label)
         is MenuItem.Divider -> null
         is MenuItem.Document -> Navigation.Document(documentId)
         is MenuItem.Menu -> Navigation.Menu(label, menuId)
-        is MenuItem.Navigation -> Navigation.Function(label, function)
+        is MenuItem.Navigation -> Navigation.Function(function, label)
         is MenuItem.Organization -> Navigation.Organizations(label, organizationId)
         is MenuItem.Schedule -> Navigation.Schedule(label, tags)
         is MenuItem.SectionHeading -> null

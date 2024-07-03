@@ -17,10 +17,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.advice.core.utils.Storage
 import com.advice.play.AppManager
-import com.advice.schedule.ui.navigation.Navigation
-import com.advice.schedule.ui.navigation.NavigationManager
-import com.advice.schedule.ui.navigation.navigate
-import com.advice.schedule.ui.navigation.setRoutes
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.NavigationManager
+import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.setRoutes
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.shortstack.hackertracker.BuildConfig

@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.navigation
+package com.advice.schedule.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
