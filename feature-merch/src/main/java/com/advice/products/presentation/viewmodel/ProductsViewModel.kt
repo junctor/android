@@ -80,9 +80,8 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     private suspend fun updateSummary() {
         // updating the summary broke down based on selections
-        val summary = cart.getSelections().map { selection ->
-            val element = products.find { it.id == selection.id }!!
-            element.update(selection)
+        val summary = cart.getSelections().mapNotNull { selection ->
+            products.find { it.id == selection.id }?.update(selection)
         }
 
         updateState(
