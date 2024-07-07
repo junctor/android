@@ -1,5 +1,6 @@
 package com.advice.schedule.ui.screens
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,12 +16,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.toNavigation
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
@@ -28,9 +31,6 @@ import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DismissibleBottomAppBar
 import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
-import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
-import com.advice.schedule.navigation.toNavigation
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
@@ -39,14 +39,13 @@ import com.advice.ui.states.ScheduleScreenState
 import com.shortstack.core.R
 
 @Composable
-internal fun Home(navController: NavHostController) {
-    val context = LocalContext.current
+internal fun Home(context: AppCompatActivity, navController: NavHostController) {
     val mainViewModel = viewModel<MainViewModel>()
     val viewState by mainViewModel.state.collectAsState()
 
-    val homeViewModel = viewModel<HomeViewModel>()
-    val filtersViewModel = viewModel<FiltersViewModel>()
-    val scheduleViewModel = viewModel<ScheduleViewModel>()
+    val homeViewModel = viewModel<HomeViewModel>(context)
+    val filtersViewModel = viewModel<FiltersViewModel>(context)
+    val scheduleViewModel = viewModel<ScheduleViewModel>(context)
 
     val scheduleScreenState = remember {
         scheduleViewModel.getState()
@@ -55,7 +54,6 @@ internal fun Home(navController: NavHostController) {
     val homeState = homeViewModel.getHomeState().collectAsState(initial = HomeState.Loading).value
     val filtersScreenState =
         filtersViewModel.state.collectAsState(initial = FiltersScreenState.Init).value
-
 
     Box {
         OverlappingPanelsView(viewState.currentAnchor, leftPanel = {
@@ -83,7 +81,13 @@ internal fun Home(navController: NavHostController) {
                 },
                 onEventClick = {
                     // passing the content id and the session id
-                    navController.navigate(Navigation.Event(it.conference, it.content.id.toString(), it.id.toString()))
+                    navController.navigate(
+                        Navigation.Event(
+                            it.conference,
+                            it.content.id.toString(),
+                            it.id.toString()
+                        )
+                    )
                 },
                 onBookmarkClick = { event, isBookmarked ->
                     scheduleViewModel.bookmark(event, isBookmarked)

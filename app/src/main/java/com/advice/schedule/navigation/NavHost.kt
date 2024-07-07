@@ -35,7 +35,7 @@ internal fun NavigationManager.setRoutes(
     set(navController, startDestination = Navigation.Home) {
         // Home
         register(Navigation.Home) {
-            Home(navController)
+            Home(context, navController)
         }
         // Maps
         register(Navigation.Maps) {
@@ -54,24 +54,24 @@ internal fun NavigationManager.setRoutes(
             Locations(navController)
         }
         register(Navigation.Location()) {
-            Location(navController, it.id, it.label)
+            Location(context, navController, it.id, it.label)
         }
 
         // Schedule
         register(Navigation.Schedule()) {
-            Tags(navController, it.ids, it.label)
+            Tags(context, navController, it.ids, it.label)
         }
         // Events
         register(Navigation.Event()) {
-            Event(navController, it.conference, it.id, it.session)
+            Event(context, navController, it.conference, it.id, it.session)
         }
         // Content
         register(Navigation.Content()) {
-            Contents(navController, it.label)
+            Contents(context, navController, it.label)
         }
         // Tags
         register(Navigation.Tag()) {
-            Tag(navController, it.id, it.label)
+            Tag(context, navController, it.id, it.label)
         }
 
         register(Navigation.Settings) {

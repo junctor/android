@@ -1,9 +1,9 @@
 package com.advice.schedule.ui.screens
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.ui.ScheduleFilter
@@ -31,9 +31,13 @@ internal fun Locations(navController: NavHostController) {
 }
 
 @Composable
-fun Location(navController: NavHostController, id: Long?, label: String?) {
-    val context = LocalContext.current
-    val viewModel = viewModel<ScheduleViewModel>()
+fun Location(
+    context: AppCompatActivity,
+    navController: NavHostController,
+    id: Long?,
+    label: String?
+) {
+    val viewModel = viewModel<ScheduleViewModel>(context)
     val state = remember {
         viewModel.getState(ScheduleFilter.Location(id))
     }.collectAsState(initial = ScheduleScreenState.Loading).value

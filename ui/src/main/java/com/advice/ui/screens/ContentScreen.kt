@@ -64,7 +64,6 @@ import com.advice.ui.preview.FakeContentProvider
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
-import timber.log.Timber
 
 @Composable
 fun ContentScreen(
@@ -265,9 +264,8 @@ private fun EventScreenContent(
     onSpeakerClicked: (Speaker) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Timber.e("Rendering Content Sessions: ${content.sessions}")
-
     Column(
+        // Using Modifier instead of modifier to put header under the status bar.
         modifier = Modifier,
     ) {
         HeaderSection(
@@ -308,7 +306,6 @@ private fun EventScreenContent(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 )
                 otherSessions.forEach { session ->
-                    Timber.e("Rendering Session: ${session.isBookmarked}")
                     SessionRow(session, onSessionClicked) {
                         onBookmark(content, session, it)
                     }

@@ -60,6 +60,7 @@ import com.advice.schedule.data.repositories.SettingsRepository
 import com.advice.schedule.data.repositories.SpeakerRepository
 import com.advice.schedule.data.repositories.SpeakersRepository
 import com.advice.schedule.data.repositories.TagsRepository
+import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.presentation.viewmodel.ConferenceViewModel
 import com.advice.schedule.presentation.viewmodel.FAQViewModel
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
@@ -72,7 +73,6 @@ import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
-import com.advice.schedule.navigation.NavigationManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -151,7 +151,7 @@ val appModule = module {
 
     single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get(), get()) }
-    single<ConferencesDataSource> { FirebaseConferencesDataSource(get(), get()) }
+    single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<ContentDataSource> {
         FirebaseContentDataSource(
             get(),
@@ -164,7 +164,7 @@ val appModule = module {
         )
     }
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(), get(named("tags"))) }
-    single<FAQDataSource> { FirebaseFAQDataSource(get(), get(), get()) }
+    single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
     single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get(), get()) }
     single<MapsDataSource> {
         FirebaseMapsDataSource(
@@ -185,7 +185,7 @@ val appModule = module {
     // Documents
     single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get(), get()) }
 
-    single<MenuDataSource> { FirebaseMenuDataSource(get(), get(), get()) }
+    single<MenuDataSource> { FirebaseMenuDataSource(get(), get()) }
 
     // Products
     single<ProductCart> { ProductCart() }

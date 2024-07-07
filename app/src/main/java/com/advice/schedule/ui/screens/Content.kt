@@ -1,6 +1,7 @@
 package com.advice.schedule.ui.screens
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -8,11 +9,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.local.Content
 import com.advice.core.local.Session
-import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
 import com.advice.schedule.presentation.viewmodel.ContentViewModel
@@ -26,8 +26,8 @@ import com.advice.ui.states.EventScreenState
 
 
 @Composable
-fun Contents(navController: NavHostController, label: String?) {
-    val viewModel = navController.navGraphViewModel<ContentViewModel>()
+fun Contents(context: AppCompatActivity, navController: NavHostController, label: String?) {
+    val viewModel = viewModel<ContentViewModel>(context)
     val state = viewModel.state.collectAsState(initial = null).value ?: return
 
     ContentListScreen(
@@ -43,11 +43,16 @@ fun Contents(navController: NavHostController, label: String?) {
 }
 
 @Composable
-fun Event(navController: NavHostController, conference: String?, id: String?, session: String?) {
-    val context = LocalContext.current
+fun Event(
+    context: AppCompatActivity,
+    navController: NavHostController,
+    conference: String?,
+    id: String?,
+    session: String?
+) {
     // todo: this should be another ViewModel
-    val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
-    LaunchedEffect("$conference/$id-$session") {
+    val viewModel = viewModel<ScheduleViewModel>(context)
+    LaunchedEffect("$conference/$id") {
         viewModel.getEvent(
             conference,
             id?.toLongOrNull(),

@@ -37,9 +37,6 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
             val conference =
                 backStackEntry.arguments?.getString("conference") ?: error("conference is required")
             val id = backStackEntry.arguments?.getString("id") ?: error("id is required")
-
-            Timber.e("Navigating to event $conference $id")
-
             val (content, session) = id.split("-")
             copy(conference = conference, id = content, session = session)
         }

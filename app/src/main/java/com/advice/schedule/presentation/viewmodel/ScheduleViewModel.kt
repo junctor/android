@@ -33,7 +33,6 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     fun getEvent(conference: String?, id: Long?, session: Long?) {
         viewModelScope.launch {
             _state.value = EventScreenState.Loading
-
             if (conference == null || id == null) {
                 Timber.e("Could not find Event: conference or id is null")
                 _state.value = EventScreenState.Error("Invalid event id")
