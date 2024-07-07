@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.advice.core.local.Content
+import com.advice.core.local.Session
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
@@ -45,17 +47,17 @@ fun Event(navController: NavHostController, conference: String?, id: String?, se
     val context = LocalContext.current
     // todo: this should be another ViewModel
     val viewModel = navController.navGraphViewModel<ScheduleViewModel>()
-    val flow = remember(conference, id) {
+    LaunchedEffect("$conference/$id-$session") {
         viewModel.getEvent(
             conference,
             id?.toLongOrNull(),
             session?.toLongOrNull()
         )
     }
-    when (val event = flow.collectAsState(initial = EventScreenState.Loading).value) {
+    when (val state = viewModel.state.collectAsState(initial = EventScreenState.Loading).value) {
         is EventScreenState.Error -> {
             ErrorScreen {
-                // todo: implement
+                navController.popBackStack()
             }
         }
 
@@ -70,21 +72,31 @@ fun Event(navController: NavHostController, conference: String?, id: String?, se
         }
 
         is EventScreenState.Success -> {
-            Content(event, context, navController)
+            Content(
+                context = context,
+                content = state.content,
+                session = state.session,
+                navController = navController
+            ) { content, session, isBookmarked ->
+                viewModel.bookmark(state.content, session, isBookmarked)
+            }
         }
     }
 }
 
 @Composable
 private fun Content(
-    event: EventScreenState.Success,
     context: Context,
-    navController: NavHostController
+    content: Content,
+    session: Session?,
+    navController: NavHostController,
+    onBookmark: (Content, Session?, Boolean) -> Unit,
 ) {
     ContentScreen(
-        state = event,
-        onBookmark = {
-            //todo: viewModel.bookmark(event, it)
+        content = content,
+        session = session,
+        onBookmark = { content, session, isBookmarked ->
+            onBookmark(content, session, isBookmarked)
             (context as MainActivity).requestNotificationPermission()
         },
         onBackPressed = { navController.popBackStack() },
@@ -103,8 +115,8 @@ private fun Content(
         onSessionClicked = {
             navController.navigate(
                 Navigation.Event(
-                    event.content.conference,
-                    event.content.id.toString(),
+                    content.conference,
+                    content.id.toString(),
                     it.id.toString()
                 )
             )

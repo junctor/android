@@ -11,6 +11,7 @@ data class Session(
     val start: Instant,
     val end: Instant,
     val location: Location,
+    val isBookmarked: Boolean = false,
 ) : Parcelable {
     val hasStarted: Boolean
         get() = start.compareTo(Instant.now()) == -1
@@ -23,7 +24,6 @@ data class Session(
 data class Event(
     val content: Content,
     val session: Session,
-    var isBookmarked: Boolean = false,
 ) : Parcelable {
 
     val id: Long

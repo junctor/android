@@ -20,7 +20,7 @@ fun BookmarkButton(
     isBookmarked: Boolean,
     onCheckChange: (Boolean) -> Unit,
 ) {
-    var state by remember {
+    var state by remember(isBookmarked) {
         mutableStateOf(isBookmarked)
     }
 

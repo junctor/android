@@ -1,6 +1,7 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Conference
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
 import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
@@ -30,18 +31,46 @@ class HomeRepository(
         val latest = news.firstOrNull().takeUnless {
             it == null || storage.hasReadNews(conference.code, it.id)
         }
+        val list = when (conferences) {
+            is FlowResult.Failure -> return@combine HomeState.Error(conferences.error)
+            FlowResult.Loading -> return@combine HomeState.Loading
+            is FlowResult.Success -> conferences.value
+        }
+
         HomeState.Loaded(
             forceTimeZone = storage.forceTimeZone,
-            conferences = conferences,
+            conferences = list,
             conference = conference,
-            menu = menu.find { it.id == conference.homeMenuId } ?: menu.firstOrNull() ?: Menu(
-                -1,
-                "Nothing",
-                emptyList(),
-            ),
+            menu = getMenu(menu, conference),
             news = latest,
             countdown = countdown,
         )
+    }
+
+    private fun getMenu(
+        menu: FlowResult<List<Menu>>,
+        conference: Conference
+    ): Menu {
+        return when (menu) {
+            is FlowResult.Failure -> Menu(
+                -1,
+                "ERROR",
+                emptyList(),
+            )
+
+            FlowResult.Loading -> Menu(
+                -1,
+                "LOADING",
+                emptyList(),
+            )
+
+            is FlowResult.Success -> menu.value.find { it.id == conference.homeMenuId }
+                ?: menu.value.firstOrNull() ?: Menu(
+                    -1,
+                    "Nothing",
+                    emptyList(),
+                )
+        }
     }
 
     fun markLatestNewsAsRead(newsArticle: NewsArticle) {

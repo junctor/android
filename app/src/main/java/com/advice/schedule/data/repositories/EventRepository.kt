@@ -1,10 +1,9 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Content
-import com.advice.core.local.Event
+import com.advice.core.local.Session
 import com.advice.data.sources.ContentDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class EventRepository(
@@ -14,19 +13,19 @@ class EventRepository(
         .get()
         .map { it.content }
 
-    suspend fun getEvent(
-        conference: String,
-        // session id
-        id: Long,
-        session: Long,
-    ): Event? {
-        val content =
-            events.first().find { it.conference == conference && it.sessions.any { it.id == id } }
-                ?: return null
-        return Event(content, content.sessions.find { it.id == id }!!)
+    suspend fun bookmark(content: Content) {
+        contentDataSource.bookmark(content)
     }
 
-    suspend fun bookmark(event: Event) {
-        contentDataSource.bookmark(event)
+    suspend fun bookmark(session: Session) {
+        contentDataSource.bookmark(session)
+    }
+
+    suspend fun isBookmarked(content: Content): Boolean {
+        return contentDataSource.isBookmarked(content)
+    }
+
+    suspend fun isBookmarked(session: Session): Boolean {
+        return contentDataSource.isBookmarked(session)
     }
 }

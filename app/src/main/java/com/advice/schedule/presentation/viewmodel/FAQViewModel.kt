@@ -3,6 +3,7 @@ package com.advice.schedule.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.FAQ
+import com.advice.core.local.FlowResult
 import com.advice.schedule.data.repositories.FAQRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,7 @@ import org.koin.core.component.inject
 
 sealed class FAQScreenState {
     object Loading : FAQScreenState()
-    object Error : FAQScreenState()
+    data class Error(val error: Exception) : FAQScreenState()
     data class Success(val faqs: List<FAQ>) : FAQScreenState()
 }
 
@@ -26,8 +27,11 @@ class FAQViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             repository.faqs.collect {
-                _state.value =
-                    if (it.isEmpty()) FAQScreenState.Error else FAQScreenState.Success(it)
+                _state.value = when (it) {
+                    FlowResult.Loading -> FAQScreenState.Loading
+                    is FlowResult.Failure -> FAQScreenState.Error(it.error)
+                    is FlowResult.Success -> FAQScreenState.Success(it.value)
+                }
             }
         }
     }

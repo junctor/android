@@ -25,6 +25,8 @@ class FirebaseLocationsDataSource(
     private val firestore: FirebaseFirestore,
     private val analytics: FirebaseAnalytics,
 ) : LocationsDataSource {
+
+    // todo: rewrite this to no turn a recursive function into a loop
     private val locations: StateFlow<List<Location>> =
         userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences")

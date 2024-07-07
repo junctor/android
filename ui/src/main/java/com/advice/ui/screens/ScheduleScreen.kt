@@ -217,7 +217,7 @@ private fun ScheduleScreenContent(
                                 time = TimeUtil.getTimeStamp(context, it.session),
                                 location = it.session.location.name,
                                 tags = it.types,
-                                isBookmarked = it.isBookmarked,
+                                isBookmarked = it.session.isBookmarked,
                                 onEventPressed = {
                                     onEventClick(it)
                                 },

@@ -8,7 +8,6 @@ import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
 import com.advice.play.AppManager
 import com.advice.schedule.data.repositories.HomeRepository
-import java.util.Date
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.util.Date
 
 class HomeViewModel : ViewModel(), KoinComponent {
 
@@ -30,12 +30,24 @@ class HomeViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             repository.contents.collect {
-                // Check if there is any updates available
-                val isUpdateAvailable = appManager.isUpdateAvailable()
-                state.value = it.copy(isUpdateAvailable = isUpdateAvailable)
+                when (it) {
+                    is HomeState.Error -> {
+                        // no-op
+                    }
 
-                if (countdownJob == null) {
-                    startCountdown(it.conference)
+                    is HomeState.Loaded -> {
+                        // Check if there is any updates available
+                        val isUpdateAvailable = appManager.isUpdateAvailable()
+                        state.value = it.copy(isUpdateAvailable = isUpdateAvailable)
+
+                        if (countdownJob == null) {
+                            startCountdown(it.conference)
+                        }
+                    }
+
+                    HomeState.Loading -> {
+                        // no-op
+                    }
                 }
             }
         }

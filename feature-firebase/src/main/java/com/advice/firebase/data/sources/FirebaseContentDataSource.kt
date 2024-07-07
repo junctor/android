@@ -5,6 +5,7 @@ import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
 import com.advice.core.local.Event
 import com.advice.core.local.Location
+import com.advice.core.local.Session
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ContentDataSource
@@ -102,11 +103,19 @@ class FirebaseContentDataSource(
     override fun get(): Flow<ConferenceContent> = _eventsFlow
 
     override suspend fun bookmark(content: Content) {
-        bookmarkedEventsDataSource.bookmark(content.id, isBookmarked = !content.isBookmarked)
+        bookmarkedEventsDataSource.bookmark(content, isBookmarked = !content.isBookmarked)
     }
 
-    override suspend fun bookmark(event: Event) {
-        bookmarkedEventsDataSource.bookmark(event.id, isBookmarked = !event.isBookmarked)
+    override suspend fun bookmark(session: Session) {
+        bookmarkedEventsDataSource.bookmark(session, isBookmarked = !session.isBookmarked)
+    }
+
+    override suspend fun isBookmarked(content: Content): Boolean {
+        return bookmarkedEventsDataSource.isBookmarked(content)
+    }
+
+    override suspend fun isBookmarked(session: Session): Boolean {
+        return bookmarkedEventsDataSource.isBookmarked(session)
     }
 
     override suspend fun getContent(conference: String, id: Long): Content? {

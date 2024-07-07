@@ -17,10 +17,13 @@ internal fun FAQ(navController: NavHostController) {
     val state = viewModel.state.collectAsState(initial = FAQScreenState.Loading).value
 
     when (state) {
-        FAQScreenState.Error -> {
-            ErrorScreen {
-
-            }
+        is FAQScreenState.Error -> {
+            ErrorScreen(
+                message = state.error.message ?: "An error occurred",
+                onBackPress = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         FAQScreenState.Loading -> {

@@ -14,9 +14,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseNewsDataSource(
@@ -24,7 +25,7 @@ class FirebaseNewsDataSource(
     private val firestore: FirebaseFirestore,
     private val analytics: FirebaseAnalytics,
 ) : NewsDataSource {
-    private val articles = userSession.getConference().flatMapMerge { conference ->
+    private val articles: StateFlow<List<NewsArticle>> = userSession.getConference().flatMapMerge { conference ->
         firestore.collection("conferences")
             .document(conference.code)
             .collection("articles")
@@ -35,10 +36,10 @@ class FirebaseNewsDataSource(
                     .sortedBy { it.updated_at }
                     .mapNotNull { it.toArticle() }
             }
-    }.shareIn(
-        CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.Lazily,
-        replay = 1,
+    }.stateIn(
+        scope = CoroutineScope(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = emptyList(),
     )
 
     override fun get(): Flow<List<NewsArticle>> = articles

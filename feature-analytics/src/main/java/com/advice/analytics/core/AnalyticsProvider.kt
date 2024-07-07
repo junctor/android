@@ -49,7 +49,7 @@ class AnalyticsProvider(private val storage: Storage) {
             param(FirebaseAnalytics.Param.ITEM_ID, event.id)
             param(FirebaseAnalytics.Param.ITEM_NAME, event.title)
             param(FirebaseAnalytics.Param.CONTENT_TYPE, "event")
-            param("is_bookmarked", event.isBookmarked.toString())
+            param("is_bookmarked", event.session.isBookmarked.toString())
         }
     }
 

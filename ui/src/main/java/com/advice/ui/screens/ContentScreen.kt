@@ -62,14 +62,15 @@ import com.advice.ui.components.Paragraph
 import com.advice.ui.components.Speaker
 import com.advice.ui.preview.FakeContentProvider
 import com.advice.ui.preview.PreviewLightDark
-import com.advice.ui.states.EventScreenState
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.parseColor
+import timber.log.Timber
 
 @Composable
 fun ContentScreen(
-    state: EventScreenState.Success,
-    onBookmark: (Boolean) -> Unit,
+    content: Content,
+    session: Session?,
+    onBookmark: (Content, Session?, Boolean) -> Unit,
     onBackPressed: () -> Unit,
     onTagClicked: (Tag) -> Unit,
     onLocationClicked: (Location) -> Unit,
@@ -83,7 +84,7 @@ fun ContentScreen(
 
     Scaffold(
         topBar = {
-            TopBar(state, alpha, onBackPressed, onBookmark)
+            TopBar(content, session, alpha, onBackPressed, onBookmark)
         },
     ) { contentPadding ->
         Box(
@@ -91,11 +92,12 @@ fun ContentScreen(
                 .verticalScroll(scrollState),
         ) {
             EventScreenContent(
-                event = state.content,
-                session = state.session,
+                content = content,
+                session = session,
                 onTagClicked = onTagClicked,
                 onLocationClicked = onLocationClicked,
                 onSessionClicked = onSessionClicked,
+                onBookmark = onBookmark,
                 onUrlClicked = onUrlClicked,
                 onSpeakerClicked = onSpeakerClicked,
                 modifier = Modifier.padding(contentPadding),
@@ -119,14 +121,14 @@ fun ContentScreen(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun TopBar(
-    state: EventScreenState.Success,
+    content: Content,
+    session: Session?,
     alpha: Animatable<Float, AnimationVector1D>,
     onBackPressed: () -> Unit,
-    onBookmark: (Boolean) -> Unit
+    onBookmark: (Content, Session?, Boolean) -> Unit
 ) {
-    val title = state.content.title
-    // todo: check the current event instead of the content.
-    val isBookmarked = state.content.isBookmarked
+    val title = content.title
+    val isBookmarked = session?.isBookmarked ?: content.isBookmarked
 
     CenterAlignedTopAppBar(
         title = {
@@ -144,21 +146,17 @@ private fun TopBar(
         },
         actions = {
             BookmarkButton(isBookmarked = isBookmarked) {
-                onBookmark(it)
+                onBookmark(content, session, it)
             }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = getContainerColour(state).copy(alpha = alpha.value),
+            containerColor = getContainerColour(content).copy(alpha = alpha.value),
         ),
     )
 }
 
-private fun getContainerColour(state: EventScreenState): Color {
-    return when (state) {
-        is EventScreenState.Error -> Color.Red
-        EventScreenState.Loading -> Color.Transparent
-        is EventScreenState.Success -> parseColor(state.content.types.first().color)
-    }
+private fun getContainerColour(content: Content): Color {
+    return parseColor(content.types.first().color)
 }
 
 @Composable
@@ -257,34 +255,37 @@ internal fun DetailsCard(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun EventScreenContent(
-    event: Content,
+    content: Content,
     session: Session?,
     onTagClicked: (Tag) -> Unit,
     onLocationClicked: (Location) -> Unit,
     onSessionClicked: (Session) -> Unit,
+    onBookmark: (Content, Session, Boolean) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    Timber.e("Rendering Content Sessions: ${content.sessions}")
+
     Column(
         modifier = Modifier,
     ) {
         HeaderSection(
-            title = event.title,
-            categories = event.types,
+            title = content.title,
+            categories = content.types,
             session = session,
             onTagClicked = onTagClicked,
         ) {
             onLocationClicked(it)
         }
-        if (event.types.size > 1) {
+        if (content.types.size > 1) {
             FlowRow(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                val tags = event.types.takeLast(event.types.size - 1)
+                val tags = content.types.takeLast(content.types.size - 1)
                 for (category in tags) {
                     CategoryView(
                         category,
@@ -298,28 +299,32 @@ private fun EventScreenContent(
             }
         }
 
-        val otherSessions = event.sessions.filter { it != session }
+        val otherSessions = content.sessions.filter { it != session }
         if (otherSessions.isNotEmpty()) {
+
             Column(Modifier.padding(8.dp)) {
                 Text(
                     if (session == null) "Sessions" else "Other Sessions",
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 )
-                otherSessions.forEach {
-                    SessionRow(it, onSessionClicked, onLocationClicked)
+                otherSessions.forEach { session ->
+                    Timber.e("Rendering Session: ${session.isBookmarked}")
+                    SessionRow(session, onSessionClicked) {
+                        onBookmark(content, session, it)
+                    }
                 }
             }
         }
 
-        if (event.description.isNotBlank()) {
+        if (content.description.isNotBlank()) {
             Paragraph(
-                event.description,
+                content.description,
                 modifier = Modifier.padding(horizontal = 8.dp),
             )
         }
-        if (event.urls.isNotEmpty()) {
+        if (content.urls.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
-            for (action in event.urls) {
+            for (action in content.urls) {
                 ClickableUrl(
                     label = action.label,
                     url = action.url,
@@ -330,9 +335,9 @@ private fun EventScreenContent(
                 )
             }
         }
-        if (event.speakers.isNotEmpty()) {
+        if (content.speakers.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))
-            for (speaker in event.speakers) {
+            for (speaker in content.speakers) {
                 Speaker(
                     speaker = speaker,
                     onSpeakerClicked = { onSpeakerClicked(speaker) },
@@ -340,7 +345,7 @@ private fun EventScreenContent(
             }
         }
 
-        if (event.description.isBlank() && event.urls.isEmpty() && event.speakers.isEmpty()) {
+        if (content.description.isBlank() && content.urls.isEmpty() && content.speakers.isEmpty()) {
             Spacer(Modifier.height(32.dp))
             NoDetailsView()
         }
@@ -350,20 +355,26 @@ private fun EventScreenContent(
 
 @Composable
 private fun SessionRow(
-    it: Session,
+    session: Session,
     onSessionClicked: (Session) -> Unit,
-    onLocationClicked: (Location) -> Unit
+    onBookmark: (Boolean) -> Unit
 ) {
-    val date = TimeUtil.getEventDateStamp(LocalContext.current, it)
-    val time = TimeUtil.getEventTimeStamp(LocalContext.current, it)
-    val location = getLocation(it)
-    DetailsCard(
-        icon = Icons.Default.DateRange,
-        text = date + "\n" + time + "\n" + location,
-        onClick = {
-            onSessionClicked(it)
+    Row {
+        val date = TimeUtil.getEventDateStamp(LocalContext.current, session)
+        val time = TimeUtil.getEventTimeStamp(LocalContext.current, session)
+        val location = getLocation(session)
+        DetailsCard(
+            icon = Icons.Default.DateRange,
+            text = date + "\n" + time + "\n" + location,
+            modifier = Modifier.weight(1f),
+            onClick = {
+                onSessionClicked(session)
+            }
+        )
+        BookmarkButton(isBookmarked = session.isBookmarked) {
+            onBookmark(it)
         }
-    )
+    }
 }
 
 internal fun getLocation(session: Session?): String {
@@ -383,6 +394,15 @@ private fun EventScreenPreview(
     @PreviewParameter(FakeContentProvider::class) content: Content,
 ) {
     ScheduleTheme {
-        ContentScreen(EventScreenState.Success(content, null), {}, {}, {}, {}, {}, {}, {})
+        ContentScreen(
+            content = content,
+            session = null,
+            onBookmark = { _, _, _ -> },
+            onBackPressed = {},
+            onTagClicked = {},
+            onLocationClicked = {},
+            onSessionClicked = {},
+            onUrlClicked = {},
+            onSpeakerClicked = {})
     }
 }

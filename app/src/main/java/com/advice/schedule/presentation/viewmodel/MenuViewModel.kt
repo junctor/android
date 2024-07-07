@@ -2,6 +2,7 @@ package com.advice.schedule.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
 import com.advice.schedule.data.repositories.MenuRepository
 import kotlinx.coroutines.flow.Flow
@@ -26,8 +27,11 @@ class MenuViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             menuRepository.menu.collect {
-                _state.value =
-                    if (it.isEmpty()) MenuScreenState.Error else MenuScreenState.Success(it)
+                _state.value = when (it) {
+                    is FlowResult.Failure -> MenuScreenState.Error
+                    FlowResult.Loading -> MenuScreenState.Loading
+                    is FlowResult.Success -> MenuScreenState.Success(it.value)
+                }
             }
         }
     }

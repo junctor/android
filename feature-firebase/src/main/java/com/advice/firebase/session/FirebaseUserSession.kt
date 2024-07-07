@@ -1,6 +1,7 @@
 package com.advice.firebase.session
 
 import com.advice.core.local.Conference
+import com.advice.core.local.FlowResult
 import com.advice.core.local.User
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
@@ -37,10 +38,14 @@ class FirebaseUserSession(
     init {
         CoroutineScope(Job()).launch {
             conferencesDataSource.get().collect {
-                if (_conference.value == null) {
-                    val conference = getConference(preferences.preferredConference, it)
-                    Timber.d("Current Conference is: ${conference?.code}")
-                    _conference.value = conference
+                _conference.value = when (it) {
+                    is FlowResult.Failure -> null
+                    FlowResult.Loading -> null
+                    is FlowResult.Success -> {
+                        val conference = getConference(preferences.preferredConference, it.value)
+                        Timber.d("Current Conference is: ${conference?.code}")
+                        conference
+                    }
                 }
             }
         }

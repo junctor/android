@@ -4,7 +4,9 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.advice.core.local.Content
 import com.advice.core.local.Event
+import com.advice.core.local.Session
 import com.advice.core.utils.Time
 import java.util.concurrent.TimeUnit
 
@@ -16,8 +18,17 @@ class ReminderManager(
         private const val TWENTY_MINUTES_BEFORE = 1000 * 20 * 60
     }
 
-    fun setReminder(event: Event) {
-        val start = event.session.start
+    fun setReminder(content: Content, session: Session) {
+        setReminder(session, session.id, content.conference, content.title)
+    }
+
+    private fun setReminder(
+        session: Session,
+        id: Long,
+        conference: String,
+        title: String
+    ) {
+        val start = session.start
         val now = Time.now()
 
         val delay = start.toEpochMilli() - now.time - TWENTY_MINUTES_BEFORE
@@ -27,20 +38,21 @@ class ReminderManager(
         }
 
         val data = workDataOf(
-            ReminderWorker.INPUT_ID to event.id,
-            ReminderWorker.INPUT_CONFERENCE to event.conference,
+            ReminderWorker.INPUT_ID to id,
+            ReminderWorker.INPUT_CONFERENCE to conference,
         )
 
         val notify = OneTimeWorkRequestBuilder<ReminderWorker>()
             .setInputData(data)
             .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-            .addTag("reminder/${event.conference}/${event.id}")
+            .addTag("reminder/$conference/$id")
             .build()
 
-        workManager.enqueueUniqueWork(event.title, ExistingWorkPolicy.REPLACE, notify)
+
+        workManager.enqueueUniqueWork(title, ExistingWorkPolicy.REPLACE, notify)
     }
 
-    fun removeReminder(event: Event) {
-        workManager.cancelAllWorkByTag("reminder/${event.conference}/${event.id}")
+    fun removeReminder(content: Content, session: Session) {
+        workManager.cancelAllWorkByTag("reminder/${content.conference}/${session.id}")
     }
 }

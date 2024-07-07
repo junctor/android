@@ -1,24 +1,21 @@
 package com.advice.schedule.data.repositories
 
+import com.advice.core.local.Content
 import com.advice.core.local.Event
+import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.ScheduleFilter
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import timber.log.Timber
 
 class ScheduleRepository(
     private val eventRepository: EventRepository,
     private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
 ) {
-
-    suspend fun getEvent(
-        conference: String,
-        id: Long,
-        session: Long,
-    ): Event? = eventRepository.getEvent(conference, id, session)
 
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
         return combine(eventRepository.events, tagsRepository.tags) { content, tags ->
@@ -61,7 +58,7 @@ class ScheduleRepository(
     ): List<Event> {
         if (filter.isEmpty()) {
             if (Tag.bookmark.isSelected) {
-                return events.filter { it.isBookmarked }
+                return events.filter { it.session.isBookmarked }
             }
             return events
         }
@@ -79,14 +76,78 @@ class ScheduleRepository(
     }
 
     suspend fun bookmark(
-        event: Event,
+        content: Content,
+        session: Session?,
         isBookmarked: Boolean,
     ) {
-        eventRepository.bookmark(event)
-        if (isBookmarked) {
-            reminderManager.setReminder(event)
+        if (session != null) {
+            bookmarkSession(content, session, isBookmarked)
         } else {
-            reminderManager.removeReminder(event)
+            bookmarkContent(content, isBookmarked)
+        }
+    }
+
+    /**
+     * Bookmark a content and all its sessions
+     */
+    private suspend fun bookmarkContent(
+        content: Content,
+        isBookmarked: Boolean
+    ) {
+        // Bookmarking content that has sessions
+        if (content.sessions.isNotEmpty()) {
+            val all = content.sessions.all { eventRepository.isBookmarked(it) }
+            val any = content.sessions.any { eventRepository.isBookmarked(it) }
+
+            when {
+                !isBookmarked && all -> {
+                    Timber.d("All sessions are bookmarked - unbookmarking all")
+                    // All sessions are bookmarked - unbookmark them all
+                    content.sessions.forEach {
+                        eventRepository.bookmark(it)
+                        reminderManager.removeReminder(content, it)
+                    }
+                }
+
+                isBookmarked && !any -> {
+                    Timber.d("No sessions are bookmarked - bookmarking all")
+                    // No sessions are bookmarked - bookmark them all
+                    content.sessions.forEach {
+                        eventRepository.bookmark(it)
+                        reminderManager.setReminder(content, it)
+                    }
+                }
+            }
+        }
+
+        eventRepository.bookmark(content)
+    }
+
+    private suspend fun bookmarkSession(
+        content: Content,
+        session: Session,
+        isBookmarked: Boolean,
+    ) {
+        val contentBookmarked = eventRepository.isBookmarked(content)
+
+        eventRepository.bookmark(session)
+        if (isBookmarked) {
+            reminderManager.setReminder(content, session)
+        } else {
+            reminderManager.removeReminder(content, session)
+        }
+
+        val all = content.sessions.all { eventRepository.isBookmarked(it) }
+        val none = content.sessions.none { eventRepository.isBookmarked(it) }
+
+        if (all && !contentBookmarked) {
+            Timber.d("All sessions are bookmarked - bookmarking Content")
+            // All sessions are now bookmarked - bookmark Content as well.
+            eventRepository.bookmark(content)
+        } else if (none && contentBookmarked) {
+            Timber.d("No sessions are bookmarked - unbookmarking Content")
+            // No sessions are bookmarked - unbookmark Content as well.
+            eventRepository.bookmark(content)
         }
     }
 }

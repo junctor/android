@@ -9,10 +9,10 @@ import androidx.navigation.NavHostController
 import com.advice.core.ui.ScheduleFilter
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.schedule.extensions.navGraphViewModel
-import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
-import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
+import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
+import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
 
@@ -24,7 +24,6 @@ internal fun Locations(navController: NavHostController) {
         viewModel.toggle(it)
     }, onScheduleClicked = {
         // todo: this should URL encode the title
-
         navController.navigate(Navigation.Location(it.id, it.title))
     }, onBackPressed = {
         navController.popBackStack()
@@ -46,7 +45,13 @@ fun Location(navController: NavHostController, id: Long?, label: String?) {
             navController.popBackStack()
         },
         onEventClick = {
-            navController.navigate(Navigation.Event(it.conference, it.content.id.toString(), it.id.toString()))
+            navController.navigate(
+                Navigation.Event(
+                    it.conference,
+                    it.content.id.toString(),
+                    it.id.toString()
+                )
+            )
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)

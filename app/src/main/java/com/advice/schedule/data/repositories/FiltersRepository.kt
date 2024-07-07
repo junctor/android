@@ -22,7 +22,7 @@ class FiltersRepository(
         )
 
     suspend fun toggle(tag: Tag) {
-        bookmarksDataSource.bookmark(tag.id, !tag.isSelected)
+        bookmarksDataSource.bookmark(tag, !tag.isSelected)
 
         // Setting the bookmark locally as we don't rely on the backend
         if (tag.isBookmark) {

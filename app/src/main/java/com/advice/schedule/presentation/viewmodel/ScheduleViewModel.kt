@@ -2,7 +2,9 @@ package com.advice.schedule.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.advice.core.local.Content
 import com.advice.core.local.Event
+import com.advice.core.local.Session
 import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.Storage
 import com.advice.core.utils.TimeUtil
@@ -11,7 +13,8 @@ import com.advice.schedule.data.repositories.ScheduleRepository
 import com.advice.ui.states.EventScreenState
 import com.advice.ui.states.ScheduleScreenState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -24,32 +27,43 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     private val repository by inject<ScheduleRepository>()
     private val contentRepository by inject<ContentRepository>()
 
-    fun getEvent(conference: String?, id: Long?, session: Long?): Flow<EventScreenState> {
-        return flow {
-            emit(EventScreenState.Loading)
+    private val _state = MutableStateFlow<EventScreenState>(EventScreenState.Loading)
+    val state: StateFlow<EventScreenState> = _state
 
-            Timber.i("Getting content $id with session $session")
+    fun getEvent(conference: String?, id: Long?, session: Long?) {
+        viewModelScope.launch {
+            _state.value = EventScreenState.Loading
 
             if (conference == null || id == null) {
                 Timber.e("Could not find Event: conference or id is null")
-                emit(EventScreenState.Error("Invalid event id"))
-                return@flow
+                _state.value = EventScreenState.Error("Invalid event id")
+                return@launch
             }
 
-            val content = contentRepository.getContent(conference, id)
-
-
-            if (content == null) {
-                Timber.e("Content not found")
-                emit(EventScreenState.Error("Content not found"))
-                return@flow
-            }
-
-            // Find the session, if session is not null.
-            val session = content.sessions.find { it.id == session }
-
-            emit(EventScreenState.Success(content, session))
+            getEvent(conference, id, session)
         }
+    }
+
+    private suspend fun getEvent(
+        conference: String,
+        id: Long,
+        session: Long?
+    ) {
+        val content = contentRepository.getContent(conference, id)
+
+        if (content == null) {
+            Timber.e("Content not found")
+            _state.value = EventScreenState.Error("Content not found")
+            return
+        }
+
+        // Find the session, if session is not null.
+        _state.value = EventScreenState.Success(content, content.sessions.find { it.id == session })
+    }
+
+    private suspend fun refreshEvent() {
+        val event = _state.value as? EventScreenState.Success ?: return
+        getEvent(event.content.conference, event.content.id, event.session?.id)
     }
 
     fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> {
@@ -59,9 +73,16 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
         }
     }
 
+    fun bookmark(content: Content, session: Session?, isBookmarked: Boolean) {
+        viewModelScope.launch {
+            repository.bookmark(content, session, isBookmarked)
+            refreshEvent()
+        }
+    }
+
     fun bookmark(event: Event, isBookmarked: Boolean) {
         viewModelScope.launch {
-            repository.bookmark(event, isBookmarked)
+            repository.bookmark(event.content, event.session, isBookmarked)
         }
     }
 }
