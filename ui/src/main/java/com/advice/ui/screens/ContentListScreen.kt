@@ -30,6 +30,7 @@ fun ContentListScreen(
     label: String?,
     onMenuClick: () -> Unit,
     onContentClick: (Content) -> Unit,
+    onBookmark: (Content, Boolean) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -48,7 +49,7 @@ fun ContentListScreen(
             Modifier
                 .clip(roundedCornerShape),
     ) {
-        ContentScreenContent(state, onContentClick, Modifier.padding(it))
+        ContentScreenContent(state, onContentClick, onBookmark, Modifier.padding(it))
     }
 }
 
@@ -56,20 +57,21 @@ fun ContentListScreen(
 fun ContentScreenContent(
     state: ContentScreenState,
     onContentClick: (Content) -> Unit,
+    onBookmark: (Content, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier) {
         LazyColumn {
-            items(state.content) {
+            items(state.content) { content ->
                 ContentRow(
-                    title = it.title,
-                    tags = it.types,
-                    isBookmarked = it.isBookmarked,
+                    title = content.title,
+                    tags = content.types,
+                    isBookmarked = content.isBookmarked,
                     onContentPressed = {
-                        onContentClick(it)
+                        onContentClick(content)
                     },
-                    onBookmark = { isChecked ->
-                        // todo:
+                    onBookmark = { isBookmarked ->
+                        onBookmark(content, isBookmarked)
                     },
                 )
             }

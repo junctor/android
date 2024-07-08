@@ -38,6 +38,10 @@ fun Contents(context: AppCompatActivity, navController: NavHostController, label
         },
         onContentClick = {
             navController.navigate(Navigation.Event(it.conference, it.id.toString()))
+        },
+        onBookmark = { content, isBookmarked ->
+            viewModel.bookmark(content, isBookmarked)
+            (context as MainActivity).requestNotificationPermission()
         }
     )
 }
