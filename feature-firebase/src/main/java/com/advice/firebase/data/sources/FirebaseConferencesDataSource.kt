@@ -67,7 +67,9 @@ class FirebaseConferencesDataSource(
         firestore.collection("conferences")
             .snapshotFlow()
             .mapSnapshot {
-                it.toObjectsOrEmpty(FirebaseConference::class.java).mapNotNull { it.toConference() }
+                it.toObjectsOrEmpty(FirebaseConference::class.java)
+                    .mapNotNull { it.toConference() }
+                    .sortedWith(compareBy({ it.hasFinished }, { it.start }))
             }
 
     override fun get(): Flow<FlowResult<List<Conference>>> = conferences
