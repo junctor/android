@@ -25,6 +25,9 @@ data class FirebaseContent(
     val tag_ids: List<Long> = emptyList(),
     @PropertyName("updated_timestamp")
     val updated_timestamp: Timestamp = Timestamp.now(),
+    val feedbackform_id: Long? = null,
+    val feebackform_enable_timestamp: Timestamp = Timestamp.now(),
+    val feebackform_disable_timestamp: Timestamp = Timestamp.now(),
     @PropertyName("hidden")
     val hidden: Boolean = false,
 ) : Parcelable

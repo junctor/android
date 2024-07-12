@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
     return callbackFlow {
@@ -23,6 +24,7 @@ fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
         val listenerRegistration =
             addSnapshotListener { value, error ->
                 if (error != null) {
+                    Timber.e("Error fetching data: $error")
                     trySend(SnapshotResult.Failure(error))
                     close()
                     return@addSnapshotListener

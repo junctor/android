@@ -20,6 +20,7 @@ import com.advice.ui.theme.ScheduleTheme
 internal fun TextBoxItem(
     caption: String,
     value: String,
+    onValueChange: (String) -> Unit,
 ) {
     var value by remember { mutableStateOf(value) }
 
@@ -29,6 +30,7 @@ internal fun TextBoxItem(
             value = value,
             onValueChange = {
                 value = it
+                onValueChange(it)
             },
             placeholder = {
                 Text("Enter your answer")
@@ -51,10 +53,12 @@ private fun TextBoxItemPreview() {
             TextBoxItem(
                 caption = "Anything else we should know before you go?",
                 value = "",
+                onValueChange = {},
             )
             TextBoxItem(
                 caption = "Anything else we should know before you go?",
                 value = "I'm not sure",
+                onValueChange = {},
             )
         }
     }

@@ -51,6 +51,7 @@ import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
+import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
 import com.advice.ui.components.BookmarkButton
@@ -76,6 +77,7 @@ fun ContentScreen(
     onSessionClicked: (Session) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
+    onFeedbackClicked: (FeedbackForm) -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -99,6 +101,7 @@ fun ContentScreen(
                 onBookmark = onBookmark,
                 onUrlClicked = onUrlClicked,
                 onSpeakerClicked = onSpeakerClicked,
+                onFeedbackClicked = onFeedbackClicked,
                 modifier = Modifier.padding(contentPadding),
             )
         }
@@ -262,6 +265,7 @@ private fun EventScreenContent(
     onBookmark: (Content, Session, Boolean) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
+    onFeedbackClicked: (FeedbackForm) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -342,6 +346,18 @@ private fun EventScreenContent(
             }
         }
 
+        val feedback = content.feedback
+        if (feedback != null) {
+            Spacer(Modifier.height(32.dp))
+            ClickableUrl(
+                label = feedback.title, url = "Feedback Form",
+                onClick = {
+                    onFeedbackClicked(feedback)
+                },
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
+
         if (content.description.isBlank() && content.urls.isEmpty() && content.speakers.isEmpty()) {
             Spacer(Modifier.height(32.dp))
             NoDetailsView()
@@ -400,6 +416,8 @@ private fun EventScreenPreview(
             onLocationClicked = {},
             onSessionClicked = {},
             onUrlClicked = {},
-            onSpeakerClicked = {})
+            onSpeakerClicked = {},
+            onFeedbackClicked = {},
+        )
     }
 }

@@ -9,6 +9,7 @@ import com.advice.core.local.Session
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ContentDataSource
+import com.advice.data.sources.FeedbackDataSource
 import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
@@ -39,6 +40,7 @@ class FirebaseContentDataSource(
     private val tagsDataSource: TagsDataSource,
     private val speakersDataSource: SpeakersDataSource,
     private val locationsDataSource: LocationsDataSource,
+    private val feedbackDataSource: FeedbackDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : ContentDataSource {
 
@@ -60,12 +62,14 @@ class FirebaseContentDataSource(
             tagsDataSource.get(),
             speakersDataSource.get(),
             locationsDataSource.get(),
-        ) { conference, tags, speakers, locations ->
+            feedbackDataSource.get(),
+        ) { conference, tags, speakers, locations, feedbackforms ->
             ConferenceState(
-                conference,
-                tags,
-                speakers,
-                locations.flatten(),
+                conference = conference,
+                tags = tags,
+                speakers = speakers,
+                locations = locations.flatten(),
+                feedbackforms = feedbackforms.toResultOrNull() ?: emptyList(),
             )
         }.shareIn(
             scope = CoroutineScope(Dispatchers.IO),
@@ -75,7 +79,7 @@ class FirebaseContentDataSource(
 
     private val _eventsFlow =
         conferenceAndTagsFlow
-            .flatMapLatest { (conference, tags, speakers, locations) ->
+            .flatMapLatest { (conference, tags, speakers, locations, feedbackforms) ->
                 combine(
                     observeConferenceEvents(conference),
                     bookmarkedEventsDataSource.get(),
@@ -87,6 +91,7 @@ class FirebaseContentDataSource(
                             speakers = speakers,
                             bookmarkedEvents = bookmarkedEvents,
                             locations = locations,
+                            feedbackforms = feedbackforms,
                         )
                     }
                     ConferenceContent(
@@ -123,6 +128,7 @@ class FirebaseContentDataSource(
         val speakers = speakersDataSource.get().first()
         val locations = locationsDataSource.get().first().flatten()
         val bookmarks = bookmarkedEventsDataSource.get().first()
+        val feedbackforms = feedbackDataSource.get().first().toResultOrNull() ?: emptyList()
 
         val content = getFirebaseContentOrNull(conference, id)
             ?.toContents(
@@ -131,6 +137,7 @@ class FirebaseContentDataSource(
                 speakers = speakers,
                 bookmarkedEvents = bookmarks,
                 locations = locations,
+                feedbackforms = feedbackforms,
             )
 
         return content

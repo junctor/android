@@ -21,8 +21,10 @@ import com.advice.ui.theme.ScheduleTheme
 fun SelectOneItem(
     caption: String,
     options: List<String>,
+    selection: String? = null,
+    onSelectOption: (String) -> Unit,
 ) {
-    var choice by remember { mutableStateOf(options[0]) }
+    var choice by remember { mutableStateOf(selection) }
 
     Column(Modifier.fillMaxWidth()) {
         Text(caption)
@@ -32,7 +34,10 @@ fun SelectOneItem(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
                         selected = choice == it,
-                        onClick = { choice = it },
+                        onClick = {
+                            choice = it
+                            onSelectOption(it)
+                        },
                     )
                     Text(it)
                 }
@@ -46,7 +51,10 @@ fun SelectOneItem(
                     ) {
                         RadioButton(
                             selected = choice == it,
-                            onClick = { choice = it },
+                            onClick = {
+                                choice = it
+                                onSelectOption(it)
+                            },
                             modifier = Modifier.fillMaxWidth(),
                         )
                         Text(it, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
@@ -64,6 +72,7 @@ private fun SelectOneItemPreview() {
         SelectOneItem(
             caption = "Select one item",
             options = listOf("Option 1", "Option 2", "Option 3"),
+            onSelectOption = {},
         )
     }
 }
@@ -75,6 +84,7 @@ private fun SelectOneItemVerticalPreview() {
         SelectOneItem(
             caption = "Select one item",
             options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
+            onSelectOption = {},
         )
     }
 }

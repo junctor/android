@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -21,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.advice.feedback.models.FeedbackForm
-import com.advice.feedback.models.FeedbackType
+import com.advice.core.local.feedback.FeedbackForm
+import com.advice.core.local.feedback.FeedbackItem
+import com.advice.core.local.feedback.FeedbackType
 import com.advice.feedback.ui.components.DisplayOnlyItem
 import com.advice.feedback.ui.components.MultiSelectItem
 import com.advice.feedback.ui.components.SelectOneItem
@@ -32,68 +34,74 @@ import com.advice.feedback.ui.preview.FeedbackFormProvider
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
-@Composable
-fun Feedback(navController: NavController) {
-    Feedback(FeedbackFormProvider.element)
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Feedback(form: FeedbackForm) {
+fun Feedback(
+    form: FeedbackForm,
+    onValueChanged: (FeedbackItem, String) -> Unit,
+    onBackPressed: () -> Unit,
+    onSubmitPressed: () -> Unit,
+) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = {
-                Text("{Content} Feedback")
+                Text(form.title)
             },
             navigationIcon = {
                 IconButton(
-                    onClick = { },
+                    onClick = onBackPressed,
                     colors =
-                        IconButtonDefaults.iconButtonColors(),
+                    IconButtonDefaults.iconButtonColors(),
                 ) {
                     Icon(
                         Icons.Default.ArrowBack,
                         "Back",
-                        tint = Color.Black,
+                        tint = Color.White,
                     )
                 }
             },
             actions = {
                 IconButton(
-                    onClick = { },
+                    onClick = onBackPressed,
                     colors =
-                        IconButtonDefaults.iconButtonColors(),
+                    IconButtonDefaults.iconButtonColors(),
                 ) {
                     Icon(
                         Icons.Default.Close,
                         "Close",
-                        tint = Color.Black,
+                        tint = Color.White,
                     )
                 }
             },
             colors =
-                TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                ),
+            TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent,
+            ),
         )
     }) {
         Column(
-            modifier =
-                Modifier
-                    .padding(it)
-                    .padding(16.dp),
+            modifier = Modifier
+                .padding(it)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             form.items.forEach { item ->
                 when (val type = item.type) {
                     FeedbackType.DisplayOnly -> DisplayOnlyItem(item.caption)
-                    is FeedbackType.SelectOne -> SelectOneItem(item.caption, type.options)
-                    is FeedbackType.MultiSelect -> MultiSelectItem(item.caption, type.options)
-                    is FeedbackType.TextBox -> TextBoxItem(item.caption, type.value)
+                    is FeedbackType.SelectOne -> SelectOneItem(item.caption, type.options, type.selection) {
+                        onValueChanged(item, it)
+                    }
+                    is FeedbackType.MultiSelect -> MultiSelectItem(item.caption, type.options) {
+                        onValueChanged(item, it)
+                    }
+                    is FeedbackType.TextBox -> TextBoxItem(item.caption, type.value) {
+                        onValueChanged(item, it)
+                    }
                 }
             }
 
-            Button({}, modifier = Modifier.fillMaxWidth()) {
+            Button(onSubmitPressed, modifier = Modifier.fillMaxWidth()) {
                 Text("Submit")
             }
         }
@@ -106,6 +114,11 @@ private fun FeedbackScreenPreview(
     @PreviewParameter(FeedbackFormProvider::class) feedback: FeedbackForm,
 ) {
     ScheduleTheme {
-        Feedback(feedback)
+        Feedback(
+            form = feedback,
+            onValueChanged = { _, _ -> },
+            onBackPressed = {},
+            onSubmitPressed = {},
+        )
     }
 }

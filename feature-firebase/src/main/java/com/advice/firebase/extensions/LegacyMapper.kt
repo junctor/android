@@ -26,9 +26,14 @@ import com.advice.core.local.StockStatus
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.Vendor
+import com.advice.core.local.feedback.FeedbackForm
+import com.advice.core.local.feedback.FeedbackItem
+import com.advice.core.local.feedback.FeedbackType
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
+import com.advice.firebase.models.feedback.FirebaseFeedbackForm
+import com.advice.firebase.models.feedback.FirebaseFeedbackItem
 import com.advice.firebase.models.FirebaseAction
 import com.advice.firebase.models.FirebaseAffiliation
 import com.advice.firebase.models.FirebaseArticle
@@ -173,6 +178,7 @@ fun FirebaseContent.toContents(
     speakers: List<Speaker>,
     bookmarkedEvents: List<Bookmark>,
     locations: List<Location>,
+    feedbackforms: List<FeedbackForm>,
 ): Content? {
     try {
         val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
@@ -222,6 +228,9 @@ fun FirebaseContent.toContents(
 
         val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == id.toString() }
 
+        // todo: pass the enable/disable dates.
+        val feedback = feedbackforms.find { it.id == feedbackform_id }
+
         return Content(
             id = id,
             conference = code,
@@ -233,6 +242,7 @@ fun FirebaseContent.toContents(
             urls = links,
             isBookmarked = isBookmarked,
             sessions = new_sessions,
+            feedback = feedback,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Content: ${ex.message}")
@@ -538,5 +548,42 @@ fun FirebaseProductMedia.toProductMedia(): ProductMedia? =
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to ProductMedia: ${ex.message}")
+        null
+    }
+
+fun FirebaseFeedbackForm.toFeedbackForm(): FeedbackForm? =
+    try {
+        FeedbackForm(
+            id = id,
+            title = name_text,
+            items = items.mapNotNull { it.toFeedbackItem() },
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to FeedbackForm: ${ex.message}")
+        null
+    }
+
+fun FirebaseFeedbackItem.toFeedbackItem(): FeedbackItem? =
+    try {
+        val type = when (type) {
+            "display_only" -> FeedbackType.DisplayOnly
+            "select_one" -> FeedbackType.SelectOne(
+                options.map { it.caption_text }
+            )
+
+            "multi_select" -> FeedbackType.MultiSelect(
+                options.map { it.caption_text }
+            )
+
+            "text" -> FeedbackType.TextBox("")
+            else -> error("Unknown feedback type: $type")
+        }
+        FeedbackItem(
+            id = id,
+            caption = caption_text,
+            type = type,
+        )
+    } catch (ex: Exception) {
+        Timber.e("Could not map data to FeedbackItem: ${ex.message}")
         null
     }

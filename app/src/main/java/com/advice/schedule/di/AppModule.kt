@@ -12,6 +12,7 @@ import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.ContentDataSource
 import com.advice.data.sources.DocumentsDataSource
 import com.advice.data.sources.FAQDataSource
+import com.advice.data.sources.FeedbackDataSource
 import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.MapsDataSource
 import com.advice.data.sources.MenuDataSource
@@ -27,6 +28,7 @@ import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseContentDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
 import com.advice.firebase.data.sources.FirebaseFAQDataSource
+import com.advice.firebase.data.sources.FirebaseFeedbackDataSource
 import com.advice.firebase.data.sources.FirebaseLocationsDataSource
 import com.advice.firebase.data.sources.FirebaseMapsDataSource
 import com.advice.firebase.data.sources.FirebaseMenuDataSource
@@ -48,6 +50,7 @@ import com.advice.reminder.ReminderManager
 import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.data.repositories.EventRepository
 import com.advice.schedule.data.repositories.FAQRepository
+import com.advice.schedule.data.repositories.FeedbackRepository
 import com.advice.schedule.data.repositories.FiltersRepository
 import com.advice.schedule.data.repositories.HomeRepository
 import com.advice.schedule.data.repositories.InformationRepository
@@ -77,6 +80,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.PersistentCacheSettings
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
@@ -95,7 +100,19 @@ val appModule = module {
     }
 
     single { FirebaseCrashlytics.getInstance() }
-    single { FirebaseFirestore.getInstance() }
+    single {
+        val cacheSize: Long = 250 * 1024 * 1024 // 250 MB
+
+        val newBuilder = PersistentCacheSettings.newBuilder()
+            .setSizeBytes(cacheSize)
+            .build()
+
+        FirebaseFirestoreSettings.Builder()
+            .setLocalCacheSettings(newBuilder)
+            .build()
+
+        FirebaseFirestore.getInstance()
+    }
     single { FirebaseAuth.getInstance() }
     single { FirebaseStorage.getInstance() }
     single { FirebaseAnalytics.getInstance(androidContext()) }
@@ -140,6 +157,7 @@ val appModule = module {
     single { TagsRepository(get()) }
     single { SearchRepository(get(), get(), get(), get(), get(), get()) }
     single { MenuRepository(get()) }
+    single { FeedbackRepository(get()) }
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
     single<BookmarkedElementDataSource>(named("tags")) { InMemoryBookmarkedDataSourceImpl() }
@@ -160,6 +178,7 @@ val appModule = module {
             get(),
             get(),
             get<LocationsDataSource>(),
+            get(),
             get(named("events")),
         )
     }
@@ -186,6 +205,8 @@ val appModule = module {
     single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get(), get()) }
 
     single<MenuDataSource> { FirebaseMenuDataSource(get(), get()) }
+
+    single<FeedbackDataSource> { FirebaseFeedbackDataSource(get(), get()) }
 
     // Products
     single<ProductCart> { ProductCart() }

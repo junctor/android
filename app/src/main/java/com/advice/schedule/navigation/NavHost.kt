@@ -2,12 +2,12 @@ package com.advice.schedule.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.advice.feedback.ui.screens.Feedback
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.screens.Contents
 import com.advice.schedule.ui.screens.Document
 import com.advice.schedule.ui.screens.Event
 import com.advice.schedule.ui.screens.FAQ
+import com.advice.schedule.ui.screens.Feedback
 import com.advice.schedule.ui.screens.Home
 import com.advice.schedule.ui.screens.Location
 import com.advice.schedule.ui.screens.Locations
@@ -127,10 +127,9 @@ internal fun NavigationManager.setRoutes(
             ProductsSummary(context, navController)
         }
 
-
         // Feedback
-        register(Navigation.Feedback) {
-            Feedback(navController)
+        register(Navigation.Feedback()) {
+            Feedback(navController, it.id)
         }
     }
 }

@@ -46,8 +46,9 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
             copy(label = label)
         }
 
-        Navigation.Feedback -> {
-            Navigation.Feedback
+        is Navigation.Feedback -> {
+            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            copy(id = id)
         }
 
         Navigation.Home -> {

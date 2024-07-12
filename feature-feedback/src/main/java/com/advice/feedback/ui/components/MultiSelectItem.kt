@@ -19,16 +19,22 @@ import com.advice.ui.theme.ScheduleTheme
 fun MultiSelectItem(
     caption: String,
     options: List<String>,
+    onSelectOption: (String) -> Unit,
 ) {
-    var choice by remember { mutableStateOf(options[0]) }
+    var choices by remember { mutableStateOf(emptyList<String>()) }
 
     Column(Modifier.fillMaxWidth()) {
         Text(caption)
 
         options.forEach {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = choice == it, onCheckedChange = { isChecked ->
-                    choice = it
+                Checkbox(checked = it in choices, onCheckedChange = { isChecked ->
+                    if (isChecked) {
+                        choices = choices + it
+                    } else {
+                        choices = choices - it
+                    }
+                    onSelectOption(it)
                 })
                 Text(it)
             }
@@ -43,6 +49,7 @@ private fun MultiSelectItemPreview() {
         MultiSelectItem(
             caption = "Select one item",
             options = listOf("Option 1", "Option 2", "Option 3"),
+            onSelectOption = {},
         )
     }
 }
