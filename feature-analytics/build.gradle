@@ -33,6 +33,8 @@ android {
 
 dependencies {
     implementation project(':core')
+
     implementation libs.firebase.analytics.ktx
+
     testImplementation libs.junit
 }

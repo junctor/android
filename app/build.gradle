@@ -59,14 +59,14 @@ dependencies {
     implementation project(':feature-play')
     implementation project(':feature-feedback')
 
-    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
+    def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom
     androidTestImplementation composeBom
 
     // Material Design 3
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation libs.androidx.material3
+    implementation libs.androidx.ui.tooling.preview
+    debugImplementation libs.androidx.ui.tooling
 
     implementation("androidx.compose.foundation:foundation:1.6.0-alpha01")
 

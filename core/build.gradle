@@ -37,7 +37,6 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.android.material
 
-
     implementation libs.kotlinx.coroutines.core
     implementation libs.gson
     api libs.timber

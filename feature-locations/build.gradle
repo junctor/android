@@ -39,29 +39,26 @@ dependencies {
     implementation project(":core")
     implementation project(":ui")
     implementation project(":data")
-    implementation("com.google.android.material:material:1.8.0")
 
-    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
+    def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom
     androidTestImplementation composeBom
 
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-
+    implementation libs.androidx.material3
+    implementation libs.androidx.ui.tooling.preview
+    debugImplementation libs.androidx.ui.tooling
 
     implementation libs.androidx.appcompat
     implementation libs.androidx.ktx
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation libs.android.material
+    implementation libs.androidx.lifecycle.viewmodel.ktx
 
-    // Koin
     implementation libs.koin
-//
-    testImplementation libs.junit
-    testImplementation "io.mockk:mockk:1.13.5"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6"
 
+    testImplementation libs.junit
+    testImplementation libs.mockk
+    testImplementation libs.kotlinx.coroutines.test
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-    androidTestImplementation("androidx.annotation:annotation:1.3.0")
+    androidTestImplementation libs.androidx.annotation
 }

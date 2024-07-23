@@ -40,26 +40,22 @@ dependencies {
     implementation project(":ui")
     implementation project(':data')
 
-    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
+    def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom
     androidTestImplementation composeBom
 
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation libs.androidx.material3
+    implementation libs.androidx.ui.tooling.preview
+    debugImplementation libs.androidx.ui.tooling
 
     implementation libs.androidx.appcompat
     implementation libs.androidx.ktx
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
 
-    // QR Codes
-    implementation 'com.google.zxing:core:3.4.1'
-    implementation 'com.google.zxing:android-core:3.3.0'
+    implementation libs.zxing.core
+    implementation libs.zxing.android.core
 
-    // Gson for JSON parsing
     implementation libs.gson
-
-    // Koin
     implementation libs.koin
 
     testImplementation libs.junit

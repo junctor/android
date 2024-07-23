@@ -38,18 +38,18 @@ android {
 dependencies {
     implementation project(':core')
 
-    def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
+    def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom
     androidTestImplementation composeBom
 
-    implementation 'androidx.compose.ui:ui:1.4.3'
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation libs.androidx.ui
+    implementation libs.androidx.material3
+    implementation libs.androidx.ui.tooling.preview
+    debugImplementation libs.androidx.ui.tooling
 
     implementation libs.androidx.ktx
-    implementation "androidx.appcompat:appcompat:$appcompatVersion"
-    implementation("com.google.android.material:material:1.8.0")
+    implementation libs.androidx.appcompat
+    implementation libs.android.material
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

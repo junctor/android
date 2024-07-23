@@ -1,11 +1,16 @@
 [versions]
 kotlin = "2.0.0"
+compose = "2023.05.01"
 androidGradlePlugin = "8.4.1"
+kotlinxCoroutinesTest = "1.6"
 ktx = "1.9.0"
 ktlintGradlePlugin = "10.2.0"
 appcompat = "1.6.0"
+lifecycleViewmodelKtx = "2.2.0"
 material = "1.8.0"
 coroutines = "1.3.2"
+mockk = "1.13.5"
+ui = "1.4.3"
 viewModel = "2.2.0"
 koin = "3.4.2"
 timber = "5.0.1"
@@ -23,15 +28,24 @@ gson = "2.8.8"
 junit = "4.13.2"
 extJunit = "1.1.5"
 espressoCore = "3.5.1"
+annotation = "1.3.0"
 accompanist = "0.31.3-beta"
 pdfViewer = "3.2.0-beta.1"
 richtext = "0.16.0"
+zxingCore = "3.4.1"
+zxingAndroidCore = "3.3.0"
 
 [libraries]
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
 android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-material3 = { module = "androidx.compose.material3:material3" }
+androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
@@ -58,10 +72,15 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 compose-richtext-common = { group = "com.halilibo.compose-richtext", name = "richtext-commonmark", version.ref = "richtext" }
 compose-richtext-material = { group = "com.halilibo.compose-richtext", name = "richtext-ui-material3", version.ref = "richtext" }
 
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxingCore" }
+zxing-android-core = { module = "com.google.zxing:android-core", version.ref = "zxingAndroidCore" }
+
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "extJunit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 [plugins]
