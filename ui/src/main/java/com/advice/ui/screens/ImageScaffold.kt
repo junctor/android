@@ -1,5 +1,6 @@
 package com.advice.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,8 +19,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -68,12 +71,21 @@ fun ImageScaffold(
         val modifier = if (url != null) contentModifier else contentModifier.padding(it)
         Column(modifier) {
             if (url != null) {
-                AsyncImage(
-                    model = url,
-                    contentDescription = null,
-                    contentScale = ContentScale.FillWidth,
-                    modifier = imageModifier,
-                )
+                Box(Modifier.background(Color.Black)) {
+                    val request = ImageRequest.Builder(LocalContext.current)
+                        .data(url)
+                        .placeholder(com.shortstack.core.R.drawable.logo_glitch)
+                        .error(com.shortstack.core.R.drawable.logo_glitch)
+                        .build()
+
+                    AsyncImage(
+                        model = request,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = imageModifier,
+                    )
+                }
+
             }
             content()
             if (url != null) {

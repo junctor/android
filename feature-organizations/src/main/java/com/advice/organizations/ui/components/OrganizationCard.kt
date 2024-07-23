@@ -1,7 +1,6 @@
 package com.advice.organizations.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,16 +14,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.request.ImageRequest
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.shortstack.core.R
+import timber.log.Timber
 
 @Composable
 internal fun OrganizationCard(
@@ -41,7 +42,7 @@ internal fun OrganizationCard(
             onClick()
         }
     ) {
-        Column() {
+        Column {
             Box(
                 modifier = Modifier
                     .background(Color.Black)
@@ -49,27 +50,19 @@ internal fun OrganizationCard(
                     .aspectRatio(1.333f)
                     .clip(RoundedCornerShape(12.dp))
             ) {
-                if (media != null) {
-                    AsyncImage(
-                        model = media, contentDescription = "logo",
-                        modifier = Modifier
-                            .fillMaxSize()
+                val request = ImageRequest.Builder(LocalContext.current)
+                    .data(media)
+                    .placeholder(R.drawable.logo_glitch)
+                    .error(R.drawable.logo_glitch)
+                    .build()
 
-                    )
-                } else {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.logo_glitch),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                        )
+                AsyncImage(
+                    model = request,
+                    contentDescription = "logo",
+                    modifier = Modifier
+                        .fillMaxSize(),
                     }
-                }
+                )
             }
 
             Column(
