@@ -1,0 +1,55 @@
+[versions]
+kotlin = "2.0.0"
+androidGradlePlugin = "8.4.1"
+ktx = "1.9.0"
+ktlintGradlePlugin = "10.2.0"
+appcompat = "1.6.0"
+material = "1.8.0"
+coroutines = "1.3.2"
+viewModel = "2.2.0"
+koin = "3.4.2"
+timber = "5.0.1"
+coil = "2.7.0"
+google = "4.4.1"
+firebaseGradlePlugin = "2.9.9"
+firebaseBom = "33.1.0"
+firebaseAnalytics = "21.2.0"
+firebaseFirestore = "24.4.2"
+firebaseStorage = "20.1.0"
+firebaseAuth = "21.1.0"
+firebaseCrashlytics = "18.3.3"
+junit = "4.13.2"
+extJunit = "1.1.5"
+espressoCore = "3.5.1"
+accompanist = "0.31.3-beta"
+pdfViewer = "3.2.0-beta.1"
+
+[libraries]
+androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
+android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
+accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
+accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
+
+android-pdf-viewer = { group = "com.github.barteksc", name = "android-pdf-viewer", version.ref = "pdfViewer" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-storage = { module = "com.google.firebase:firebase-storage" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+google-services = { id = "com.google.gms.google-services", version.ref = "google" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseGradlePlugin" }
+
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradlePlugin" }
