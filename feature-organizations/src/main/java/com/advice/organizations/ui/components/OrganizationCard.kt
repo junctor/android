@@ -20,12 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.shortstack.core.R
-import timber.log.Timber
 
 @Composable
 internal fun OrganizationCard(
@@ -61,7 +59,6 @@ internal fun OrganizationCard(
                     contentDescription = "logo",
                     modifier = Modifier
                         .fillMaxSize(),
-                    }
                 )
             }
 
