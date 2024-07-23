@@ -7,11 +7,11 @@ plugins {
 
 android {
     namespace 'com.shortstack.core'
-    compileSdk 34
+    compileSdk libs.versions.compileSdk.get() as Integer
 
     defaultConfig {
         minSdk 26
-        targetSdk 33
+        targetSdk libs.versions.targetSdk.get() as Integer
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -33,15 +33,15 @@ android {
 }
 
 dependencies {
-    implementation libs.androidx.ktx
-    implementation libs.androidx.appcompat
-    implementation libs.android.material
+    implementation(libs.androidx.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.android.material)
 
-    implementation libs.kotlinx.coroutines.core
-    implementation libs.gson
-    api libs.timber
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.gson)
+    api(libs.timber)
 
-    testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }

@@ -7,11 +7,11 @@ plugins {
 
 android {
     namespace 'com.advice.firebase'
-    compileSdk 34
+    compileSdk libs.versions.compileSdk.get() as Integer
 
     defaultConfig {
         minSdk 26
-        targetSdk 33
+        targetSdk libs.versions.targetSdk.get() as Integer
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -41,5 +41,5 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.crashlytics)
 
-    testImplementation libs.junit
+    testImplementation(libs.junit)
 }

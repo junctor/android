@@ -10,14 +10,14 @@ plugins {
 
 android {
     namespace "com.shortstack.hackertracker"
-    compileSdk 34
+    compileSdk libs.versions.compileSdk.get() as Integer
 
     defaultConfig {
         applicationId "com.shortstack.hackertracker"
-        minSdk 26
-        targetSdk 33
+        minSdk libs.versions.targetSdk.get() as Integer
+        targetSdk libs.versions.targetSdk.get() as Integer
         versionCode 1
-        versionName "7.7.0"
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,9 +30,6 @@ android {
     }
     buildFeatures {
         compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -63,34 +60,24 @@ dependencies {
     implementation composeBom
     androidTestImplementation composeBom
 
-    // Material Design 3
-    implementation libs.androidx.material3
-    implementation libs.androidx.ui.tooling.preview
-    debugImplementation libs.androidx.ui.tooling
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
 
-    implementation("androidx.compose.foundation:foundation:1.6.0-alpha01")
+    implementation(libs.androidx.foundation)
 
+    implementation(libs.androidx.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.android.material)
 
-    implementation libs.androidx.ktx
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-    implementation libs.androidx.appcompat
-    implementation libs.android.material
+    implementation(libs.koin)
+    implementation(libs.koin.androidx.compose)
 
+    implementation(libs.kotlinx.coroutines.core)
 
-    // Koin
-    implementation libs.koin
-    implementation "io.insert-koin:koin-androidx-compose:3.4.5"
-
-    // Arch
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc01"
-    implementation("androidx.work:work-runtime-ktx:2.7.1")
-    //implementation "android.arch.work:work-firebase:1.0.0-alpha11"
-
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
-
-    // Firebase
     implementation platform(libs.firebase.bom)
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.firestore)
@@ -98,27 +85,17 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.crashlytics)
 
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.ui.viewbinding)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.gson)
 
-    // Optional - Integration with activities
-    implementation("androidx.activity:activity-compose:1.6.1")
-    // Optional - Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
-
-    implementation("androidx.compose.ui:ui-viewbinding:1.3.3")
-
-    implementation("androidx.navigation:navigation-compose:2.5.3")
-
-
-    // Utils
-    implementation libs.gson
-
-    // Testing
-    testImplementation libs.junit
-    testImplementation "io.mockk:mockk:1.12.4"
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }
 
 ktlint {

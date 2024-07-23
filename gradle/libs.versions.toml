@@ -1,4 +1,8 @@
 [versions]
+compileSdk = "34"
+minSdk = "26"
+targetSdk = "34"
+
 kotlin = "2.0.0"
 compose = "2023.05.01"
 androidGradlePlugin = "8.4.1"
@@ -6,16 +10,22 @@ kotlinxCoroutinesTest = "1.6"
 ktx = "1.9.0"
 ktlintGradlePlugin = "10.2.0"
 appcompat = "1.6.0"
+lifecycleViewmodelCompose = "2.5.1"
 lifecycleViewmodelKtx = "2.2.0"
 material = "1.8.0"
 coroutines = "1.3.2"
-mockk = "1.13.5"
+activityCompose = "1.6.1"
+foundation = "1.6.0-alpha01"
+navigationCompose = "2.5.3"
 ui = "1.4.3"
+uiViewbinding = "1.3.3"
 viewModel = "2.2.0"
 koin = "3.4.2"
+koinAndroidxCompose = "3.4.5"
 timber = "5.0.1"
 coil = "2.7.0"
 google = "4.4.1"
+appUpdate = "2.1.0"
 firebaseGradlePlugin = "2.9.9"
 firebaseBom = "33.1.0"
 firebaseAnalytics = "21.2.0"
@@ -25,27 +35,39 @@ firebaseAuth = "21.1.0"
 firebaseCrashlytics = "18.3.3"
 retrofit = "2.9.0"
 gson = "2.8.8"
+accompanist = "0.31.3-beta"
+pdfViewer = "3.2.0-beta.1"
+richtext = "0.16.0"
+workRuntimeKtx = "2.7.1"
+zxingCore = "3.4.1"
+zxingAndroidCore = "3.3.0"
 junit = "4.13.2"
 extJunit = "1.1.5"
 espressoCore = "3.5.1"
 annotation = "1.3.0"
-accompanist = "0.31.3-beta"
-pdfViewer = "3.2.0-beta.1"
-richtext = "0.16.0"
-zxingCore = "3.4.1"
-zxingAndroidCore = "3.3.0"
+mockk = "1.13.5"
 
 [libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
 android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleViewmodelKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-material = { module = "androidx.compose.material:material" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding", version.ref = "uiViewbinding" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+google-play-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
+google-play-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
@@ -63,6 +85,7 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }

@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace 'com.advice.analytics'
-    compileSdk 34
+    compileSdk libs.versions.compileSdk.get() as Integer
 
     defaultConfig {
-        minSdk 21
-        targetSdk 33
+        minSdk libs.versions.minSdk.get() as Integer
+        targetSdk libs.versions.targetSdk.get() as Integer
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -34,7 +34,5 @@ android {
 dependencies {
     implementation project(':core')
 
-    implementation libs.firebase.analytics.ktx
-
-    testImplementation libs.junit
-}
+    implementation(libs.firebase.analytics.ktx)
+    testImplementation(libs.junit)}

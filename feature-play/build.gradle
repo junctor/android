@@ -1,12 +1,10 @@
 plugins {
     alias libs.plugins.android.library
-    alias libs.plugins.compose.compiler
     alias libs.plugins.org.jetbrains.kotlin.android
-    alias libs.plugins.ktlint
 }
 
 android {
-    namespace 'com.advice.documents'
+    namespace "com.advice.play"
     compileSdk libs.versions.compileSdk.get() as Integer
 
     defaultConfig {
@@ -20,39 +18,25 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
-    }
-    buildFeatures {
-        compose true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
     }
 }
 
 dependencies {
-    implementation project(":core")
-    implementation project(":data")
-    implementation project(":ui")
-
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
 
-    def composeBom = platform(libs.androidx.compose.bom)
-    implementation composeBom
-    androidTestImplementation composeBom
-
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.ui.tooling.preview)
-    debugImplementation(libs.androidx.ui.tooling)
-
-    implementation(libs.koin)
+    implementation(libs.google.play.update)
+    implementation(libs.google.play.update.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

@@ -7,10 +7,10 @@ plugins {
 
 android {
     namespace 'com.advice.feedback'
-    compileSdk 34
+    compileSdk libs.versions.compileSdk.get() as Integer
 
     defaultConfig {
-        minSdk 21
+        minSdk libs.versions.minSdk.get() as Integer
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -39,19 +39,19 @@ dependencies {
     implementation project(":data")
     implementation project(":ui")
 
-    implementation libs.androidx.appcompat
-    implementation libs.androidx.ktx
-    implementation libs.android.material
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.ktx)
+    implementation(libs.android.material)
 
     def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom
     androidTestImplementation composeBom
 
-    implementation libs.androidx.material3
-    implementation libs.androidx.ui.tooling.preview
-    debugImplementation libs.androidx.ui.tooling
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
 
-    testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }
