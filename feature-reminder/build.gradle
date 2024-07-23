@@ -1,7 +1,7 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jlleitschuh.gradle.ktlint'
+    alias libs.plugins.android.library
+    alias libs.plugins.org.jetbrains.kotlin.android
+    alias libs.plugins.ktlint
 }
 
 android {
@@ -36,7 +36,7 @@ dependencies {
     implementation project(":data")
 
     // Logging
-    
+
 
     // Work Manager
     implementation "androidx.work:work-runtime-ktx:2.7.1"
