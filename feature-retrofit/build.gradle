@@ -31,19 +31,17 @@ android {
 }
 
 dependencies {
-
     implementation project(path: ':data')
     implementation project(path: ':core')
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesCoreVersion")
+    implementation libs.kotlinx.coroutines.core
 
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation('com.squareup.retrofit2:converter-gson:2.9.0')
+    implementation libs.retrofit.core
+    implementation libs.retrofit.converter.gson
 
-    // Timber
+    implementation libs.timber
 
-    implementation("androidx.core:core-ktx:$coreKtxVersion")
+    implementation libs.androidx.ktx
 
-    testImplementation("junit:junit:$junitVersion")
+    testImplementation libs.junit
 }

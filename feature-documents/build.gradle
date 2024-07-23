@@ -40,10 +40,10 @@ dependencies {
     implementation project(":data")
     implementation project(":ui")
 
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation "androidx.core:core-ktx:$coreKtxVersion"
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.ktx
 
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation libs.android.material
 
     def composeBom = platform("androidx.compose:compose-bom:$composeVersion")
     implementation composeBom
@@ -53,12 +53,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
-    // Koin
-    implementation("io.insert-koin:koin-android:$koinVersion")
-//    implementation("org.koin:koin-androidx-scope:$koinVersion")
-//    implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
+    implementation libs.koin
 
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 }

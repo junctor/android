@@ -33,21 +33,16 @@ android {
 }
 
 dependencies {
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.android.material
 
-    implementation("androidx.core:core-ktx:$coreKtxVersion")
-    implementation("androidx.appcompat:appcompat:$appcompatVersion")
-    implementation("com.google.android.material:material:$materialVersion")
 
-    // Flow
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesCoreVersion")
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.gson
+    api libs.timber
 
-    // Gson
-    implementation("com.google.code.gson:gson:$gsonVersion")
-
-    // Timber
-    api "com.jakewharton.timber:timber:$timberVersion"
-
-    testImplementation("junit:junit:$junitVersion")
-    androidTestImplementation("androidx.test.ext:junit:$extJunitVersion")
-    androidTestImplementation("androidx.test.espresso:espresso-core:$espressoCoreVersion")
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 }

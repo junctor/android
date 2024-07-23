@@ -1,6 +1,5 @@
 package com.advice.schedule.navigation
 
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -28,7 +27,7 @@ class NavigationManager(
 
     fun <T : Navigation> NavGraphBuilder.register(
         navigation: T,
-        content: @Composable (AnimatedContentScope.(T) -> Unit)
+        content: @Composable (T) -> Unit
     ) {
         Timber.i("Registering: ${navigation.route()}")
         composable(navigation.route()) {

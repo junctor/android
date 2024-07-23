@@ -71,18 +71,15 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.6.0-alpha01")
 
 
-    implementation("androidx.core:core-ktx:$coreKtxVersion")
+    implementation libs.androidx.ktx
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation libs.androidx.appcompat
+    implementation libs.android.material
 
-
-    implementation("androidx.appcompat:appcompat:1.4.2")
-    implementation("com.google.android.material:material:1.6.1")
 
     // Koin
-    implementation("io.insert-koin:koin-android:$koinVersion")
+    implementation libs.koin
     implementation "io.insert-koin:koin-androidx-compose:3.4.5"
-    //implementation("org.koin:koin-androidx-scope:$koinVersion")
-    //implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
 
     // Arch
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
@@ -94,12 +91,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:33.1.0')
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-crashlytics")
+    implementation platform(libs.firebase.bom)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.crashlytics)
 
 
     // Optional - Integration with activities
@@ -113,16 +110,15 @@ dependencies {
 
 
     // Utils
-    implementation("com.google.code.gson:gson:$gsonVersion")
-
+    implementation libs.gson
 
     // Testing
-    testImplementation("junit:junit:$junitVersion")
+    testImplementation libs.junit
     testImplementation "io.mockk:mockk:1.12.4"
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 }
 
 ktlint {

@@ -34,13 +34,12 @@ dependencies {
     implementation project(':data')
     implementation project(':core')
 
-    // Firebase
-    implementation platform('com.google.firebase:firebase-bom:33.1.0')
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-crashlytics")
+    implementation platform(libs.firebase.bom)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.crashlytics)
 
-    testImplementation("junit:junit:$junitVersion")
+    testImplementation libs.junit
 }

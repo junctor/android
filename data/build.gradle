@@ -33,9 +33,6 @@ android {
 
 dependencies {
     implementation project(':core')
-
-    // Flow
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesCoreVersion")
-
-    testImplementation("junit:junit:$junitVersion")
+    implementation libs.kotlinx.coroutines.core
+    testImplementation libs.junit
 }

@@ -35,21 +35,17 @@ dependencies {
     implementation project(":core")
     implementation project(":data")
 
-    // Logging
-
-
     // Work Manager
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     // Koin
-    implementation("io.insert-koin:koin-android:$koinVersion")
-//    implementation("org.koin:koin-androidx-scope:$koinVersion")
-//    implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
+    implementation libs.koin
 
-    implementation("androidx.core:core-ktx:$coreKtxVersion")
+    implementation libs.androidx.ktx
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
-    testImplementation("junit:junit:$junitVersion")
-    androidTestImplementation("androidx.test.ext:junit:$extJunitVersion")
-    androidTestImplementation("androidx.test.espresso:espresso-core:$espressoCoreVersion")
+
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 }
