@@ -10,7 +10,11 @@ fun NavController.navigate(navigation: Navigation?) {
         Timber.e("Navigation is null")
         return
     }
-    navigate(navigation.destination())
+    try {
+        navigate(navigation.destination())
+    } catch (ex: Exception) {
+        Timber.e(ex)
+    }
 }
 
 internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Navigation {
