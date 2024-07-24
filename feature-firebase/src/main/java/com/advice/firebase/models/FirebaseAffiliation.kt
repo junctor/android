@@ -1,10 +1,15 @@
 package com.advice.firebase.models
 
 import android.os.Parcelable
+import com.google.firebase.firestore.PropertyName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirebaseAffiliation(
-    val organization: String = "",
-    val title: String = "",
+    @get:PropertyName("organization")
+    @set:PropertyName("organization")
+    var organization: String = "",
+    @get:PropertyName("title")
+    @set:PropertyName("title")
+    var title: String = "",
 ) : Parcelable

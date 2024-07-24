@@ -6,24 +6,34 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirebaseMedia(
-    @PropertyName("asset_id")
-    val asset_id: Long = -1L,
-    @PropertyName("filesize")
-    val filesize: Long = -1L,
-    @PropertyName("filetype")
-    val filetype: String = "",
-    @PropertyName("hash_crc32c")
-    val hash_crc32c: String = "",
-    @PropertyName("hash_md5")
-    val hash_md5: String = "",
-    @PropertyName("hash_sha256")
-    val hash_sha256: String = "",
-    @PropertyName("is_logo")
-    val logo: String = "N",
-    @PropertyName("name")
-    val name: String = "",
-    @PropertyName("sort_order")
-    val sort_order: Int = 0,
-    @PropertyName("url")
-    val url: String = "",
+    @get:PropertyName("asset_id")
+    @set:PropertyName("asset_id")
+    var assetId: Long = -1L,
+    @get:PropertyName("filesize")
+    @set:PropertyName("filesize")
+    var filesize: Long = -1L,
+    @get:PropertyName("filetype")
+    @set:PropertyName("filetype")
+    var filetype: String = "",
+    @get:PropertyName("hash_crc32c")
+    @set:PropertyName("hash_crc32c")
+    var hashCrc32c: String = "",
+    @get:PropertyName("hash_md5")
+    @set:PropertyName("hash_md5")
+    var hashMd5: String = "",
+    @get:PropertyName("hash_sha256")
+    @set:PropertyName("hash_sha256")
+    var hashSha256: String = "",
+    @get:PropertyName("is_logo")
+    @set:PropertyName("is_logo")
+    var isLogo: String = "N",
+    @get:PropertyName("name")
+    @set:PropertyName("name")
+    var name: String = "",
+    @get:PropertyName("sort_order")
+    @set:PropertyName("sort_order")
+    var sortOrder: Int = 0,
+    @get:PropertyName("url")
+    @set:PropertyName("url")
+    var url: String = "",
 ) : Parcelable

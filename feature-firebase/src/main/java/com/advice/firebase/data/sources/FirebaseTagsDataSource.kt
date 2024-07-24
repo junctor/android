@@ -39,7 +39,7 @@ class FirebaseTagsDataSource(
                 .map { querySnapshot ->
                     querySnapshot
                         .toObjectsOrEmpty(FirebaseTagType::class.java)
-                        .sortedBy { it.sort_order }
+                        .sortedBy { it.sortOrder }
                         .mapNotNull { it.toTagType() }
                 }
         }.stateIn(

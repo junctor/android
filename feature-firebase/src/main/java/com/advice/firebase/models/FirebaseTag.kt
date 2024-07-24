@@ -1,16 +1,27 @@
 package com.advice.firebase.models
 
 import android.os.Parcelable
+import com.google.firebase.firestore.PropertyName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirebaseTag(
-    val id: Long = -1,
-    val label: String = "",
-    val description: String = "",
-    val color_background: String? = null,
-    val color_foreground: String? = null,
-    val sort_order: Int = 0,
-    // todo: move to client model
-    var isSelected: Boolean = false,
+    @get:PropertyName("id")
+    @set:PropertyName("id")
+    var id: Long = -1,
+    @get:PropertyName("label")
+    @set:PropertyName("label")
+    var label: String = "",
+    @get:PropertyName("description")
+    @set:PropertyName("description")
+    var description: String = "",
+    @get:PropertyName("color_background")
+    @set:PropertyName("color_background")
+    var colorBackground: String? = null,
+    @get:PropertyName("color_foreground")
+    @set:PropertyName("color_foreground")
+    var colorForeground: String? = null,
+    @get:PropertyName("sort_order")
+    @set:PropertyName("sort_order")
+    var sortOrder: Int = 0,
 ) : Parcelable

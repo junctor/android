@@ -7,22 +7,31 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirebaseSession(
-    @PropertyName("begin_timestamp")
-    val begin_timestamp: Timestamp = Timestamp.now(),
-    @PropertyName("begin_tsz")
-    val begin_tsz: String = "",
-    @PropertyName("channel_id")
-    val channel_id: Long? = null,
-    @PropertyName("end_timestamp")
-    val end_timestamp: Timestamp = Timestamp.now(),
-    @PropertyName("end_tsz")
-    val end_tsz: String = "",
-    @PropertyName("location_id")
-    val location_id: Long = -1,
-    @PropertyName("recordingpolicy_id")
-    val recordingpolicy_id: Long? = null,
-    @PropertyName("session_id")
-    val session_id: Long = -1,
-    @PropertyName("timezone_name")
-    val timezone_name: String = "",
+    @get:PropertyName("begin_timestamp")
+    @set:PropertyName("begin_timestamp")
+    var beginTimestamp: Timestamp = Timestamp.now(),
+    @get:PropertyName("begin_tsz")
+    @set:PropertyName("begin_tsz")
+    var beginTsz: String = "",
+    @get:PropertyName("channel_id")
+    @set:PropertyName("channel_id")
+    var channelId: Long? = null,
+    @get:PropertyName("end_timestamp")
+    @set:PropertyName("end_timestamp")
+    var endTimestamp: Timestamp = Timestamp.now(),
+    @get:PropertyName("end_tsz")
+    @set:PropertyName("end_tsz")
+    var endTsz: String = "",
+    @get:PropertyName("location_id")
+    @set:PropertyName("location_id")
+    var locationId: Long = -1,
+    @get:PropertyName("recordingpolicy_id")
+    @set:PropertyName("recordingpolicy_id")
+    var recordingPolicyId: Long? = null,
+    @get:PropertyName("session_id")
+    @set:PropertyName("session_id")
+    var sessionId: Long = -1,
+    @get:PropertyName("timezone_name")
+    @set:PropertyName("timezone_name")
+    var timezoneName: String = "",
 ) : Parcelable

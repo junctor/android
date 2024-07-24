@@ -33,7 +33,7 @@ class FirebaseNewsDataSource(
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseArticle::class.java)
                     .filter { !it.hidden || userSession.isDeveloper }
-                    .sortedBy { it.updated_at }
+                    .sortedBy { it.updatedAt }
                     .mapNotNull { it.toArticle() }
             }
     }.stateIn(

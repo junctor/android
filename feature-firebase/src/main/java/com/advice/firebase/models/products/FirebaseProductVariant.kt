@@ -1,12 +1,30 @@
 package com.advice.firebase.models.products
 
+import com.google.firebase.firestore.PropertyName
+
 data class FirebaseProductVariant(
-    val variant_id: Long = -1,
-    val product_id: Long = -1,
-    val sort_order: Int = -1,
-    val title: String = "",
-    val code: String = "",
-    val price: Long = -1L,
-    val stock_status: String = "OUT",
-    val tags: List<Long> = emptyList()
+    @get:PropertyName("variant_id")
+    @set:PropertyName("variant_id")
+    var variantId: Long = -1,
+    @get:PropertyName("product_id")
+    @set:PropertyName("product_id")
+    var productId: Long = -1,
+    @get:PropertyName("sort_order")
+    @set:PropertyName("sort_order")
+    var sortOrder: Int = -1,
+    @get:PropertyName("title")
+    @set:PropertyName("title")
+    var title: String = "",
+    @get:PropertyName("code")
+    @set:PropertyName("code")
+    var code: String = "",
+    @get:PropertyName("price")
+    @set:PropertyName("price")
+    var price: Long = -1L,
+    @get:PropertyName("stock_status")
+    @set:PropertyName("stock_status")
+    var stockStatus: String = "OUT",
+    @get:PropertyName("tags")
+    @set:PropertyName("tags")
+    var tags: List<Long> = emptyList()
 )

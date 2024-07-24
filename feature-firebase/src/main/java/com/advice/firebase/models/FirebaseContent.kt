@@ -7,38 +7,55 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FirebaseContent(
-    @PropertyName("description")
-    val description: String = "",
-    @PropertyName("feedback_enable_tsz")
-    val feedback_enable_tsz: String? = null,
-    @PropertyName("feedback_disable_tsz")
-    val feedback_disable_tsz: String? = null,
-    @PropertyName("feedback_form_id")
-    val feedback_form_id: Long? = null,
-    @PropertyName("feedback_enable_timestamp")
-    val feedback_enable_timestamp: Timestamp? = null,
-    @PropertyName("feedback_disable_timestamp")
-    val feedback_disable_timestamp: Timestamp? = null,
-    @PropertyName("id")
-    val id: Long = -1,
-    @PropertyName("links")
-    val links: List<FirebaseAction> = emptyList(),
-    @PropertyName("logo")
-    val logo: FirebaseMedia? = null,
-    @PropertyName("media")
-    val media: List<FirebaseMedia> = emptyList(),
-    @PropertyName("people")
-    val people: ArrayList<FirebasePerson> = ArrayList(),
-    @PropertyName("sessions")
-    val sessions: ArrayList<FirebaseSession> = ArrayList(),
-    @PropertyName("tag_ids")
-    val tag_ids: List<Long> = emptyList(),
-    @PropertyName("title")
-    val title: String = "",
-    @PropertyName("updated_timestamp")
-    val updated_timestamp: Timestamp = Timestamp.now(),
-    @PropertyName("updated_tsz")
-    val updated_tsz: String = "",
-    @PropertyName("hidden")
-    val hidden: Boolean = false,
+    @get:PropertyName("description")
+    @set:PropertyName("description")
+    var description: String = "",
+    @get:PropertyName("feedback_enable_tsz")
+    @set:PropertyName("feedback_enable_tsz")
+    var feedbackEnableTsz: String? = null,
+    @get:PropertyName("feedback_disable_tsz")
+    @set:PropertyName("feedback_disable_tsz")
+    var feedbackDisableTsz: String? = null,
+    @get:PropertyName("feedback_form_id")
+    @set:PropertyName("feedback_form_id")
+    var feedbackFormId: Long? = null,
+    @get:PropertyName("feedback_enable_timestamp")
+    @set:PropertyName("feedback_enable_timestamp")
+    var feedbackEnableTimestamp: Timestamp? = null,
+    @get:PropertyName("feedback_disable_timestamp")
+    @set:PropertyName("feedback_disable_timestamp")
+    var feedbackDisableTimestamp: Timestamp? = null,
+    @get:PropertyName("id")
+    @set:PropertyName("id")
+    var id: Long = -1,
+    @get:PropertyName("links")
+    @set:PropertyName("links")
+    var links: List<FirebaseAction> = emptyList(),
+    @get:PropertyName("logo")
+    @set:PropertyName("logo")
+    var logo: FirebaseMedia? = null,
+    @get:PropertyName("media")
+    @set:PropertyName("media")
+    var media: List<FirebaseMedia> = emptyList(),
+    @get:PropertyName("people")
+    @set:PropertyName("people")
+    var people: ArrayList<FirebasePerson> = ArrayList(),
+    @get:PropertyName("sessions")
+    @set:PropertyName("sessions")
+    var sessions: ArrayList<FirebaseSession> = ArrayList(),
+    @get:PropertyName("tag_ids")
+    @set:PropertyName("tag_ids")
+    var tag_ids: List<Long> = emptyList(),
+    @get:PropertyName("title")
+    @set:PropertyName("title")
+    var title: String = "",
+    @get:PropertyName("updated_timestamp")
+    @set:PropertyName("updated_timestamp")
+    var updatedTimestamp: Timestamp = Timestamp.now(),
+    @get:PropertyName("updated_tsz")
+    @set:PropertyName("updated_tsz")
+    var updatedTsz: String = "",
+    @get:PropertyName("hidden")
+    @set:PropertyName("hidden")
+    var hidden: Boolean = false,
 ) : Parcelable

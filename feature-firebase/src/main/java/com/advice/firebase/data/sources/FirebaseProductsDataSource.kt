@@ -31,7 +31,7 @@ class FirebaseProductsDataSource(
             .snapshotFlow(analytics)
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseProduct::class.java)
-                    .sortedBy { it.sort_order }
+                    .sortedBy { it.sortOrder }
                     .mapNotNull { it.toMerch() }
             }
     }.shareIn(

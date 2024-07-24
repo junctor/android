@@ -36,8 +36,7 @@ class FirebaseLocationsDataSource(
                 .map { querySnapshot ->
                     val locations =
                         querySnapshot.toObjectsOrEmpty(FirebaseLocation::class.java)
-                            .sortedBy { it.hier_extent_left }
-
+                            .sortedBy { it.hierExtentLeft }
                     getChildrenNodes(locations, parent = 0)
                 }
         }.stateIn(
@@ -52,7 +51,7 @@ class FirebaseLocationsDataSource(
         locations: List<FirebaseLocation>,
         parent: Long,
     ): List<Location> {
-        val nodes = locations.filter { it.parent_id == parent }
+        val nodes = locations.filter { it.parentId == parent }
         return nodes.mapNotNull {
             val children = getChildrenNodes(locations, it.id)
             it.toLocation(children)

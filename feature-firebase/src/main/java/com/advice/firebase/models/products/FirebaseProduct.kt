@@ -1,17 +1,45 @@
 package com.advice.firebase.models.products
 
+import com.google.firebase.firestore.PropertyName
+
 data class FirebaseProduct(
-    val id: Long = -1L,
-    val code: String = "",
-    val title: String = "",
-    val description: String = "",
-    val price_min: Long = -1L,
-    val price_max: Long = -1L,
-    val product_id: Long = -1,
-    val sort_order: Int = -1,
-    val is_eligibility_restricted: String = "N",
-    val eligibility_restriction_text: String? = null,
-    val media: List<FirebaseProductMedia> = emptyList(),
-    val tags: List<Long> = emptyList(),
-    val variants: List<FirebaseProductVariant> = emptyList()
+    @get:PropertyName("id")
+    @set:PropertyName("id")
+    var id: Long = -1L,
+    @get:PropertyName("code")
+    @set:PropertyName("code")
+    var code: String = "",
+    @get:PropertyName("title")
+    @set:PropertyName("title")
+    var title: String = "",
+    @get:PropertyName("description")
+    @set:PropertyName("description")
+    var description: String = "",
+    @get:PropertyName("price_min")
+    @set:PropertyName("price_min")
+    var priceMin: Long = -1L,
+    @get:PropertyName("price_max")
+    @set:PropertyName("price_max")
+    var priceMax: Long = -1L,
+    @get:PropertyName("product_id")
+    @set:PropertyName("product_id")
+    var productId: Long = -1,
+    @get:PropertyName("sort_order")
+    @set:PropertyName("sort_order")
+    var sortOrder: Int = -1,
+    @get:PropertyName("is_eligibility_restricted")
+    @set:PropertyName("is_eligibility_restricted")
+    var isEligibilityRestricted: String = "N",
+    @get:PropertyName("eligibility_restriction_text")
+    @set:PropertyName("eligibility_restriction_text")
+    var eligibilityRestrictionText: String? = null,
+    @get:PropertyName("media")
+    @set:PropertyName("media")
+    var media: List<FirebaseProductMedia> = emptyList(),
+    @get:PropertyName("tags")
+    @set:PropertyName("tags")
+    var tags: List<Long> = emptyList(),
+    @get:PropertyName("variants")
+    @set:PropertyName("variants")
+    var variants: List<FirebaseProductVariant> = emptyList()
 )
