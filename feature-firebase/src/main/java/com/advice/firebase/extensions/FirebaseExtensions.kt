@@ -1,6 +1,5 @@
 package com.advice.firebase.extensions
 
-import androidx.core.os.bundleOf
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.CollectionReference
@@ -12,6 +11,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
+var document_reads = 0
+var document_cache_reads = 0
+var listeners_count = 0
 
 fun <T> QuerySnapshot.toObjectsOrEmpty(clazz: Class<T>): List<T> {
     return try {
@@ -50,6 +52,7 @@ sealed class SnapshotResult {
 fun CollectionReference.snapshotFlow(analytics: FirebaseAnalytics): Flow<QuerySnapshot> {
     val path = this.path
     return callbackFlow {
+        listeners_count++
         val listenerRegistration =
             addSnapshotListener { value, error ->
                 if (error != null) {
@@ -58,7 +61,7 @@ fun CollectionReference.snapshotFlow(analytics: FirebaseAnalytics): Flow<QuerySn
                     return@addSnapshotListener
                 }
                 if (value != null) {
-                    analytics.logSnapshot(path, value)
+                    logSnapshot(path, value)
                     trySend(value)
                 }
             }
@@ -75,13 +78,14 @@ private fun logFailure(path: String, error: FirebaseFirestoreException) {
     crashlytics.recordException(error)
 }
 
-private fun FirebaseAnalytics.logSnapshot(path: String?, value: QuerySnapshot) {
+private fun logSnapshot(path: String?, value: QuerySnapshot) {
     Timber.i("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
-    val bundle = bundleOf(
-        "path" to path,
-        "count" to value.size(),
-        "is_from_cache" to value.metadata.isFromCache,
-    )
-    logEvent("document_read", bundle)
+    if (!value.metadata.isFromCache) {
+        document_reads += value.size()
+        Timber.e("Created $listeners_count listeners, document reads: $document_reads(+${value.size()}) path: $path")
+    } else {
+        document_cache_reads += value.size()
+        Timber.i("Created $listeners_count listeners, document reads: $document_reads(+0) path: $path (From Cache: ${value.size()})")
+    }
 }
 

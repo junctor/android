@@ -10,11 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.advice.core.utils.Storage
+import com.advice.firebase.extensions.document_cache_reads
+import com.advice.firebase.extensions.document_reads
+import com.advice.firebase.extensions.listeners_count
 import com.advice.play.AppManager
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
@@ -22,6 +26,7 @@ import com.advice.schedule.navigation.navigate
 import com.advice.schedule.navigation.setRoutes
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.shortstack.hackertracker.BuildConfig
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -32,21 +37,30 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     private val appManager by inject<AppManager>()
     private val storage by inject<Storage>()
     private val navigation by inject<NavigationManager>()
-    private val REQUEST_CODE_UPDATE = 9003
+    private val analytics by inject<FirebaseAnalytics>()
 
     // todo: fix this - this is a hack to get the navController to work
     private lateinit var navController: NavController
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                Timber.d("Permission granted")
-            } else {
-                Timber.d("Permission denied")
-            }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            analytics.logEvent(
+                "permission_granted", bundleOf(
+                    "permission" to "POST_NOTIFICATIONS"
+                )
+            )
+            Timber.i("Permission granted")
+        } else {
+            analytics.logEvent(
+                "permission_denied", bundleOf(
+                    "permission" to "POST_NOTIFICATIONS"
+                )
+            )
+            Timber.i("Permission denied")
         }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,30 +99,38 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     }
 
     fun requestNotificationPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.POST_NOTIFICATIONS,
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                // You can use the API that requires the permission.
-            }
-
-
-            else -> {
-                // You can directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
-                requestPermissionLauncher.launch(
-                    android.Manifest.permission.POST_NOTIFICATIONS
+        val permission = android.Manifest.permission.POST_NOTIFICATIONS
+        if (!hasPermission(permission)) {
+            analytics.logEvent(
+                "request_permission", bundleOf(
+                    "permission" to "POST_NOTIFICATIONS"
                 )
-            }
+            )
+            requestPermissionLauncher.launch(permission)
         }
+    }
+
+    /**
+     * Returns true if the permission is granted.
+     */
+    private fun hasPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (intent.data != null) {
             val uri: Uri? = intent.data
-            Timber.e("onNewIntent: $uri")
+            Timber.i("onNewIntent: $uri")
+            analytics.logEvent(
+                "open_deep_link",
+                bundleOf(
+                    "uri" to uri.toString()
+                )
+            )
             val conference = uri?.getQueryParameter("c") ?: return
             val event = uri.getQueryParameter("e") ?: return
             navController.navigate(Navigation.Event(conference, event, ""))
@@ -116,7 +138,25 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     }
 
     fun openLink(url: String) {
+        analytics.logEvent("open_link", bundleOf("url" to url))
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        with(analytics) {
+            logEvent(
+                "session_document_read", bundleOf(
+                    "total_document_reads" to document_reads,
+                    "total_document_cache_reads" to document_cache_reads,
+                    "total_listeners_count" to listeners_count
+                )
+            )
+        }
+        super.onDestroy()
+    }
+
+    companion object {
+        private const val REQUEST_CODE_UPDATE = 9003
     }
 }
