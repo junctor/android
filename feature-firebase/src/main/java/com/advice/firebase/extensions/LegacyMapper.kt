@@ -32,8 +32,6 @@ import com.advice.core.local.feedback.FeedbackType
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
-import com.advice.firebase.models.feedback.FirebaseFeedbackForm
-import com.advice.firebase.models.feedback.FirebaseFeedbackItem
 import com.advice.firebase.models.FirebaseAction
 import com.advice.firebase.models.FirebaseAffiliation
 import com.advice.firebase.models.FirebaseArticle
@@ -49,6 +47,8 @@ import com.advice.firebase.models.FirebaseSpeakerLink
 import com.advice.firebase.models.FirebaseTag
 import com.advice.firebase.models.FirebaseTagType
 import com.advice.firebase.models.FirebaseVendor
+import com.advice.firebase.models.feedback.FirebaseFeedbackForm
+import com.advice.firebase.models.feedback.FirebaseFeedbackItem
 import com.advice.firebase.models.location.FirebaseLocation
 import com.advice.firebase.models.location.FirebaseLocationSchedule
 import com.advice.firebase.models.menu.FirebaseMenu
@@ -229,7 +229,7 @@ fun FirebaseContent.toContents(
         val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == id.toString() }
 
         // todo: pass the enable/disable dates.
-        val feedback = feedbackforms.find { it.id == feedbackform_id }
+        val feedback = feedbackforms.find { it.id == feedback_form_id }
 
         return Content(
             id = id,
@@ -240,6 +240,7 @@ fun FirebaseContent.toContents(
             speakers = speakers,
             types = types,
             urls = links,
+            media = media.mapNotNull { it.toMedia() },
             isBookmarked = isBookmarked,
             sessions = new_sessions,
             feedback = feedback,

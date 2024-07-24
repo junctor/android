@@ -68,6 +68,7 @@ data class Content(
     val speakers: List<Speaker>,
     val types: List<Tag>,
     val urls: List<Action>,
+    val media: List<OrganizationMedia>,
     var isBookmarked: Boolean = false,
     val sessions: List<Session>,
     val feedback: FeedbackForm? = null,

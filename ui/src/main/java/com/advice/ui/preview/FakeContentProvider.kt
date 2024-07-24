@@ -34,8 +34,7 @@ class FakeContentProvider : PreviewParameterProvider<Content> {
                 ),
                 updated = Instant.now(),
                 speakers = emptyList(),
-                types =
-                listOf(
+                types = listOf(
                     Tag(
                         -1L,
                         "Misc",
@@ -45,6 +44,7 @@ class FakeContentProvider : PreviewParameterProvider<Content> {
                     ),
                 ),
                 urls = emptyList(),
+                media = emptyList(),
             ),
         )
     }
