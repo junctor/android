@@ -3,7 +3,6 @@ package com.advice.schedule.ui.activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -86,30 +85,28 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     }
 
     fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.POST_NOTIFICATIONS,
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    // You can use the API that requires the permission.
-                }
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.POST_NOTIFICATIONS,
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                // You can use the API that requires the permission.
+            }
 
 
-                else -> {
-                    // You can directly ask for the permission.
-                    // The registered ActivityResultCallback gets the result of this request.
-                    requestPermissionLauncher.launch(
-                        android.Manifest.permission.POST_NOTIFICATIONS
-                    )
-                }
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                requestPermissionLauncher.launch(
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                )
             }
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent != null && intent.data != null) {
+        if (intent.data != null) {
             val uri: Uri? = intent.data
             Timber.e("onNewIntent: $uri")
             val conference = uri?.getQueryParameter("c") ?: return
