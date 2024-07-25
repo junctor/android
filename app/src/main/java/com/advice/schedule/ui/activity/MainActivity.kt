@@ -106,7 +106,10 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             ?.replace("//", "/") ?: return
 
         args?.keySet()?.forEach {
-            route = route.replace("{${it}}", "${args.getString(it)}")
+            val value = args.get(it)
+            if (value != null && value is String) {
+                route = route.replace("{${it}}", value)
+            }
         }
 
         Timber.i("navigating to: $route")
