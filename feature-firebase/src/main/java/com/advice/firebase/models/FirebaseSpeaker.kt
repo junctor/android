@@ -26,10 +26,6 @@ data class FirebaseSpeaker(
     @get:PropertyName("event_ids")
     @set:PropertyName("event_ids")
     var eventIds: List<Long> = emptyList(),
-    @Deprecated("Use FirebaseSpeaker.content_ids instead.")
-    @get:PropertyName("events")
-    @set:PropertyName("events")
-    var events: List<String> = emptyList(),
     @get:PropertyName("id")
     @set:PropertyName("id")
     var id: Long = -1,
