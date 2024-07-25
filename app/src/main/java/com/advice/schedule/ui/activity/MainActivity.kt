@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         startActivity(intent)
     }
 
-    override fun onDestroy() {
+    override fun onPause() {
         with(analytics) {
             logEvent(
                 "session_document_read", bundleOf(
@@ -152,8 +152,11 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                     "total_listeners_count" to listeners_count
                 )
             )
+            document_reads = 0
+            document_cache_reads = 0
+            listeners_count = 0
         }
-        super.onDestroy()
+        super.onPause()
     }
 
     companion object {
