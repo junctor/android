@@ -4,13 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.logEvent
 import timber.log.Timber
 
-class NavigationManager(
-    private val analytics: FirebaseAnalytics,
-) {
+class NavigationManager {
     @Composable
     fun set(
         navController: NavHostController,
@@ -32,11 +28,6 @@ class NavigationManager(
         Timber.i("Registering: ${navigation.route()}")
         composable(navigation.route()) {
             val arguments = navigation.withArguments(it) as T
-            Timber.i("Rendering: ${arguments.destination()}")
-            analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-                param(FirebaseAnalytics.Param.SCREEN_NAME, arguments.destination())
-                param(FirebaseAnalytics.Param.SCREEN_CLASS, navigation::class.java.name)
-            }
             content(arguments)
         }
     }

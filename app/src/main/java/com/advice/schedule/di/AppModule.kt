@@ -130,7 +130,7 @@ val appModule = module {
     single { ReminderManager(get()) }
 
     // navigation
-    single { NavigationManager(get()) }
+    single { NavigationManager() }
 
     // repo
     single { ScheduleRepository(get(), get(), get()) }

@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.advice.core.utils.Storage
@@ -27,6 +28,7 @@ import com.advice.schedule.navigation.setRoutes
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.shortstack.hackertracker.BuildConfig
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -65,6 +67,12 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Only showing the prompt once per version.
+        if (storage.updateVersion != BuildConfig.VERSION_CODE) {
+            appManager.checkForUpdate(this, REQUEST_CODE_UPDATE)
+        }
+
         setContent {
             val systemUiController = rememberSystemUiController()
             SideEffect {
@@ -75,15 +83,36 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             }
 
             navController = rememberNavController()
+            navController.addOnDestinationChangedListener { _, navDestination, args ->
+                onDestinationChanged(navDestination, args)
+            }
 
             ScheduleTheme {
                 navigation.setRoutes(this, navController = navController as NavHostController)
             }
         }
+    }
 
-        // Only showing the prompt once per version.
-        if (storage.updateVersion != BuildConfig.VERSION_CODE) {
-            appManager.checkForUpdate(this, REQUEST_CODE_UPDATE)
+    /**
+     * Mapping the navDestination to a label for analytics. Will replace the arguments in the route with the navArgs
+     * and also remove any labels to clean up the route.
+     */
+    private fun onDestinationChanged(
+        navDestination: NavDestination,
+        args: Bundle?
+    ) {
+        var route = navDestination.route
+            ?.replace("/{label}", "")
+            ?.replace("//", "/") ?: return
+
+        args?.keySet()?.forEach {
+            route = route.replace("{${it}}", "${args.getString(it)}")
+        }
+
+        Timber.i("navigating to: $route")
+        FirebaseAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+            param(FirebaseAnalytics.Param.SCREEN_NAME, route)
+            param(FirebaseAnalytics.Param.SCREEN_CLASS, MainActivity::class.java.name)
         }
     }
 
@@ -138,6 +167,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     }
 
     fun openLink(url: String) {
+        Timber.i("Opening link: $url")
         analytics.logEvent("open_link", bundleOf("url" to url))
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
