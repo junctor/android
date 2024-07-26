@@ -6,6 +6,8 @@ data class ProductsState(
     val featured: List<Product>,
     val products: List<Product>,
     val merchDocument: Long? = null,
+    val merchMandatoryAcknowledgement: String? = null,
+    val merchTaxStatement: String? = null,
     val showMerchInformation: Boolean = false,
     val canAdd: Boolean = false,
     val cart: List<Product> = emptyList(),

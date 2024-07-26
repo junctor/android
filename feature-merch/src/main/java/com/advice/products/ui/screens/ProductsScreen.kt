@@ -31,6 +31,7 @@ import com.advice.core.local.products.Product
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.FeaturedProducts
 import com.advice.products.ui.components.InformationCard
+import com.advice.products.ui.components.LegalLabel
 import com.advice.products.ui.components.ProductSquare
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.components.EmptyMessage
@@ -132,6 +133,8 @@ fun ProductsScreen(
                         featured = state.featured,
                         list = state.products,
                         hasInformation = state.showMerchInformation,
+                        mandatoryAcknowledgement = state.merchMandatoryAcknowledgement,
+                        taxStatement = state.merchTaxStatement,
                         onProductClicked = onProductClicked,
                         onLearnMore = onLearnMore,
                         onDismiss = onDismiss,
@@ -147,6 +150,8 @@ fun ProductsScreenContent(
     featured: List<Product>,
     list: List<Product>,
     hasInformation: Boolean,
+    mandatoryAcknowledgement: String? = null,
+    taxStatement: String? = null,
     onProductClicked: (Product) -> Unit,
     onLearnMore: () -> Unit,
     onDismiss: () -> Unit,
@@ -157,10 +162,22 @@ fun ProductsScreenContent(
             item {
                 FeaturedProducts(products = featured, onProductClicked)
             }
+            if (mandatoryAcknowledgement != null) {
+                item {
+                    LegalLabel(text = mandatoryAcknowledgement)
+                }
+            }
             item {
                 Label(text = "All Products", modifier = Modifier.padding(horizontal = 16.dp))
             }
+        } else {
+            if (mandatoryAcknowledgement != null) {
+                item {
+                    LegalLabel(text = mandatoryAcknowledgement)
+                }
+            }
         }
+
         if (hasInformation) {
             item {
                 InformationCard(
@@ -175,6 +192,12 @@ fun ProductsScreenContent(
                 ProductsRow(products, onProductClicked)
             }
         }
+        if (taxStatement != null) {
+            item {
+                LegalLabel(text = taxStatement)
+            }
+        }
+
         item {
             Spacer(Modifier.height(64.dp))
         }
@@ -198,6 +221,13 @@ private fun ProductsRow(
 @Composable
 fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
-        ProductsScreen(state, {}, {}, {}, {}, {})
+        ProductsScreen(
+            state = state,
+            onSummaryClicked = {},
+            onProductClicked = {},
+            onLearnMore = {},
+            onDismiss = {},
+            onBackPressed = {}
+        )
     }
 }

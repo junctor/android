@@ -34,6 +34,8 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     private var showMerchInformation: Boolean = false
     private var canAdd: Boolean = false
     private var merchDocument: Long? = null
+    private var merchMandatoryAcknowledgement: String? = null
+    private var merchTaxStatement: String? = null
 
     init {
         showMerchInformation = !storage.hasSeenMerchInformation()
@@ -41,7 +43,9 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             repository.conference.collect {
                 canAdd = it.flags["enable_merch_cart"] ?: false
-                merchDocument = it.merchDocumentId
+                merchDocument = it.merchInformation?.merchHelpDocId
+                merchMandatoryAcknowledgement = it.merchInformation?.merchMandatoryAcknowledgement
+                merchTaxStatement = it.merchInformation?.merchTaxStatement
             }
         }
         viewModelScope.launch {
@@ -107,6 +111,8 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         featured: List<Product> = this.featured,
         products: List<Product> = this.products,
         merchDocument: Long? = this.merchDocument,
+        merchMandatoryAcknowledgement: String? = this.merchMandatoryAcknowledgement,
+        merchTaxStatement: String? = this.merchTaxStatement,
         showMerchInformation: Boolean = this.showMerchInformation,
         canAdd: Boolean = this.canAdd,
         cart: List<Product> = emptyList(),
@@ -117,6 +123,8 @@ class ProductsViewModel : ViewModel(), KoinComponent {
                 featured = featured,
                 products = products,
                 merchDocument = merchDocument,
+                merchMandatoryAcknowledgement = merchMandatoryAcknowledgement,
+                merchTaxStatement = merchTaxStatement,
                 showMerchInformation = showMerchInformation,
                 canAdd = canAdd,
                 cart = cart,

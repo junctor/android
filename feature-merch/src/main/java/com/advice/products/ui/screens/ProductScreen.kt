@@ -57,6 +57,7 @@ import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductSelection
 import com.advice.products.presentation.state.ProductsState
+import com.advice.products.ui.components.LegalLabel
 import com.advice.products.ui.components.LowStockLabel
 import com.advice.products.ui.components.OutOfStockLabel
 import com.advice.products.ui.components.PagerDots
@@ -74,6 +75,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProductScreen(
     product: Product,
+    taxStatement: String?,
     canAdd: Boolean,
     onAddClicked: (ProductSelection) -> Unit,
     onBackPressed: () -> Unit,
@@ -120,6 +122,7 @@ fun ProductScreen(
     ) {
         Product(
             product = product,
+            taxStatement = taxStatement,
             canAdd = canAdd,
             quantity = quantity,
             selection = selection,
@@ -135,10 +138,10 @@ fun ProductScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Product(
     product: Product,
+    taxStatement: String?,
     canAdd: Boolean,
     quantity: Int,
     selection: String?,
@@ -201,7 +204,8 @@ fun Product(
                         Modifier
                             .clickable(enabled = inStock) {
                                 onSelectionChanged(option.label)
-                            }.alpha(if (inStock) 1.0f else 0.64f)
+                            }
+                            .alpha(if (inStock) 1.0f else 0.64f)
                             .defaultMinSize(minHeight = 64.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -283,6 +287,10 @@ fun Product(
                 }
             }
 
+            if (taxStatement != null) {
+                LegalLabel(text = taxStatement)
+            }
+
             Spacer(Modifier.height(64.dp + 8.dp))
         }
     }
@@ -348,6 +356,12 @@ private fun ProductScreenPreview(
     @PreviewParameter(ProductsProvider::class) state: ProductsState,
 ) {
     ScheduleTheme {
-        ProductScreen(state.products.first(), true, {}) {}
+        ProductScreen(
+            product = state.products.first(),
+            taxStatement = state.merchTaxStatement,
+            canAdd = true,
+            onAddClicked = {},
+            onBackPressed = {},
+        )
     }
 }

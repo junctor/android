@@ -34,6 +34,8 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                 ProductsState(
                     featured = elements.take(1),
                     products = elements,
+                    merchMandatoryAcknowledgement = "All sales are **CASH ONLY**. Prices include Nevada State Sales Tax.",
+                    merchTaxStatement = "Prices include Nevada State Sales Tax.",
                     cart = elements,
                     json = elements.toJson(),
                 )

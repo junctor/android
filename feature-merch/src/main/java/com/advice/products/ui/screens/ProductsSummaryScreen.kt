@@ -33,6 +33,7 @@ import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.EditableProduct
+import com.advice.products.ui.components.LegalLabel
 import com.advice.products.ui.components.OutOfStockLabel
 import com.advice.products.ui.components.QRCodeImage
 import com.advice.products.ui.preview.ProductsProvider
@@ -64,6 +65,7 @@ fun ProductsSummaryScreen(
                 ProductsSummaryContent(
                     list,
                     state.json,
+                    state.merchTaxStatement,
                     onQuantityChanged = onQuantityChanged,
                 )
             }
@@ -75,6 +77,7 @@ fun ProductsSummaryScreen(
 private fun ProductsSummaryContent(
     list: List<Product>,
     json: String?,
+    taxStatement: String?,
     modifier: Modifier = Modifier,
     onQuantityChanged: (Long, Int, String?) -> Unit,
 ) {
@@ -145,6 +148,9 @@ private fun ProductsSummaryContent(
                 getSubtotal(list).toCurrency(),
                 style = MaterialTheme.typography.titleLarge,
             )
+        }
+        if (taxStatement != null) {
+            LegalLabel(text = taxStatement)
         }
     }
 }

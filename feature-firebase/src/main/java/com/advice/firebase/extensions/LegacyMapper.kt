@@ -15,6 +15,7 @@ import com.advice.core.local.Location
 import com.advice.core.local.LocationSchedule
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
+import com.advice.core.local.MerchInformation
 import com.advice.core.local.NewsArticle
 import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
@@ -70,7 +71,11 @@ fun FirebaseConference.toConference(): Conference? =
             taglineText,
             code,
             homeMenuId,
-            merchHelpDocId,
+            MerchInformation(
+                merchHelpDocId,
+                merchMandatoryAcknowledgement,
+                merchTaxStatement,
+            ),
             maps.mapNotNull { it.toMap() },
             kickoffTimestamp.toDate().toInstant(),
             startTimestamp.toDate().toInstant(),

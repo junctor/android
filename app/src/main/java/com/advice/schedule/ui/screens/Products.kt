@@ -79,6 +79,7 @@ fun Product(
             val product = state.data.products.find { it.id == id } ?: return
             ProductScreen(
                 product = product,
+                taxStatement = state.data.merchTaxStatement,
                 canAdd = state.data.canAdd,
                 onAddClicked = {
                     viewModel.addToCart(it)
