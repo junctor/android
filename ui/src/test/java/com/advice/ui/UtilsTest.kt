@@ -88,6 +88,12 @@ class UtilsTest {
     }
 
     @Test
+    fun `verify location_on returns drawable`() = runBlocking {
+        val result = "location_on".toResource()
+        assertEquals(R.drawable.baseline_location_on_24, result)
+    }
+
+    @Test
     fun `verify map returns drawable`() = runBlocking {
         val result = "map".toResource()
         assertEquals(R.drawable.baseline_map_24, result)

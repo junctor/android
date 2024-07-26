@@ -38,6 +38,7 @@ fun String.toResource(): Int? {
         "groups" -> R.drawable.baseline_groups_24
         "help" -> R.drawable.baseline_help_24
         "location_city" -> R.drawable.baseline_location_city_24
+        "location_on" -> R.drawable.baseline_location_on_24
         "map" -> R.drawable.baseline_map_24
         "menu" -> R.drawable.baseline_menu_24
         "news" -> R.drawable.baseline_news_24
