@@ -111,7 +111,6 @@ internal fun SearchScreen(
 
                 is SearchState.Results -> {
                     SearchResults(scrollState, state.results, navController)
-                    Timber.d("Results: ${state.results}")
                 }
             }
         }

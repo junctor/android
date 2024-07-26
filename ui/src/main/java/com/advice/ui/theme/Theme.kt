@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.advice.core.utils.Storage
-import timber.log.Timber
 
 private val DarkColorPalette =
     darkColorScheme(
@@ -49,8 +48,6 @@ fun ScheduleTheme(
     val context = LocalContext.current
     val preferences = context.getSharedPreferences(Storage.KEY_PREFERENCES, Context.MODE_PRIVATE)
     val preference = preferences.getString("user_theme", "system")
-
-    Timber.e("Theme: $preference")
 
     val colors =
         when {
