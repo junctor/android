@@ -59,9 +59,9 @@ private fun DismissibleBottomAppBarPreview() {
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
                         painterResource(
-                            id = com.shortstack.core.R.drawable.logo_glitch
+                            id = com.advice.ui.R.drawable.baseline_event_note_24
                         ),
-                        contentDescription = "logo"
+                        contentDescription = "schedule"
                     )
                 }
                 IconButton(onClick = { /*TODO*/ }) {

@@ -34,6 +34,7 @@ fun String.toResource(): Int? {
         "directions_walk" -> R.drawable.baseline_directions_walk_24
         "door_open" -> R.drawable.baseline_door_open_24
         "escalator_warning" -> R.drawable.baseline_escalator_warning_24
+        "event_note" -> R.drawable.baseline_event_note_24
         "flag" -> R.drawable.baseline_flag_24
         "groups" -> R.drawable.baseline_groups_24
         "help" -> R.drawable.baseline_help_24

@@ -36,7 +36,6 @@ import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
-import com.shortstack.core.R
 
 @Composable
 internal fun Home(context: AppCompatActivity, navController: NavHostController) {
@@ -109,8 +108,8 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                 }) {
                     Icon(
                         painterResource(
-                            id = R.drawable.logo_glitch
-                        ), contentDescription = "Logo"
+                            id = com.advice.ui.R.drawable.baseline_event_note_24
+                        ), contentDescription = "schedule"
                     )
                 }
                 IconButton(onClick = {

@@ -162,20 +162,6 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
     }
 }
 
-
-//
-// todo: this should have a sealed class to map with NavHost
-//val url: String?
-//    get() = when (this) {
-//        Divider -> null
-//        is Document -> "document/$documentId"
-//        is Menu -> "menu/$label/$menuId"
-//        is Navigation -> "$function/$label"
-//        is Organization -> "organizations/$label/$organizationId"
-//        is Schedule -> "schedule/$label/${tags.joinToString(",")}"
-//        is Content -> "content/$label"
-//        is SectionHeading -> null
-//    }
 internal fun MenuItem.toNavigation(): Navigation? {
     return when (this) {
         is MenuItem.Content -> Navigation.Content(label)

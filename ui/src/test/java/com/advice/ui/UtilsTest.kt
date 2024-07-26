@@ -64,6 +64,12 @@ class UtilsTest {
     }
 
     @Test
+    fun `verify event returns drawable`() = runBlocking {
+        val result = "event_note".toResource()
+        assertEquals(R.drawable.baseline_event_note_24, result)
+    }
+
+    @Test
     fun `verify flag returns drawable`() = runBlocking {
         val result = "flag".toResource()
         assertEquals(R.drawable.baseline_flag_24, result)
