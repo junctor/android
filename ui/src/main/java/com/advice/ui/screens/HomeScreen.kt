@@ -26,6 +26,7 @@ import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
 import com.advice.ui.components.Label
+import com.advice.ui.components.MenuIcon
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.components.home.ArticleView
 import com.advice.ui.components.home.ConferenceSelector
@@ -35,7 +36,6 @@ import com.advice.ui.components.home.HomeCard
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
-import com.advice.ui.utils.MenuIcon
 import java.util.Date
 
 @Composable
