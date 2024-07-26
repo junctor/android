@@ -28,8 +28,8 @@ import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
 import com.advice.ui.R
 import com.advice.ui.components.EmptyMessage
+import com.advice.ui.components.MenuIcon
 import com.advice.ui.components.ProgressSpinner
-import com.advice.ui.utils.MenuIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
