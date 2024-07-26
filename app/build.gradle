@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.shortstack.hackertracker"
-        minSdk libs.versions.targetSdk.get() as Integer
+        minSdk libs.versions.minSdk.get() as Integer
         targetSdk libs.versions.targetSdk.get() as Integer
         versionCode 1
         versionName "1.0"
