@@ -1,5 +1,6 @@
 package com.advice.feedback.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,15 +15,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.advice.core.local.feedback.FeedbackOption
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun SelectOneItem(
     caption: String,
-    options: List<String>,
-    selection: String? = null,
-    onSelectOption: (String) -> Unit,
+    options: List<FeedbackOption>,
+    selection: Long? = null,
+    onSelectOption: (Long) -> Unit,
 ) {
     var choice by remember { mutableStateOf(selection) }
 
@@ -30,39 +32,81 @@ fun SelectOneItem(
         Text(caption)
 
         if (options.size > 3) {
+            // Vertical layout
             options.forEach {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier
+                        .clickable {
+                            choice = it.id
+                            onSelectOption(it.id)
+                        }
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     RadioButton(
-                        selected = choice == it,
+                        selected = choice == it.id,
                         onClick = {
-                            choice = it
-                            onSelectOption(it)
+                            choice = it.id
+                            onSelectOption(it.id)
                         },
                     )
-                    Text(it)
+                    Text(
+                        text = it.value,
+                    )
                 }
             }
         } else {
+            // Horizontal layout
             Row(Modifier.fillMaxWidth()) {
                 options.forEach {
                     Column(
-                        Modifier.weight(1f),
+                        modifier = Modifier
+                            .clickable {
+                                choice = it.id
+                                onSelectOption(it.id)
+                            }
+                            .weight(1f),
                         verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         RadioButton(
-                            selected = choice == it,
+                            selected = choice == it.id,
                             onClick = {
-                                choice = it
-                                onSelectOption(it)
+                                choice = it.id
+                                onSelectOption(it.id)
                             },
-                            modifier = Modifier.fillMaxWidth(),
                         )
-                        Text(it, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                        Text(
+                            text = it.value,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                        )
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun FeedbackOption(
+    choice: Long?,
+    feedbackOption: FeedbackOption,
+    onSelectOption: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    RadioButton(
+        selected = choice == feedbackOption.id,
+        onClick = {
+            onSelectOption(feedbackOption.id)
+        },
+    )
+    Text(
+        text = feedbackOption.value,
+        modifier = modifier,
+        textAlign = textAlign,
+    )
 }
 
 @PreviewLightDark
@@ -71,7 +115,11 @@ private fun SelectOneItemPreview() {
     ScheduleTheme {
         SelectOneItem(
             caption = "Select one item",
-            options = listOf("Option 1", "Option 2", "Option 3"),
+            options = listOf(
+                FeedbackOption(1, "Option 1"),
+                FeedbackOption(2, "Option 2"),
+                FeedbackOption(3, "Option 3")
+            ),
             onSelectOption = {},
         )
     }
@@ -83,7 +131,12 @@ private fun SelectOneItemVerticalPreview() {
     ScheduleTheme {
         SelectOneItem(
             caption = "Select one item",
-            options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
+            options = listOf(
+                FeedbackOption(1, "Option 1"),
+                FeedbackOption(2, "Option 2"),
+                FeedbackOption(3, "Option 3"),
+                FeedbackOption(4, "Option 4"),
+            ),
             onSelectOption = {},
         )
     }

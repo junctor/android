@@ -3,6 +3,7 @@ package com.advice.feedback.ui.preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.local.feedback.FeedbackItem
+import com.advice.core.local.feedback.FeedbackOption
 import com.advice.core.local.feedback.FeedbackType
 
 class FeedbackFormProvider : PreviewParameterProvider<FeedbackForm> {
@@ -17,6 +18,7 @@ class FeedbackFormProvider : PreviewParameterProvider<FeedbackForm> {
         val element =
             FeedbackForm(
                 id = 1,
+                conference = 1,
                 title = "Thanks for attending Policy @ DEF CON",
                 items =
                 listOf(
@@ -30,7 +32,11 @@ class FeedbackFormProvider : PreviewParameterProvider<FeedbackForm> {
                         caption = "How do you feel?",
                         type =
                         FeedbackType.SelectOne(
-                            options = listOf("Good", "Bad", "Neutral"),
+                            options = listOf(
+                                FeedbackOption(1, "Good"),
+                                FeedbackOption(2, "Bad"),
+                                FeedbackOption(3, "Neutral")
+                            ),
                         ),
                     ),
                     FeedbackItem(
@@ -38,7 +44,11 @@ class FeedbackFormProvider : PreviewParameterProvider<FeedbackForm> {
                         caption = "What do you think applies?",
                         type =
                         FeedbackType.MultiSelect(
-                            options = listOf("Hacking", "Cool", "Hands on"),
+                            options = listOf(
+                                FeedbackOption(1, "Hacking"),
+                                FeedbackOption(2, "Cool"),
+                                FeedbackOption(3, "Hands on"),
+                            ),
                         ),
                     ),
                     FeedbackItem(
@@ -50,6 +60,7 @@ class FeedbackFormProvider : PreviewParameterProvider<FeedbackForm> {
                         ),
                     ),
                 ),
+                endpoint = "https://feedback.example.com/submit",
             )
     }
 }

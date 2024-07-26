@@ -1,6 +1,7 @@
 package com.advice.schedule.ui.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -9,9 +10,10 @@ import com.advice.schedule.presentation.viewmodel.FeedbackViewModel
 import com.advice.ui.screens.ErrorScreen
 
 @Composable
-fun Feedback(navController: NavController, id: Long) {
-    val viewModel = viewModel<FeedbackViewModel>().apply {
-        fetchFeedbackForm(id)
+fun Feedback(navController: NavController, id: Long, content: Long) {
+    val viewModel = viewModel<FeedbackViewModel>()
+    LaunchedEffect("$id/$content") {
+        viewModel.fetchFeedbackForm(id)
     }
     val state = viewModel.feedbackForm.collectAsState(initial = FeedbackState.Loading).value
     if (state is FeedbackState.Success) {
@@ -24,7 +26,7 @@ fun Feedback(navController: NavController, id: Long) {
                 navController.popBackStack()
             },
             onSubmitPressed = {
-                // todo: submit to the backend.
+                viewModel.submitFeedback(content)
                 navController.popBackStack()
             })
     } else {

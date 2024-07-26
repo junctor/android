@@ -15,6 +15,7 @@ import org.koin.core.component.inject
 class FeedbackViewModel : ViewModel(), KoinComponent {
 
     private val repository by inject<FeedbackRepository>()
+    private val feedbackRepository by inject<com.advice.feedback.network.FeedbackRepository>()
 
     private val _feedbackForm = MutableStateFlow<FeedbackState>(FeedbackState.Loading)
     val feedbackForm: Flow<FeedbackState> = _feedbackForm
@@ -39,16 +40,16 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
                 when (val type = it.type) {
                     FeedbackType.DisplayOnly -> it
                     is FeedbackType.MultiSelect -> {
-                        val selections = if (value in type.selections) {
-                            type.selections.filter { it != value }
+                        val selections = if (value.toLong() in type.selections) {
+                            type.selections.filter { it != value.toLong() }
                         } else {
-                            type.selections + value
+                            type.selections + value.toLong()
                         }
                         it.copy(type = FeedbackType.MultiSelect(type.options, selections))
                     }
 
                     is FeedbackType.SelectOne -> {
-                        it.copy(type = FeedbackType.SelectOne(type.options, value))
+                        it.copy(type = FeedbackType.SelectOne(type.options, value.toLong()))
                     }
 
                     is FeedbackType.TextBox -> {
@@ -61,5 +62,13 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
         }
 
         _feedbackForm.value = FeedbackState.Success(state.feedback.copy(items = items))
+    }
+
+    fun submitFeedback(content: Long) {
+        val state = _feedbackForm.value as? FeedbackState.Success ?: return
+
+        viewModelScope.launch {
+            feedbackRepository.submitFeedback(content, state.feedback)
+        }
     }
 }

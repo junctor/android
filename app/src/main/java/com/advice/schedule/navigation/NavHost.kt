@@ -129,7 +129,7 @@ internal fun NavigationManager.setRoutes(
 
         // Feedback
         register(Navigation.Feedback()) {
-            Feedback(navController, it.id)
+            Feedback(navController, it.id, it.content)
         }
     }
 }

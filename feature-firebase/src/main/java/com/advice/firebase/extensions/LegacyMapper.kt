@@ -29,6 +29,7 @@ import com.advice.core.local.TagType
 import com.advice.core.local.Vendor
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.local.feedback.FeedbackItem
+import com.advice.core.local.feedback.FeedbackOption
 import com.advice.core.local.feedback.FeedbackType
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
@@ -561,8 +562,10 @@ fun FirebaseFeedbackForm.toFeedbackForm(): FeedbackForm? =
     try {
         FeedbackForm(
             id = id,
+            conference = conferenceId,
             title = nameText,
-            items = items.mapNotNull { it.toFeedbackItem() },
+            items = items.sortedBy { it.sortOrder }.mapNotNull { it.toFeedbackItem() },
+            endpoint = submissionUrl,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to FeedbackForm: ${ex.message}")
@@ -574,11 +577,11 @@ fun FirebaseFeedbackItem.toFeedbackItem(): FeedbackItem? =
         val type = when (type) {
             "display_only" -> FeedbackType.DisplayOnly
             "select_one" -> FeedbackType.SelectOne(
-                options.map { it.captionText }
+                options.sortedBy { it.sortOrder }.map { FeedbackOption(it.id, it.captionText) }
             )
 
             "multi_select" -> FeedbackType.MultiSelect(
-                options.map { it.captionText }
+                options.sortedBy { it.sortOrder }.map { FeedbackOption(it.id, it.captionText) }
             )
 
             "text" -> FeedbackType.TextBox("")

@@ -211,6 +211,14 @@ val appModule = module {
     // Products
     single<ProductCart> { ProductCart() }
 
+    // Feedback
+    single<com.advice.feedback.network.FeedbackRepository> {
+        com.advice.feedback.network.FeedbackRepository(
+            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+            get()
+        )
+    }
+
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }
     viewModel { SpeakerViewModel() }

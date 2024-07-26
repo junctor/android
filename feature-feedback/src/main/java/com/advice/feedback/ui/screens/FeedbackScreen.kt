@@ -90,10 +90,10 @@ fun Feedback(
                 when (val type = item.type) {
                     FeedbackType.DisplayOnly -> DisplayOnlyItem(item.caption)
                     is FeedbackType.SelectOne -> SelectOneItem(item.caption, type.options, type.selection) {
-                        onValueChanged(item, it)
+                        onValueChanged(item, it.toString())
                     }
                     is FeedbackType.MultiSelect -> MultiSelectItem(item.caption, type.options) {
-                        onValueChanged(item, it)
+                        onValueChanged(item, it.toString())
                     }
                     is FeedbackType.TextBox -> TextBoxItem(item.caption, type.value) {
                         onValueChanged(item, it)

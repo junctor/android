@@ -3,13 +3,13 @@ package com.advice.core.utils
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import java.util.Calendar
 
 class Storage(context: Context, private val gson: Gson) {
 
     companion object {
         const val KEY_PREFERENCES = "preferences"
 
+        private const val USER_UUID = "user_uuid"
         private const val USER_THEME = "user_theme"
         private const val PREFERRED_CONFERENCE = "preferred_conference"
 
@@ -97,6 +97,16 @@ class Storage(context: Context, private val gson: Gson) {
             preferences.edit().putInt("update_version", value ?: -1).apply()
         }
 
+    val userUUID: String
+        get() {
+            var uuid = preferences.getString(USER_UUID, null)
+            if (uuid == null) {
+                uuid = java.util.UUID.randomUUID().toString()
+                preferences.edit().putString(USER_UUID, uuid).apply()
+            }
+            return uuid
+        }
+
     fun setPreference(key: String, isChecked: Boolean) {
         when (key) {
             USER_ANALYTICS_KEY -> allowAnalytics = isChecked
@@ -136,36 +146,4 @@ class Storage(context: Context, private val gson: Gson) {
     fun hasSeenMerchInformation(): Boolean {
         return preferences.getBoolean("merch_information", false)
     }
-
-    object CorruptionLevel {
-        const val NONE = 0
-        const val MINOR = 1
-        const val MEDIUM = 2
-        const val MAJOR = 3
-    }
-
-    val corruption: Int
-        get() {
-            if (!getPreference(
-                    EASTER_EGGS_ENABLED_KEY,
-                    false
-                )
-            ) {
-                return CorruptionLevel.NONE
-            }
-
-            val calendar = Calendar.getInstance()
-            calendar.time = Time.now()
-
-            val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
-            if (dayOfYear < 219)
-                return CorruptionLevel.NONE
-
-            return when (dayOfYear) {
-                219 -> CorruptionLevel.MINOR
-                220 -> CorruptionLevel.MEDIUM
-                221 -> CorruptionLevel.MAJOR
-                else -> CorruptionLevel.MEDIUM
-            }
-        }
 }

@@ -31,6 +31,7 @@ firebaseFirestore = "24.4.2"
 firebaseStorage = "20.1.0"
 firebaseAuth = "21.1.0"
 firebaseCrashlytics = "18.3.3"
+okhttp = "5.0.0-alpha.14"
 retrofit = "2.9.0"
 gson = "2.10.1"
 accompanist = "0.31.3-beta"
@@ -67,6 +68,7 @@ google-play-update-ktx = { module = "com.google.android.play:app-update-ktx", ve
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 
 accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
@@ -81,7 +83,8 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }

@@ -12,31 +12,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.advice.core.local.feedback.FeedbackOption
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun MultiSelectItem(
     caption: String,
-    options: List<String>,
-    onSelectOption: (String) -> Unit,
+    options: List<FeedbackOption>,
+    onSelectOption: (Long) -> Unit,
 ) {
-    var choices by remember { mutableStateOf(emptyList<String>()) }
+    var choices by remember { mutableStateOf(emptyList<Long>()) }
 
     Column(Modifier.fillMaxWidth()) {
         Text(caption)
 
         options.forEach {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = it in choices, onCheckedChange = { isChecked ->
-                    if (isChecked) {
-                        choices = choices + it
+                Checkbox(checked = it.id in choices, onCheckedChange = { isChecked ->
+                    choices = if (isChecked) {
+                        choices + it.id
                     } else {
-                        choices = choices - it
+                        choices - it.id
                     }
-                    onSelectOption(it)
+                    onSelectOption(it.id)
                 })
-                Text(it)
+                Text(it.value)
             }
         }
     }
@@ -48,7 +49,11 @@ private fun MultiSelectItemPreview() {
     ScheduleTheme {
         MultiSelectItem(
             caption = "Select one item",
-            options = listOf("Option 1", "Option 2", "Option 3"),
+            options = listOf(
+                FeedbackOption(1, "Option 1"),
+                FeedbackOption(2, "Option 2"),
+                FeedbackOption(3, "Option 3")
+            ),
             onSelectOption = {},
         )
     }

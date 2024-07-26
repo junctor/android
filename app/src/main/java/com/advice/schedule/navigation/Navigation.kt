@@ -121,9 +121,9 @@ sealed class Navigation {
         override fun route(): String = "products/summary"
     }
 
-    data class Feedback(val id: Long = 0L) : Navigation() {
-        override fun route(): String = "feedback/{id}"
-        override fun destination(): String = "feedback/$id"
+    data class Feedback(val id: Long = 0L, val content: Long = 0L) : Navigation() {
+        override fun route(): String = "feedback/{id}/{content}"
+        override fun destination(): String = "feedback/$id/$content"
     }
 
     /**

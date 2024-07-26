@@ -137,7 +137,7 @@ private fun Content(
             navController.navigate(Navigation.Speaker(it.id, it.name))
         },
         onFeedbackClicked = {
-            navController.navigate(Navigation.Feedback(it.id))
+            navController.navigate(Navigation.Feedback(it.id, content.id))
         }
     )
 }
