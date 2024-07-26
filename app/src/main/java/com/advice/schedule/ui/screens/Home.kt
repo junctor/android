@@ -117,7 +117,7 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                 }) {
                     Icon(
                         painterResource(
-                            id = com.shortstack.hackertracker.R.drawable.ic_map_white_24dp
+                            id = com.advice.ui.R.drawable.baseline_map_24
                         ), contentDescription = "Maps"
                     )
                 }
