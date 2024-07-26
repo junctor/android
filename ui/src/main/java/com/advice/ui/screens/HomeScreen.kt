@@ -129,7 +129,7 @@ private fun HomeScreen(
         }
 
         // Required spacer to push content above the bottom bar
-        Spacer(Modifier.height(64.dp))
+        Spacer(Modifier.height(124.dp))
     }
 }
 
