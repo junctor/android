@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.advice.feedback.ui.screens.FeedbackScreen
 import com.advice.feedback.ui.screens.FeedbackState
 import com.advice.schedule.presentation.viewmodel.FeedbackViewModel
 import com.advice.ui.screens.ErrorScreen
@@ -17,7 +18,7 @@ fun Feedback(navController: NavController, id: Long, content: Long) {
     }
     val state = viewModel.feedbackForm.collectAsState(initial = FeedbackState.Loading).value
     if (state is FeedbackState.Success) {
-        com.advice.feedback.ui.screens.Feedback(form = state.feedback,
+        FeedbackScreen(form = state.feedback,
             onValueChanged = { item, value ->
                 viewModel.onValueChanged(item, value)
             },
