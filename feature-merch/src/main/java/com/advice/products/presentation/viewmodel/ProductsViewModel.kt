@@ -122,10 +122,10 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         val list = mutableListOf<DismissibleInformation>()
         // Legal information about sales being cash only and include Nevada State Sales Tax
         val text = merchMandatoryAcknowledgement
-        if (!storage.hasSeenMerchInformation("tax") && text != null) {
+        if (!storage.hasSeenMerchInformation("mandatory_acknowledgement") && text != null) {
             list.add(
                 DismissibleInformation(
-                    key = "def_con_merch_mandatory_acknowledgement",
+                    key = "mandatory_acknowledgement",
                     text = text,
                     document = null,
                 )
