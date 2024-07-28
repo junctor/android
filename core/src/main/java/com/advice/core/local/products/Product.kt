@@ -15,6 +15,10 @@ data class Product(
     val cost: Long = baseCost * quantity,
     val selectedOption: String? = null,
 ) : Parcelable {
+
+    val inStock: Boolean
+        get() = stockStatus != StockStatus.OUT_OF_STOCK
+
     val stockStatus: StockStatus
         get() {
             if (variants.all { it.stockStatus == StockStatus.OUT_OF_STOCK }) {

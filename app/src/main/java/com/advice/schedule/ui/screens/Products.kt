@@ -48,13 +48,11 @@ fun Products(context: AppCompatActivity, navController: NavHostController) {
                     }
                 },
                 onDismiss = {
-                    viewModel.dismiss()
+                    viewModel.dismiss(it)
                 },
             )
         }
     }
-
-
 }
 
 @Composable

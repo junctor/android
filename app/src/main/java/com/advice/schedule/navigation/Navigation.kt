@@ -117,7 +117,7 @@ sealed class Navigation {
         override fun destination(): String = "product/$id"
     }
 
-    object ProductsSummary : Navigation() {
+    data object ProductsSummary : Navigation() {
         override fun route(): String = "products/summary"
     }
 

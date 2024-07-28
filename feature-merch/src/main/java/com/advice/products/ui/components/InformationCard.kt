@@ -23,15 +23,22 @@ import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
+data class DismissibleInformation(
+    val key: String,
+    val text: String,
+    val document: Long?,
+)
+
 @Composable
 fun InformationCard(
-    modifier: Modifier = Modifier,
+    information: DismissibleInformation,
     onLearnMore: () -> Unit,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(4.dp),
         color = MaterialTheme.colorScheme.inverseSurface,
         shadowElevation = 12.dp,
     ) {
@@ -45,7 +52,7 @@ fun InformationCard(
             ) {
                 Icon(Icons.Outlined.Info, contentDescription = "info")
                 Text(
-                    "DEF CON Merch has gone digital!",
+                    text = information.text,
                     modifier = Modifier.weight(1f),
                     fontWeight = FontWeight.Black
                 )
@@ -53,11 +60,13 @@ fun InformationCard(
                     Icon(Icons.Default.Close, contentDescription = "Close")
                 }
             }
-            Button(
-                onClick = onLearnMore,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-            ) {
-                Text("Learn More", color = MaterialTheme.colorScheme.onPrimaryContainer)
+            if (information.document != null) {
+                Button(
+                    onClick = onLearnMore,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    Text("Learn More", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                }
             }
         }
     }
@@ -67,6 +76,27 @@ fun InformationCard(
 @Composable
 private fun InformationCardPreview() {
     ScheduleTheme {
-        InformationCard(onLearnMore = {}, onDismiss = {})
+        Column {
+            InformationCard(
+                information = DismissibleInformation(
+                    key = "key",
+                    text = "This message has a document for more details.",
+                    document = 1,
+                ),
+                onLearnMore = {},
+                onDismiss = {},
+                modifier = Modifier.padding(16.dp),
+            )
+            InformationCard(
+                information = DismissibleInformation(
+                    key = "key",
+                    text = "Information message without a document for more details.",
+                    document = null,
+                ),
+                onLearnMore = {},
+                onDismiss = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        }
     }
 }

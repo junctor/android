@@ -6,6 +6,7 @@ import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.presentation.state.ProductsState
+import com.advice.products.ui.components.DismissibleInformation
 import com.advice.products.utils.toJson
 
 class ProductsProvider : PreviewParameterProvider<ProductsState> {
@@ -17,23 +18,40 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                 ProductVariant(3, "5XL", emptyList(), 1000, StockStatus.OUT_OF_STOCK)
             )
             val product = Product(
-                -1L, "DC30 Homecoming Men's T-Shirt", 35_00, options,
+                id = -1L,
+                label = "DC30 Homecoming Men's T-Shirt",
+                baseCost = 35_00,
+                variants = options,
                 media = listOf(
                     ProductMedia(
-                        "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
-                        0
+                        url = "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
+                        sortOrder = 0,
                     )
                 ),
-                quantity = 1,
-                selectedOption = options[0].label,
+                quantity = 0,
             )
 
-            val elements = listOf(product)
+            val elements = listOf(
+                product.copy(quantity = 1),
+                product.copy(variants = listOf(options[1])),
+                product.copy(variants = listOf(options.last())),
+            )
 
             return listOf(
                 ProductsState(
-                    featured = elements.take(1),
                     products = elements,
+                    informationList = listOf(
+                        DismissibleInformation(
+                            key = "general",
+                            text = "Important Information",
+                            document = 1,
+                        ),
+                        DismissibleInformation(
+                            key = "merch",
+                            text = "Merchandise Acknowledgement",
+                            document = null,
+                        ),
+                    ),
                     merchMandatoryAcknowledgement = "All sales are **CASH ONLY**. Prices include Nevada State Sales Tax.",
                     merchTaxStatement = "Prices include Nevada State Sales Tax.",
                     cart = elements,

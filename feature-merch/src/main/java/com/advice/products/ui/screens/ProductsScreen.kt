@@ -1,12 +1,12 @@
 package com.advice.products.ui.screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -16,12 +16,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,17 +27,16 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.products.Product
 import com.advice.products.presentation.state.ProductsState
-import com.advice.products.ui.components.FeaturedProducts
+import com.advice.products.ui.components.DismissibleInformation
 import com.advice.products.ui.components.InformationCard
 import com.advice.products.ui.components.LegalLabel
-import com.advice.products.ui.components.ProductSquare
+import com.advice.products.ui.components.ProductsRow
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,32 +45,16 @@ fun ProductsScreen(
     onSummaryClicked: () -> Unit,
     onProductClicked: (Product) -> Unit,
     onLearnMore: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: (DismissibleInformation) -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    val systemUiController = rememberSystemUiController()
-
-    DisposableEffect(Unit) {
-        systemUiController.setSystemBarsColor(
-            color = Color.Black.copy(0.40f),
-        )
-
-        onDispose {
-            systemUiController.setSystemBarsColor(
-                color = Color.Transparent,
-            )
-        }
-    }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { },
                 navigationIcon = {
                     IconButton(
-                        onClick = onBackPressed, colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = Color.Black.copy(0.40f),
-                        )
+                        onClick = onBackPressed
                     ) {
                         Icon(
                             painterResource(id = com.advice.ui.R.drawable.arrow_back),
@@ -84,15 +65,13 @@ fun ProductsScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = onLearnMore, colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = Color.Black.copy(0.40f),
-                        )
+                        onClick = onLearnMore
                     ) {
                         Icon(Icons.Outlined.Info, "Learn More", tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
+
                 )
             )
         },
@@ -114,30 +93,26 @@ fun ProductsScreen(
         },
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        Box {
+        Box(Modifier.padding(it)) {
             when {
                 state == null -> {
-                    Box(Modifier.padding(it)) {
-                        ProgressSpinner()
-                    }
+                    ProgressSpinner()
                 }
 
                 state.products.isEmpty() -> {
-                    Box(Modifier.padding(it)) {
-                        EmptyMessage("Merch not found")
-                    }
+                    EmptyMessage("Merch not found")
                 }
 
                 else -> {
                     ProductsScreenContent(
-                        featured = state.featured,
                         list = state.products,
-                        hasInformation = state.showMerchInformation,
+                        informationList = state.informationList,
                         mandatoryAcknowledgement = state.merchMandatoryAcknowledgement,
                         taxStatement = state.merchTaxStatement,
                         onProductClicked = onProductClicked,
                         onLearnMore = onLearnMore,
                         onDismiss = onDismiss,
+                        modifier = Modifier.padding(16.dp),
                     )
                 }
             }
@@ -147,46 +122,31 @@ fun ProductsScreen(
 
 @Composable
 fun ProductsScreenContent(
-    featured: List<Product>,
     list: List<Product>,
-    hasInformation: Boolean,
+    informationList: List<DismissibleInformation>,
     mandatoryAcknowledgement: String? = null,
     taxStatement: String? = null,
     onProductClicked: (Product) -> Unit,
     onLearnMore: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: (DismissibleInformation) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier) {
-        if (featured.isNotEmpty()) {
-            item {
-                FeaturedProducts(products = featured, onProductClicked)
-            }
-            if (mandatoryAcknowledgement != null) {
-                item {
-                    LegalLabel(text = mandatoryAcknowledgement)
-                }
-            }
-            item {
-                Label(text = "All Products", modifier = Modifier.padding(horizontal = 16.dp))
-            }
-        } else {
-            if (mandatoryAcknowledgement != null) {
-                item {
-                    LegalLabel(text = mandatoryAcknowledgement)
-                }
-            }
+        items(informationList) { dismissibleInformation ->
+            InformationCard(
+                information = dismissibleInformation,
+                onLearnMore = onLearnMore,
+                onDismiss = {
+                    onDismiss(dismissibleInformation)
+                },
+                modifier = Modifier.padding(16.dp)
+            )
         }
 
-        if (hasInformation) {
-            item {
-                InformationCard(
-                    modifier = Modifier.padding(16.dp),
-                    onLearnMore = onLearnMore,
-                    onDismiss = onDismiss
-                )
-            }
+        item {
+            Label(text = "All Products", modifier = Modifier.padding(horizontal = 16.dp))
         }
+        
         list.windowed(2, 2, partialWindows = true).forEachIndexed { index, products ->
             item(key = index) {
                 ProductsRow(products, onProductClicked)
@@ -204,22 +164,9 @@ fun ProductsScreenContent(
     }
 }
 
-@Composable
-private fun ProductsRow(
-    products: List<Product>,
-    onProductClicked: (Product) -> Unit,
-) {
-    Row {
-        for (product in products) {
-            ProductSquare(product, onProductClicked, Modifier.weight(1f))
-        }
-        if (products.size == 1) Box(modifier = Modifier.weight(1f))
-    }
-}
-
 @PreviewLightDark
 @Composable
-fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
         ProductsScreen(
             state = state,

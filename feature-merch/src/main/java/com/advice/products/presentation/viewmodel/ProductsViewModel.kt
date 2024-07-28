@@ -7,6 +7,7 @@ import com.advice.core.local.products.ProductSelection
 import com.advice.core.utils.Storage
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.state.ProductsState
+import com.advice.products.ui.components.DismissibleInformation
 import com.advice.products.utils.toJson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +16,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 sealed class ProductsScreenState {
-    object Loading : ProductsScreenState()
-    object Error : ProductsScreenState()
+    data object Loading : ProductsScreenState()
+    data object Error : ProductsScreenState()
     data class Success(val data: ProductsState) : ProductsScreenState()
 }
 
@@ -30,16 +31,12 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     val state: Flow<ProductsScreenState> = _state
 
     private val products = mutableListOf<Product>()
-    private val featured = mutableListOf<Product>()
-    private var showMerchInformation: Boolean = false
     private var canAdd: Boolean = false
     private var merchDocument: Long? = null
     private var merchMandatoryAcknowledgement: String? = null
     private var merchTaxStatement: String? = null
 
     init {
-        showMerchInformation = !storage.hasSeenMerchInformation()
-
         viewModelScope.launch {
             repository.conference.collect {
                 canAdd = it.flags["enable_merch_cart"] ?: false
@@ -49,18 +46,15 @@ class ProductsViewModel : ViewModel(), KoinComponent {
             }
         }
         viewModelScope.launch {
-            repository.products.collect { it ->
+            repository.products.collect {
                 products.clear()
-                featured.clear()
-                products.addAll(it)
-                featured.addAll(it.shuffled().filter { it.hasMedia() }.take(5))
+                products.addAll(it.sortedByDescending { it.inStock })
 
                 updateList()
                 updateSummary()
             }
         }
     }
-
 
     fun addToCart(selection: ProductSelection) {
         viewModelScope.launch {
@@ -102,34 +96,60 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    fun dismiss() {
-        storage.dismissMerchInformation()
-        updateState(showMerchInformation = false)
+    fun dismiss(dismissibleInformation: DismissibleInformation) {
+        storage.dismissMerchInformation(dismissibleInformation.key)
+        updateState()
     }
 
     private fun updateState(
-        featured: List<Product> = this.featured,
         products: List<Product> = this.products,
         merchDocument: Long? = this.merchDocument,
         merchMandatoryAcknowledgement: String? = this.merchMandatoryAcknowledgement,
         merchTaxStatement: String? = this.merchTaxStatement,
-        showMerchInformation: Boolean = this.showMerchInformation,
         canAdd: Boolean = this.canAdd,
         cart: List<Product> = emptyList(),
         json: String? = null,
     ) {
         _state.value = ProductsScreenState.Success(
             ProductsState(
-                featured = featured,
                 products = products,
+                informationList = getInformationList(),
                 merchDocument = merchDocument,
                 merchMandatoryAcknowledgement = merchMandatoryAcknowledgement,
                 merchTaxStatement = merchTaxStatement,
-                showMerchInformation = showMerchInformation,
                 canAdd = canAdd,
                 cart = cart,
                 json = json,
             )
         )
+    }
+
+    private fun getInformationList(): MutableList<DismissibleInformation> {
+        val list = mutableListOf<DismissibleInformation>()
+
+        // General information about DEF CON now supporting digital merch
+        val merchDocument = merchDocument
+        if (!storage.hasSeenMerchInformation("general") && merchDocument != null) {
+            list.add(
+                DismissibleInformation(
+                    key = "def_con_merch_general",
+                    text = "DEF CON Merch has gone digital!",
+                    document = merchDocument,
+                )
+            )
+        }
+
+        // Legal information about sales being cash only and include Nevada State Sales Tax
+        val text = merchMandatoryAcknowledgement
+        if (!storage.hasSeenMerchInformation("tax") && text != null) {
+            list.add(
+                DismissibleInformation(
+                    key = "def_con_merch_mandatory_acknowledgement",
+                    text = text,
+                    document = null,
+                )
+            )
+        }
+        return list
     }
 }
