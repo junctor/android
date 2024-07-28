@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import com.advice.feedback.ui.screens.FeedbackScreen
 import com.advice.feedback.ui.screens.FeedbackState
 import com.advice.schedule.presentation.viewmodel.FeedbackViewModel
+import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
 
 @Composable
@@ -17,22 +18,29 @@ fun Feedback(navController: NavController, id: Long, content: Long) {
         viewModel.fetchFeedbackForm(id)
     }
     val state = viewModel.feedbackForm.collectAsState(initial = FeedbackState.Loading).value
-    if (state is FeedbackState.Success) {
-        FeedbackScreen(form = state.feedback,
-            onValueChanged = { item, value ->
-                viewModel.onValueChanged(item, value)
-            },
-            onBackPressed = {
-                // todo: possibly show a warning dialog.
+    when (state) {
+        FeedbackState.Error ->
+            ErrorScreen {
                 navController.popBackStack()
-            },
-            onSubmitPressed = {
-                viewModel.submitFeedback(content)
-                navController.popBackStack()
-            })
-    } else {
-        ErrorScreen {
+            }
 
+        FeedbackState.Loading -> {
+            ProgressSpinner()
+        }
+
+        is FeedbackState.Success -> {
+            FeedbackScreen(form = state.feedback,
+                onValueChanged = { item, value ->
+                    viewModel.onValueChanged(item, value)
+                },
+                onBackPressed = {
+                    // todo: possibly show a warning dialog.
+                    navController.popBackStack()
+                },
+                onSubmitPressed = {
+                    viewModel.submitFeedback(content)
+                    navController.popBackStack()
+                })
         }
     }
 }
