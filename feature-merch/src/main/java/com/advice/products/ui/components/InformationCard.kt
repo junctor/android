@@ -1,5 +1,6 @@
 package com.advice.products.ui.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +14,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,37 +36,37 @@ fun InformationCard(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(4.dp),
-        color = MaterialTheme.colorScheme.inverseSurface,
-        shadowElevation = 12.dp,
+    Column(
+        modifier
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(start = 16.dp)
+            .padding(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Column(
-            Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(Icons.Outlined.Info, contentDescription = "info")
-                Text(
-                    text = information.text,
-                    modifier = Modifier.weight(1f),
-                    fontWeight = FontWeight.Black
-                )
-                IconButton(onClick = onDismiss) {
-                    Icon(Icons.Default.Close, contentDescription = "Close")
-                }
+            Icon(Icons.Outlined.Info, contentDescription = "info")
+            Text(
+                text = information.text,
+                modifier = Modifier.weight(1f),
+                fontWeight = FontWeight.Black
+            )
+            IconButton(onClick = onDismiss) {
+                Icon(Icons.Default.Close, contentDescription = "Close")
             }
-            if (information.document != null) {
-                Button(
-                    onClick = onLearnMore,
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-                ) {
-                    Text("Learn More", color = MaterialTheme.colorScheme.onPrimaryContainer)
-                }
+        }
+        if (information.document != null) {
+            Button(
+                onClick = onLearnMore,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+            ) {
+                Text("Learn More", color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
         }
     }

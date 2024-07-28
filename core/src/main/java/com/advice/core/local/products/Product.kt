@@ -2,17 +2,20 @@ package com.advice.core.local.products
 
 import android.os.Parcelable
 import com.advice.core.local.StockStatus
+import com.advice.core.local.Tag
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Product(
     val id: Long,
+    val code: String,
     val label: String,
     val baseCost: Long,
     val variants: List<ProductVariant>,
     val media: List<ProductMedia>,
     val quantity: Int = 0,
     val cost: Long = baseCost * quantity,
+    val tags: List<Tag>,
     val selectedOption: String? = null,
 ) : Parcelable {
 

@@ -194,7 +194,7 @@ val appModule = module {
     }
 
     single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get(), get()) }
-    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get(), get()) }
+    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get(), get(), get()) }
 
     // Organizations
     single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get(), get()) }

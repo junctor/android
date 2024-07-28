@@ -18,17 +18,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
-import com.advice.core.local.products.ProductMedia
-import com.advice.core.local.products.ProductVariant
+import com.advice.products.presentation.state.ProductsState
+import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
 import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
@@ -41,13 +43,11 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
         Modifier
             .clickable { onMerchClicked(product) }
             .defaultMinSize(minHeight = 86.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
+            .padding(horizontal = 16.dp, vertical = 8.dp)) {
         Column(Modifier.weight(1.0f)) {
             Text(product.label, style = MaterialTheme.typography.labelLarge)
             Text(
-                product.baseCost.toCurrency(),
-                style = MaterialTheme.typography.bodyMedium
+                product.baseCost.toCurrency(), style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(Modifier.height(8.dp))
@@ -56,8 +56,7 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
             ) {
                 for (option in product.variants) {
                     ProductVariantTag(
-                        text = option.label,
-                        inStock = option.stockStatus == StockStatus.IN_STOCK
+                        text = option.label, inStock = option.stockStatus == StockStatus.IN_STOCK
                     )
                 }
             }
@@ -79,9 +78,7 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
                         )
                     }
                 }
-            },
-            Modifier
-                .size(64.dp)
+            }, Modifier.size(64.dp)
         ) {
             if (product.media.isNotEmpty()) {
                 Box(
@@ -101,26 +98,15 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
 
 @PreviewLightDark
 @Composable
-private fun ProductViewPreview() {
-    val variants = listOf(
-        ProductVariant(1, "S", emptyList(), 0, StockStatus.IN_STOCK),
-        ProductVariant(2, "4XL", emptyList(), 0, StockStatus.LOW_STOCK),
-        ProductVariant(3, "5XL", emptyList(), 1000, StockStatus.OUT_OF_STOCK)
-    )
-    val element = Product(
-        1L,
-        "DC30 Homecoming Men's T-Shirt",
-        3500,
-        variants,
-        quantity = 3,
-        media = listOf(
-            ProductMedia(
-                "https://i1.sndcdn.com/artworks-T3fFnZH0gL5eJj0V-zB99zQ-t240x240.jpg",
-                1
-            )
-        )
-    )
+private fun ProductViewPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
-        ProductRow(element) {}
+        Surface {
+            ProductRow(
+                product = state.products.first(),
+                onMerchClicked = {},
+            )
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
 import com.advice.core.utils.Storage
 import com.advice.products.data.repositories.ProductsRepository
+import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.DismissibleInformation
 import com.advice.products.utils.toJson
@@ -14,12 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-
-sealed class ProductsScreenState {
-    data object Loading : ProductsScreenState()
-    data object Error : ProductsScreenState()
-    data class Success(val data: ProductsState) : ProductsScreenState()
-}
 
 class ProductsViewModel : ViewModel(), KoinComponent {
 
@@ -110,35 +105,21 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         cart: List<Product> = emptyList(),
         json: String? = null,
     ) {
-        _state.value = ProductsScreenState.Success(
-            ProductsState(
-                products = products,
-                informationList = getInformationList(),
-                merchDocument = merchDocument,
-                merchMandatoryAcknowledgement = merchMandatoryAcknowledgement,
-                merchTaxStatement = merchTaxStatement,
-                canAdd = canAdd,
-                cart = cart,
-                json = json,
-            )
+        val data = ProductsState(
+            groups = products.groupBy { it.tags.first() },
+            informationList = getInformationList(),
+            merchDocument = merchDocument,
+            merchMandatoryAcknowledgement = merchMandatoryAcknowledgement,
+            merchTaxStatement = merchTaxStatement,
+            canAdd = canAdd,
+            cart = cart,
+            json = json,
         )
+        _state.value = ProductsScreenState.Success(data)
     }
 
     private fun getInformationList(): MutableList<DismissibleInformation> {
         val list = mutableListOf<DismissibleInformation>()
-
-        // General information about DEF CON now supporting digital merch
-        val merchDocument = merchDocument
-        if (!storage.hasSeenMerchInformation("general") && merchDocument != null) {
-            list.add(
-                DismissibleInformation(
-                    key = "def_con_merch_general",
-                    text = "DEF CON Merch has gone digital!",
-                    document = merchDocument,
-                )
-            )
-        }
-
         // Legal information about sales being cash only and include Nevada State Sales Tax
         val text = merchMandatoryAcknowledgement
         if (!storage.hasSeenMerchInformation("tax") && text != null) {

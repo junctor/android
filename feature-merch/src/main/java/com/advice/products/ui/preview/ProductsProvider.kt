@@ -2,6 +2,7 @@ package com.advice.products.ui.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.advice.core.local.StockStatus
+import com.advice.core.local.Tag
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
@@ -17,8 +18,10 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                 ProductVariant(2, "4XL", emptyList(), 0, StockStatus.LOW_STOCK),
                 ProductVariant(3, "5XL", emptyList(), 1000, StockStatus.OUT_OF_STOCK)
             )
+            val tag = Tag(1L, "Clothing", "T-Shirts", "#FF066", -1)
             val product = Product(
                 id = -1L,
+                code = "07",
                 label = "DC30 Homecoming Men's T-Shirt",
                 baseCost = 35_00,
                 variants = options,
@@ -29,6 +32,7 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                     )
                 ),
                 quantity = 0,
+                tags = listOf(tag),
             )
 
             val elements = listOf(
@@ -39,7 +43,7 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
 
             return listOf(
                 ProductsState(
-                    products = elements,
+                    groups = mapOf(tag to elements),
                     informationList = listOf(
                         DismissibleInformation(
                             key = "general",

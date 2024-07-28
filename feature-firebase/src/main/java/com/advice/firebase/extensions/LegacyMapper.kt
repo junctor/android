@@ -519,14 +519,18 @@ fun FirebaseTagType.toTagType(): TagType? =
 
 fun FirebaseFAQ.toFAQ() = FAQ(question, answer)
 
-fun FirebaseProduct.toMerch(): Product? =
+fun FirebaseProduct.toMerch(tagTypes: List<TagType>): Product? =
     try {
         Product(
             id = id,
+            code = code,
             label = title,
             baseCost = priceMin,
             variants = variants.mapNotNull { it.toMerchOption(priceMin) },
             media = media.mapNotNull { it.toProductMedia() },
+            tags = tags.mapNotNull { id ->
+                tagTypes.flatMap { it.tags }.find { it.id == id }
+            },
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Merch: ${ex.message}")

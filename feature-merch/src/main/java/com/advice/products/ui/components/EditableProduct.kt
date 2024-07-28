@@ -21,10 +21,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
-import com.advice.core.local.products.ProductVariant
+import com.advice.products.presentation.state.ProductsState
+import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
 import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
@@ -84,7 +86,12 @@ internal fun EditableProduct(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                QuantityAdjuster(product.quantity, onQuantityChanged, canDelete = true, enabled = inStock)
+                QuantityAdjuster(
+                    product.quantity,
+                    onQuantityChanged,
+                    canDelete = true,
+                    enabled = inStock
+                )
                 Text(product.cost.toCurrency(), style = MaterialTheme.typography.titleMedium)
             }
         }
@@ -93,28 +100,11 @@ internal fun EditableProduct(
 
 @PreviewLightDark
 @Composable
-private fun EditableProductPreview() {
+private fun EditableProductPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
         EditableProduct(
-            Product(
-                id = 1,
-                label = "T-Shirt",
-                baseCost = 1000,
-                cost = 1000,
-                quantity = 1,
-                selectedOption = "M",
-                media = emptyList(),
-                variants = listOf(
-                    ProductVariant(
-                        -1,
-                        "M",
-                        emptyList(),
-                        10_00,
-                        StockStatus.OUT_OF_STOCK
-                    )
-                ),
-            ),
-            onQuantityChanged = {}
+            product = state.products.first(),
+            onQuantityChanged = {},
         )
     }
 }

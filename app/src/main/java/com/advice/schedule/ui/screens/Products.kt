@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.advice.products.presentation.viewmodel.ProductsScreenState
+import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.products.ui.screens.ProductScreen
 import com.advice.products.ui.screens.ProductsScreen
@@ -16,43 +16,32 @@ import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
 
 @Composable
-fun Products(context: AppCompatActivity, navController: NavHostController) {
+fun Products(context: AppCompatActivity, navController: NavHostController, label: String) {
     val viewModel = viewModel<ProductsViewModel>(context)
-    when (val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value) {
-        ProductsScreenState.Loading -> {
-            ProgressSpinner()
-        }
+    val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value
 
-        ProductsScreenState.Error -> {
-            ErrorScreen {
-                // todo: implement
+    ProductsScreen(
+        label = label,
+        state = state,
+        onSummaryClicked = {
+            navController.navigate(Navigation.ProductsSummary)
+        },
+        onProductClicked = {
+            navController.navigate(Navigation.Product(it.id))
+        },
+        onBackPressed = {
+            navController.popBackStack()
+        },
+        onLearnMore = {
+            val merchDocument = (state as? ProductsScreenState.Success)?.data?.merchDocument
+            if (merchDocument != null) {
+                navController.navigate(Navigation.Document(merchDocument))
             }
-        }
-
-        is ProductsScreenState.Success -> {
-            ProductsScreen(
-                state = state.data,
-                onSummaryClicked = {
-                    navController.navigate(Navigation.ProductsSummary)
-                },
-                onProductClicked = {
-                    navController.navigate(Navigation.Product(it.id))
-                },
-                onBackPressed = {
-                    navController.popBackStack()
-                },
-                onLearnMore = {
-                    val merchDocument = state.data.merchDocument
-                    if (merchDocument != null) {
-                        navController.navigate(Navigation.Document(merchDocument))
-                    }
-                },
-                onDismiss = {
-                    viewModel.dismiss(it)
-                },
-            )
-        }
-    }
+        },
+        onDismiss = {
+            viewModel.dismiss(it)
+        },
+    )
 }
 
 @Composable

@@ -116,7 +116,7 @@ internal fun NavigationManager.setRoutes(
 
         // Merch
         register(Navigation.Products()) {
-            Products(context, navController)
+            Products(context, navController, it.label)
         }
 
         register(Navigation.Product()) {

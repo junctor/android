@@ -1,8 +1,10 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.local.Conference
 import com.advice.core.local.products.Product
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ProductsDataSource
+import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toMerch
 import com.advice.firebase.extensions.toObjectsOrEmpty
@@ -14,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
@@ -21,10 +24,22 @@ import kotlinx.coroutines.flow.shareIn
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseProductsDataSource(
     private val userSession: UserSession,
+    private val tagsDataSource: TagsDataSource,
     private val firestore: FirebaseFirestore,
     private val analytics: FirebaseAnalytics,
 ) : ProductsDataSource {
-    private val products = userSession.getConference().flatMapMerge { conference ->
+    private val products: Flow<List<Product>> =
+        userSession.getConference().flatMapMerge { conference ->
+            combine(collectionReference(conference), tagsDataSource.get()) { products, tags ->
+                products.mapNotNull { it.toMerch(tags) }
+            }
+        }.shareIn(
+            CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            replay = 1,
+        )
+
+    private fun collectionReference(conference: Conference): Flow<List<FirebaseProduct>> =
         firestore.collection("conferences")
             .document(conference.code)
             .collection("products")
@@ -32,16 +47,9 @@ class FirebaseProductsDataSource(
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseProduct::class.java)
                     .sortedBy { it.sortOrder }
-                    .mapNotNull { it.toMerch() }
             }
-    }.shareIn(
-        CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.Lazily,
-        replay = 1,
-    )
 
     override fun get(): Flow<List<Product>> {
-
         return products
     }
 }
