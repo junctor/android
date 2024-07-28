@@ -38,7 +38,7 @@ fun ProductVariantTag(text: String, inStock: Boolean = true) {
 
 @Preview
 @Composable
-fun MerchOptionPreview() {
+private fun MerchOptionPreview() {
     ScheduleTheme {
         ProductVariantTag(text = "4XL")
     }

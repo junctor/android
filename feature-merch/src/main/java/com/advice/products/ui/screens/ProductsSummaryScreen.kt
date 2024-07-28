@@ -106,7 +106,7 @@ private fun ProductsSummaryContent(
                         shape = RoundedCornerShape(12.dp),
                     ) {
                         Image(
-                            painter = painterResource(id = com.shortstack.core.R.drawable.logo_glitch),
+                            painter = painterResource(id = com.advice.ui.R.drawable.logo_glitch),
                             contentDescription = "logo",
                             Modifier.fillMaxSize(),
                         )

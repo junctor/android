@@ -10,7 +10,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -22,19 +21,17 @@ class NotificationHelper(private val context: Context) {
     private val manager = NotificationManagerCompat.from(context)
 
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_UPDATES,
-                "Schedule Updates",
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = "Notifications about changes within the events"
-                enableLights(true)
-                lightColor = Color.MAGENTA
-            }
-
-            manager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            CHANNEL_UPDATES,
+            "Schedule Updates",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "Notifications about changes within the events"
+            enableLights(true)
+            lightColor = Color.MAGENTA
         }
+
+        manager.createNotificationChannel(channel)
     }
 
     private fun getStartingSoonNotification(event: Event): Notification = notification {
@@ -48,7 +45,7 @@ class NotificationHelper(private val context: Context) {
             setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
             setVibrate(longArrayOf(0, 250, 500, 250))
             setLights(Color.MAGENTA, 3000, 1000)
-            setSmallIcon(R.drawable.logo_clean)
+            // todo: setSmallIcon(R.drawable.logo_clean)
             color = ContextCompat.getColor(context, R.color.colorPrimary)
             setAutoCancel(true)
             block()
@@ -57,7 +54,7 @@ class NotificationHelper(private val context: Context) {
 
     private fun getPendingIntent(event: Event): PendingIntent {
         val deepLink =
-            Uri.parse("https://www.hackertracker.app/event?c=${event.conference}&e=${event.id}")
+            Uri.parse("https://hackertracker.app/event?c=${event.conference}&e=${event.id}")
 
         val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
             setPackage("com.shortstack.hackertracker")

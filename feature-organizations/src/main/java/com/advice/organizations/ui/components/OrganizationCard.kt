@@ -17,13 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.advice.ui.R
+import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.core.R
 
 @Composable
 internal fun OrganizationCard(
@@ -54,11 +55,12 @@ internal fun OrganizationCard(
                     .error(R.drawable.logo_glitch)
                     .build()
 
-                AsyncImage(
-                    model = request,
+                Image(
+                    request = request,
                     contentDescription = "logo",
                     modifier = Modifier
                         .fillMaxSize(),
+                    contentScale = ContentScale.FillWidth,
                 )
             }
 

@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
@@ -31,23 +31,22 @@ internal fun ProductCard(
     HomeCard {
         Column(
             modifier =
-                Modifier.clickable {
-                    onMerchClick()
-                },
+            Modifier.clickable {
+                onMerchClick()
+            },
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .clip(RoundedCornerShape(12.dp)),
+                Modifier
+                    .clip(RoundedCornerShape(12.dp)),
             ) {
                 if (media != null) {
-                    AsyncImage(
+                    Image(
                         model = media,
                         contentDescription = "logo",
-                        modifier =
-                            Modifier
-                                .background(Color.White)
-                                .aspectRatio(2f),
+                        modifier = Modifier
+                            .background(Color.White)
+                            .aspectRatio(2f),
                         contentScale = ContentScale.Crop,
                     )
                 } else {
@@ -60,11 +59,11 @@ internal fun ProductCard(
 
                     Box(
                         modifier =
-                            modifier
-                                .aspectRatio(2f)
-                                .background(
-                                    gradient, // Gradient background
-                                ),
+                        modifier
+                            .aspectRatio(2f)
+                            .background(
+                                gradient, // Gradient background
+                            ),
                         contentAlignment = Alignment.Center,
                     ) {
                         // Empty or additional content as needed
@@ -74,10 +73,10 @@ internal fun ProductCard(
 
             Column(
                 modifier =
-                    Modifier
-                        .background(MaterialTheme.colorScheme.surface)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                Modifier
+                    .background(MaterialTheme.colorScheme.surface)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
             ) {
                 Text(
                     "Browse Merch",
@@ -98,7 +97,7 @@ private fun MerchCardViewPreview() {
     ScheduleTheme {
         ProductCard(
             media = "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
-        ) {
-        }
+            onMerchClick = {},
+        )
     }
 }

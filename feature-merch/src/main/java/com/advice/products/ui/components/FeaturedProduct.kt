@@ -27,12 +27,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
+import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import kotlinx.coroutines.delay
@@ -107,7 +107,7 @@ private fun FeaturedProduct(
                 .aspectRatio(0.9f)
                 .background(Color.Black),
         ) {
-            AsyncImage(
+            Image(
                 model = product.media.first().url,
                 contentDescription = product.label,
                 modifier = Modifier.fillMaxSize(),

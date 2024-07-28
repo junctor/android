@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -35,6 +34,7 @@ import com.advice.schedule.data.repositories.SearchResults
 import com.advice.schedule.data.repositories.SearchState
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
+import com.advice.ui.R
 import com.advice.ui.components.EventRow
 import com.advice.ui.components.FreqAskedQuestion
 import com.advice.ui.components.Label
@@ -43,10 +43,7 @@ import com.advice.ui.components.SearchBar
 import com.advice.ui.components.Speaker
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import com.shortstack.core.R
-import timber.log.Timber
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun SearchScreen(
     navController: NavController,
@@ -211,8 +208,7 @@ private fun SearchScreenPreview() {
             conference =
             Conference.Zero,
             state = SearchState.Idle,
-            onQueryChanged = {
-            },
+            onQueryChanged = {},
         )
     }
 }

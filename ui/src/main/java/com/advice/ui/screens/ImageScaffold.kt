@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -74,13 +74,13 @@ fun ImageScaffold(
                 Box(Modifier.background(Color.Black)) {
                     val request = ImageRequest.Builder(LocalContext.current)
                         .data(url)
-                        .placeholder(com.shortstack.core.R.drawable.logo_glitch)
-                        .error(com.shortstack.core.R.drawable.logo_glitch)
+                        .placeholder(com.advice.ui.R.drawable.logo_glitch)
+                        .error(com.advice.ui.R.drawable.logo_glitch)
                         .build()
 
-                    AsyncImage(
-                        model = request,
-                        contentDescription = null,
+                    Image(
+                        request = request,
+                        contentDescription = "background image",
                         contentScale = ContentScale.FillWidth,
                         modifier = imageModifier,
                     )

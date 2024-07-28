@@ -203,7 +203,7 @@ fun OverlappingPanelsView(
 
 @Preview
 @Composable
-fun OverlappingPanelsViewStartPreview() {
+private fun OverlappingPanelsViewStartPreview() {
     ScheduleTheme {
         OverlappingPanelsView(
             currentAnchor = DragAnchors.Start,
@@ -234,7 +234,7 @@ fun OverlappingPanelsViewStartPreview() {
 
 @Preview
 @Composable
-fun OverlappingPanelsViewCenterPreview() {
+private fun OverlappingPanelsViewCenterPreview() {
     ScheduleTheme {
         OverlappingPanelsView(
             currentAnchor = DragAnchors.Center,
@@ -265,7 +265,7 @@ fun OverlappingPanelsViewCenterPreview() {
 
 @Preview
 @Composable
-fun OverlappingPanelsViewEndPreview() {
+private fun OverlappingPanelsViewEndPreview() {
     ScheduleTheme {
         OverlappingPanelsView(
             currentAnchor = DragAnchors.End,

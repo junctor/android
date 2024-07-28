@@ -36,7 +36,7 @@ import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Feedback(
+fun FeedbackScreen(
     form: FeedbackForm,
     onValueChanged: (FeedbackItem, String) -> Unit,
     onBackPressed: () -> Unit,
@@ -114,7 +114,7 @@ private fun FeedbackScreenPreview(
     @PreviewParameter(FeedbackFormProvider::class) feedback: FeedbackForm,
 ) {
     ScheduleTheme {
-        Feedback(
+        FeedbackScreen(
             form = feedback,
             onValueChanged = { _, _ -> },
             onBackPressed = {},

@@ -29,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -39,7 +38,7 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 fun SearchBar(
     onQuery: (String) -> Unit,
     onDismiss: () -> Unit,
@@ -55,11 +54,10 @@ fun SearchBar(
             onQuery(newText)
             text = newText
         },
-        modifier =
-            Modifier
-                .systemBarsPadding()
-                .fillMaxWidth()
-                .height(64.dp),
+        modifier = Modifier
+            .systemBarsPadding()
+            .fillMaxWidth()
+            .height(64.dp),
         leadingIcon = {
             IconButton(onClick = {
                 onQuery("")
@@ -80,26 +78,25 @@ fun SearchBar(
             }
         },
         keyboardOptions =
-            KeyboardOptions(
-                imeAction = ImeAction.Search,
-            ),
+        KeyboardOptions(
+            imeAction = ImeAction.Search,
+        ),
         keyboardActions =
-            KeyboardActions(
-                onSearch = {
-                    keyboardController?.hide()
-                    // todo: search?
-                },
-            ),
+        KeyboardActions(
+            onSearch = {
+                keyboardController?.hide()
+                // todo: search?
+            },
+        ),
         colors =
-            TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                focusedIndicatorColor = Color.White,
-            ),
+        TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            focusedIndicatorColor = Color.White,
+        ),
     )
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 fun SearchBar(
     query: String,
     placeholder: String,
@@ -118,8 +115,8 @@ fun SearchBar(
             text = newText
         },
         modifier =
-            modifier
-                .fillMaxWidth(),
+        modifier
+            .fillMaxWidth(),
         leadingIcon = {
             Icon(Icons.Default.Search, null)
         },
@@ -134,16 +131,16 @@ fun SearchBar(
             }
         },
         keyboardOptions =
-            KeyboardOptions(
-                imeAction = ImeAction.Search,
-            ),
+        KeyboardOptions(
+            imeAction = ImeAction.Search,
+        ),
         keyboardActions =
-            KeyboardActions(
-                onSearch = {
-                    keyboardController?.hide()
-                    // todo: search?
-                },
-            ),
+        KeyboardActions(
+            onSearch = {
+                keyboardController?.hide()
+                // todo: search?
+            },
+        ),
         placeholder = { Text(placeholder) },
         shape = RoundedCornerShape(8.dp),
     )

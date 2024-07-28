@@ -54,7 +54,7 @@ fun DocumentScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun SupportScreenViewPreview() {
+private fun SupportScreenViewPreview() {
     ScheduleTheme {
         DocumentScreen(
             document = Document(

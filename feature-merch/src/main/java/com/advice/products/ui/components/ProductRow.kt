@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalLayoutApi::class, ExperimentalLayoutApi::class)
-
 package com.advice.products.ui.components
 
 import androidx.compose.foundation.background
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,16 +25,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.utils.toCurrency
+import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
     Row(
@@ -57,8 +54,11 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
             FlowRow(
                 Modifier.fillMaxWidth(),
             ) {
-                for ((index, option) in product.variants.withIndex()) {
-                    ProductVariantTag(option.label, inStock = option.stockStatus == StockStatus.IN_STOCK)
+                for (option in product.variants) {
+                    ProductVariantTag(
+                        text = option.label,
+                        inStock = option.stockStatus == StockStatus.IN_STOCK
+                    )
                 }
             }
         }
@@ -72,7 +72,7 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
                             .offset(x = -12.dp, y = 12.dp)
                     ) {
                         Text(
-                            "${product.quantity}",
+                            text = "${product.quantity}",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 16.sp,
                             style = MaterialTheme.typography.labelLarge,
@@ -89,7 +89,10 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.Black)
                 ) {
-                    AsyncImage(model = product.media.first().url, contentDescription = null)
+                    Image(
+                        model = product.media.first().url,
+                        contentDescription = product.label,
+                    )
                 }
             }
         }
@@ -98,7 +101,7 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
 
 @PreviewLightDark
 @Composable
-fun ProductViewPreview() {
+private fun ProductViewPreview() {
     val variants = listOf(
         ProductVariant(1, "S", emptyList(), 0, StockStatus.IN_STOCK),
         ProductVariant(2, "4XL", emptyList(), 0, StockStatus.LOW_STOCK),

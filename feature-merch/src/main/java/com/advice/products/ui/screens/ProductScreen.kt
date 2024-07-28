@@ -51,7 +51,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
@@ -64,10 +63,11 @@ import com.advice.products.ui.components.PagerDots
 import com.advice.products.ui.components.QuantityAdjuster
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
+import com.advice.ui.R
+import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.shortstack.core.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -158,7 +158,7 @@ fun Product(
         ) {
             val media = product.media.firstOrNull()
             if (media != null) {
-                ImageGallery(product.media)
+                ImageGallery(product.label, product.media)
             } else {
                 PlaceHolderImage()
             }
@@ -315,7 +315,7 @@ private fun PlaceHolderImage() {
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
-private fun ImageGallery(media: List<ProductMedia>) {
+private fun ImageGallery(label: String, media: List<ProductMedia>) {
     Box {
         val scope = rememberCoroutineScope()
         val state = rememberPagerState {
@@ -334,9 +334,9 @@ private fun ImageGallery(media: List<ProductMedia>) {
         }
 
         HorizontalPager(state = state) {
-            AsyncImage(
+            Image(
                 model = media[it].url,
-                contentDescription = null,
+                contentDescription = label,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
             )

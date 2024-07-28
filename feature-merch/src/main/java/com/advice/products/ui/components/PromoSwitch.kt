@@ -45,7 +45,7 @@ fun PromoSwitch(
 
 @PreviewLightDark
 @Composable
-fun PromoSwitchPreview() {
+private fun PromoSwitchPreview() {
     ScheduleTheme {
         PromoSwitch(
             title = "Goon Discount",

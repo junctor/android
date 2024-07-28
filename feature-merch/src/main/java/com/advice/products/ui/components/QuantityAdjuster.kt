@@ -68,7 +68,7 @@ fun QuantityAdjuster(
 
 @PreviewLightDark
 @Composable
-fun QuantityViewPreview() {
+private fun QuantityViewPreview() {
     ScheduleTheme {
         QuantityAdjuster(1, {}, canDelete = true)
     }

@@ -22,11 +22,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.utils.toCurrency
+import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
@@ -70,7 +70,7 @@ internal fun EditableProduct(
                             .background(Color.White)
                             .size(64.dp)
                     ) {
-                        AsyncImage(
+                        Image(
                             model = product.media.first().url,
                             contentDescription = product.label,
                             contentScale = ContentScale.Crop,
