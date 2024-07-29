@@ -2,6 +2,7 @@ package com.advice.products.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.advice.core.local.Tag
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
 import com.advice.core.utils.Storage
@@ -106,7 +107,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         json: String? = null,
     ) {
         val data = ProductsState(
-            groups = products.groupBy { it.tags.first() },
+            groups = products.groupBy { it.tags.firstOrNull() ?: Tag(1, "Other", "", "", -1) },
             informationList = getInformationList(),
             merchDocument = merchDocument,
             merchMandatoryAcknowledgement = merchMandatoryAcknowledgement,

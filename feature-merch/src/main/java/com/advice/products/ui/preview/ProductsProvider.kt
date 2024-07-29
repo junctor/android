@@ -14,9 +14,9 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
     override val values: Sequence<ProductsState>
         get() {
             val options = listOf(
-                ProductVariant(1, "S", emptyList(), 0, StockStatus.IN_STOCK),
-                ProductVariant(2, "4XL", emptyList(), 0, StockStatus.LOW_STOCK),
-                ProductVariant(3, "5XL", emptyList(), 1000, StockStatus.OUT_OF_STOCK)
+                ProductVariant(1, "S", emptyList(), 35_00, StockStatus.IN_STOCK),
+                ProductVariant(2, "4XL", emptyList(), 40_00, StockStatus.LOW_STOCK),
+                ProductVariant(3, "5XL", emptyList(), 45_00, StockStatus.OUT_OF_STOCK)
             )
             val tag = Tag(1L, "Clothing", "T-Shirts", "#FF066", -1)
             val product = Product(
@@ -29,9 +29,13 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                     ProductMedia(
                         url = "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
                         sortOrder = 0,
+                    ),
+                    ProductMedia(
+                        url = "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
+                        sortOrder = 1,
                     )
                 ),
-                quantity = 0,
+                quantity = 1,
                 tags = listOf(tag),
             )
 

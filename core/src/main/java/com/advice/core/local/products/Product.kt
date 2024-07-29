@@ -45,15 +45,12 @@ data class Product(
     val requiresSelection: Boolean
         get() = variants.size > 1
 
-    val variantCost: Long
-        get() = baseCost + (variant?.extraCost ?: 0)
-
-    val totalCost: Long
-        get() = variantCost * quantity
+    val currentCost: Long
+        get() = variant?.price ?: baseCost
 
     fun update(selection: ProductSelection): Product {
         val extraCost = if (selection.selectionOption != null) {
-            variants.find { it.label == selection.selectionOption }?.extraCost ?: 0
+            variants.find { it.label == selection.selectionOption }?.price ?: 0
         } else {
             0
         }
@@ -65,6 +62,4 @@ data class Product(
             cost = cost,
         )
     }
-
-    fun hasMedia(): Boolean = media.isNotEmpty()
 }

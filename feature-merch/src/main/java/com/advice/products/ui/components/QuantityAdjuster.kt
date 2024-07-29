@@ -30,14 +30,13 @@ fun QuantityAdjuster(
 ) {
     Row(
         modifier
-            // .border(1.dp, HotPink, RoundedCornerShape(32.dp))
-            .background(MaterialTheme.colorScheme.onSurface, RoundedCornerShape(32.dp))
+            .background(MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = { onQuantityChanged(quantity - 1) },
-            Modifier.size(24.dp),
+        QualityButton(
+            onQuantityChanged = { onQuantityChanged(quantity - 1) },
+            quantity = quantity,
             enabled = enabled && (canDelete || quantity > 1)
         ) {
             Icon(
@@ -53,16 +52,32 @@ fun QuantityAdjuster(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
-        IconButton(
-            onClick = { onQuantityChanged(quantity + 1) },
-            Modifier.size(24.dp),
-            enabled = enabled
+        QualityButton(
+            onQuantityChanged = { onQuantityChanged(quantity + 1) },
+            quantity = quantity,
+            enabled = enabled,
         ) {
             Icon(
                 painterResource(R.drawable.ic_add), null,
                 tint = MaterialTheme.colorScheme.surface
             )
         }
+    }
+}
+
+@Composable
+private fun QualityButton(
+    onQuantityChanged: (Int) -> Unit,
+    quantity: Int,
+    enabled: Boolean,
+    content: @Composable () -> Unit
+) {
+    IconButton(
+        onClick = { onQuantityChanged(quantity) },
+        modifier = Modifier.size(14.dp),
+        enabled = enabled
+    ) {
+        content()
     }
 }
 

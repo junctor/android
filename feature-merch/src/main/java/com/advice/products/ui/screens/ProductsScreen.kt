@@ -64,7 +64,6 @@ fun ProductsScreen(
                         Icon(
                             painterResource(id = com.advice.ui.R.drawable.arrow_back),
                             "Back",
-                            tint = Color.White
                         )
                     }
                 },

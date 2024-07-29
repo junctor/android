@@ -521,29 +521,31 @@ fun FirebaseFAQ.toFAQ() = FAQ(question, answer)
 
 fun FirebaseProduct.toMerch(tagTypes: List<TagType>): Product? =
     try {
+        val defaultTags = listOf(Tag(1, "Other", "", "", -1))
+        val productTags = tags.mapNotNull { id ->
+            tagTypes.flatMap { it.tags }.find { it.id == id }
+        }
         Product(
             id = id,
             code = code,
             label = title,
             baseCost = priceMin,
-            variants = variants.mapNotNull { it.toMerchOption(priceMin) },
+            variants = variants.mapNotNull { it.toMerchOption() },
             media = media.mapNotNull { it.toProductMedia() },
-            tags = tags.mapNotNull { id ->
-                tagTypes.flatMap { it.tags }.find { it.id == id }
-            },
+            tags = productTags.ifEmpty { defaultTags },
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Merch: ${ex.message}")
         null
     }
 
-fun FirebaseProductVariant.toMerchOption(basePrice: Long): ProductVariant? =
+fun FirebaseProductVariant.toMerchOption(): ProductVariant? =
     try {
         ProductVariant(
             id = variantId,
             label = title,
             tags = tags,
-            extraCost = price - basePrice,
+            price = price,
             stockStatus = StockStatus.fromString(stockStatus) ?: StockStatus.IN_STOCK,
         )
     } catch (ex: Exception) {

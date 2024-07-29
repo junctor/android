@@ -30,6 +30,7 @@ private val LightColorPalette =
         inversePrimary = SugarHearts,
         secondary = CertainFrogs,
         onPrimary = Color.White,
+        errorContainer = Color(0xFFB00020),
     /* Other default colors to override
     background = Color.White,
     surface = Color.White,
