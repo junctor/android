@@ -17,6 +17,10 @@ import java.util.EnumMap
 
 fun List<Product>.toJson(): String? {
     try {
+        if (isEmpty()) {
+            return null
+        }
+
         // if the product is out of stock, we can't generate a QR code
         if (any { it.variant?.stockStatus == StockStatus.OUT_OF_STOCK }) {
             Timber.e("summary contains a product that is out of stock, can't generate QR code.")
