@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.MapFile
 import com.advice.ui.R
+import com.advice.ui.components.BackButton
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.PdfDisplay
 import com.advice.ui.components.ProgressSpinner
@@ -194,12 +195,7 @@ private fun EmptyScreen(onBackPressed: () -> Unit) {
             CenterAlignedTopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            painterResource(id = R.drawable.arrow_back),
-                            null,
-                        )
-                    }
+                    BackButton(onBackPressed)
                 },
                 colors =
                     TopAppBarDefaults.centerAlignedTopAppBarColors(

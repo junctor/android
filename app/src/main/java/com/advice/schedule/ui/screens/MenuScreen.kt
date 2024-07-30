@@ -13,8 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -22,11 +20,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
-import com.advice.ui.R
+import com.advice.ui.components.BackButton
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.MenuIcon
 import com.advice.ui.components.ProgressSpinner
@@ -41,9 +38,7 @@ fun MenuScreen(
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text(label) }, navigationIcon = {
-            IconButton(onClick = { onBackPressed() }) {
-                Icon(painterResource(R.drawable.arrow_back), null)
-            }
+            BackButton(onBackPressed)
         })
     }) {
         Box(Modifier.padding(it)) {

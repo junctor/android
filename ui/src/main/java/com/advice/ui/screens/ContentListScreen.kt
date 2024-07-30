@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Content
 import com.advice.ui.components.ContentRow
 import com.advice.ui.states.ContentScreenState
-import com.advice.ui.theme.roundedCornerShape
+import com.advice.ui.theme.topRoundedCornerShape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +47,7 @@ fun ContentListScreen(
         },
         modifier =
             Modifier
-                .clip(roundedCornerShape),
+                .clip(topRoundedCornerShape),
     ) {
         ContentScreenContent(state, onContentClick, onBookmark, Modifier.padding(it))
     }

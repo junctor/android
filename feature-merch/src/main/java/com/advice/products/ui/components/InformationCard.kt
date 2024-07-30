@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Info
@@ -22,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.roundedCornerShape
 
 data class DismissibleInformation(
     val key: String,
@@ -41,7 +41,7 @@ fun InformationCard(
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(8.dp)
+                shape = roundedCornerShape,
             )
             .padding(start = 16.dp)
             .padding(vertical = 16.dp),

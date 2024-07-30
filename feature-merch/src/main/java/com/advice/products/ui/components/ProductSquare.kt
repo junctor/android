@@ -69,6 +69,7 @@ fun ProductSquare(
                     .align(Alignment.BottomEnd)
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.End,
             ) {
                 if (product.stockStatus == StockStatus.LOW_STOCK) {
                     LowStockLabel()
@@ -77,7 +78,7 @@ fun ProductSquare(
                 if (product.stockStatus == StockStatus.OUT_OF_STOCK) {
                     OutOfStockLabel()
                 } else {
-                    LabelBadge(
+                    PriceLabel(
                         text = product.baseCost.toCurrency(showCents = true),
                     )
                 }

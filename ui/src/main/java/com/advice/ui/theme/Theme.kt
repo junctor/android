@@ -21,6 +21,7 @@ private val DarkColorPalette =
         onBackground = Color.White,
         onSurface = Color.White,
         outline = Color.White.copy(alpha = 0.12f),
+        onErrorContainer = Color.White,
         errorContainer = Color(0xFFB00020),
     )
 
@@ -30,6 +31,7 @@ private val LightColorPalette =
         inversePrimary = SugarHearts,
         secondary = CertainFrogs,
         onPrimary = Color.White,
+        onErrorContainer = Color.White,
         errorContainer = Color(0xFFB00020),
     /* Other default colors to override
     background = Color.White,

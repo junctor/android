@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Tag
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
+import com.advice.core.local.products.ProductVariant
 import com.advice.core.utils.Storage
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.state.ProductsScreenState
@@ -84,7 +85,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         )
     }
 
-    fun setQuantity(id: Long, quantity: Int, selectedOption: String?) {
+    fun setQuantity(id: Long, quantity: Int, selectedOption: ProductVariant?) {
         viewModelScope.launch {
             cart.setQuantity(id, quantity, selectedOption)
             updateList()

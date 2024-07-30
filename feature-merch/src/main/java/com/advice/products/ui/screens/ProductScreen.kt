@@ -14,17 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -47,15 +40,17 @@ import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.ImageGallery
-import com.advice.products.ui.components.LabelBadge
+import com.advice.products.ui.components.LabelButton
 import com.advice.products.ui.components.LegalLabel
 import com.advice.products.ui.components.LowStockLabel
 import com.advice.products.ui.components.OutOfStockLabel
+import com.advice.products.ui.components.PriceLabel
 import com.advice.products.ui.components.QuantityAdjuster
 import com.advice.products.ui.components.VariantsBottomSheet
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
 import com.advice.ui.R
+import com.advice.ui.components.BackButton
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
@@ -73,7 +68,7 @@ fun ProductScreen(
     }
 
     var selection by remember {
-        mutableStateOf(if (!product.requiresSelection) product.variants.first() else null)
+        mutableStateOf(product.selectedOption)
     }
 
     var showing by remember { mutableStateOf(false) }
@@ -82,16 +77,7 @@ fun ProductScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
-                    IconButton(
-                        onClick = onBackPressed,
-                        colors = IconButtonDefaults.iconButtonColors(),
-                    ) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            "Close",
-                            tint = Color.White,
-                        )
-                    }
+                    BackButton(onBackPressed)
                 },
                 title = { },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
@@ -162,7 +148,7 @@ fun Product(
             ) {
                 Text(product.label, fontWeight = FontWeight.SemiBold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    LabelBadge(product.currentCost.toCurrency(showCents = true))
+                    PriceLabel(product.currentCost.toCurrency(showCents = true))
                     Spacer(Modifier.weight(1f))
                     if (product.stockStatus == StockStatus.LOW_STOCK) {
                         LowStockLabel()
@@ -235,15 +221,22 @@ private fun FooterButton(
     onAddClicked: (ProductSelection) -> Unit,
     quantity: Int
 ) {
-    val enabled = selection != null
-    Button(
+    val enabled = !product.requiresSelection || selection != null
+    val label = if (enabled) {
+        stringResource(com.advice.products.R.string.add_to_cart)
+    } else {
+        stringResource(com.advice.products.R.string.add_to_cart_disabled)
+    }
+
+    LabelButton(
+        label = label,
         onClick = {
             if (enabled || !product.requiresSelection) {
                 onAddClicked(
                     ProductSelection(
                         id = product.id,
                         quantity = quantity,
-                        selectionOption = selection?.label,
+                        variant = selection,
                     ),
                 )
             }
@@ -252,16 +245,7 @@ private fun FooterButton(
             .padding(horizontal = 16.dp)
             .fillMaxWidth(),
         enabled = enabled,
-        shape = RoundedCornerShape(4.dp),
-    ) {
-        val label = if (enabled) {
-            stringResource(com.advice.products.R.string.add_to_cart)
-        } else {
-            stringResource(com.advice.products.R.string.add_to_cart_disabled)
-        }
-
-        Text(label, modifier = Modifier.padding(vertical = 4.dp))
-    }
+    )
 }
 
 @Composable
@@ -288,6 +272,26 @@ private fun ProductScreenPreview(
     ScheduleTheme {
         ProductScreen(
             product = state.products.first(),
+            taxStatement = state.merchTaxStatement,
+            canAdd = true,
+            onAddClicked = {},
+            onBackPressed = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ProductScreenVariantSelectedPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
+    ScheduleTheme {
+        val product = state.products.first()
+        ProductScreen(
+            product = product.copy(
+                quantity = 1,
+                selectedOption = product.variants.last(),
+            ),
             taxStatement = state.merchTaxStatement,
             canAdd = true,
             onAddClicked = {},

@@ -12,22 +12,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Speaker
-import com.advice.ui.R
+import com.advice.ui.components.BackButton
 import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.EventRow
 import com.advice.ui.components.NoDetailsView
@@ -61,9 +58,7 @@ fun SpeakerScreen(
                 }
             }
         }, navigationIcon = {
-            IconButton(onClick = onBackPress) {
-                Icon(painterResource(id = R.drawable.arrow_back), null)
-            }
+            BackButton(onBackPress)
         })
     }) {
         Box(Modifier.padding(it)) {

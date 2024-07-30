@@ -13,5 +13,5 @@
     <string name="badge_error">X</string>
     <string name="low_stock_message">Low Stock</string>
     <string name="out_of_stock_message">Out of Stock</string>
-    <string name="select_variant">--</string>
+    <string name="select_variant">-</string>
 </resources>

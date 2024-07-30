@@ -40,9 +40,9 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
             )
 
             val elements = listOf(
-                product.copy(quantity = 1),
-                product.copy(variants = listOf(options[1])),
-                product.copy(variants = listOf(options.last())),
+                product.copy(quantity = 1, selectedOption = null),
+                product.copy(variants = listOf(options.first()), selectedOption = options.first()),
+                product.copy(variants = listOf(options.last()), selectedOption = options.last()),
             )
 
             return listOf(

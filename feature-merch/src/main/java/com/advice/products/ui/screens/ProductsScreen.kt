@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -32,9 +30,11 @@ import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.DismissibleInformation
 import com.advice.products.ui.components.InformationCard
+import com.advice.products.ui.components.LabelButton
 import com.advice.products.ui.components.LegalLabel
 import com.advice.products.ui.components.ProductsRow
 import com.advice.products.ui.preview.ProductsProvider
+import com.advice.ui.components.BackButton
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.PreviewLightDark
@@ -58,14 +58,7 @@ fun ProductsScreen(
                     Text(label)
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = onBackPressed
-                    ) {
-                        Icon(
-                            painterResource(id = com.advice.ui.R.drawable.arrow_back),
-                            "Back",
-                        )
-                    }
+                    BackButton(onBackPressed)
                 },
                 actions = {
                     if (state is ProductsScreenState.Success && state.data.merchDocument != null) {
@@ -103,15 +96,14 @@ fun ProductsScreen(
 
                         val itemCount = state.data.cart.sumOf { it.quantity }
                         if (itemCount > 0) {
-                            Button(
+                            LabelButton(
+                                label = "View List ($itemCount)",
                                 onClick = onSummaryClicked,
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .padding(16.dp)
                                     .fillMaxWidth(),
-                            ) {
-                                Text("View List ($itemCount)")
-                            }
+                            )
                         }
                     }
                 }

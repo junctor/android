@@ -1,14 +1,15 @@
 package com.advice.products.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.products.R
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.roundedCornerShape
 
 @Composable
 fun QuantityAdjuster(
@@ -30,25 +32,25 @@ fun QuantityAdjuster(
 ) {
     Row(
         modifier
-            .background(MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
-            .padding(12.dp),
+            .background(iconButtonBackgroundColor, roundedCornerShape),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val canDecrement = enabled && (canDelete || quantity > 1)
         QualityButton(
             onQuantityChanged = { onQuantityChanged(quantity - 1) },
             quantity = quantity,
-            enabled = enabled && (canDelete || quantity > 1)
+            enabled = canDecrement
         ) {
             Icon(
-                painterResource(if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
-                null,
-                tint = MaterialTheme.colorScheme.surface.copy(alpha = if (!enabled) 0.5f else 1.0f),
+                painter = painterResource(id = if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
+                contentDescription = "Decrease quantity",
+                tint = iconButtonForegroundColor.copy(alpha = if (canDecrement) 1f else 0.5f),
             )
         }
         Text(
             quantity.toString(),
-            Modifier.defaultMinSize(minWidth = 48.dp),
-            color = MaterialTheme.colorScheme.surface,
+            Modifier.defaultMinSize(minWidth = 24.dp),
+            color = iconButtonForegroundColor,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
@@ -58,8 +60,9 @@ fun QuantityAdjuster(
             enabled = enabled,
         ) {
             Icon(
-                painterResource(R.drawable.ic_add), null,
-                tint = MaterialTheme.colorScheme.surface
+                painter = painterResource(R.drawable.ic_add),
+                contentDescription = "Increase quantity",
+                tint = iconButtonForegroundColor,
             )
         }
     }
@@ -72,12 +75,18 @@ private fun QualityButton(
     enabled: Boolean,
     content: @Composable () -> Unit
 ) {
-    IconButton(
-        onClick = { onQuantityChanged(quantity) },
-        modifier = Modifier.size(14.dp),
-        enabled = enabled
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .clickable(enabled = enabled) { onQuantityChanged(quantity) },
     ) {
-        content()
+        Box(
+            modifier = Modifier
+                .size(14.dp)
+                .align(Alignment.Center)
+        ) {
+            content()
+        }
     }
 }
 
@@ -85,6 +94,44 @@ private fun QualityButton(
 @Composable
 private fun QuantityViewPreview() {
     ScheduleTheme {
-        QuantityAdjuster(1, {}, canDelete = true)
+        Surface {
+            QuantityAdjuster(
+                quantity = 1,
+                onQuantityChanged = {},
+                canDelete = true,
+                modifier = Modifier.padding(16.dp),
+            )
+        }
     }
 }
+
+@PreviewLightDark
+@Composable
+private fun QuantityViewMultipleQuantityPreview() {
+    ScheduleTheme {
+        Surface {
+            QuantityAdjuster(
+                quantity = 7,
+                onQuantityChanged = {},
+                canDelete = true,
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun QuantityViewDisabledDeletePreview() {
+    ScheduleTheme {
+        Surface {
+            QuantityAdjuster(
+                quantity = 1,
+                onQuantityChanged = {},
+                canDelete = false,
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+

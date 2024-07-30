@@ -16,7 +16,7 @@ data class Product(
     val quantity: Int = 0,
     val cost: Long = baseCost * quantity,
     val tags: List<Tag>,
-    val selectedOption: String? = null,
+    val selectedOption: ProductVariant? = null,
 ) : Parcelable {
 
     val inStock: Boolean
@@ -40,7 +40,7 @@ data class Product(
         }
 
     val variant: ProductVariant?
-        get() = variants.find { it.label == selectedOption }
+        get() = variants.find { it == selectedOption }
 
     val requiresSelection: Boolean
         get() = variants.size > 1
@@ -49,16 +49,16 @@ data class Product(
         get() = variant?.price ?: baseCost
 
     fun update(selection: ProductSelection): Product {
-        val extraCost = if (selection.selectionOption != null) {
-            variants.find { it.label == selection.selectionOption }?.price ?: 0
+        val variantCost = if (selection.variant != null) {
+            variants.find { it == selection.variant }?.price ?: 0
         } else {
-            0
+            baseCost
         }
 
-        val cost = (baseCost + extraCost) * selection.quantity
+        val cost = variantCost * selection.quantity
         return copy(
             quantity = selection.quantity,
-            selectedOption = selection.selectionOption,
+            selectedOption = selection.variant,
             cost = cost,
         )
     }
