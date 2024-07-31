@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,12 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
+import com.advice.products.R
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
@@ -121,6 +120,7 @@ internal fun EditableProduct(
                                 MaterialTheme.colorScheme.errorContainer,
                                 shape = roundedCornerShape
                             )
+                            .height(32.dp)
                             .padding(horizontal = 8.dp, vertical = 0.dp)
                             .align(Alignment.End),
                         verticalAlignment = Alignment.CenterVertically,
@@ -133,8 +133,8 @@ internal fun EditableProduct(
                         )
 
                         Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Options",
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            contentDescription = "Delete",
                             tint = iconButtonForegroundColor,
                             modifier = Modifier
                                 .size(14.dp),
@@ -147,7 +147,7 @@ internal fun EditableProduct(
                         QuantityAdjuster(
                             quantity = product.quantity,
                             onQuantityChanged = onQuantityChanged,
-                            canDelete = true,
+                            canDelete = false,
                             enabled = inStock,
                             modifier = Modifier.height(32.dp),
                         )
@@ -155,10 +155,11 @@ internal fun EditableProduct(
                         Spacer(modifier = Modifier.weight(1f))
 
                         IconButton(
-                            icon = Icons.Default.MoreVert,
+                            icon = painterResource(id = R.drawable.ic_delete),
                             onClick = {
-                                // todo: show options
+                                onQuantityChanged(0)
                             },
+                            backgroundColor = MaterialTheme.colorScheme.errorContainer,
                         )
                     }
                 }
