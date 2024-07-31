@@ -67,7 +67,7 @@ private fun ImageGalleryPreview() {
         Surface(Modifier.background(Color.Red)) {
             ImageGallery(
                 listOf(
-                    ProductMedia("https://via.placeholder.com/150", 1),
+                    ProductMedia("https://via.placeholder.com/150"),
                 )
             )
         }
@@ -81,8 +81,8 @@ private fun ImageGalleryMultiplePreview() {
         Surface(Modifier.background(Color.Red)) {
             ImageGallery(
                 listOf(
-                    ProductMedia("https://via.placeholder.com/150", 1),
-                    ProductMedia("https://via.placeholder.com/150", 2),
+                    ProductMedia("https://via.placeholder.com/150"),
+                    ProductMedia("https://via.placeholder.com/150"),
                 )
             )
         }

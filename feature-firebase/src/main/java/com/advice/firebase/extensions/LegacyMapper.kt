@@ -530,8 +530,9 @@ fun FirebaseProduct.toMerch(tagTypes: List<TagType>): Product? =
             code = code,
             label = title,
             baseCost = priceMin,
-            variants = variants.mapNotNull { it.toMerchOption() },
-            media = media.mapNotNull { it.toProductMedia() },
+            variants = variants.sortedWith(compareBy({ it.stockStatus }, { it.sortOrder }))
+                .mapNotNull { it.toMerchOption() },
+            media = media.sortedBy { it.sortOrder }.mapNotNull { it.toProductMedia() },
             tags = productTags.ifEmpty { defaultTags },
         )
     } catch (ex: Exception) {
@@ -557,7 +558,6 @@ fun FirebaseProductMedia.toProductMedia(): ProductMedia? =
     try {
         ProductMedia(
             url = url,
-            sortOrder = sortOrder,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to ProductMedia: ${ex.message}")

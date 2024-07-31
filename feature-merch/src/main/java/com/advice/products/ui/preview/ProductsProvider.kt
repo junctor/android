@@ -28,11 +28,9 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                 media = listOf(
                     ProductMedia(
                         url = "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
-                        sortOrder = 0,
                     ),
                     ProductMedia(
                         url = "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
-                        sortOrder = 1,
                     )
                 ),
                 quantity = 1,
