@@ -1,7 +1,7 @@
 package com.advice.core.local
 
 import android.os.Parcelable
-import com.advice.core.local.feedback.FeedbackForm
+import com.advice.core.local.feedback.ContentFeedbackForm
 import kotlinx.parcelize.Parcelize
 import java.time.Instant
 
@@ -71,5 +71,5 @@ data class Content(
     val media: List<OrganizationMedia>,
     var isBookmarked: Boolean = false,
     val sessions: List<Session>,
-    val feedback: FeedbackForm? = null,
+    val feedback: ContentFeedbackForm? = null,
 ) : Parcelable

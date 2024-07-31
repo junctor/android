@@ -27,6 +27,7 @@ import com.advice.core.local.StockStatus
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.Vendor
+import com.advice.core.local.feedback.ContentFeedbackForm
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.local.feedback.FeedbackItem
 import com.advice.core.local.feedback.FeedbackOption
@@ -215,7 +216,7 @@ fun FirebaseContent.toContents(
             val location = locations.find { it.id == session.locationId }
 
             if (location == null) {
-                // todo: Timber.e("Could not find location for session: $title")
+                Timber.e("Could not find location for session: $title")
                 return@mapNotNull null
             }
 
@@ -234,8 +235,16 @@ fun FirebaseContent.toContents(
 
         val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == id.toString() }
 
-        // todo: pass the enable/disable dates.
         val feedback = feedbackforms.find { it.id == feedbackFormId }
+        val feedbackForm = if (feedback != null) {
+            ContentFeedbackForm(
+                enable = feedbackEnableTimestamp?.toDate()?.toInstant(),
+                disable = feedbackDisableTimestamp?.toDate()?.toInstant(),
+                form = feedback,
+            )
+        } else {
+            null
+        }
 
         return Content(
             id = id,
@@ -249,7 +258,7 @@ fun FirebaseContent.toContents(
             media = media.mapNotNull { it.toMedia() },
             isBookmarked = isBookmarked,
             sessions = new_sessions,
-            feedback = feedback,
+            feedback = feedbackForm,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Content: ${ex.message}")

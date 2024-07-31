@@ -350,11 +350,13 @@ private fun EventScreenContent(
         if (feedback != null) {
             Spacer(Modifier.height(32.dp))
             ClickableUrl(
-                label = feedback.title, url = "Feedback Form",
+                label = feedback.title,
+                url = "Feedback Form",
                 onClick = {
-                    onFeedbackClicked(feedback)
+                    onFeedbackClicked(feedback.form)
                 },
                 modifier = Modifier.padding(horizontal = 16.dp),
+                enabled = feedback.isEnabled,
             )
         }
 
