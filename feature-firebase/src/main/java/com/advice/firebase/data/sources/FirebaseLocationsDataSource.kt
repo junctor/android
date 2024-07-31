@@ -9,6 +9,7 @@ import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.location.FirebaseLocation
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseLocationsDataSource(
@@ -37,7 +39,7 @@ class FirebaseLocationsDataSource(
                     val locations =
                         querySnapshot.toObjectsOrEmpty(FirebaseLocation::class.java)
                             .sortedBy { it.hierExtentLeft }
-                    getChildrenNodes(locations, parent = 0)
+                    getChildrenNodes(locations)
                 }
         }.stateIn(
             scope = CoroutineScope(Dispatchers.IO),
@@ -49,12 +51,25 @@ class FirebaseLocationsDataSource(
 
     private fun getChildrenNodes(
         locations: List<FirebaseLocation>,
-        parent: Long,
+        parent: Long = 0,
     ): List<Location> {
         val nodes = locations.filter { it.parentId == parent }
         return nodes.mapNotNull {
             val children = getChildrenNodes(locations, it.id)
             it.toLocation(children)
         }
+    }
+
+    override suspend fun fetch(conference: String): List<Location> {
+        val snapshot = firestore.collection("conferences")
+            .document(conference)
+            .collection("locations")
+            .get(Source.CACHE)
+            .await()
+
+        val locations = snapshot.toObjectsOrEmpty(FirebaseLocation::class.java)
+            .sortedBy { it.hierExtentLeft }
+
+        return getChildrenNodes(locations)
     }
 }

@@ -9,6 +9,7 @@ import com.advice.firebase.extensions.toSpeaker
 import com.advice.firebase.models.FirebaseSpeaker
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import timber.log.Timber
+import kotlinx.coroutines.tasks.await
 import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -46,4 +47,17 @@ class FirebaseSpeakersDataSource(
         )
 
     override fun get(): Flow<List<Speaker>> = speakers
+
+    override suspend fun fetch(conference: String): List<Speaker> {
+        val snapshot = firestore.collection("conferences")
+            .document(conference)
+            .collection("speakers")
+            .get(Source.CACHE)
+            .await()
+
+        return snapshot.toObjectsOrEmpty(FirebaseSpeaker::class.java)
+            .filter { !it.hidden || userSession.isDeveloper }
+            .mapNotNull { it.toSpeaker() }
+            .sortedBy { it.name.lowercase(Locale.getDefault()) }
+    }
 }

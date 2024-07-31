@@ -23,9 +23,8 @@ class ContentRepository(
 
     suspend fun getContent(
         conference: String,
-        id: Long,
-    ): Content? = contentDataSource.getContent(conference, id)
-
+        contentId: Long,
+    ): Content? = contentDataSource.getContent(conference, contentId)
 
     suspend fun bookmark(content: Content) {
         contentDataSource.bookmark(content)

@@ -16,7 +16,6 @@ import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.data.ConferenceState
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toContents
-import com.advice.firebase.extensions.toEvents
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseContent
@@ -32,6 +31,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 class FirebaseContentDataSource(
     private val userSession: UserSession,
@@ -123,43 +123,51 @@ class FirebaseContentDataSource(
         return bookmarkedEventsDataSource.isBookmarked(session)
     }
 
-    override suspend fun getContent(conference: String, id: Long): Content? {
-        val tags = tagsDataSource.get().first()
-        val speakers = speakersDataSource.get().first()
-        val locations = locationsDataSource.get().first().flatten()
+    override suspend fun getContent(conference: String, contentId: Long): Content? {
+        val tags = tagsDataSource.fetch(conference)
+        val speakers = speakersDataSource.fetch(conference)
+        val locations = locationsDataSource.fetch(conference).flatten()
         val bookmarks = bookmarkedEventsDataSource.get().first()
-        val feedbackforms = feedbackDataSource.get().first().toResultOrNull() ?: emptyList()
+        val feedbackforms = feedbackDataSource.fetch(conference)
 
-        val content = getFirebaseContentOrNull(conference, id)
-            ?.toContents(
-                code = conference,
-                tags = tags,
-                speakers = speakers,
-                bookmarkedEvents = bookmarks,
-                locations = locations,
-                feedbackforms = feedbackforms,
-            )
+        val firebaseContent = getFirebaseContentOrNull(conference, contentId)
+        if (firebaseContent == null) {
+            Timber.e("Content not found: $contentId")
+            return null
+        }
+
+        val content = firebaseContent.toContents(
+            code = conference,
+            tags = tags,
+            speakers = speakers,
+            bookmarkedEvents = bookmarks,
+            locations = locations,
+            feedbackforms = feedbackforms,
+        )
+
+        if (content == null) {
+            Timber.e("Could not map FirebaseContent to Content: $contentId")
+            return null
+        }
 
         return content
     }
 
-    override suspend fun getEvent(conference: String, id: Long): Event? {
-        val tags = tagsDataSource.get().first()
-        val speakers = speakersDataSource.get().first()
-        val locations = locationsDataSource.get().first().flatten()
-        val bookmarks = bookmarkedEventsDataSource.get().first()
+    override suspend fun getEvent(conference: String, contentId: Long, sessionId: Long): Event? {
+        val content = getContent(conference, contentId)
 
-        val event = getFirebaseContentOrNull(conference, id)
-            ?.toEvents(
-                code = conference,
-                tags = tags,
-                speakers = speakers,
-                bookmarkedEvents = bookmarks,
-                locations = locations,
-            )
+        if (content == null) {
+            Timber.e("Could not map FirebaseContent to Content: $contentId")
+            return null
+        }
 
-        // todo: this is a hack to get the first event from the list.
-        return event?.firstOrNull()
+        val session = content.sessions.find { it.id == sessionId }
+        if (session == null) {
+            Timber.e("Could not find session: $sessionId")
+            return null
+        }
+
+        return Event(content, session)
     }
 
     private suspend fun getFirebaseContentOrNull(

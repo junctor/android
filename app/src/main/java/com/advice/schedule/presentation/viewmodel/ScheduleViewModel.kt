@@ -45,19 +45,19 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
 
     private suspend fun getEvent(
         conference: String,
-        id: Long,
-        session: Long?
+        contentId: Long,
+        sessionId: Long?
     ) {
-        val content = contentRepository.getContent(conference, id)
+        val content = contentRepository.getContent(conference, contentId)
 
         if (content == null) {
-            Timber.e("Content not found")
+            Timber.e("Content not found - showing error state")
             _state.value = EventScreenState.Error("Content not found")
             return
         }
 
         // Find the session, if session is not null.
-        _state.value = EventScreenState.Success(content, content.sessions.find { it.id == session })
+        _state.value = EventScreenState.Success(content, content.sessions.find { it.id == sessionId })
     }
 
     private suspend fun refreshEvent() {

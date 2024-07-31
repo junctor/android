@@ -18,6 +18,7 @@ class ReminderWorker(
     private val notificationHelper by inject<NotificationHelper>()
 
     override suspend fun doWork(): Result {
+        Timber.d("ReminderWorker.doWork()")
         val conference = inputData.getString(INPUT_CONFERENCE)
         if (conference == null) {
             Timber.e("Could not fetch the current conference.")
@@ -30,7 +31,13 @@ class ReminderWorker(
             return Result.failure()
         }
 
-        val event = eventsDataSource.getEvent(conference, id)
+        val session = inputData.getLong(INPUT_SESSION_ID, -1)
+        if (session == -1L) {
+            Timber.e("Could not get the target session from the inputData.")
+            return Result.failure()
+        }
+
+        val event = eventsDataSource.getEvent(conference, id, session)
         if (event == null) {
             Timber.e("Could not find the target event.")
             return Result.failure()
@@ -50,5 +57,6 @@ class ReminderWorker(
     companion object {
         const val INPUT_CONFERENCE = "INPUT_CONFERENCE"
         const val INPUT_ID = "INPUT_ID"
+        const val INPUT_SESSION_ID = "INPUT_SESSION_ID"
     }
 }

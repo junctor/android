@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface FeedbackDataSource {
     fun get(): Flow<FlowResult<List<FeedbackForm>>>
+    suspend fun fetch(conference: String): List<FeedbackForm>
 }

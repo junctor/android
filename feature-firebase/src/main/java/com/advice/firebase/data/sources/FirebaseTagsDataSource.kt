@@ -10,6 +10,7 @@ import com.advice.firebase.extensions.toTagType
 import com.advice.firebase.models.FirebaseTagType
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseTagsDataSource(
@@ -76,4 +78,17 @@ class FirebaseTagsDataSource(
             }
             temp
         }
+
+    override suspend fun fetch(conference: String): List<TagType> {
+        val snapshot = firestore
+            .collection("conferences")
+            .document(conference)
+            .collection("tagtypes")
+            .get(Source.CACHE)
+            .await()
+
+        return snapshot.toObjectsOrEmpty(FirebaseTagType::class.java)
+            .sortedBy { it.sortOrder }
+            .mapNotNull { it.toTagType() }
+    }
 }

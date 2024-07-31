@@ -8,7 +8,6 @@ import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceMap
 import com.advice.core.local.Content
 import com.advice.core.local.Document
-import com.advice.core.local.Event
 import com.advice.core.local.FAQ
 import com.advice.core.local.Link
 import com.advice.core.local.Location
@@ -128,56 +127,6 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? =
         Timber.e("Could not map data to LocationSchedule: ${ex.message}")
         null
     }
-
-// todo: implement this method
-fun FirebaseContent.toEvents(
-    code: String,
-    tags: List<TagType>,
-    speakers: List<Speaker>,
-    bookmarkedEvents: List<Bookmark>,
-    locations: List<Location>,
-): List<Event>? {
-    try {
-        Timber.e(">>> toEvents: $title")
-
-        val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
-
-        val links = links.map { it.toAction() }
-        val types =
-            tag_ids
-                .mapNotNull { id ->
-                    list.find { it.id == id }
-                }.sortedBy { list.indexOf(it) }
-
-        val speakers =
-            people
-                .map { person ->
-                    val roles = person.tagIds.mapNotNull { id -> list.find { it.id == id } }
-                    val speaker = speakers.find { it.id == person.personId }
-                    person to speaker?.copy(roles = roles)
-                }.sortedWith(compareBy({ it.first.sortOrder }, { it.second?.name }))
-                .mapNotNull { it.second }
-
-        if (types.isEmpty()) {
-            Timber.e("Could not find tags for event: $title")
-            return emptyList()
-        }
-
-        return sessions.mapNotNull { session ->
-            // if we cannot find the location, ignore this session
-            val location = locations.find { it.id == session.locationId }
-
-            if (location == null) {
-                Timber.e("Could not find location for session: $title")
-                return@mapNotNull null
-            }
-            TODO("implement")
-        }
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Event: ${ex.message}")
-        return null
-    }
-}
 
 fun FirebaseContent.toContents(
     code: String,

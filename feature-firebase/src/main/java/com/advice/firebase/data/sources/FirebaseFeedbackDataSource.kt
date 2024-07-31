@@ -8,12 +8,14 @@ import com.advice.firebase.extensions.toFeedbackForm
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.feedback.FirebaseFeedbackForm
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.tasks.await
 
 class FirebaseFeedbackDataSource(
     private val firestore: FirebaseFirestore,
@@ -34,4 +36,13 @@ class FirebaseFeedbackDataSource(
         )
 
     override fun get(): Flow<FlowResult<List<FeedbackForm>>> = feedback
+
+    override suspend fun fetch(conference: String): List<FeedbackForm> {
+        val snapshot = firestore.collection("conferences/$conference/feedbackforms")
+            .get(Source.CACHE)
+            .await()
+
+        return snapshot.toObjectsOrEmpty(FirebaseFeedbackForm::class.java)
+            .mapNotNull { it.toFeedbackForm() }
+    }
 }

@@ -30,6 +30,9 @@ data class Event(
     val id: Long
         get() = session.id
 
+    val eventId: String
+        get() = "${content.id}:${session.id}"
+
     val conference: String
         get() = content.conference
 

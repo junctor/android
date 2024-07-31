@@ -45,7 +45,7 @@ class NotificationHelper(private val context: Context) {
             setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
             setVibrate(longArrayOf(0, 250, 500, 250))
             setLights(Color.MAGENTA, 3000, 1000)
-            // todo: setSmallIcon(R.drawable.logo_clean)
+            setSmallIcon(R.drawable.ic_notification)
             color = ContextCompat.getColor(context, R.color.colorPrimary)
             setAutoCancel(true)
             block()
@@ -54,7 +54,7 @@ class NotificationHelper(private val context: Context) {
 
     private fun getPendingIntent(event: Event): PendingIntent {
         val deepLink =
-            Uri.parse("https://hackertracker.app/event?c=${event.conference}&e=${event.id}")
+            Uri.parse("https://hackertracker.app/event?c=${event.conference}&e=${event.eventId}")
 
         val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
             setPackage("com.shortstack.hackertracker")
