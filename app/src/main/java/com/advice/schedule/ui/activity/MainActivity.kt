@@ -3,15 +3,26 @@ package com.advice.schedule.ui.activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
@@ -21,10 +32,13 @@ import com.advice.firebase.extensions.document_cache_reads
 import com.advice.firebase.extensions.document_reads
 import com.advice.firebase.extensions.listeners_count
 import com.advice.play.AppManager
+import com.advice.reminder.ReminderManager
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.navigate
 import com.advice.schedule.navigation.setRoutes
+import com.advice.schedule.ui.components.NotificationsPopup
+import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -41,8 +55,12 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     private val navigation by inject<NavigationManager>()
     private val analytics by inject<FirebaseAnalytics>()
 
+    private val reminder by inject<ReminderManager>()
+
     // todo: fix this - this is a hack to get the navController to work
     private lateinit var navController: NavController
+
+    private lateinit var mainViewModel: MainViewModel
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -87,8 +105,43 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                 onDestinationChanged(navDestination, args)
             }
 
+            mainViewModel = viewModel<MainViewModel>()
+
+            val state = mainViewModel.state.collectAsState().value
+
             ScheduleTheme {
                 navigation.setRoutes(this, navController = navController as NavHostController)
+
+                if (state.permissionDialog) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.35f))
+                            .zIndex(10F),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Popup(
+                            alignment = Alignment.Center,
+                            properties = PopupProperties(
+                                excludeFromSystemGesture = true,
+                            ),
+                            onDismissRequest = {
+                                mainViewModel.dismissPermissionDialog()
+                            },
+                        ) {
+                            NotificationsPopup(
+                                hasPermission = hasNotificationPermission(),
+                                onRequestPermission = {
+                                    requestNotificationPermissionLegacy()
+                                    mainViewModel.dismissPermissionDialog()
+                                },
+                                onDismiss = {
+                                    mainViewModel.dismissPermissionDialog()
+                                },
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -130,8 +183,23 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         }
     }
 
-    fun requestNotificationPermission() {
-        val permission = android.Manifest.permission.POST_NOTIFICATIONS
+    /**
+     * When the user bookmarks any event we want to display the notification permission dialog.
+     * If the user already has granted us the permission, or doesn't require it, we still show
+     * the dialog to inform them about the reminder feature.
+     */
+    fun onBookmarkEvent() {
+        if (!mainViewModel.hasSeenNotificationPopup()) {
+            mainViewModel.showPermissionDialog()
+        }
+    }
+
+    private fun requestNotificationPermissionLegacy() {
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            android.Manifest.permission.POST_NOTIFICATIONS
+        } else {
+            return
+        }
         if (!hasPermission(permission)) {
             analytics.logEvent(
                 "request_permission", bundleOf(
@@ -139,6 +207,14 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                 )
             )
             requestPermissionLauncher.launch(permission)
+        }
+    }
+
+    private fun hasNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            hasPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            true
         }
     }
 

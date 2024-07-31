@@ -90,7 +90,7 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                 },
                 onBookmarkClick = { event, isBookmarked ->
                     scheduleViewModel.bookmark(event, isBookmarked)
-                    (context as MainActivity).requestNotificationPermission()
+                    (context as MainActivity).onBookmarkEvent()
                 },
             )
         }, onPanelChangedListener = { panel ->

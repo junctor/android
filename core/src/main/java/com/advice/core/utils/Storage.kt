@@ -24,6 +24,7 @@ class Storage(context: Context, private val gson: Gson) {
 
         const val TUTORIAL_FILTERS = "tutorial_filters"
         const val TUTORIAL_EVENT_LOCATIONS = "tutorial_event_locations"
+        const val TUTORIAL_NOTIFICATIONS = "notification_popup"
 
         const val LATEST_NEWS_READ = "latest_news_read"
     }
@@ -145,5 +146,13 @@ class Storage(context: Context, private val gson: Gson) {
 
     fun hasSeenMerchInformation(): Boolean {
         return preferences.getBoolean("merch_information", false)
+    }
+
+    fun dismissNotificationPopup() {
+        preferences.edit().putBoolean("notification_popup", true).apply()
+    }
+
+    fun hasSeenNotificationPopup(): Boolean {
+        return preferences.getBoolean("notification_popup", false)
     }
 }

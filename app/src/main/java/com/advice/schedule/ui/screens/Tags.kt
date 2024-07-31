@@ -39,7 +39,7 @@ fun Tag(context: AppCompatActivity, navController: NavHostController, id: Long?,
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)
-            (context as MainActivity).requestNotificationPermission()
+            (context as MainActivity).onBookmarkEvent()
         },
     )
 }
@@ -73,7 +73,7 @@ fun Tags(
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)
-            (context as MainActivity).requestNotificationPermission()
+            (context as MainActivity).onBookmarkEvent()
         },
     )
 }

@@ -59,7 +59,7 @@ fun Location(
         },
         onBookmarkClick = { event, isBookmarked ->
             viewModel.bookmark(event, isBookmarked)
-            (context as MainActivity).requestNotificationPermission()
+            (context as MainActivity).onBookmarkEvent()
         },
     )
 }

@@ -41,7 +41,7 @@ fun Contents(context: AppCompatActivity, navController: NavHostController, label
         },
         onBookmark = { content, isBookmarked ->
             viewModel.bookmark(content, isBookmarked)
-            (context as MainActivity).requestNotificationPermission()
+            (context as MainActivity).onBookmarkEvent()
         }
     )
 }
@@ -106,7 +106,7 @@ private fun Content(
         session = session,
         onBookmark = { content, session, isBookmarked ->
             onBookmark(content, session, isBookmarked)
-            (context as MainActivity).requestNotificationPermission()
+            (context as MainActivity).onBookmarkEvent()
         },
         onBackPressed = { navController.popBackStack() },
         onTagClicked = {
