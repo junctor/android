@@ -241,7 +241,12 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             )
             val conference = uri?.getQueryParameter("c") ?: return
             val event = uri.getQueryParameter("e") ?: return
-            navController.navigate(Navigation.Event(conference, event, ""))
+            val (content, session) = if (event.contains(":")) {
+                event.split(":")
+            } else {
+                listOf(event, "")
+            }
+            navController.navigate(Navigation.Event(conference, content, session))
         }
     }
 
