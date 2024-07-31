@@ -32,17 +32,34 @@ class FirebaseUserSession(
     override var user: Flow<User?> = _user
 
     private val _conference = MutableStateFlow<Conference?>(null)
+    private val _conferenceFlow: MutableStateFlow<FlowResult<Conference>> =
+        MutableStateFlow(FlowResult.Loading)
 
     override var isDeveloper: Boolean = false
 
     init {
         CoroutineScope(Job()).launch {
+            _conferenceFlow.value = FlowResult.Loading
             conferencesDataSource.get().collect {
                 _conference.value = when (it) {
-                    is FlowResult.Failure -> null
-                    FlowResult.Loading -> null
+                    is FlowResult.Failure -> {
+                        _conferenceFlow.value = FlowResult.Failure(it.error)
+                        null
+                    }
+
+                    FlowResult.Loading -> {
+                        _conferenceFlow.value = FlowResult.Loading
+                        null
+                    }
+
                     is FlowResult.Success -> {
                         val conference = getConference(preferences.preferredConference, it.value)
+                        if (conference != null) {
+                            _conferenceFlow.value = FlowResult.Success(conference)
+                        } else {
+                            _conferenceFlow.value =
+                                FlowResult.Failure(Exception("Could not load conference"))
+                        }
                         Timber.d("Current Conference is: ${conference?.code}")
                         conference
                     }
@@ -95,10 +112,15 @@ class FirebaseUserSession(
         return _conference.filterNotNull().distinctUntilChanged()
     }
 
+    override fun getConferenceFlow(): Flow<FlowResult<Conference>> {
+        return _conferenceFlow
+    }
+
     override fun setConference(conference: Conference) {
         Timber.e("setConference: ${conference.code}")
         preferences.preferredConference = conference.id
         _conference.value = conference
+        _conferenceFlow.value = FlowResult.Success(conference)
     }
 
     override val currentConference: Conference?

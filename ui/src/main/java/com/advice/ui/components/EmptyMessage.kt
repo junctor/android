@@ -3,7 +3,6 @@ package com.advice.ui.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,21 +14,35 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun EmptyMessage(
+fun ErrorMessage(
     message: String,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier.fillMaxSize()) {
+    EmptyMessage(
+        message = message,
+        modifier = modifier,
+        title = "Error",
+    )
+}
+
+@Composable
+fun EmptyMessage(
+    message: String,
+    modifier: Modifier = Modifier,
+    title: String? = null,
+) {
+    Box(modifier) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.align(Alignment.Center),
         ) {
-            Text(
-                "404",
-                fontWeight = FontWeight.Black,
-                fontFamily = FontFamily.Monospace,
-                style = MaterialTheme.typography.displayLarge,
-            )
+            if (title != null) {
+                Text(
+                    title,
+                    fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.Monospace,
+                )
+            }
             Text(
                 message,
                 fontWeight = FontWeight.Black,
@@ -44,7 +57,21 @@ fun EmptyMessage(
 private fun EmptyViewPreview() {
     ScheduleTheme {
         Surface {
-            EmptyMessage("Maps not found")
+            EmptyMessage(
+                message = "No maps for DEF CON 31",
+                modifier = Modifier.fillMaxSize(),
+            )
         }
     }
 }
+
+@PreviewLightDark
+@Composable
+private fun ErrorViewPreview() {
+    ScheduleTheme {
+        Surface {
+            ErrorMessage("Could not fetch data")
+        }
+    }
+}
+

@@ -1,6 +1,7 @@
 package com.advice.data.session
 
 import com.advice.core.local.Conference
+import com.advice.core.local.FlowResult
 import com.advice.core.local.User
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +17,7 @@ interface UserSession {
     val currentConference: Conference?
 
     fun getConference(): Flow<Conference>
+    fun getConferenceFlow(): Flow<FlowResult<Conference>>
 
     fun setConference(conference: Conference)
 }

@@ -11,7 +11,13 @@ import com.advice.ui.states.MapsScreenState
 internal fun Maps(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<MapsViewModel>()
     val state = viewModel.state.collectAsState(initial = MapsScreenState.Loading).value
-    com.advice.ui.screens.MapsScreen(state = state) {
-        navController.popBackStack()
-    }
+    com.advice.ui.screens.MapsScreen(
+        state = state,
+        onMapChange = {
+                      viewModel.onMapChanged(it)
+        },
+        onBackPress = {
+            navController.popBackStack()
+        },
+    )
 }

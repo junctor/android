@@ -4,5 +4,5 @@ import java.io.File
 
 data class MapFile(
     val name: String,
-    val file: File?
+    val file: File,
 )
