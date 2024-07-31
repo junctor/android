@@ -138,7 +138,7 @@ private fun FeaturedProduct(
                 product.label,
                 fontWeight = FontWeight.SemiBold,
             )
-            Text(product.baseCost.toCurrency())
+            Text(product.baseCost.toCurrency(showCents = true, showPlus = product.hasPriceVariation))
         }
     }
 }

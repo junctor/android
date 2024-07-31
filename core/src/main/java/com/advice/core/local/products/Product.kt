@@ -48,6 +48,9 @@ data class Product(
     val currentCost: Long
         get() = variant?.price ?: baseCost
 
+    val hasPriceVariation: Boolean
+        get() = variants.any { it.price != baseCost }
+
     fun update(selection: ProductSelection): Product {
         val variantCost = if (selection.variant != null) {
             variants.find { it == selection.variant }?.price ?: 0

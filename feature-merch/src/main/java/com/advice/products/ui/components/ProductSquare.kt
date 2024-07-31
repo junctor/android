@@ -79,7 +79,7 @@ fun ProductSquare(
                     OutOfStockLabel()
                 } else {
                     PriceLabel(
-                        text = product.baseCost.toCurrency(showCents = true),
+                        text = product.baseCost.toCurrency(showCents = true, showPlus = product.hasPriceVariation),
                     )
                 }
             }

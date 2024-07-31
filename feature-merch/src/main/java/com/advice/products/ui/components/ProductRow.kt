@@ -47,7 +47,8 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
         Column(Modifier.weight(1.0f)) {
             Text(product.label, style = MaterialTheme.typography.labelLarge)
             Text(
-                product.baseCost.toCurrency(), style = MaterialTheme.typography.bodyMedium
+                product.baseCost.toCurrency(showCents = true, showPlus = product.hasPriceVariation),
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(Modifier.height(8.dp))
