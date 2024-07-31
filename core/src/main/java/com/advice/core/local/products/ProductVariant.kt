@@ -9,6 +9,6 @@ data class ProductVariant(
     val id: Long,
     val label: String,
     val tags: List<Long>,
-    val extraCost: Long,
+    val price: Long,
     val stockStatus: StockStatus,
 ) : Parcelable

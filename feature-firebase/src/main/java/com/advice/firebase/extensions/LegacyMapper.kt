@@ -477,27 +477,34 @@ fun FirebaseTagType.toTagType(): TagType? =
 
 fun FirebaseFAQ.toFAQ() = FAQ(question, answer)
 
-fun FirebaseProduct.toMerch(): Product? =
+fun FirebaseProduct.toMerch(tagTypes: List<TagType>): Product? =
     try {
+        val defaultTags = listOf(Tag(1, "Other", "", "", -1))
+        val productTags = tags.mapNotNull { id ->
+            tagTypes.flatMap { it.tags }.find { it.id == id }
+        }
         Product(
             id = id,
+            code = code,
             label = title,
             baseCost = priceMin,
-            variants = variants.mapNotNull { it.toMerchOption(priceMin) },
-            media = media.mapNotNull { it.toProductMedia() },
+            variants = variants.sortedWith(compareBy({ it.stockStatus }, { it.sortOrder }))
+                .mapNotNull { it.toMerchOption() },
+            media = media.sortedBy { it.sortOrder }.mapNotNull { it.toProductMedia() },
+            tags = productTags.ifEmpty { defaultTags },
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Merch: ${ex.message}")
         null
     }
 
-fun FirebaseProductVariant.toMerchOption(basePrice: Long): ProductVariant? =
+fun FirebaseProductVariant.toMerchOption(): ProductVariant? =
     try {
         ProductVariant(
             id = variantId,
             label = title,
             tags = tags,
-            extraCost = price - basePrice,
+            price = price,
             stockStatus = StockStatus.fromString(stockStatus) ?: StockStatus.IN_STOCK,
         )
     } catch (ex: Exception) {
@@ -509,7 +516,6 @@ fun FirebaseProductMedia.toProductMedia(): ProductMedia? =
     try {
         ProductMedia(
             url = url,
-            sortOrder = sortOrder,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to ProductMedia: ${ex.message}")

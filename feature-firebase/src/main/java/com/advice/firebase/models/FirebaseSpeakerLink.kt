@@ -11,7 +11,7 @@ data class FirebaseSpeakerLink(
     var title: String = "",
     @get:PropertyName("description")
     @set:PropertyName("description")
-    var description: String = "",
+    var description: String? = null,
     @get:PropertyName("url")
     @set:PropertyName("url")
     var url: String = "",

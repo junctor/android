@@ -36,6 +36,7 @@ import com.advice.core.local.Event
 import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
+import com.advice.ui.components.BackButton
 import com.advice.ui.components.DayHeader
 import com.advice.ui.components.DaySelectorView
 import com.advice.ui.components.EmptyMessage
@@ -45,7 +46,7 @@ import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.theme.roundedCornerShape
+import com.advice.ui.theme.topRoundedCornerShape
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +78,7 @@ fun ScheduleScreen(
         },
         modifier =
         Modifier
-            .clip(roundedCornerShape),
+            .clip(topRoundedCornerShape),
     ) {
         ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
     }
@@ -99,12 +100,7 @@ fun ScheduleScreen(
                     Text(label?.replace("\\", "/") ?: "Schedule")
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackPress) {
-                        Icon(
-                            painterResource(id = R.drawable.arrow_back),
-                            "Back",
-                        )
-                    }
+                    BackButton(onBackPress)
                 },
             )
         },

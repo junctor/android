@@ -35,7 +35,7 @@ import com.advice.ui.components.home.CountdownView
 import com.advice.ui.components.home.HomeCard
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.theme.roundedCornerShape
+import com.advice.ui.theme.topRoundedCornerShape
 import java.util.Date
 
 @Composable
@@ -47,7 +47,7 @@ fun HomeScreen(
 ) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
-        modifier = Modifier.clip(roundedCornerShape),
+        modifier = Modifier.clip(topRoundedCornerShape),
     ) { contentPadding ->
         HomeScreenContent(
             state,

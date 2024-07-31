@@ -6,5 +6,4 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ProductMedia(
     val url: String,
-    val sortOrder: Int,
 ) : Parcelable

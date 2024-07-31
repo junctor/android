@@ -1,144 +1,111 @@
 package com.advice.products.ui.screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.advice.core.local.Tag
 import com.advice.core.local.products.Product
+import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
-import com.advice.products.ui.components.FeaturedProducts
+import com.advice.products.ui.components.DismissibleInformation
 import com.advice.products.ui.components.InformationCard
+import com.advice.products.ui.components.LabelButton
 import com.advice.products.ui.components.LegalLabel
-import com.advice.products.ui.components.ProductSquare
+import com.advice.products.ui.components.ProductsRow
 import com.advice.products.ui.preview.ProductsProvider
+import com.advice.ui.components.BackButton
 import com.advice.ui.components.EmptyMessage
-import com.advice.ui.components.Label
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsScreen(
-    state: ProductsState?,
+    label: String,
+    state: ProductsScreenState,
     onSummaryClicked: () -> Unit,
     onProductClicked: (Product) -> Unit,
     onLearnMore: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: (DismissibleInformation) -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    val systemUiController = rememberSystemUiController()
-
-    DisposableEffect(Unit) {
-        systemUiController.setSystemBarsColor(
-            color = Color.Black.copy(0.40f),
-        )
-
-        onDispose {
-            systemUiController.setSystemBarsColor(
-                color = Color.Transparent,
-            )
-        }
-    }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { },
+                title = {
+                    Text(label)
+                },
                 navigationIcon = {
-                    IconButton(
-                        onClick = onBackPressed, colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = Color.Black.copy(0.40f),
-                        )
-                    ) {
-                        Icon(
-                            painterResource(id = com.advice.ui.R.drawable.arrow_back),
-                            "Back",
-                            tint = Color.White
-                        )
-                    }
+                    BackButton(onBackPressed)
                 },
                 actions = {
-                    IconButton(
-                        onClick = onLearnMore, colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = Color.Black.copy(0.40f),
-                        )
-                    ) {
-                        Icon(Icons.Outlined.Info, "Learn More", tint = Color.White)
+                    if (state is ProductsScreenState.Success && state.data.merchDocument != null) {
+                        IconButton(
+                            onClick = onLearnMore
+                        ) {
+                            Icon(Icons.Outlined.Info, "Learn More", tint = Color.White)
+                        }
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                )
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
             )
         },
-        floatingActionButton = {
-            if (state != null) {
-                val itemCount = state.cart.sumOf { it.quantity }
-                if (itemCount > 0) {
-                    FloatingActionButton(
-                        onClick = onSummaryClicked,
-                        Modifier
-                            .padding(horizontal = 32.dp)
-                            .fillMaxWidth(),
-                        shape = FloatingActionButtonDefaults.extendedFabShape
-                    ) {
-                        Text("View List ($itemCount)")
-                    }
-                }
-            }
-        },
-        floatingActionButtonPosition = FabPosition.Center
     ) {
-        Box {
-            when {
-                state == null -> {
-                    Box(Modifier.padding(it)) {
-                        ProgressSpinner()
-                    }
+        Box(Modifier.padding(it)) {
+            when (state) {
+                ProductsScreenState.Loading -> {
+                    ProgressSpinner()
                 }
 
-                state.products.isEmpty() -> {
-                    Box(Modifier.padding(it)) {
-                        EmptyMessage("Merch not found")
-                    }
+                ProductsScreenState.Error -> {
+                    EmptyMessage("Merch not found")
                 }
 
-                else -> {
-                    ProductsScreenContent(
-                        featured = state.featured,
-                        list = state.products,
-                        hasInformation = state.showMerchInformation,
-                        mandatoryAcknowledgement = state.merchMandatoryAcknowledgement,
-                        taxStatement = state.merchTaxStatement,
-                        onProductClicked = onProductClicked,
-                        onLearnMore = onLearnMore,
-                        onDismiss = onDismiss,
-                    )
+                is ProductsScreenState.Success -> {
+                    Box {
+                        ProductsScreenContent(
+                            groups = state.data.groups,
+                            informationList = state.data.informationList,
+                            taxStatement = state.data.merchTaxStatement,
+                            onProductClicked = onProductClicked,
+                            onLearnMore = onLearnMore,
+                            onDismiss = onDismiss,
+                        )
+
+                        val itemCount = state.data.cart.sumOf { it.quantity }
+                        if (itemCount > 0) {
+                            LabelButton(
+                                label = "View List ($itemCount)",
+                                onClick = onSummaryClicked,
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -147,51 +114,37 @@ fun ProductsScreen(
 
 @Composable
 fun ProductsScreenContent(
-    featured: List<Product>,
-    list: List<Product>,
-    hasInformation: Boolean,
-    mandatoryAcknowledgement: String? = null,
-    taxStatement: String? = null,
+    groups: Map<Tag, List<Product>>,
+    informationList: List<DismissibleInformation>,
+    taxStatement: String?,
     onProductClicked: (Product) -> Unit,
     onLearnMore: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: (DismissibleInformation) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(modifier) {
-        if (featured.isNotEmpty()) {
-            item {
-                FeaturedProducts(products = featured, onProductClicked)
+    LazyColumn(modifier.padding(horizontal = 16.dp)) {
+        items(informationList) { dismissibleInformation ->
+            InformationCard(
+                information = dismissibleInformation,
+                onLearnMore = onLearnMore,
+                onDismiss = {
+                    onDismiss(dismissibleInformation)
+                },
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+
+        for (group in groups) {
+            item(key = group.key.id) {
+                SectionHeader(group.key.label)
             }
-            if (mandatoryAcknowledgement != null) {
-                item {
-                    LegalLabel(text = mandatoryAcknowledgement)
-                }
-            }
-            item {
-                Label(text = "All Products", modifier = Modifier.padding(horizontal = 16.dp))
-            }
-        } else {
-            if (mandatoryAcknowledgement != null) {
-                item {
-                    LegalLabel(text = mandatoryAcknowledgement)
+            group.value.windowed(2, 2, partialWindows = true).forEachIndexed { index, products ->
+                item(key = "${group.key.id}_$index") {
+                    ProductsRow(products, onProductClicked)
                 }
             }
         }
 
-        if (hasInformation) {
-            item {
-                InformationCard(
-                    modifier = Modifier.padding(16.dp),
-                    onLearnMore = onLearnMore,
-                    onDismiss = onDismiss
-                )
-            }
-        }
-        list.windowed(2, 2, partialWindows = true).forEachIndexed { index, products ->
-            item(key = index) {
-                ProductsRow(products, onProductClicked)
-            }
-        }
         if (taxStatement != null) {
             item {
                 LegalLabel(text = taxStatement)
@@ -205,24 +158,24 @@ fun ProductsScreenContent(
 }
 
 @Composable
-private fun ProductsRow(
-    products: List<Product>,
-    onProductClicked: (Product) -> Unit,
-) {
-    Row {
-        for (product in products) {
-            ProductSquare(product, onProductClicked, Modifier.weight(1f))
-        }
-        if (products.size == 1) Box(modifier = Modifier.weight(1f))
-    }
+private fun SectionHeader(label: String) {
+    Text(
+        text = label,
+        modifier = Modifier
+            .padding(top = 24.dp)
+            .padding(horizontal = 4.dp, vertical = 8.dp),
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+    )
 }
 
 @PreviewLightDark
 @Composable
-fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
     ScheduleTheme {
         ProductsScreen(
-            state = state,
+            label = "Merch",
+            state = ProductsScreenState.Success(state),
             onSummaryClicked = {},
             onProductClicked = {},
             onLearnMore = {},

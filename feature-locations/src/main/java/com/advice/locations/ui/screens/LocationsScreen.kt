@@ -14,8 +14,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetValue
@@ -32,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -43,7 +40,7 @@ import com.advice.core.utils.TimeUtil
 import com.advice.locations.ui.components.Location
 import com.advice.locations.ui.components.LocationRow
 import com.advice.locations.ui.preview.LocationRowProvider
-import com.advice.ui.R
+import com.advice.ui.components.BackButton
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import kotlinx.coroutines.launch
@@ -87,9 +84,7 @@ fun LocationsScreen(
             CenterAlignedTopAppBar(
                 title = { Text("Locations") },
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(painterResource(id = R.drawable.arrow_back), null)
-                    }
+                    BackButton(onBackPressed)
                 },
             )
         },

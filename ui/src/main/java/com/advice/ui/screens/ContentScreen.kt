@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -41,7 +40,6 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -53,7 +51,7 @@ import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.utils.TimeUtil
-import com.advice.ui.R
+import com.advice.ui.components.BackButton
 import com.advice.ui.components.BookmarkButton
 import com.advice.ui.components.CategorySize
 import com.advice.ui.components.CategoryView
@@ -142,9 +140,7 @@ private fun TopBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = onBackPressed) {
-                Icon(painterResource(id = R.drawable.arrow_back), null)
-            }
+            BackButton(onBackPressed)
         },
         actions = {
             BookmarkButton(isBookmarked = isBookmarked) {

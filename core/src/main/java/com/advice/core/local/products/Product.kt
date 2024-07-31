@@ -2,19 +2,26 @@ package com.advice.core.local.products
 
 import android.os.Parcelable
 import com.advice.core.local.StockStatus
+import com.advice.core.local.Tag
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Product(
     val id: Long,
+    val code: String,
     val label: String,
     val baseCost: Long,
     val variants: List<ProductVariant>,
     val media: List<ProductMedia>,
     val quantity: Int = 0,
     val cost: Long = baseCost * quantity,
-    val selectedOption: String? = null,
+    val tags: List<Tag>,
+    val selectedOption: ProductVariant? = null,
 ) : Parcelable {
+
+    val inStock: Boolean
+        get() = stockStatus != StockStatus.OUT_OF_STOCK
+
     val stockStatus: StockStatus
         get() {
             if (variants.all { it.stockStatus == StockStatus.OUT_OF_STOCK }) {
@@ -33,31 +40,29 @@ data class Product(
         }
 
     val variant: ProductVariant?
-        get() = variants.find { it.label == selectedOption }
+        get() = variants.find { it == selectedOption }
 
     val requiresSelection: Boolean
         get() = variants.size > 1
 
-    val variantCost: Long
-        get() = baseCost + (variant?.extraCost ?: 0)
+    val currentCost: Long
+        get() = variant?.price ?: baseCost
 
-    val totalCost: Long
-        get() = variantCost * quantity
+    val hasPriceVariation: Boolean
+        get() = variants.any { it.price != baseCost }
 
     fun update(selection: ProductSelection): Product {
-        val extraCost = if (selection.selectionOption != null) {
-            variants.find { it.label == selection.selectionOption }?.extraCost ?: 0
+        val variantCost = if (selection.variant != null) {
+            variants.find { it == selection.variant }?.price ?: 0
         } else {
-            0
+            baseCost
         }
 
-        val cost = (baseCost + extraCost) * selection.quantity
+        val cost = variantCost * selection.quantity
         return copy(
             quantity = selection.quantity,
-            selectedOption = selection.selectionOption,
+            selectedOption = selection.variant,
             cost = cost,
         )
     }
-
-    fun hasMedia(): Boolean = media.isNotEmpty()
 }

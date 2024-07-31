@@ -11,8 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +33,7 @@ import com.advice.schedule.data.repositories.SearchState
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
 import com.advice.ui.R
+import com.advice.ui.components.BackButton
 import com.advice.ui.components.EventRow
 import com.advice.ui.components.FreqAskedQuestion
 import com.advice.ui.components.Label
@@ -73,18 +72,13 @@ internal fun SearchScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 16.dp),
             ) {
-                IconButton(onClick = {
-                    // clear the search
-                    onQueryChanged("")
-                    navController.popBackStack()
-                }) {
-                    Icon(
-                        painterResource(
-                            id = com.advice.ui.R.drawable.arrow_back,
-                        ),
-                        contentDescription = "Back",
-                    )
-                }
+                BackButton(
+                    onClick = {
+                        // clear the search
+                        onQueryChanged("")
+                        navController.popBackStack()
+                    },
+                )
 
                 SearchBar(
                     query = (state as? SearchState.Results)?.results?.query ?: "",
