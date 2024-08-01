@@ -57,8 +57,10 @@ class ProductsViewModel : ViewModel(), KoinComponent {
             repository.variants.collect {
                 productVariantTags.clear()
                 productVariantTags.addAll(it)
-                updateList()
-                updateSummary()
+                if (products.isNotEmpty()) {
+                    updateList()
+                    updateSummary()
+                }
             }
         }
     }

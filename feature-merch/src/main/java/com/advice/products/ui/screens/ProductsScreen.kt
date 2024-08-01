@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -74,7 +73,10 @@ fun ProductsScreen(
                         IconButton(
                             onClick = onLearnMore
                         ) {
-                            Icon(Icons.Outlined.Info, "Learn More", tint = Color.White)
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = "Learn More",
+                            )
                         }
                     }
                     IconButton(onClick = {
@@ -83,7 +85,6 @@ fun ProductsScreen(
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Filter",
-                            tint = Color.White,
                         )
                     }
                 },
