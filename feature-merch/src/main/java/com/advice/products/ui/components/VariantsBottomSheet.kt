@@ -15,8 +15,8 @@ import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
 internal fun VariantsBottomSheet(
     variants: List<ProductVariant>,
     selection: ProductVariant?,

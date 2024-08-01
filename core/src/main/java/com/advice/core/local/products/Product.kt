@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class Product(
     val id: Long,
     val code: String,
+    val sortOrder: Int,
     val label: String,
     val baseCost: Long,
     val variants: List<ProductVariant>,
@@ -17,6 +18,7 @@ data class Product(
     val cost: Long = baseCost * quantity,
     val tags: List<Tag>,
     val selectedOption: ProductVariant? = null,
+    val stockStatusOverride: StockStatus? = null,
 ) : Parcelable {
 
     val inStock: Boolean
@@ -24,6 +26,10 @@ data class Product(
 
     val stockStatus: StockStatus
         get() {
+            if (stockStatusOverride != null) {
+                return stockStatusOverride
+            }
+
             if (variants.all { it.stockStatus == StockStatus.OUT_OF_STOCK }) {
                 return StockStatus.OUT_OF_STOCK
             }

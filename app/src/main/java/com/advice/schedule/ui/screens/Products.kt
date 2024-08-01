@@ -38,6 +38,9 @@ fun Products(context: AppCompatActivity, navController: NavHostController, label
                 navController.navigate(Navigation.Document(merchDocument))
             }
         },
+        onTagClicked = {
+            viewModel.onTagClicked(it)
+        },
         onDismiss = {
             viewModel.dismiss(it)
         },

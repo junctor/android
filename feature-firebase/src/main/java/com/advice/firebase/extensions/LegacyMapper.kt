@@ -486,6 +486,7 @@ fun FirebaseProduct.toMerch(tagTypes: List<TagType>): Product? =
         Product(
             id = id,
             code = code,
+            sortOrder = sortOrder,
             label = title,
             baseCost = priceMin,
             variants = variants.sortedWith(compareBy({ it.stockStatus }, { it.sortOrder }))

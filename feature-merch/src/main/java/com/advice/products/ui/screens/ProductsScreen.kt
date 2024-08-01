@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +18,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +37,7 @@ import com.advice.products.ui.components.DismissibleInformation
 import com.advice.products.ui.components.InformationCard
 import com.advice.products.ui.components.LabelButton
 import com.advice.products.ui.components.LegalLabel
+import com.advice.products.ui.components.ProductFilterBottomSheet
 import com.advice.products.ui.components.ProductsRow
 import com.advice.products.ui.preview.ProductsProvider
 import com.advice.ui.components.BackButton
@@ -49,8 +55,11 @@ fun ProductsScreen(
     onProductClicked: (Product) -> Unit,
     onLearnMore: () -> Unit,
     onDismiss: (DismissibleInformation) -> Unit,
+    onTagClicked: (Tag) -> Unit,
     onBackPressed: () -> Unit,
 ) {
+    var showing by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -67,6 +76,14 @@ fun ProductsScreen(
                         ) {
                             Icon(Icons.Outlined.Info, "Learn More", tint = Color.White)
                         }
+                    }
+                    IconButton(onClick = {
+                        showing = true
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Filter"
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
@@ -103,6 +120,18 @@ fun ProductsScreen(
                                     .align(Alignment.BottomCenter)
                                     .padding(16.dp)
                                     .fillMaxWidth(),
+                            )
+                        }
+
+                        if (showing) {
+                            ProductFilterBottomSheet(
+                                tagTypes = state.data.productVariantTagTypes,
+                                onDismiss = {
+                                    showing = false
+                                },
+                                onClick = {
+                                    onTagClicked(it)
+                                },
                             )
                         }
                     }
@@ -180,6 +209,41 @@ private fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) sta
             onProductClicked = {},
             onLearnMore = {},
             onDismiss = {},
+            onTagClicked = {},
+            onBackPressed = {}
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ProductsScreenLoadingPreview() {
+    ScheduleTheme {
+        ProductsScreen(
+            label = "Merch",
+            state = ProductsScreenState.Loading,
+            onSummaryClicked = {},
+            onProductClicked = {},
+            onLearnMore = {},
+            onDismiss = {},
+            onTagClicked = {},
+            onBackPressed = {}
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ProductsScreenError() {
+    ScheduleTheme {
+        ProductsScreen(
+            label = "Merch",
+            state = ProductsScreenState.Error,
+            onSummaryClicked = {},
+            onProductClicked = {},
+            onLearnMore = {},
+            onDismiss = {},
+            onTagClicked = {},
             onBackPressed = {}
         )
     }

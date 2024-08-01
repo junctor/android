@@ -24,7 +24,7 @@ data class FirebaseProductVariant(
     @get:PropertyName("stock_status")
     @set:PropertyName("stock_status")
     var stockStatus: String = "OUT",
-    @get:PropertyName("tags")
-    @set:PropertyName("tags")
+    @get:PropertyName("tag_ids")
+    @set:PropertyName("tag_ids")
     var tags: List<Long> = emptyList()
 )

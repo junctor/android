@@ -27,22 +27,20 @@ fun ErrorMessage(
 
 @Composable
 fun EmptyMessage(
-    message: String,
+    message: String = "404",
     modifier: Modifier = Modifier,
-    title: String? = null,
+    title: String = "404",
 ) {
-    Box(modifier) {
+    Box(modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.align(Alignment.Center),
         ) {
-            if (title != null) {
-                Text(
-                    title,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace,
-                )
-            }
+            Text(
+                title,
+                fontWeight = FontWeight.Black,
+                fontFamily = FontFamily.Monospace,
+            )
             Text(
                 message,
                 fontWeight = FontWeight.Black,

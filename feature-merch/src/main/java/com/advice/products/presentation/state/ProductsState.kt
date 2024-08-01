@@ -1,9 +1,9 @@
 package com.advice.products.presentation.state
 
 import com.advice.core.local.Tag
+import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
 import com.advice.products.ui.components.DismissibleInformation
-
 
 sealed class ProductsScreenState {
     data object Loading : ProductsScreenState()
@@ -13,6 +13,7 @@ sealed class ProductsScreenState {
 
 data class ProductsState(
     val groups: Map<Tag, List<Product>>,
+    val productVariantTagTypes: List<TagType>,
     val informationList: List<DismissibleInformation>,
     val merchDocument: Long? = null,
     val merchMandatoryAcknowledgement: String? = null,

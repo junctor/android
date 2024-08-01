@@ -1,6 +1,7 @@
 package com.advice.firebase.data.sources
 
 import com.advice.core.local.Conference
+import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ProductsDataSource
@@ -28,11 +29,22 @@ class FirebaseProductsDataSource(
     private val firestore: FirebaseFirestore,
     private val analytics: FirebaseAnalytics,
 ) : ProductsDataSource {
+
     private val products: Flow<List<Product>> =
         userSession.getConference().flatMapMerge { conference ->
             combine(collectionReference(conference), tagsDataSource.get()) { products, tags ->
                 products.mapNotNull { it.toMerch(tags) }
             }
+        }.shareIn(
+            CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            replay = 1,
+        )
+
+    private val variants: Flow<List<TagType>> =
+        tagsDataSource.get().map { tags ->
+            val variants = tags.find { it.category == "merch-variant" } ?: return@map emptyList()
+            listOf(variants)
         }.shareIn(
             CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Lazily,
@@ -51,5 +63,9 @@ class FirebaseProductsDataSource(
 
     override fun get(): Flow<List<Product>> {
         return products
+    }
+
+    override fun getProductVariantsTags(): Flow<List<TagType>> {
+        return variants
     }
 }
