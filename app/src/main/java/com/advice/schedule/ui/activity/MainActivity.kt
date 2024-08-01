@@ -20,19 +20,12 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.advice.core.utils.Storage
-import com.advice.firebase.extensions.document_cache_reads
-import com.advice.firebase.extensions.document_reads
-import com.advice.firebase.extensions.listeners_count
-import com.advice.play.AppManager
-import com.advice.reminder.ReminderManager
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.navigate
@@ -41,55 +34,26 @@ import com.advice.schedule.ui.components.NotificationsPopup
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.logEvent
-import com.shortstack.hackertracker.BuildConfig
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), KoinComponent {
 
-    private val appManager by inject<AppManager>()
-    private val storage by inject<Storage>()
     private val navigation by inject<NavigationManager>()
-    private val analytics by inject<FirebaseAnalytics>()
-
-    private val reminder by inject<ReminderManager>()
 
     // todo: fix this - this is a hack to get the navController to work
     private lateinit var navController: NavController
-
     private lateinit var mainViewModel: MainViewModel
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
-            analytics.logEvent(
-                "permission_granted", bundleOf(
-                    "permission" to "POST_NOTIFICATIONS"
-                )
-            )
-            Timber.i("Permission granted")
-        } else {
-            analytics.logEvent(
-                "permission_denied", bundleOf(
-                    "permission" to "POST_NOTIFICATIONS"
-                )
-            )
-            Timber.i("Permission denied")
-        }
+        mainViewModel.onPermissionResult(isGranted)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        // Only showing the prompt once per version.
-        if (storage.updateVersion != BuildConfig.VERSION_CODE) {
-            appManager.checkForUpdate(this, REQUEST_CODE_UPDATE)
-        }
 
         setContent {
             val systemUiController = rememberSystemUiController()
@@ -106,6 +70,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             }
 
             mainViewModel = viewModel<MainViewModel>()
+            mainViewModel.onAppStart(this)
 
             val state = mainViewModel.state.collectAsState().value
 
@@ -154,22 +119,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         navDestination: NavDestination,
         args: Bundle?
     ) {
-        var route = navDestination.route
-            ?.replace("/{label}", "")
-            ?.replace("//", "/") ?: return
-
-        args?.keySet()?.forEach {
-            val value = args.get(it)
-            if (value != null && value is String) {
-                route = route.replace("{${it}}", value)
-            }
-        }
-
-        Timber.i("navigating to: $route")
-        FirebaseAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-            param(FirebaseAnalytics.Param.SCREEN_NAME, route)
-            param(FirebaseAnalytics.Param.SCREEN_CLASS, MainActivity::class.java.name)
-        }
+        mainViewModel.onDestinationChanged(navDestination, args)
     }
 
     @Deprecated("This is deprecated in favor of registerForActivityResult")
@@ -177,9 +127,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_UPDATE && resultCode != RESULT_OK) {
-            Timber.e("Update flow failed! Result code: $resultCode")
-            // Storing the version code so we don't keep asking for updates.
-            storage.updateVersion = BuildConfig.VERSION_CODE
+            mainViewModel.onAppUpdateRequest(resultCode)
         }
     }
 
@@ -201,11 +149,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             return
         }
         if (!hasPermission(permission)) {
-            analytics.logEvent(
-                "request_permission", bundleOf(
-                    "permission" to "POST_NOTIFICATIONS"
-                )
-            )
+            mainViewModel.onPermissionRequest()
             requestPermissionLauncher.launch(permission)
         }
     }
@@ -230,50 +174,25 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.data != null) {
-            val uri: Uri? = intent.data
-            Timber.i("onNewIntent: $uri")
-            analytics.logEvent(
-                "open_deep_link",
-                bundleOf(
-                    "uri" to uri.toString()
-                )
-            )
-            val conference = uri?.getQueryParameter("c") ?: return
-            val event = uri.getQueryParameter("e") ?: return
-            val (content, session) = if (event.contains(":")) {
-                event.split(":")
-            } else {
-                listOf(event, "")
-            }
-            navController.navigate(Navigation.Event(conference, content, session))
+        val uri = intent.data
+        if (uri != null) {
+            val destination = mainViewModel.onNewIntent(uri)
+            navController.navigate(destination)
         }
     }
 
     fun openLink(url: String) {
-        Timber.i("Opening link: $url")
-        analytics.logEvent("open_link", bundleOf("url" to url))
+        mainViewModel.onLinkOpen(url)
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
     }
 
     override fun onPause() {
-        with(analytics) {
-            logEvent(
-                "session_document_read", bundleOf(
-                    "total_document_reads" to document_reads,
-                    "total_document_cache_reads" to document_cache_reads,
-                    "total_listeners_count" to listeners_count
-                )
-            )
-            document_reads = 0
-            document_cache_reads = 0
-            listeners_count = 0
-        }
+        mainViewModel.onPause()
         super.onPause()
     }
 
     companion object {
-        private const val REQUEST_CODE_UPDATE = 9003
+        internal const val REQUEST_CODE_UPDATE = 9003
     }
 }
