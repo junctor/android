@@ -26,10 +26,6 @@ data class Product(
 
     val stockStatus: StockStatus
         get() {
-            if (stockStatusOverride != null) {
-                return stockStatusOverride
-            }
-
             if (variants.all { it.stockStatus == StockStatus.OUT_OF_STOCK }) {
                 return StockStatus.OUT_OF_STOCK
             }
@@ -43,6 +39,14 @@ data class Product(
                 return StockStatus.LOW_STOCK
             }
             return StockStatus.IN_STOCK
+        }
+
+    val filteredStockStatus: StockStatus
+        get() {
+            if (stockStatusOverride != null) {
+                return stockStatusOverride
+            }
+            return stockStatus
         }
 
     val variant: ProductVariant?

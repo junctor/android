@@ -82,7 +82,8 @@ fun ProductsScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Menu,
-                            contentDescription = "Filter"
+                            contentDescription = "Filter",
+                            tint = Color.White,
                         )
                     }
                 },

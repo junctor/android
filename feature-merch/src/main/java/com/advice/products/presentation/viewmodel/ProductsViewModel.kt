@@ -149,15 +149,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         val filteredProducts: List<Product> = getFilteredProducts(products, filter)
 
         val data = ProductsState(
-            groups = filteredProducts.groupBy {
-                it.tags.firstOrNull() ?: Tag(
-                    1,
-                    "Other",
-                    "",
-                    "",
-                    -1
-                )
-            },
+            groups = groupProducts(filteredProducts),
             productVariantTagTypes = productVariantTags,
             informationList = getInformationList(),
             merchDocument = merchDocument,
@@ -169,6 +161,20 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         )
 
         _state.tryEmit(ProductsScreenState.Success(data))
+    }
+
+    private fun groupProducts(products: List<Product>): Map<Tag, List<Product>> {
+        val outOfStockGroup = Tag(-1, "Out of Stock", "", "", 1000)
+        val availableInOtherSizes = Tag(-2, "Available in other sizes", "", "", 100)
+        val defaultGroup = Tag(-3, "Other", "", "", 99)
+        return products.groupBy {
+            return@groupBy when {
+                it.stockStatusOverride == StockStatus.OUT_OF_STOCK && it.stockStatus == StockStatus.IN_STOCK -> availableInOtherSizes
+                !it.inStock -> outOfStockGroup
+                it.tags.isNotEmpty() -> it.tags.first()
+                else -> defaultGroup
+            }
+        }.toSortedMap(compareBy { it.sortOrder })
     }
 
     private fun getFilteredProducts(products: List<Product>, filter: List<Tag>): List<Product> {
