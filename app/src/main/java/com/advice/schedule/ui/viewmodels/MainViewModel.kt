@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavDestination
+import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.utils.Storage
 import com.advice.firebase.extensions.document_cache_reads
 import com.advice.firebase.extensions.document_reads
@@ -13,8 +14,6 @@ import com.advice.play.AppManager
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DragAnchors
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.logEvent
 import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +24,7 @@ import timber.log.Timber
 class MainViewModel : ViewModel(), KoinComponent {
 
     private val appManager by inject<AppManager>()
-    private val analytics by inject<FirebaseAnalytics>()
+    private val analytics by inject<AnalyticsProvider>()
     private val storage by inject<Storage>()
 
     private val _state = MutableStateFlow(MainViewState())
@@ -142,10 +141,7 @@ class MainViewModel : ViewModel(), KoinComponent {
         }
 
         Timber.i("navigating to: $route")
-        analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-            param(FirebaseAnalytics.Param.SCREEN_NAME, route)
-            param(FirebaseAnalytics.Param.SCREEN_CLASS, MainActivity::class.java.name)
-        }
+        analytics.onDestinationChanged(route)
     }
 
     fun onNewIntent(uri: Uri): Navigation? {

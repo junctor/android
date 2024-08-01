@@ -46,10 +46,6 @@ class SettingsViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    fun onDeveloperTwitterClick(isFollow: Boolean) {
-        analytics.onDeveloperEvent(isFollow)
-    }
-
     fun onPreferenceChanged(id: String, isChecked: Boolean) {
         repository.onPreferenceChanged(id, isChecked)
     }
