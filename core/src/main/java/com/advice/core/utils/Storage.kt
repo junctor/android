@@ -14,8 +14,6 @@ class Storage(context: Context, private val gson: Gson) {
         private const val PREFERRED_CONFERENCE = "preferred_conference"
 
         const val EASTER_EGGS_ENABLED_KEY = "easter_eggs_enabled"
-        const val SAFE_MODE_ENABLED = "safe_mode_enabled"
-        const val DEVELOPER_THEME_UNLOCKED = "developer_theme_unlocked"
         const val NAV_DRAWER_ON_BACK_KEY = "nav_drawer_on_back"
         const val FILTER_BUTTON_SHOWN = "filter_button_shown"
         const val FORCE_TIME_ZONE_KEY = "force_time_zone"
@@ -44,7 +42,7 @@ class Storage(context: Context, private val gson: Gson) {
             preferences.edit().putBoolean(NAV_DRAWER_ON_BACK_KEY, value).apply()
         }
 
-    var fabShown: Boolean
+    var showFilters: Boolean
         get() = preferences.getBoolean(FILTER_BUTTON_SHOWN, true)
         set(value) {
             preferences.edit().putBoolean(FILTER_BUTTON_SHOWN, value).apply()

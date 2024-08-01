@@ -3,7 +3,9 @@ package com.advice.schedule.data.repositories
 import com.advice.core.ui.SettingsScreenState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
+import com.advice.ui.preview.Preferences
 import kotlinx.coroutines.flow.map
+
 
 class SettingsRepository(
     private val userSession: UserSession,
@@ -16,7 +18,7 @@ class SettingsRepository(
             version,
             preferences.forceTimeZone,
             preferences.showSchedule,
-            preferences.fabShown,
+            preferences.showFilters,
             preferences.easterEggs,
             preferences.allowAnalytics,
             showTwitterHandle = false,
@@ -28,11 +30,11 @@ class SettingsRepository(
         checked: Boolean,
     ) {
         when (id) {
-            "force_time_zone" -> preferences.forceTimeZone = checked
-            "show_schedule" -> preferences.showSchedule = checked
-            "show_filter" -> preferences.fabShown = checked
-            "allow_analytics" -> preferences.allowAnalytics = checked
-            "easter_eggs" -> preferences.easterEggs = checked
+            Preferences.ConferenceTimeZone.key -> preferences.forceTimeZone = checked
+            Preferences.ShowSchedule.key -> preferences.showSchedule = checked
+            Preferences.FabShown.key -> preferences.showFilters = checked
+            Preferences.AllowAnalytics.key -> preferences.allowAnalytics = checked
+            Preferences.EasterEggs.key -> preferences.easterEggs = checked
         }
     }
 

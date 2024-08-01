@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -76,7 +75,7 @@ fun OverlappingPanelsView(
                         "start" -> DragAnchors.Start
                         "center" -> DragAnchors.Center
                         "end" -> DragAnchors.End
-                        else -> DragAnchors.Center // Default value
+                        else -> DragAnchors.Start // Default value
                     }
 
                     return AnchoredDraggableState(
@@ -97,7 +96,6 @@ fun OverlappingPanelsView(
                         DragAnchors.Start -> "start"
                         DragAnchors.Center -> "center"
                         DragAnchors.End -> "end"
-                        else -> "center" // Default value
                     }
                 }
             }

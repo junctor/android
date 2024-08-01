@@ -1,7 +1,12 @@
 package com.advice.schedule.ui.screens
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
@@ -15,14 +20,10 @@ fun Settings(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<SettingsViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value ?: return
 
-    SettingScreen(timeZone = state.timezone,
-        version = state.version,
-        useConferenceTimeZone = state.useConferenceTimeZone,
-        showSchedule = state.showSchedule,
-        showFilterButton = state.showFilterButton,
-        enableEasterEggs = state.enableEasterEggs,
-        enableAnalytics = state.enableAnalytics,
-        showTwitterHandle = state.showTwitterHandle,
+    var toast by remember { mutableStateOf<Toast?>(null) }
+
+    SettingScreen(
+        state = state,
         onPreferenceChange = { id, value ->
             viewModel.onPreferenceChanged(id, value)
         },
@@ -32,9 +33,16 @@ fun Settings(navController: NavHostController) {
                 (context as MainActivity).recreate()
             }
         },
-        onVersionClick = {
-            viewModel.onVersionClick()
-            (context as MainActivity).openLink("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+        onVersionClick = { index ->
+            if (index == 0) {
+                toast?.cancel()
+                viewModel.onVersionClick()
+                (context as MainActivity).openLink("https://www.youtube.com/watch?v=xvFZjo5PgG0")
+            } else {
+                toast?.cancel()
+                toast = Toast.makeText(context, "$index", Toast.LENGTH_SHORT)
+                toast?.show()
+            }
         },
         onBackPress = { navController.popBackStack() })
 }

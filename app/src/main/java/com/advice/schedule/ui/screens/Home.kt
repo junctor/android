@@ -32,6 +32,7 @@ import com.advice.schedule.ui.components.DismissibleBottomAppBar
 import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
 import com.advice.schedule.ui.viewmodels.MainViewModel
+import com.advice.schedule.ui.viewmodels.MainViewState
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreen
@@ -40,7 +41,7 @@ import com.advice.ui.states.ScheduleScreenState
 @Composable
 internal fun Home(context: AppCompatActivity, navController: NavHostController) {
     val mainViewModel = viewModel<MainViewModel>()
-    val viewState by mainViewModel.state.collectAsState()
+    val viewState by mainViewModel.state.collectAsState(MainViewState())
 
     val homeViewModel = viewModel<HomeViewModel>(context)
     val filtersViewModel = viewModel<FiltersViewModel>(context)
@@ -52,7 +53,7 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
 
     val homeState = homeViewModel.getHomeState().collectAsState(initial = HomeState.Loading).value
     val filtersScreenState =
-        filtersViewModel.state.collectAsState(initial = FiltersScreenState.Init).value
+        filtersViewModel.state.collectAsState(initial = FiltersScreenState.Loading).value
 
     Box {
         OverlappingPanelsView(viewState.currentAnchor, leftPanel = {

@@ -16,6 +16,7 @@ import com.advice.schedule.ui.components.DragAnchors
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.shortstack.hackertracker.BuildConfig
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,10 +28,20 @@ class MainViewModel : ViewModel(), KoinComponent {
     private val analytics by inject<FirebaseAnalytics>()
     private val storage by inject<Storage>()
 
-    val state = MutableStateFlow(MainViewState())
+    private val _state = MutableStateFlow(MainViewState())
+    val state: Flow<MainViewState> = _state
+
+    init {
+        // Showing the Schedule by default if they have enabled this preference
+        if (storage.showSchedule) {
+            setAnchor(DragAnchors.Center)
+        } else {
+            setAnchor(DragAnchors.Start)
+        }
+    }
 
     fun setAnchor(anchor: DragAnchors) {
-        state.value = state.value.copy(
+        _state.value = _state.value.copy(
             currentAnchor = anchor,
             isShown = anchor == DragAnchors.Start,
         )
@@ -41,14 +52,14 @@ class MainViewModel : ViewModel(), KoinComponent {
     }
 
     fun showPermissionDialog() {
-        state.value = state.value.copy(
+        _state.value = _state.value.copy(
             permissionDialog = true,
         )
     }
 
     fun dismissPermissionDialog() {
         storage.dismissNotificationPopup()
-        state.value = state.value.copy(
+        _state.value = _state.value.copy(
             permissionDialog = false,
         )
     }
@@ -76,9 +87,15 @@ class MainViewModel : ViewModel(), KoinComponent {
         if (storage.updateVersion != BuildConfig.VERSION_CODE) {
             appManager.checkForUpdate(context, MainActivity.REQUEST_CODE_UPDATE)
         }
+        val format = if (android.text.format.DateFormat.is24HourFormat(context)) {
+            "24h"
+        } else {
+            "12h"
+        }
+        analytics.setUserProperty("24_hour_format", format)
     }
 
-    fun onLinkOpen(url: String){
+    fun onLinkOpen(url: String) {
         Timber.i("Opening link: $url")
         analytics.logEvent("open_link", bundleOf("url" to url))
     }

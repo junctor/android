@@ -53,7 +53,7 @@ fun FilterScreen(
     ) {
         Box(Modifier.padding(it)) {
             when (state) {
-                FiltersScreenState.Init -> {
+                FiltersScreenState.Loading -> {
                 }
 
                 is FiltersScreenState.Success -> {

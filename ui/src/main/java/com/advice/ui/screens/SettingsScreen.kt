@@ -34,28 +34,40 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.ui.R
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.ButtonPreference
 import com.advice.ui.components.SwitchPreference
 import com.advice.ui.preview.PreviewLightDark
+import com.advice.ui.preview.SettingsScreenViewStateProvider
 import com.advice.ui.theme.ScheduleTheme
+
+data class SettingsScreenPreference(
+    val key: String,
+    val title: String,
+    val summary: String? = null,
+    val summaryOn: String? = null,
+    val summaryOff: String? = null,
+    val isChecked: Boolean,
+)
+
+data class SettingsScreenViewState(
+    val timeZone: String = "American/Los_Angeles",
+    val version: String = "1.0.0",
+    val enableEasterEggs: Boolean = false,
+    val showTwitterHandle: Boolean = false,
+    val preferences: List<SettingsScreenPreference> = emptyList(),
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
-    timeZone: String,
-    version: String,
-    useConferenceTimeZone: Boolean,
-    showSchedule: Boolean,
-    showFilterButton: Boolean,
-    enableEasterEggs: Boolean,
-    enableAnalytics: Boolean,
-    showTwitterHandle: Boolean,
+    state: SettingsScreenViewState,
     onPreferenceChange: (String, Boolean) -> Unit,
     onThemeChange: (String) -> Unit,
-    onVersionClick: () -> Unit,
+    onVersionClick: (Int) -> Unit,
     onBackPress: () -> Unit,
 ) {
     Scaffold(topBar = {
@@ -64,14 +76,7 @@ fun SettingScreen(
         })
     }) {
         SettingsScreenContent(
-            timeZone,
-            version,
-            useConferenceTimeZone,
-            showSchedule,
-            showFilterButton,
-            enableEasterEggs,
-            enableAnalytics,
-            showTwitterHandle,
+            state,
             onPreferenceChange,
             onThemeChange,
             onVersionClick,
@@ -82,45 +87,34 @@ fun SettingScreen(
 
 @Composable
 private fun SettingsScreenContent(
-    timeZone: String,
-    version: String,
-    useConferenceTimeZone: Boolean,
-    showSchedule: Boolean,
-    showFilterButton: Boolean,
-    enableEasterEggs: Boolean,
-    enableAnalytics: Boolean,
-    showTwitterHandle: Boolean,
+    state: SettingsScreenViewState,
     onPreferenceChange: (String, Boolean) -> Unit,
     onThemeChange: (String) -> Unit,
-    onVersionClick: () -> Unit,
+    onVersionClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var enableEasterEggs by remember { mutableStateOf(enableEasterEggs) }
+    val enableEasterEggs by remember { mutableStateOf(state.enableEasterEggs) }
 
     Column(modifier) {
         ButtonPreference(onPreferenceChange = {
             onThemeChange(it)
         })
-        SwitchPreference(
-            "Events in ($timeZone)",
-            isChecked = useConferenceTimeZone,
-            summaryOn = "Using conference's timezone",
-            summaryOff = "Using device's timezone",
-        ) {
-            onPreferenceChange("force_time_zone", it)
-        }
-        SwitchPreference("Send anonymous usage statistics", isChecked = enableAnalytics) {
-            onPreferenceChange("allow_analytics", it)
-        }
-        SwitchPreference("Easter Eggs", summary = "???", isChecked = enableEasterEggs) {
-            enableEasterEggs = it
-            onPreferenceChange("easter_eggs", it)
+        for (preference in state.preferences) {
+            SwitchPreference(
+                title = preference.title,
+                summary = preference.summary,
+                summaryOn = preference.summaryOn,
+                summaryOff = preference.summaryOff,
+                isChecked = preference.isChecked,
+            ) {
+                onPreferenceChange(preference.key, it)
+            }
         }
         DeveloperSection()
-        if (showTwitterHandle) {
+        if (state.showTwitterHandle) {
             TwitterBadge()
         }
-        VersionNumber(version, enableEasterEggs, onVersionClick)
+        VersionNumber(state.version, enableEasterEggs, onVersionClick)
     }
 }
 
@@ -128,42 +122,39 @@ private fun SettingsScreenContent(
 private fun VersionNumber(
     version: String,
     enableEasterEggs: Boolean,
-    onVersionClick: () -> Unit = {},
+    onVersionClick: (Int) -> Unit = {},
 ) {
-    var clickCount by remember { mutableIntStateOf(0) }
+    var countdown by remember { mutableIntStateOf(10) }
 
     Text(
         "Version $version",
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .clickable(enabled = enableEasterEggs) {
-                    clickCount++
-                    if (clickCount == 10) {
-                        clickCount = 0
-                        onVersionClick()
-                    }
-                }.padding(16.dp),
+        Modifier
+            .fillMaxWidth()
+            .clickable(enabled = enableEasterEggs) {
+                countdown--
+                onVersionClick(countdown)
+            }
+            .padding(16.dp),
         textAlign = TextAlign.Center,
     )
 }
 
 @Composable
 private fun DeveloperSection() {
-    val text =
-        buildAnnotatedString {
-            append("Android client is built with ♥ by ")
-            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("advice")
-            }
+    val text = buildAnnotatedString {
+        append("Android client is built with ♥ by ")
+        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+            append("advice")
         }
+    }
 
     Text(
         text,
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         textAlign = TextAlign.Center,
     )
 }
@@ -176,10 +167,10 @@ private fun TwitterBadge() {
                 painterResource(R.drawable.doggo),
                 null,
                 modifier =
-                    Modifier
-                        .size(42.dp)
-                        .clip(CircleShape)
-                        .background(Color.White),
+                Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(Color.White),
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -203,17 +194,12 @@ private fun TwitterBadge() {
 
 @PreviewLightDark
 @Composable
-private fun SettingScreenViewDarkPreview() {
+private fun SettingScreenViewDarkPreview(
+    @PreviewParameter(SettingsScreenViewStateProvider::class) state: SettingsScreenViewState,
+) {
     ScheduleTheme {
         SettingScreen(
-            timeZone = "Europe/Helsinki",
-            version = "7.0.0 (1)",
-            useConferenceTimeZone = true,
-            showSchedule = false,
-            showFilterButton = true,
-            enableEasterEggs = false,
-            enableAnalytics = true,
-            showTwitterHandle = false,
+            state = state,
             onPreferenceChange = { _, _ -> },
             onThemeChange = {},
             onVersionClick = {},

@@ -16,7 +16,7 @@ class FiltersViewModel : ViewModel(), KoinComponent {
     private val repository by inject<FiltersRepository>()
 
     val state = flow {
-        emit(FiltersScreenState.Init)
+        emit(FiltersScreenState.Loading)
         repository.tags.collect {
             emit(FiltersScreenState.Success(it))
         }

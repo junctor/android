@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
-    state: ScheduleScreenState?,
+    state: ScheduleScreenState,
     onMenuClick: () -> Unit,
     onFabClick: () -> Unit,
     onEventClick: (Event) -> Unit,
@@ -72,8 +72,10 @@ fun ScheduleScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(shape = CircleShape, onClick = onFabClick) {
-                Icon(painterResource(R.drawable.baseline_filter_list_24), "Filter Schedule")
+            if (state is ScheduleScreenState.Success && state.showFab) {
+                FloatingActionButton(shape = CircleShape, onClick = onFabClick) {
+                    Icon(painterResource(R.drawable.baseline_filter_list_24), "Filter Schedule")
+                }
             }
         },
         modifier =
@@ -87,7 +89,7 @@ fun ScheduleScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
-    state: ScheduleScreenState?,
+    state: ScheduleScreenState,
     label: String?,
     onBackPress: () -> Unit,
     onEventClick: (Event) -> Unit,
@@ -111,7 +113,7 @@ fun ScheduleScreen(
 
 @Composable
 private fun ScheduleScreenContent(
-    state: ScheduleScreenState?,
+    state: ScheduleScreenState,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event, Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -120,9 +122,6 @@ private fun ScheduleScreenContent(
         when (state) {
             is ScheduleScreenState.Error -> {
                 EmptyMessage("Schedule not found")
-            }
-
-            null, ScheduleScreenState.Init -> {
             }
 
             ScheduleScreenState.Loading -> {
@@ -244,6 +243,7 @@ private fun ScheduleScreenPreview(@PreviewParameter(FakeEventProvider::class) ev
                 mapOf(
                     "May 19" to listOf(event),
                 ),
+                true,
             )
 
         ScheduleScreen(state, {}, {}, {}, { event, isBookmarked -> })

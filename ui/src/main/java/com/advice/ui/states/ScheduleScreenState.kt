@@ -4,13 +4,12 @@ import com.advice.core.local.Event
 import com.advice.core.ui.ScheduleFilter
 
 sealed class ScheduleScreenState {
-    object Init : ScheduleScreenState()
-
-    object Loading : ScheduleScreenState()
+    data object Loading : ScheduleScreenState()
 
     data class Success(
         val filter: ScheduleFilter,
         val days: Map<String, List<Event>>,
+        val showFab: Boolean,
     ) : ScheduleScreenState()
 
     data class Error(

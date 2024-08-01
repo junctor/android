@@ -26,12 +26,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.navigate
 import com.advice.schedule.navigation.setRoutes
 import com.advice.schedule.ui.components.NotificationsPopup
 import com.advice.schedule.ui.viewmodels.MainViewModel
+import com.advice.schedule.ui.viewmodels.MainViewState
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.koin.core.component.KoinComponent
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             mainViewModel = viewModel<MainViewModel>()
             mainViewModel.onAppStart(this)
 
-            val state = mainViewModel.state.collectAsState().value
+            val state = mainViewModel.state.collectAsState(MainViewState()).value
 
             ScheduleTheme {
                 navigation.setRoutes(this, navController = navController as NavHostController)
