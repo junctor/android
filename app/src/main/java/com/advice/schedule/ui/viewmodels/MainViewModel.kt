@@ -91,7 +91,7 @@ class MainViewModel : ViewModel(), KoinComponent {
         } else {
             "12h"
         }
-        analytics.setUserProperty("24_hour_format", format)
+        analytics.setUserProperty("time_format", format)
     }
 
     fun onLinkOpen(url: String) {
