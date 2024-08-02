@@ -3,104 +3,138 @@ package com.advice.organizations.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Organization
 import com.advice.core.local.OrganizationLink
+import com.advice.core.local.OrganizationMedia
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.ClickableUrl
+import com.advice.ui.components.ImageGallery
+import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
+import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.PreviewLightDark
-import com.advice.ui.screens.ImageScaffold
+import com.advice.ui.screens.ErrorScreen
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.theme.roundedCornerShape
+
+sealed class OrganizationScreenState {
+    data object Loading : OrganizationScreenState()
+    data class Success(val organization: Organization) : OrganizationScreenState()
+    data object Error : OrganizationScreenState()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrganizationScreen(
-    organization: Organization?,
+    state: OrganizationScreenState,
     onBackPressed: () -> Unit,
     onLinkClicked: (String) -> Unit,
     onScheduleClicked: (Long, String) -> Unit,
 ) {
-    ImageScaffold(
-        url = organization?.media?.firstOrNull()?.url,
-        imageModifier = Modifier.aspectRatio(1.333f),
-        contentModifier = Modifier
-            .verticalScroll(rememberScrollState()),
+    Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { },
-                navigationIcon = {
-                    BackButton(onBackPressed, colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Black.copy(0.40f),
-                    ),)
+                title = {
+                    if (state is OrganizationScreenState.Success) {
+                        Text(text = state.organization.name)
+                    }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                ),
+                navigationIcon = {
+                    BackButton(onBackPressed)
+                },
             )
         },
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            if (organization != null) {
-                Header(organization.name)
-
-                val tag = organization.tag
-                if (tag != null) {
-                    Box(
-                        Modifier
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth(),
-                    ) {
-                        OutlinedButton(
-                            onClick = { onScheduleClicked(tag, organization.name) },
-                            Modifier
-                                .fillMaxWidth()
-                                .align(
-                                    Alignment.CenterEnd,
-                                ),
-                        ) {
-                            Text("Show Schedule")
-                        }
+        Box(modifier = Modifier.padding(it)) {
+            when (state) {
+                OrganizationScreenState.Error -> {
+                    ErrorScreen {
+                        onBackPressed()
                     }
                 }
 
-                if (organization.description != null) {
-                    Paragraph(organization.description ?: "")
+                OrganizationScreenState.Loading -> {
+                    ProgressSpinner()
                 }
-                if (organization.links.isNotEmpty()) {
-                    Column {
-                        for (link in organization.links) {
-                            ClickableUrl(
-                                label = link.label,
-                                url = link.url,
-                                onClick = {
-                                    onLinkClicked(link.url)
-                                },
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp),
-                            )
-                        }
-                    }
+
+                is OrganizationScreenState.Success -> {
+                    Content(state.organization, onLinkClicked, onScheduleClicked)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Content(
+    organization: Organization,
+    onLinkClicked: (String) -> Unit,
+    onScheduleClicked: (Long, String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        if (organization.media.isNotEmpty()) {
+            ImageGallery(organization.media.map { it.url }, aspectRatio = 1.333f)
+        }
+
+        val tag = organization.tag
+        if (tag != null) {
+            Box(
+                Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth(),
+            ) {
+                OutlinedButton(
+                    onClick = { onScheduleClicked(tag, organization.name) },
+                    Modifier
+                        .fillMaxWidth()
+                        .align(
+                            Alignment.CenterEnd,
+                        ),
+                    shape = roundedCornerShape,
+                ) {
+                    Text("Show Schedule")
+                }
+            }
+        }
+
+        val description = organization.description
+        if (description?.isNotBlank() == true) {
+            Paragraph(description)
+        } else {
+            NoDetailsView()
+        }
+        if (organization.links.isNotEmpty()) {
+            Column {
+                for (link in organization.links) {
+                    ClickableUrl(
+                        label = link.label,
+                        url = link.url,
+                        onClick = {
+                            onLinkClicked(link.url)
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                    )
                 }
             }
         }
@@ -124,18 +158,20 @@ private fun OrganizationScreenPreview() {
         val organization = Organization(
             1,
             "Test Organization",
-            "Hello World!",
+            null,
             locations = emptyList(),
             links = listOf(
                 OrganizationLink("Website", "website", "https://www.google.com"),
                 OrganizationLink("Website", "website", "https://www.google.com"),
             ),
-            media = listOf(),
+            media = listOf(
+                OrganizationMedia(1, "https://picsum.photos/200/300")
+            ),
             tag = 1,
             tags = listOf(1),
         )
         OrganizationScreen(
-            organization = organization,
+            state = OrganizationScreenState.Success(organization),
             onBackPressed = {},
             onLinkClicked = {},
             onScheduleClicked = { _, _ ->

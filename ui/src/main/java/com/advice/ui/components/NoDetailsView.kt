@@ -11,13 +11,12 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun NoDetailsView(text: String = "No further information available.\nMaybe ask Chatgpt.") {
+fun NoDetailsView(text: String = "No further information available.") {
     Text(
-        text,
-        modifier =
-            Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
+        text = text,
+        modifier = Modifier
+            .padding(vertical = 42.dp, horizontal = 16.dp)
+            .fillMaxWidth(),
         textAlign = TextAlign.Center,
     )
 }

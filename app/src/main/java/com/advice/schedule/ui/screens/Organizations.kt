@@ -1,14 +1,16 @@
 package com.advice.schedule.ui.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.advice.organizations.ui.screens.OrganizationScreenState
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
 import com.advice.schedule.navigation.onBackPressed
+import com.advice.schedule.presentation.viewmodel.OrganizationViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.ui.activity.MainActivity
 
@@ -35,14 +37,16 @@ internal fun Organization(
     id: Long?,
 ) {
     val context = LocalContext.current
+    val viewModel = navController.navGraphViewModel<OrganizationViewModel>()
 
-    val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
+    LaunchedEffect(id) {
+        viewModel.getOrganization(id)
+    }
 
-    val flow = remember(id) { viewModel.getOrganization(id) }
-    val organization = flow.collectAsState(initial = null).value
+    val organization = viewModel.state.collectAsState(initial = OrganizationScreenState.Loading).value
 
     com.advice.organizations.ui.screens.OrganizationScreen(
-        organization = organization,
+        state = organization,
         onBackPressed = {
             navController.onBackPressed()
         },

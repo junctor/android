@@ -4,11 +4,13 @@ import com.advice.core.local.Organization
 import com.advice.data.session.UserSession
 import com.advice.data.sources.OrganizationsDataSource
 import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toOrganization
 import com.advice.firebase.models.organization.FirebaseOrganization
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseOrganizationDataSource(
@@ -41,7 +44,16 @@ class FirebaseOrganizationDataSource(
     )
 
     override fun get(): Flow<List<Organization>> {
-
         return organizations
+    }
+
+    override suspend fun get(id: Long): Organization? {
+        val conference = userSession.currentConference ?: return null
+
+        val snapshot = firestore.document("conferences/${conference.code}/organizations/$id")
+            .get(Source.CACHE)
+            .await()
+
+        return snapshot.toObjectOrNull(FirebaseOrganization::class.java)?.toOrganization()
     }
 }

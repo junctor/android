@@ -6,13 +6,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.shareIn
 
 class OrganizationsRepository(
     private val organizationsDataSource: OrganizationsDataSource,
 ) {
-    suspend fun find(id: Long): Organization? = organizations.first().find { it.id == id }
 
     val organizations: Flow<List<Organization>> =
         organizationsDataSource.get().shareIn(
@@ -20,4 +18,6 @@ class OrganizationsRepository(
             started = SharingStarted.Lazily,
             replay = 1,
         )
+
+    suspend fun get(id: Long): Organization? = organizationsDataSource.get(id)
 }

@@ -39,7 +39,6 @@ import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.presentation.state.ProductsState
-import com.advice.products.ui.components.ImageGallery
 import com.advice.products.ui.components.LabelButton
 import com.advice.products.ui.components.LegalLabel
 import com.advice.products.ui.components.LowStockLabel
@@ -51,6 +50,7 @@ import com.advice.products.ui.preview.ProductsProvider
 import com.advice.products.utils.toCurrency
 import com.advice.ui.R
 import com.advice.ui.components.BackButton
+import com.advice.ui.components.ImageGallery
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
@@ -133,7 +133,7 @@ fun Product(
         Box {
             val media = product.media.firstOrNull()
             if (media != null) {
-                ImageGallery(product.media)
+                ImageGallery(product.media.map { it.url })
             } else {
                 PlaceHolderImage()
             }
@@ -165,8 +165,7 @@ fun Product(
                 ProductRow(
                     label = "Variant", modifier = Modifier.clickable(onClick = onExpandBottomSheet)
                 ) {
-                    val label = selection?.label
-                        ?: stringResource(com.advice.products.R.string.select_variant)
+                    val label = selection?.label ?: stringResource(com.advice.products.R.string.select_variant)
                     Text(label, modifier = Modifier.padding(end = 16.dp))
                 }
             }

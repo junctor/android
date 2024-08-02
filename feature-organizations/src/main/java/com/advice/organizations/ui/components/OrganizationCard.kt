@@ -18,10 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.request.ImageRequest
-import com.advice.ui.R
 import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
@@ -36,10 +33,12 @@ internal fun OrganizationCard(
     Surface(
         color = Color.Transparent,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        shape = RoundedCornerShape(12.dp),
-        modifier = modifier.clickable {
-            onClick()
-        }
+        shape = RoundedCornerShape(8.dp),
+        modifier = modifier
+            .padding(horizontal = 4.dp, vertical = 4.dp)
+            .clickable {
+                onClick()
+            }
     ) {
         Column {
             Box(
@@ -49,14 +48,8 @@ internal fun OrganizationCard(
                     .aspectRatio(1.333f)
                     .clip(RoundedCornerShape(12.dp))
             ) {
-                val request = ImageRequest.Builder(LocalContext.current)
-                    .data(media)
-                    .placeholder(R.drawable.logo_glitch)
-                    .error(R.drawable.logo_glitch)
-                    .build()
-
                 Image(
-                    request = request,
+                    model = media,
                     contentDescription = "logo",
                     modifier = Modifier
                         .fillMaxSize(),

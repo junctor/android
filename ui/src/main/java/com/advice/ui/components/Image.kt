@@ -27,8 +27,8 @@ fun Image(
 ) {
     val request = ImageRequest.Builder(LocalContext.current)
         .data(model)
-        .placeholder(R.drawable.logo_glitch)
         .error(R.drawable.logo_glitch)
+        .crossfade(enable = true)
         .build()
 
     Image(request, contentDescription, modifier, contentScale)

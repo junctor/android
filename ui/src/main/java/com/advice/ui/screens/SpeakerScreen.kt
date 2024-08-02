@@ -109,7 +109,7 @@ fun SpeakerScreenContent(
         if (speaker.description.isNotBlank()) {
             Paragraph(speaker.description, Modifier.padding(16.dp))
         } else {
-            NoDetailsView(text = "This speaker likes to keep a low profile.")
+            NoDetailsView()
         }
         if (speaker.links.isNotEmpty()) {
             Spacer(Modifier.height(16.dp))

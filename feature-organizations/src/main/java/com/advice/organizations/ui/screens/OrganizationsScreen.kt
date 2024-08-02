@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.advice.core.local.Organization
 import com.advice.organizations.ui.components.OrganizationsScreenContent
 import com.advice.ui.components.BackButton
@@ -38,7 +39,11 @@ fun OrganizationsScreen(
                 }
 
                 else -> {
-                    OrganizationsScreenContent(organizations, onOrganizationPressed)
+                    OrganizationsScreenContent(
+                        organizations,
+                        onOrganizationPressed,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
                 }
             }
         }
