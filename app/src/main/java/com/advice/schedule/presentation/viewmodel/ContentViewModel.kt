@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Content
 import com.advice.reminder.ReminderManager
 import com.advice.schedule.data.repositories.ContentRepository
-import com.advice.schedule.data.repositories.EventRepository
 import com.advice.ui.states.ContentScreenState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +17,9 @@ class ContentViewModel :
     ViewModel(),
     KoinComponent {
     private val repository by inject<ContentRepository>()
-    private val eventRepository by inject<EventRepository>()
     private val reminderManager by inject<ReminderManager>()
 
-    private val _state = MutableStateFlow<ContentScreenState>(ContentScreenState(emptyList()))
+    private val _state = MutableStateFlow(ContentScreenState(emptyList()))
     val state: Flow<ContentScreenState> = _state
 
     init {
@@ -36,15 +34,15 @@ class ContentViewModel :
         viewModelScope.launch {
             // Bookmarking content that has sessions
             if (content.sessions.isNotEmpty()) {
-                val all = content.sessions.all { eventRepository.isBookmarked(it) }
-                val any = content.sessions.any { eventRepository.isBookmarked(it) }
+                val all = content.sessions.all { repository.isBookmarked(it) }
+                val any = content.sessions.any { repository.isBookmarked(it) }
 
                 when {
                     !isBookmarked && all -> {
                         Timber.d("All sessions are bookmarked - unbookmarking all")
                         // All sessions are bookmarked - unbookmark them all
                         content.sessions.forEach {
-                            eventRepository.bookmark(it)
+                            repository.bookmark(it)
                             reminderManager.removeReminder(content, it)
                         }
                     }
@@ -53,7 +51,7 @@ class ContentViewModel :
                         Timber.d("No sessions are bookmarked - bookmarking all")
                         // No sessions are bookmarked - bookmark them all
                         content.sessions.forEach {
-                            eventRepository.bookmark(it)
+                            repository.bookmark(it)
                             reminderManager.setReminder(content, it)
                         }
                     }

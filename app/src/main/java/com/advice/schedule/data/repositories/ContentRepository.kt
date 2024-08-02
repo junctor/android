@@ -2,6 +2,7 @@ package com.advice.schedule.data.repositories
 
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
+import com.advice.core.local.Session
 import com.advice.data.sources.ContentDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,5 +29,17 @@ class ContentRepository(
 
     suspend fun bookmark(content: Content) {
         contentDataSource.bookmark(content)
+    }
+
+    suspend fun bookmark(session: Session) {
+        contentDataSource.bookmark(session)
+    }
+
+    suspend fun isBookmarked(content: Content): Boolean {
+        return contentDataSource.isBookmarked(content)
+    }
+
+    suspend fun isBookmarked(session: Session): Boolean {
+        return contentDataSource.isBookmarked(session)
     }
 }

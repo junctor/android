@@ -48,7 +48,6 @@ import com.advice.products.presentation.viewmodel.ProductCart
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.reminder.ReminderManager
 import com.advice.schedule.data.repositories.ContentRepository
-import com.advice.schedule.data.repositories.EventRepository
 import com.advice.schedule.data.repositories.FAQRepository
 import com.advice.schedule.data.repositories.FeedbackRepository
 import com.advice.schedule.data.repositories.FiltersRepository
@@ -137,7 +136,6 @@ val appModule = module {
     single { HomeRepository(get(), get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
     single { ContentRepository(get()) }
-    single { EventRepository(get()) }
     single { SpeakerRepository(get(), get()) }
     single { FiltersRepository(get(), get(named("tags"))) }
     single { FAQRepository(get()) }
