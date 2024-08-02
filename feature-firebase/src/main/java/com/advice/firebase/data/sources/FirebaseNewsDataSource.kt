@@ -3,11 +3,10 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.NewsArticle
 import com.advice.data.session.UserSession
 import com.advice.data.sources.NewsDataSource
-import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toArticle
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseArticle
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +22,12 @@ import kotlinx.coroutines.flow.stateIn
 class FirebaseNewsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val analytics: FirebaseAnalytics,
 ) : NewsDataSource {
     private val articles: StateFlow<List<NewsArticle>> = userSession.getConference().flatMapMerge { conference ->
         firestore.collection("conferences")
             .document(conference.code)
             .collection("articles")
-            .snapshotFlow(analytics)
+            .snapshotFlowLegacy()
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseArticle::class.java)
                     .filter { !it.hidden || userSession.isDeveloper }

@@ -4,6 +4,8 @@ import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
 import com.advice.data.session.UserSession
 import com.advice.data.sources.MenuDataSource
+import com.advice.firebase.extensions.mapSnapshot
+import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toMenu
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.menu.FirebaseMenu
@@ -23,18 +25,19 @@ class FirebaseMenuDataSource(
 ) : MenuDataSource {
 
     // todo: investigate a better way to return an init state when the conference has changed.
-    private val menus: Flow<FlowResult<List<Menu>>> = userSession.getConference().flatMapMerge { conference ->
-        firestore.collection("conferences/${conference.code}/menus")
-            .snapshotFlow()
-            .mapSnapshot { querySnapshot ->
-                querySnapshot.toObjectsOrEmpty(FirebaseMenu::class.java)
-                    .mapNotNull { it.toMenu() }
-            }
-    }.shareIn(
-        CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.Lazily,
-        replay = 1,
-    )
+    private val menus: Flow<FlowResult<List<Menu>>> =
+        userSession.getConference().flatMapMerge { conference ->
+            firestore.collection("conferences/${conference.code}/menus")
+                .snapshotFlow()
+                .mapSnapshot { querySnapshot ->
+                    querySnapshot.toObjectsOrEmpty(FirebaseMenu::class.java)
+                        .mapNotNull { it.toMenu() }
+                }
+        }.shareIn(
+            CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            replay = 1,
+        )
 
     override fun get(): Flow<FlowResult<List<Menu>>> = menus
 }

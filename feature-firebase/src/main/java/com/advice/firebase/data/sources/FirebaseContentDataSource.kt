@@ -14,12 +14,11 @@ import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.data.ConferenceState
-import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toContents
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseContent
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +35,6 @@ import timber.log.Timber
 class FirebaseContentDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val analytics: FirebaseAnalytics,
     private val tagsDataSource: TagsDataSource,
     private val speakersDataSource: SpeakersDataSource,
     private val locationsDataSource: LocationsDataSource,
@@ -49,7 +47,7 @@ class FirebaseContentDataSource(
             .collection("conferences")
             .document(conference.code)
             .collection("content")
-            .snapshotFlow(analytics)
+            .snapshotFlowLegacy()
             .map { querySnapshot ->
                 querySnapshot
                     .toObjectsOrEmpty(FirebaseContent::class.java)

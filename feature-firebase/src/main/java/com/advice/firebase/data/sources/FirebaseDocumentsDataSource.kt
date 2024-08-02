@@ -3,12 +3,11 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Document
 import com.advice.data.session.UserSession
 import com.advice.data.sources.DocumentsDataSource
-import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toDocument
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseDocument
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,14 +23,13 @@ import kotlinx.coroutines.tasks.await
 class FirebaseDocumentsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val analytics: FirebaseAnalytics,
 ) : DocumentsDataSource {
 
     private val documents = userSession.getConference().flatMapMerge { conference ->
         firestore.collection("conferences")
             .document(conference.code)
             .collection("documents")
-            .snapshotFlow(analytics)
+            .snapshotFlowLegacy()
             .map {
                 it.toObjectsOrEmpty(FirebaseDocument::class.java)
                     .mapNotNull { it.toDocument() }

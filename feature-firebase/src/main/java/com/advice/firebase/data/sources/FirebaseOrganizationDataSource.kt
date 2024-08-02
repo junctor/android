@@ -3,12 +3,11 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Organization
 import com.advice.data.session.UserSession
 import com.advice.data.sources.OrganizationsDataSource
-import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toOrganization
 import com.advice.firebase.models.organization.FirebaseOrganization
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
@@ -25,13 +24,12 @@ import kotlinx.coroutines.tasks.await
 class FirebaseOrganizationDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val analytics: FirebaseAnalytics,
 ) : OrganizationsDataSource {
     private val organizations = userSession.getConference().flatMapMerge { conference ->
         firestore.collection("conferences")
             .document(conference.code)
             .collection("organizations")
-            .snapshotFlow(analytics)
+            .snapshotFlowLegacy()
             .map {
                 it.toObjectsOrEmpty(FirebaseOrganization::class.java)
                     .sortedBy { it.name }

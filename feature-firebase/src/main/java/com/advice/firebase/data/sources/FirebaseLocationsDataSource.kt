@@ -3,11 +3,10 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Location
 import com.advice.data.session.UserSession
 import com.advice.data.sources.LocationsDataSource
-import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toLocation
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.location.FirebaseLocation
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +24,6 @@ import kotlinx.coroutines.tasks.await
 class FirebaseLocationsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val analytics: FirebaseAnalytics,
 ) : LocationsDataSource {
 
     // todo: rewrite this to no turn a recursive function into a loop
@@ -34,7 +32,7 @@ class FirebaseLocationsDataSource(
             firestore.collection("conferences")
                 .document(conference.code)
                 .collection("locations")
-                .snapshotFlow(analytics)
+                .snapshotFlowLegacy()
                 .map { querySnapshot ->
                     val locations =
                         querySnapshot.toObjectsOrEmpty(FirebaseLocation::class.java)

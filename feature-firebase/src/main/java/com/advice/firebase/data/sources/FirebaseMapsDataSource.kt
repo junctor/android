@@ -49,8 +49,7 @@ class FirebaseMapsDataSource(
                     FlowResult.Success(Maps(conference, list))
                 }
             }
-        }
-            .distinctUntilChanged()
+        }.distinctUntilChanged()
             .shareIn(
                 CoroutineScope(Dispatchers.IO),
                 started = SharingStarted.Lazily,

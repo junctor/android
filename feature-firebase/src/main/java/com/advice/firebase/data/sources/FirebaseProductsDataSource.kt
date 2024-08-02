@@ -6,11 +6,10 @@ import com.advice.core.local.products.Product
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ProductsDataSource
 import com.advice.data.sources.TagsDataSource
-import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toMerch
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.products.FirebaseProduct
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +26,6 @@ class FirebaseProductsDataSource(
     private val userSession: UserSession,
     private val tagsDataSource: TagsDataSource,
     private val firestore: FirebaseFirestore,
-    private val analytics: FirebaseAnalytics,
 ) : ProductsDataSource {
 
     private val products: Flow<List<Product>> =
@@ -55,7 +53,7 @@ class FirebaseProductsDataSource(
         firestore.collection("conferences")
             .document(conference.code)
             .collection("products")
-            .snapshotFlow(analytics)
+            .snapshotFlowLegacy()
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseProduct::class.java)
                     .sortedBy { it.sortOrder }

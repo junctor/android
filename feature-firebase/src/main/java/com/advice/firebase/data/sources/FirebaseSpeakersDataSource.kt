@@ -3,12 +3,11 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Speaker
 import com.advice.data.session.UserSession
 import com.advice.data.sources.SpeakersDataSource
-import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toSpeaker
 import com.advice.firebase.models.FirebaseSpeaker
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
@@ -27,23 +26,23 @@ import java.util.Locale
 class FirebaseSpeakersDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val analytics: FirebaseAnalytics,
 ) : SpeakersDataSource {
     private val speakers: StateFlow<List<Speaker>> =
         userSession.getConference().flatMapMerge { conference ->
-            firestore.collection("conferences")
+            val listener = firestore.collection("conferences")
                 .document(conference.code)
                 .collection("speakers")
-                .snapshotFlow(analytics)
+                .snapshotFlowLegacy()
                 .map { querySnapshot ->
                     querySnapshot.toObjectsOrEmpty(FirebaseSpeaker::class.java)
                         .filter { !it.hidden || userSession.isDeveloper }
                         .mapNotNull { it.toSpeaker() }
                         .sortedBy { it.name.lowercase(Locale.getDefault()) }
                 }
+            listener
         }.stateIn(
             scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = emptyList(),
         )
 

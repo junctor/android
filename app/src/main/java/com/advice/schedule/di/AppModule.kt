@@ -166,11 +166,10 @@ val appModule = module {
     }
 
     single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
-    single<NewsDataSource> { FirebaseNewsDataSource(get(), get(), get()) }
+    single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<ContentDataSource> {
         FirebaseContentDataSource(
-            get(),
             get(),
             get(),
             get(),
@@ -180,9 +179,9 @@ val appModule = module {
             get(named("events")),
         )
     }
-    single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(), get(named("tags"))) }
+    single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
     single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
-    single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get(), get()) }
+    single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
     single<MapsDataSource> {
         FirebaseMapsDataSource(
             get(),
@@ -191,16 +190,16 @@ val appModule = module {
         )
     }
 
-    single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get(), get()) }
-    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get(), get(), get()) }
+    single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
+    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get(), get()) }
 
     // Organizations
-    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get(), get()) }
+    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get()) }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<VillagesDataSource> { FirebaseVillagesDataSource(get(), get()) }
 
     // Documents
-    single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get(), get()) }
+    single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get()) }
 
     single<MenuDataSource> { FirebaseMenuDataSource(get(), get()) }
 

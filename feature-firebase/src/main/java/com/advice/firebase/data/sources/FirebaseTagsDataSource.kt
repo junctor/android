@@ -4,11 +4,10 @@ import com.advice.core.local.TagType
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.TagsDataSource
-import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toTagType
 import com.advice.firebase.models.FirebaseTagType
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +26,6 @@ import kotlinx.coroutines.tasks.await
 class FirebaseTagsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val analytics: FirebaseAnalytics,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : TagsDataSource {
 
@@ -37,7 +35,7 @@ class FirebaseTagsDataSource(
                 .collection("conferences")
                 .document(conference.code)
                 .collection("tagtypes")
-                .snapshotFlow(analytics)
+                .snapshotFlowLegacy()
                 .map { querySnapshot ->
                     querySnapshot
                         .toObjectsOrEmpty(FirebaseTagType::class.java)
