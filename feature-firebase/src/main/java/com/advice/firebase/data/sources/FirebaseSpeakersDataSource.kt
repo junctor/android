@@ -4,6 +4,7 @@ import com.advice.core.local.Speaker
 import com.advice.data.session.UserSession
 import com.advice.data.sources.SpeakersDataSource
 import com.advice.firebase.extensions.snapshotFlow
+import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toSpeaker
 import com.advice.firebase.models.FirebaseSpeaker
@@ -59,5 +60,15 @@ class FirebaseSpeakersDataSource(
             .filter { !it.hidden || userSession.isDeveloper }
             .mapNotNull { it.toSpeaker() }
             .sortedBy { it.name.lowercase(Locale.getDefault()) }
+    }
+
+    override suspend fun get(id: Long): Speaker? {
+        val conference = userSession.currentConference ?: return null
+
+        val snapshot = firestore.document("conferences/${conference.code}/speakers/$id")
+            .get()
+            .await()
+
+        return snapshot.toObjectOrNull(FirebaseSpeaker::class.java)?.toSpeaker()
     }
 }

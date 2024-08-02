@@ -9,7 +9,8 @@ class SpeakerRepository(
     private val contentRepository: ContentRepository,
 ) {
     suspend fun getSpeakerDetails(id: Long): SpeakerState {
-        val speaker = speakersRepository.speakers.first().find { it.id == id }!!
+        val speaker = speakersRepository.get(id) ?: return SpeakerState.Error
+
         val events = contentRepository.content.first().content.filter {
             it.speakers.any { it.id == id }
         }.flatMap {

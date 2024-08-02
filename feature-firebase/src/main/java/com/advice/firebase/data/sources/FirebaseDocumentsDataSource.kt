@@ -5,6 +5,7 @@ import com.advice.data.session.UserSession
 import com.advice.data.sources.DocumentsDataSource
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toDocument
+import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseDocument
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseDocumentsDataSource(
@@ -41,4 +43,14 @@ class FirebaseDocumentsDataSource(
     )
 
     override fun get(): Flow<List<Document>> = documents
+
+    override suspend fun get(id: Long): Document? {
+        val conference = userSession.currentConference ?: return null
+
+        val snapshot = firestore.document("conferences/${conference.code}/documents/$id")
+            .get()
+            .await()
+
+        return snapshot.toObjectOrNull(FirebaseDocument::class.java)?.toDocument()
+    }
 }

@@ -16,10 +16,19 @@ class DocumentsViewModel : ViewModel(), KoinComponent {
     private val _state = MutableStateFlow<DocumentsScreenState>(DocumentsScreenState.Loading)
     val state: Flow<DocumentsScreenState> = _state
 
-    init {
+    fun get(id: Long?) {
+        if (id == null) {
+            _state.value = DocumentsScreenState.Error
+            return
+        }
+
         viewModelScope.launch {
-            repository.documents.collect {
-                _state.value = if (it.isEmpty()) DocumentsScreenState.Error else DocumentsScreenState.Success(it)
+            _state.value = DocumentsScreenState.Loading
+            val document = repository.get(id)
+            if (document != null) {
+                _state.value = DocumentsScreenState.Success(document)
+            } else {
+                _state.value = DocumentsScreenState.Error
             }
         }
     }

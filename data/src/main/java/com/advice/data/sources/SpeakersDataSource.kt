@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface SpeakersDataSource {
     fun get(): Flow<List<Speaker>>
     suspend fun fetch(conference: String): List<Speaker>
+    suspend fun get(id: Long): Speaker?
 }

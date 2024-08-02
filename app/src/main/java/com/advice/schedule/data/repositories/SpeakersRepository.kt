@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 
 class SpeakersRepository(
-    speakersDataSource: SpeakersDataSource,
+    private val speakersDataSource: SpeakersDataSource,
 ) {
     val speakers: Flow<List<Speaker>> = speakersDataSource
         .get()
@@ -18,4 +18,6 @@ class SpeakersRepository(
             started = SharingStarted.Eagerly,
             replay = 1,
         )
+
+    suspend fun get(id: Long): Speaker? = speakersDataSource.get(id)
 }
