@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.advice.feedback.ui.screens.FeedbackScreen
 import com.advice.feedback.ui.screens.FeedbackState
+import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.FeedbackViewModel
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
@@ -21,7 +22,7 @@ fun Feedback(navController: NavController, id: Long, content: Long) {
     when (state) {
         FeedbackState.Error ->
             ErrorScreen {
-                navController.popBackStack()
+                navController.onBackPressed()
             }
 
         FeedbackState.Loading -> {
@@ -35,11 +36,11 @@ fun Feedback(navController: NavController, id: Long, content: Long) {
                 },
                 onBackPressed = {
                     // todo: possibly show a warning dialog.
-                    navController.popBackStack()
+                    navController.onBackPressed()
                 },
                 onSubmitPressed = {
                     viewModel.submitFeedback(content)
-                    navController.popBackStack()
+                    navController.onBackPressed()
                 })
         }
     }

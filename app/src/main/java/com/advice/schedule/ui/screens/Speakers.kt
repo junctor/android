@@ -6,10 +6,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
-import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
-import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.onBackPressed
+import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
+import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreen
 import com.advice.ui.states.SpeakerState
@@ -22,7 +23,7 @@ internal fun Speakers(navController: NavHostController, label: String) {
         label = label,
         speakers = state,
         onBackPress = {
-            navController.popBackStack()
+            navController.onBackPressed()
         },
         onSpeakerClick = {
             navController.navigate(Navigation.Speaker(it.id, it.name))
@@ -48,7 +49,7 @@ fun Speaker(
         name = name ?: "",
         state = speakerDetails,
         onBackPress = {
-            navController.popBackStack()
+            navController.onBackPressed()
         },
         onLinkClick = onLinkClicked,
         onEventClick = {

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
+import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.FAQScreenState
 import com.advice.schedule.presentation.viewmodel.FAQViewModel
 import com.advice.ui.components.ProgressSpinner
@@ -21,7 +22,7 @@ internal fun FAQ(navController: NavHostController) {
             ErrorScreen(
                 message = state.error.message ?: "An error occurred",
                 onBackPress = {
-                    navController.popBackStack()
+                    navController.onBackPressed()
                 }
             )
         }
@@ -32,7 +33,7 @@ internal fun FAQ(navController: NavHostController) {
 
         is FAQScreenState.Success -> {
             FAQScreen(faqs = state.faqs, onBackPress = {
-                navController.popBackStack()
+                navController.onBackPressed()
             })
         }
     }

@@ -15,6 +15,7 @@ import com.advice.core.local.Content
 import com.advice.core.local.Session
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.ContentViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
@@ -34,7 +35,7 @@ fun Contents(context: AppCompatActivity, navController: NavHostController, label
         state = state,
         label = label,
         onMenuClick = {
-            navController.popBackStack()
+            navController.onBackPressed()
         },
         onContentClick = {
             navController.navigate(Navigation.Event(it.conference, it.id.toString()))
@@ -66,7 +67,7 @@ fun Event(
     when (val state = viewModel.state.collectAsState(initial = EventScreenState.Loading).value) {
         is EventScreenState.Error -> {
             ErrorScreen {
-                navController.popBackStack()
+                navController.onBackPressed()
             }
         }
 
@@ -108,7 +109,7 @@ private fun Content(
             onBookmark(content, session, isBookmarked)
             (context as MainActivity).onBookmarkEvent()
         },
-        onBackPressed = { navController.popBackStack() },
+        onBackPressed = { navController.onBackPressed() },
         onTagClicked = {
             navController.navigate(Navigation.Tag(it.id, it.label))
         },

@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import com.advice.core.ui.ScheduleFilter
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.screens.ScheduleScreen
@@ -26,7 +27,7 @@ fun Tag(context: AppCompatActivity, navController: NavHostController, id: Long?,
         state = state,
         label = label,
         onBackPress = {
-            navController.popBackStack()
+            navController.onBackPressed()
         },
         onEventClick = {
             navController.navigate(
@@ -60,7 +61,7 @@ fun Tags(
         state = state,
         label = label,
         onBackPress = {
-            navController.popBackStack()
+            navController.onBackPressed()
         },
         onEventClick = {
             navController.navigate(

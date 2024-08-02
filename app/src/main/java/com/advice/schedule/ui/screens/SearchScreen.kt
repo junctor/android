@@ -32,6 +32,7 @@ import com.advice.schedule.data.repositories.SearchResults
 import com.advice.schedule.data.repositories.SearchState
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.R
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.EventRow
@@ -76,7 +77,7 @@ internal fun SearchScreen(
                     onClick = {
                         // clear the search
                         onQueryChanged("")
-                        navController.popBackStack()
+                        navController.onBackPressed()
                     },
                 )
 

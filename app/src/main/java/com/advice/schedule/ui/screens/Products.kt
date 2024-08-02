@@ -12,6 +12,7 @@ import com.advice.products.ui.screens.ProductsScreen
 import com.advice.products.ui.screens.ProductsSummaryScreen
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
 
@@ -30,7 +31,7 @@ fun Products(context: AppCompatActivity, navController: NavHostController, label
             navController.navigate(Navigation.Product(it.id))
         },
         onBackPressed = {
-            navController.popBackStack()
+            navController.onBackPressed()
         },
         onLearnMore = {
             val merchDocument = (state as? ProductsScreenState.Success)?.data?.merchDocument
@@ -73,10 +74,10 @@ fun Product(
                 canAdd = state.data.canAdd,
                 onAddClicked = {
                     viewModel.addToCart(it)
-                    navController.popBackStack()
+                    navController.onBackPressed()
                 },
                 onBackPressed = {
-                    navController.popBackStack()
+                    navController.onBackPressed()
                 }
             )
         }
@@ -103,7 +104,7 @@ fun ProductsSummary(context: AppCompatActivity, navController: NavHostController
                 onQuantityChanged = { id, quantity, variant ->
                     viewModel.setQuantity(id, quantity, variant)
                 },
-                onBackPressed = { navController.popBackStack() },
+                onBackPressed = { navController.onBackPressed() },
             )
         }
     }

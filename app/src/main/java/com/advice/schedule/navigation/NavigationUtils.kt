@@ -17,6 +17,12 @@ fun NavController.navigate(navigation: Navigation?) {
     }
 }
 
+fun NavController.onBackPressed() {
+    if (currentDestination?.route != Navigation.Home.route()) {
+        popBackStack()
+    }
+}
+
 internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Navigation {
     return when (this) {
         is Navigation.Content -> {

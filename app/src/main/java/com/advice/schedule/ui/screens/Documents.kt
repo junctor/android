@@ -23,7 +23,7 @@ internal fun Document(navController: NavHostController, id: Long? = null) {
     when (state) {
         is DocumentsScreenState.Error -> {
             ErrorScreen {
-
+                navController.onBackPressed()
             }
         }
 
@@ -32,9 +32,10 @@ internal fun Document(navController: NavHostController, id: Long? = null) {
         }
 
         is DocumentsScreenState.Success -> {
-                onBackPressed = { navController.popBackStack() })
             com.advice.documents.ui.screens.DocumentScreen(
                 document = state.document,
+                onBackPressed = { navController.onBackPressed() },
+            )
         }
     }
 }

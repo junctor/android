@@ -11,6 +11,7 @@ import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.screens.ScheduleScreen
@@ -26,7 +27,7 @@ internal fun Locations(navController: NavHostController) {
         // todo: this should URL encode the title
         navController.navigate(Navigation.Location(it.id, it.title))
     }, onBackPressed = {
-        navController.popBackStack()
+        navController.onBackPressed()
     })
 }
 
@@ -46,7 +47,7 @@ fun Location(
         state = state,
         label = label,
         onBackPress = {
-            navController.popBackStack()
+            navController.onBackPressed()
         },
         onEventClick = {
             navController.navigate(
