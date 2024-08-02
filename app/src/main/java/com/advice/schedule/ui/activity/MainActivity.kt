@@ -72,10 +72,10 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             mainViewModel = viewModel<MainViewModel>()
             mainViewModel.onAppStart(this)
 
-            val state = mainViewModel.state.collectAsState(MainViewState()).value
-
             ScheduleTheme {
                 navigation.setRoutes(this, navController = navController as NavHostController)
+
+                val state = mainViewModel.state.collectAsState(MainViewState()).value
 
                 if (state.permissionDialog) {
                     Box(
