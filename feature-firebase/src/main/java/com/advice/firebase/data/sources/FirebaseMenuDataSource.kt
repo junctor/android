@@ -4,6 +4,7 @@ import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
 import com.advice.data.session.UserSession
 import com.advice.data.sources.MenuDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.mapSnapshot
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toMenu
@@ -29,6 +30,7 @@ class FirebaseMenuDataSource(
         userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences/${conference.code}/menus")
                 .snapshotFlow()
+                .closeOnConferenceChange(userSession.getConference())
                 .mapSnapshot { querySnapshot ->
                     querySnapshot.toObjectsOrEmpty(FirebaseMenu::class.java)
                         .mapNotNull { it.toMenu() }

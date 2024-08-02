@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.NewsArticle
 import com.advice.data.session.UserSession
 import com.advice.data.sources.NewsDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toArticle
 import com.advice.firebase.extensions.toObjectsOrEmpty
@@ -28,6 +29,7 @@ class FirebaseNewsDataSource(
             .document(conference.code)
             .collection("articles")
             .snapshotFlowLegacy()
+            .closeOnConferenceChange(userSession.getConference())
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseArticle::class.java)
                     .filter { !it.hidden || userSession.isDeveloper }

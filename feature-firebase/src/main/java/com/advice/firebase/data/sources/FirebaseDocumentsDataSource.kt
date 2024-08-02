@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Document
 import com.advice.data.session.UserSession
 import com.advice.data.sources.DocumentsDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toDocument
 import com.advice.firebase.extensions.toObjectOrNull
@@ -30,6 +31,7 @@ class FirebaseDocumentsDataSource(
             .document(conference.code)
             .collection("documents")
             .snapshotFlowLegacy()
+            .closeOnConferenceChange(userSession.getConference())
             .map {
                 it.toObjectsOrEmpty(FirebaseDocument::class.java)
                     .mapNotNull { it.toDocument() }

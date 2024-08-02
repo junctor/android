@@ -30,6 +30,7 @@ fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
             }
         awaitClose {
             listeners_count--
+            logSnapshotClosure(path)
             listenerRegistration.remove()
         }
     }

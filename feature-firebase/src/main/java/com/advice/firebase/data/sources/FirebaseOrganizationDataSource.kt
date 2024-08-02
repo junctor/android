@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Organization
 import com.advice.data.session.UserSession
 import com.advice.data.sources.OrganizationsDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
@@ -30,6 +31,7 @@ class FirebaseOrganizationDataSource(
             .document(conference.code)
             .collection("organizations")
             .snapshotFlowLegacy()
+            .closeOnConferenceChange(userSession.getConference())
             .map {
                 it.toObjectsOrEmpty(FirebaseOrganization::class.java)
                     .sortedBy { it.name }

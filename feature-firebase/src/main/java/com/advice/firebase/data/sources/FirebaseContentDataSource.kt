@@ -14,6 +14,7 @@ import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.data.ConferenceState
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toContents
 import com.advice.firebase.extensions.toObjectOrNull
@@ -48,6 +49,7 @@ class FirebaseContentDataSource(
             .document(conference.code)
             .collection("content")
             .snapshotFlowLegacy()
+            .closeOnConferenceChange(userSession.getConference())
             .map { querySnapshot ->
                 querySnapshot
                     .toObjectsOrEmpty(FirebaseContent::class.java)

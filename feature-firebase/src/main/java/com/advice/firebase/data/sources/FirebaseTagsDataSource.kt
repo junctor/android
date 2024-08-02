@@ -4,6 +4,7 @@ import com.advice.core.local.TagType
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.TagsDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toTagType
@@ -36,6 +37,7 @@ class FirebaseTagsDataSource(
                 .document(conference.code)
                 .collection("tagtypes")
                 .snapshotFlowLegacy()
+                .closeOnConferenceChange(userSession.getConference())
                 .map { querySnapshot ->
                     querySnapshot
                         .toObjectsOrEmpty(FirebaseTagType::class.java)

@@ -4,6 +4,7 @@ import com.advice.core.local.FAQ
 import com.advice.core.local.FlowResult
 import com.advice.data.session.UserSession
 import com.advice.data.sources.FAQDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.mapSnapshot
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toFAQ
@@ -27,6 +28,7 @@ class FirebaseFAQDataSource(
         userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences/${conference.code}/faqs")
                 .snapshotFlow()
+                .closeOnConferenceChange(userSession.getConference())
                 .mapSnapshot {
                     it.toObjectsOrEmpty(FirebaseFAQ::class.java).map { it.toFAQ() }
                 }

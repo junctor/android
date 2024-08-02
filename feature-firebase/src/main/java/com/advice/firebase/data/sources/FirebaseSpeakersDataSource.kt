@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Speaker
 import com.advice.data.session.UserSession
 import com.advice.data.sources.SpeakersDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
@@ -33,6 +34,7 @@ class FirebaseSpeakersDataSource(
                 .document(conference.code)
                 .collection("speakers")
                 .snapshotFlowLegacy()
+                .closeOnConferenceChange(userSession.getConference())
                 .map { querySnapshot ->
                     querySnapshot.toObjectsOrEmpty(FirebaseSpeaker::class.java)
                         .filter { !it.hidden || userSession.isDeveloper }

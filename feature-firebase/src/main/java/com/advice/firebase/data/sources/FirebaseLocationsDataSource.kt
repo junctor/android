@@ -3,6 +3,7 @@ package com.advice.firebase.data.sources
 import com.advice.core.local.Location
 import com.advice.data.session.UserSession
 import com.advice.data.sources.LocationsDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toLocation
 import com.advice.firebase.extensions.toObjectsOrEmpty
@@ -33,6 +34,7 @@ class FirebaseLocationsDataSource(
                 .document(conference.code)
                 .collection("locations")
                 .snapshotFlowLegacy()
+                .closeOnConferenceChange(userSession.getConference())
                 .map { querySnapshot ->
                     val locations =
                         querySnapshot.toObjectsOrEmpty(FirebaseLocation::class.java)

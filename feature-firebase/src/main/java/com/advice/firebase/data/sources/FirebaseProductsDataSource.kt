@@ -6,6 +6,7 @@ import com.advice.core.local.products.Product
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ProductsDataSource
 import com.advice.data.sources.TagsDataSource
+import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toMerch
 import com.advice.firebase.extensions.toObjectsOrEmpty
@@ -54,6 +55,7 @@ class FirebaseProductsDataSource(
             .document(conference.code)
             .collection("products")
             .snapshotFlowLegacy()
+            .closeOnConferenceChange(userSession.getConference())
             .map { querySnapshot ->
                 querySnapshot.toObjectsOrEmpty(FirebaseProduct::class.java)
                     .sortedBy { it.sortOrder }

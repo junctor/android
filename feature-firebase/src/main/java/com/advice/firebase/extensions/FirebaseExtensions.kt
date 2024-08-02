@@ -1,5 +1,6 @@
 package com.advice.firebase.extensions
 
+import com.advice.core.local.Conference
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -7,6 +8,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 var document_reads = 0
@@ -31,9 +33,41 @@ fun CollectionReference.snapshotFlowLegacy(): Flow<QuerySnapshot> {
             }
         awaitClose {
             listeners_count--
+            logSnapshotClosure(path)
             listenerRegistration.remove()
         }
     }
+}
+
+internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference>): Flow<T> {
+    return callbackFlow {
+        var currentConference: Conference? = null
+        val collector = launch {
+            conferenceFlow.collect { newConference ->
+                // Assuming Conference has a proper equals() method
+                if (newConference != currentConference) {
+                    if (currentConference == null) {
+                        currentConference = newConference
+                    } else {
+                        close()
+                    }
+                }
+            }
+        }
+
+        collect { value ->
+            trySend(value)
+        }
+
+        awaitClose {
+            collector.cancel()
+        }
+    }
+}
+
+
+fun logSnapshotClosure(path: String) {
+    Timber.e("Snapshot listener for path: $path closed. $listeners_count active listeners.")
 }
 
 internal fun logFailure(path: String, error: FirebaseFirestoreException) {
@@ -44,13 +78,13 @@ internal fun logFailure(path: String, error: FirebaseFirestoreException) {
 }
 
 internal fun logSnapshot(path: String?, value: QuerySnapshot) {
-    Timber.i("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
+    Timber.e("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
     if (!value.metadata.isFromCache) {
         document_reads += value.size()
-        Timber.e("$listeners_count active listeners, document reads: $document_reads(+${value.size()}) path: $path")
+        Timber.e("$listeners_count active snapshot listeners, document reads: $document_reads(+${value.size()}) path: $path")
     } else {
         document_cache_reads += value.size()
-        Timber.i("$listeners_count active listeners, document reads: $document_reads(+0) path: $path (From Cache: ${value.size()})")
+        Timber.i("CACHE: $listeners_count active snapshot listeners, document reads: $document_cache_reads(+0) path: $path (From Cache: ${value.size()})")
     }
 }
 
