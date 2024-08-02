@@ -18,7 +18,9 @@ class ReminderWorker(
     private val notificationHelper by inject<NotificationHelper>()
 
     override suspend fun doWork(): Result {
-        Timber.d("ReminderWorker.doWork()")
+        val action = inputData.getString(INPUT_ACTION) ?: ACTION_REMINDER
+
+        Timber.d("ReminderWorker.doWork($action)")
         val conference = inputData.getString(INPUT_CONFERENCE)
         if (conference == null) {
             Timber.e("Could not fetch the current conference.")
@@ -43,13 +45,26 @@ class ReminderWorker(
             return Result.failure()
         }
 
-        // Event has already happened, skip this notification
-        if (event.hasStarted || event.hasFinished) {
-            Timber.e("Event has already finished.")
-            return Result.success()
-        }
 
-        notificationHelper.notifyStartingSoon(event)
+        when (action) {
+            // Remind the user the event is starting soon
+            ACTION_REMINDER -> {
+                // Event has already happened, skip this notification
+                if (event.hasStarted || event.hasFinished) {
+                    Timber.e("Event has already finished.")
+                    return Result.success()
+                }
+
+                notificationHelper.notifyStartingSoon(event)
+            }
+
+            // Remind the user to provide feedback
+            ACTION_FEEDBACK -> {
+                if (event.content.feedbackAvailable) {
+                    notificationHelper.notifyFeedbackAvailable(event)
+                }
+            }
+        }
 
         return Result.success()
     }
@@ -58,5 +73,9 @@ class ReminderWorker(
         const val INPUT_CONFERENCE = "INPUT_CONFERENCE"
         const val INPUT_ID = "INPUT_ID"
         const val INPUT_SESSION_ID = "INPUT_SESSION_ID"
+        const val INPUT_ACTION = "INPUT_ACTION"
+
+        const val ACTION_REMINDER = "ACTION_REMINDER"
+        const val ACTION_FEEDBACK = "ACTION_FEEDBACK"
     }
 }

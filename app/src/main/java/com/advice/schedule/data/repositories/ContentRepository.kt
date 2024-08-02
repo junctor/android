@@ -51,7 +51,7 @@ class ContentRepository(
             val sessions = bookmark.sessions.filter { it.isBookmarked }
 
             for (session in sessions) {
-                reminderManager.updateReminder(bookmark, session)
+                reminderManager.updateReminders(bookmark, session)
                 notificationHelper.notifySessionUpdated(Event(bookmark, session))
             }
             storage.setContentUpdatedTimestamp(bookmark.id, bookmark.updated.toEpochMilli())

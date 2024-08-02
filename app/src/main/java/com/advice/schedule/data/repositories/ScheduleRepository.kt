@@ -107,7 +107,7 @@ class ScheduleRepository(
                     // All sessions are bookmarked - unbookmark them all
                     content.sessions.forEach {
                         contentRepository.bookmark(content, it)
-                        reminderManager.removeReminder(content, it)
+                        reminderManager.removeReminders(content, it)
                     }
                 }
 
@@ -116,7 +116,7 @@ class ScheduleRepository(
                     // No sessions are bookmarked - bookmark them all
                     content.sessions.forEach {
                         contentRepository.bookmark(content, it)
-                        reminderManager.setReminder(content, it)
+                        reminderManager.setReminders(content, it)
                     }
                 }
             }
@@ -134,9 +134,9 @@ class ScheduleRepository(
 
         contentRepository.bookmark(content, session)
         if (isBookmarked) {
-            reminderManager.setReminder(content, session)
+            reminderManager.setReminders(content, session)
         } else {
-            reminderManager.removeReminder(content, session)
+            reminderManager.removeReminders(content, session)
         }
 
         val all = content.sessions.all { contentRepository.isBookmarked(it) }

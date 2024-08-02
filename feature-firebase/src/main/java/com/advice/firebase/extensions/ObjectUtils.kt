@@ -6,10 +6,6 @@ import com.google.firebase.firestore.QuerySnapshot
 import timber.log.Timber
 
 fun <T> QuerySnapshot.toObjectsOrEmpty(clazz: Class<T>): List<T> {
-    if (!metadata.isFromCache) {
-        Timber.e("toObjectsOrEmpty not from cache: ${this.size()}")
-    }
-
     return try {
         val result = mutableListOf<T>()
         for (d in this) {
@@ -28,10 +24,6 @@ fun <T> QuerySnapshot.toObjectsOrEmpty(clazz: Class<T>): List<T> {
 }
 
 fun <T> DocumentSnapshot.toObjectOrNull(clazz: Class<T>): T? {
-    if (!metadata.isFromCache) {
-        Timber.e("toObjectOrNull not from cache ${this.id}")
-    }
-
     return try {
         toObject(clazz)
     } catch (ex: Exception) {

@@ -75,4 +75,8 @@ data class Content(
     var isBookmarked: Boolean = false,
     val sessions: List<Session>,
     val feedback: ContentFeedbackForm? = null,
-) : Parcelable
+) : Parcelable {
+
+    val feedbackAvailable: Boolean
+        get() = feedback?.isEnabled ?: false
+}

@@ -8,17 +8,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
-import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,9 +21,10 @@ import androidx.navigation.compose.rememberNavController
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.navigate
 import com.advice.schedule.navigation.setRoutes
-import com.advice.schedule.ui.components.NotificationsPopup
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.schedule.ui.viewmodels.MainViewState
+import com.advice.ui.components.notifications.NotificationsPopup
+import com.advice.ui.components.notifications.PopupContainer
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.koin.core.component.KoinComponent
@@ -78,33 +71,20 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                 val state = mainViewModel.state.collectAsState(MainViewState()).value
 
                 if (state.permissionDialog) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.35f))
-                            .zIndex(10F),
-                        contentAlignment = Alignment.Center,
+
+                    PopupContainer(
+                        onDismiss = { mainViewModel.dismissPermissionDialog() },
                     ) {
-                        Popup(
-                            alignment = Alignment.Center,
-                            properties = PopupProperties(
-                                excludeFromSystemGesture = true,
-                            ),
-                            onDismissRequest = {
+                        NotificationsPopup(
+                            hasPermission = hasNotificationPermission(),
+                            onRequestPermission = {
+                                requestNotificationPermissionLegacy()
                                 mainViewModel.dismissPermissionDialog()
                             },
-                        ) {
-                            NotificationsPopup(
-                                hasPermission = hasNotificationPermission(),
-                                onRequestPermission = {
-                                    requestNotificationPermissionLegacy()
-                                    mainViewModel.dismissPermissionDialog()
-                                },
-                                onDismiss = {
-                                    mainViewModel.dismissPermissionDialog()
-                                },
-                            )
-                        }
+                            onDismiss = {
+                                mainViewModel.dismissPermissionDialog()
+                            },
+                        )
                     }
                 }
             }

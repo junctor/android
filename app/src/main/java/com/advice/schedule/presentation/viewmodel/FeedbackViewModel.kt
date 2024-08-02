@@ -17,23 +17,23 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
     private val repository by inject<FeedbackRepository>()
     private val feedbackRepository by inject<com.advice.feedback.network.FeedbackRepository>()
 
-    private val _feedbackForm = MutableStateFlow<FeedbackState>(FeedbackState.Loading)
-    val feedbackForm: Flow<FeedbackState> = _feedbackForm
+    private val _state = MutableStateFlow<FeedbackState>(FeedbackState.Loading)
+    val state: Flow<FeedbackState> = _state
 
     fun fetchFeedbackForm(id: Long) {
-        _feedbackForm.value = FeedbackState.Loading
+        _state.value = FeedbackState.Loading
         viewModelScope.launch {
             val form = repository.getFeedbackForm(id)
             if (form != null) {
-                _feedbackForm.value = FeedbackState.Success(form)
+                _state.value = FeedbackState.Success(form)
             } else {
-                _feedbackForm.value = FeedbackState.Error
+                _state.value = FeedbackState.Error
             }
         }
     }
 
     fun onValueChanged(item: FeedbackItem, value: String) {
-        val state = _feedbackForm.value as? FeedbackState.Success ?: return
+        val state = _state.value as? FeedbackState.Success ?: return
 
         val items = state.feedback.items.map {
             if (it.id == item.id) {
@@ -61,14 +61,25 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
             }
         }
 
-        _feedbackForm.value = FeedbackState.Success(state.feedback.copy(items = items))
+        _state.value = FeedbackState.Success(state.feedback.copy(items = items))
     }
 
     fun submitFeedback(content: Long) {
-        val state = _feedbackForm.value as? FeedbackState.Success ?: return
+        val state = _state.value as? FeedbackState.Success ?: return
+        _state.value = state.copy(isLoading = true)
 
         viewModelScope.launch {
             feedbackRepository.submitFeedback(content, state.feedback)
         }
+    }
+
+    fun onBackPressed() {
+        val state = _state.value as? FeedbackState.Success ?: return
+        _state.value = state.copy(showingDiscardPopup = true)
+    }
+
+    fun onDiscardPopupCancelled() {
+        val state = _state.value as? FeedbackState.Success ?: return
+        _state.value = state.copy(showingDiscardPopup = false)
     }
 }

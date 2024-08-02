@@ -43,7 +43,7 @@ class ContentViewModel :
                         // All sessions are bookmarked - unbookmark them all
                         content.sessions.forEach {
                             repository.bookmark(content, it)
-                            reminderManager.removeReminder(content, it)
+                            reminderManager.removeReminders(content, it)
                         }
                     }
 
@@ -52,7 +52,7 @@ class ContentViewModel :
                         // No sessions are bookmarked - bookmark them all
                         content.sessions.forEach {
                             repository.bookmark(content, it)
-                            reminderManager.setReminder(content, it)
+                            reminderManager.setReminders(content, it)
                         }
                     }
                 }
