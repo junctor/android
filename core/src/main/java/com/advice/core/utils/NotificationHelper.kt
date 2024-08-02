@@ -40,6 +40,12 @@ class NotificationHelper(private val context: Context) {
         setContentIntent(getPendingIntent(event))
     }
 
+    private fun getUpdatedNotification(event: Event): Notification = notification {
+        setContentTitle(event.title)
+        setContentText("Heads up, session details has been updated!")
+        setContentIntent(getPendingIntent(event))
+    }
+
     private fun notification(block: NotificationCompat.Builder.() -> Unit): Notification {
         return NotificationCompat.Builder(context, CHANNEL_UPDATES).apply {
             setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -70,6 +76,11 @@ class NotificationHelper(private val context: Context) {
     @SuppressLint("MissingPermission")
     fun notifyStartingSoon(event: Event) {
         manager.notify(event.id.toInt(), getStartingSoonNotification(event))
+    }
+
+    @SuppressLint("MissingPermission")
+    fun notifySessionUpdated(event: Event) {
+        manager.notify(event.id.toInt(), getUpdatedNotification(event))
     }
 
     companion object {

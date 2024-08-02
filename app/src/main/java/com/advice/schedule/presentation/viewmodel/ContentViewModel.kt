@@ -42,7 +42,7 @@ class ContentViewModel :
                         Timber.d("All sessions are bookmarked - unbookmarking all")
                         // All sessions are bookmarked - unbookmark them all
                         content.sessions.forEach {
-                            repository.bookmark(it)
+                            repository.bookmark(content, it)
                             reminderManager.removeReminder(content, it)
                         }
                     }
@@ -51,7 +51,7 @@ class ContentViewModel :
                         Timber.d("No sessions are bookmarked - bookmarking all")
                         // No sessions are bookmarked - bookmark them all
                         content.sessions.forEach {
-                            repository.bookmark(it)
+                            repository.bookmark(content, it)
                             reminderManager.setReminder(content, it)
                         }
                     }

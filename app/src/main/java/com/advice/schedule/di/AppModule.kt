@@ -132,10 +132,10 @@ val appModule = module {
     single { NavigationManager() }
 
     // repo
-    single { ScheduleRepository(get(), get(), get()) }
+    single { ScheduleRepository(get(), get(), get(), get()) }
     single { HomeRepository(get(), get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
-    single { ContentRepository(get()) }
+    single { ContentRepository(get(), get(), get(), get()) }
     single { SpeakerRepository(get(), get()) }
     single { FiltersRepository(get(), get(named("tags"))) }
     single { FAQRepository(get()) }

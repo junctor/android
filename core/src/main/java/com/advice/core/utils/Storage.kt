@@ -153,4 +153,12 @@ class Storage(context: Context, private val gson: Gson) {
     fun hasSeenNotificationPopup(): Boolean {
         return preferences.getBoolean("notification_popup", false)
     }
+
+    fun setContentUpdatedTimestamp(id: Long, timestamp: Long) {
+        preferences.edit().putLong("content_updated_timestamp_$id", timestamp).apply()
+    }
+
+    fun getContentUpdatedTimestamp(id: Long): Long {
+        return preferences.getLong("content_updated_timestamp_$id", 0)
+    }
 }

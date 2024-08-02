@@ -6,6 +6,7 @@ import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.ScheduleFilter
+import com.advice.core.utils.Storage
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -15,6 +16,7 @@ class ScheduleRepository(
     private val contentRepository: ContentRepository,
     private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
+    private val storage: Storage,
 ) {
 
     fun getSchedule(filter: ScheduleFilter): Flow<List<Event>> {
@@ -104,7 +106,7 @@ class ScheduleRepository(
                     Timber.d("All sessions are bookmarked - unbookmarking all")
                     // All sessions are bookmarked - unbookmark them all
                     content.sessions.forEach {
-                        contentRepository.bookmark(it)
+                        contentRepository.bookmark(content, it)
                         reminderManager.removeReminder(content, it)
                     }
                 }
@@ -113,7 +115,7 @@ class ScheduleRepository(
                     Timber.d("No sessions are bookmarked - bookmarking all")
                     // No sessions are bookmarked - bookmark them all
                     content.sessions.forEach {
-                        contentRepository.bookmark(it)
+                        contentRepository.bookmark(content, it)
                         reminderManager.setReminder(content, it)
                     }
                 }
@@ -130,7 +132,7 @@ class ScheduleRepository(
     ) {
         val contentBookmarked = contentRepository.isBookmarked(content)
 
-        contentRepository.bookmark(session)
+        contentRepository.bookmark(content, session)
         if (isBookmarked) {
             reminderManager.setReminder(content, session)
         } else {

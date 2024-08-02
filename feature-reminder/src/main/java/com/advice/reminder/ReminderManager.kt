@@ -18,11 +18,16 @@ class ReminderManager(
         private const val TWENTY_MINUTES_BEFORE = 1000 * 20 * 60
     }
 
+    fun updateReminder(content: Content, session: Session) {
+        removeReminder(content, session)
+        setReminder(content, session)
+    }
+
     fun setReminder(content: Content, session: Session) {
         setReminder(session, content.id, content.conference, content.title)
     }
 
-    fun setReminder(
+    private fun setReminder(
         session: Session,
         contentId: Long,
         conference: String,
