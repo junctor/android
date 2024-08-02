@@ -38,8 +38,11 @@ dependencies {
     implementation(libs.android.material)
 
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.gson)
     api(libs.timber)
+
+    implementation(libs.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

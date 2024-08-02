@@ -3,6 +3,7 @@ package com.advice.feedback.network
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.local.feedback.FeedbackItem
 import com.advice.core.local.feedback.FeedbackType
+import com.advice.core.network.Network
 import com.advice.core.utils.Storage
 import com.advice.feedback.network.models.Feedback
 import com.advice.feedback.network.models.FeedbackRequest
@@ -10,6 +11,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.ConnectionSpec
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -28,6 +30,7 @@ class FeedbackRepository(
         level = HttpLoggingInterceptor.Level.BODY
     }
     private val client = OkHttpClient.Builder()
+        .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS))
         .addInterceptor(logging)
         .build()
 
@@ -91,7 +94,7 @@ class FeedbackRepository(
                 .build()
 
             try {
-                val response = client.newCall(request).execute()
+                val response = Network.client.newCall(request).execute()
                 Timber.d("Feedback submitted: %s", response.isSuccessful)
             } catch (ex: Exception) {
                 Timber.e(ex, "Failed to submit feedback")
