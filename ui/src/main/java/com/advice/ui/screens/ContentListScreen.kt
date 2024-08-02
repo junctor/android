@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Content
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.ContentRow
+import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.states.ContentScreenState
 import com.advice.ui.theme.topRoundedCornerShape
 
@@ -41,8 +42,8 @@ fun ContentListScreen(
             )
         },
         modifier =
-            Modifier
-                .clip(topRoundedCornerShape),
+        Modifier
+            .clip(topRoundedCornerShape),
     ) {
         ContentScreenContent(state, onContentClick, onBookmark, Modifier.padding(it))
     }
@@ -56,23 +57,31 @@ fun ContentScreenContent(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier) {
-        LazyColumn {
-            items(state.content) { content ->
-                ContentRow(
-                    title = content.title,
-                    tags = content.types,
-                    isBookmarked = content.isBookmarked,
-                    onContentPressed = {
-                        onContentClick(content)
-                    },
-                    onBookmark = { isBookmarked ->
-                        onBookmark(content, isBookmarked)
-                    },
-                )
+        when (state) {
+            ContentScreenState.Loading -> {
+                ProgressSpinner()
             }
 
-            item {
-                Spacer(modifier = Modifier.height(48.dp))
+            is ContentScreenState.Success -> {
+                LazyColumn {
+                    items(state.content) { content ->
+                        ContentRow(
+                            title = content.title,
+                            tags = content.types,
+                            isBookmarked = content.isBookmarked,
+                            onContentPressed = {
+                                onContentClick(content)
+                            },
+                            onBookmark = { isBookmarked ->
+                                onBookmark(content, isBookmarked)
+                            },
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(48.dp))
+                    }
+                }
             }
         }
     }

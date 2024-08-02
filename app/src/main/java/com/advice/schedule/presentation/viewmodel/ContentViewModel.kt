@@ -19,13 +19,13 @@ class ContentViewModel :
     private val repository by inject<ContentRepository>()
     private val reminderManager by inject<ReminderManager>()
 
-    private val _state = MutableStateFlow(ContentScreenState(emptyList()))
+    private val _state = MutableStateFlow<ContentScreenState>(ContentScreenState.Loading)
     val state: Flow<ContentScreenState> = _state
 
     init {
         viewModelScope.launch {
             repository.content.collect {
-                _state.value = ContentScreenState(it.content)
+                _state.value = ContentScreenState.Success(it.content)
             }
         }
     }

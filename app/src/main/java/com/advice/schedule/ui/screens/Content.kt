@@ -23,13 +23,14 @@ import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ContentListScreen
 import com.advice.ui.screens.ContentScreen
 import com.advice.ui.screens.ErrorScreen
+import com.advice.ui.states.ContentScreenState
 import com.advice.ui.states.EventScreenState
 
 
 @Composable
 fun Contents(context: AppCompatActivity, navController: NavHostController, label: String?) {
     val viewModel = viewModel<ContentViewModel>(context)
-    val state = viewModel.state.collectAsState(initial = null).value ?: return
+    val state = viewModel.state.collectAsState(initial = ContentScreenState.Loading).value
 
     ContentListScreen(
         state = state,
