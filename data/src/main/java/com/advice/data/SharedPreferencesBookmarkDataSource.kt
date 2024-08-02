@@ -57,15 +57,24 @@ class SharedPreferencesBookmarkDataSource(
         }
 
     private fun getBookmarks(): List<Bookmark> {
-        return prefs.all.map { it.toBookmark() }
+        return prefs.all.mapNotNull { it.toBookmark() }
     }
 
-    // todo: this could be a lot cleaner.
-    private fun Map.Entry<String, Any?>.toBookmark(): Bookmark {
-        val key = key.replace("session:", "")
-            .replace("content:", "")
-            .replace("tag:", "")
-        return Bookmark(key, value as Boolean)
+    private fun Map.Entry<String, Any?>.toBookmark(): Bookmark? {
+        if (!key.contains(":"))
+            return null
+        
+        val (type, id) = key.split(":")
+
+        return when (type) {
+            "session" -> Bookmark.SessionBookmark(id, value as Boolean)
+            "content" -> Bookmark.ContentBookmark(id, value as Boolean)
+            "tag" -> Bookmark.TagBookmark(id, value as Boolean)
+            else -> {
+                Timber.e("Unknown bookmark type: $type")
+                null
+            }
+        }
     }
 
     override suspend fun bookmark(content: Content, isBookmarked: Boolean) {

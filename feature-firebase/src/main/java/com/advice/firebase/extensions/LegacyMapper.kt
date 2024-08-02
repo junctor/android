@@ -37,7 +37,6 @@ import com.advice.core.local.products.ProductVariant
 import com.advice.firebase.models.FirebaseAction
 import com.advice.firebase.models.FirebaseAffiliation
 import com.advice.firebase.models.FirebaseArticle
-import com.advice.firebase.models.FirebaseBookmark
 import com.advice.firebase.models.FirebaseConference
 import com.advice.firebase.models.FirebaseContent
 import com.advice.firebase.models.FirebaseDocument
@@ -170,7 +169,7 @@ fun FirebaseContent.toContents(
             }
 
             val isBookmarked =
-                bookmarkedEvents.any { bookmark -> bookmark.id == session.sessionId.toString() }
+                bookmarkedEvents.any { bookmark -> bookmark is Bookmark.SessionBookmark && bookmark.id == session.sessionId.toString() }
 
             Session(
                 id = session.sessionId,
@@ -182,7 +181,7 @@ fun FirebaseContent.toContents(
             )
         }.sortedBy { it.start }
 
-        val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark.id == id.toString() }
+        val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark is Bookmark.ContentBookmark && bookmark.id == id.toString() }
 
         val feedback = feedbackforms.find { it.id == feedbackFormId }
         val feedbackForm = if (feedback != null) {
@@ -446,17 +445,6 @@ fun FirebaseMap.toMap(): ConferenceMap? =
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Map: ${ex.message}")
-        null
-    }
-
-fun FirebaseBookmark.toBookmark(): Bookmark? =
-    try {
-        Bookmark(
-            id,
-            value,
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Bookmark: ${ex.message}")
         null
     }
 

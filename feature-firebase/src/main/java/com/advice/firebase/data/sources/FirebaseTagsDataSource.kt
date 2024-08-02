@@ -1,5 +1,6 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.local.Bookmark
 import com.advice.core.local.TagType
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
@@ -72,7 +73,7 @@ class FirebaseTagsDataSource(
                 it.isSelected = false
             }
 
-            for (bookmark in bookmarks) {
+            for (bookmark in bookmarks.filterIsInstance<Bookmark.TagBookmark>()) {
                 temp.flatMap { it.tags }.find { it.id.toString() == bookmark.id }?.isSelected =
                     bookmark.value
             }
