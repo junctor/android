@@ -1,5 +1,7 @@
 package com.advice.schedule.di
 
+import android.content.Context.WIFI_SERVICE
+import android.net.wifi.WifiManager
 import androidx.work.WorkManager
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.utils.NotificationHelper
@@ -75,6 +77,8 @@ import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
+import com.advice.schedule.ui.screens.WifiViewModel
+import com.advice.wifi.WifiConnectionManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -89,6 +93,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+
 
 val appModule = module {
 
@@ -216,6 +221,14 @@ val appModule = module {
         )
     }
 
+    // WiFi
+    single<WifiConnectionManager> {
+        WifiConnectionManager(
+            androidContext().resources,
+            androidContext().getSystemService(WIFI_SERVICE) as WifiManager,
+        )
+    }
+
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }
     viewModel { SpeakerViewModel() }
@@ -231,4 +244,6 @@ val appModule = module {
     viewModel { SearchViewModel() }
 
     viewModel { ProductsViewModel() }
+
+    viewModel { WifiViewModel() }
 }

@@ -128,6 +128,11 @@ private fun HomeScreen(
             }
         }
 
+        val menuItem = MenuItem.Navigation("wifi", "WiFi", "Connect to the conference WiFi", "wifi")
+        MenuItem(menuItem) {
+            onNavigationClick(menuItem)
+        }
+
         // Required spacer to push content above the bottom bar
         Spacer(Modifier.height(124.dp))
     }
