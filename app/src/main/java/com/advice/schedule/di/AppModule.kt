@@ -25,6 +25,7 @@ import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
 import com.advice.data.sources.VendorsDataSource
 import com.advice.data.sources.VillagesDataSource
+import com.advice.data.sources.WiFiNetworksDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseContentDataSource
@@ -41,6 +42,7 @@ import com.advice.firebase.data.sources.FirebaseSpeakersDataSource
 import com.advice.firebase.data.sources.FirebaseTagsDataSource
 import com.advice.firebase.data.sources.FirebaseVendorsDataSource
 import com.advice.firebase.data.sources.FirebaseVillagesDataSource
+import com.advice.firebase.data.sources.FirebaseWifiNetworksDataSource
 import com.advice.firebase.session.FirebaseUserSession
 import com.advice.locations.data.repositories.LocationRepository
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
@@ -64,6 +66,7 @@ import com.advice.schedule.data.repositories.SettingsRepository
 import com.advice.schedule.data.repositories.SpeakerRepository
 import com.advice.schedule.data.repositories.SpeakersRepository
 import com.advice.schedule.data.repositories.TagsRepository
+import com.advice.schedule.data.repositories.WifiNetworkRepository
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.presentation.viewmodel.ConferenceViewModel
 import com.advice.schedule.presentation.viewmodel.FAQViewModel
@@ -138,7 +141,7 @@ val appModule = module {
 
     // repo
     single { ScheduleRepository(get(), get(), get(), get()) }
-    single { HomeRepository(get(), get(), get(), get(), get()) }
+    single { HomeRepository(get(), get(), get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
     single { ContentRepository(get(), get(), get(), get()) }
     single { SpeakerRepository(get(), get()) }
@@ -220,6 +223,9 @@ val appModule = module {
             get()
         )
     }
+
+    single { WifiNetworkRepository(get()) }
+    single<WiFiNetworksDataSource> { FirebaseWifiNetworksDataSource(get(), get()) }
 
     // WiFi
     single<WifiConnectionManager> {

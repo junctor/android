@@ -128,9 +128,13 @@ private fun HomeScreen(
             }
         }
 
-        val menuItem = MenuItem.Navigation("wifi", "WiFi", "Connect to the conference WiFi", "wifi")
-        MenuItem(menuItem) {
-            onNavigationClick(menuItem)
+        // todo: remove - this is a temporary solution to show the wifi networks
+        for (network in state.wifi) {
+            val menuItem =
+                MenuItem.Wifi("WiFi", "Connect to the ${network.titleText}", network.id)
+            MenuItem(menuItem) {
+                onNavigationClick(menuItem)
+            }
         }
 
         // Required spacer to push content above the bottom bar
@@ -194,6 +198,7 @@ private fun HomeScreenViewPreview() {
                 news = null,
                 countdown = Date().time / 1000L,
                 forceTimeZone = false,
+                wifi = emptyList(),
             ),
             {},
             {},

@@ -68,9 +68,9 @@ sealed class Navigation {
         override fun route(): String = "settings"
     }
 
-    object Wifi : Navigation() {
-        override fun route(): String = "wifi/{label}"
-        override fun destination(): String = "wifi/Wifi"
+    data class Wifi(val id: Long = 0, val label: String = "") : Navigation() {
+        override fun route(): String = "wifi/{id}/{label}"
+        override fun destination(): String = "wifi/$id/$label"
     }
 
     data class Menu(val label: String = "", val id: Long = 0) : Navigation() {

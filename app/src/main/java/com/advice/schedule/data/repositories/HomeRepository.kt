@@ -17,6 +17,7 @@ class HomeRepository(
     conferencesDataSource: ConferencesDataSource,
     menuRepository: MenuRepository,
     newsRepository: NewsDataSource,
+    networkRepository: WifiNetworkRepository,
     private val storage: Storage,
 ) {
     private val _countdown = MutableStateFlow(-1L)
@@ -26,8 +27,9 @@ class HomeRepository(
         conferencesDataSource.get(),
         menuRepository.menu,
         newsRepository.get(),
-        _countdown,
-    ) { conference, conferences, menu, news, countdown ->
+        networkRepository.get(),
+//        _countdown,
+    ) { conference, conferences, menu, news, wifi ->
         val latest = news.firstOrNull().takeUnless {
             it == null || storage.hasReadNews(conference.code, it.id)
         }
@@ -43,7 +45,8 @@ class HomeRepository(
             conference = conference,
             menu = getMenu(menu, conference),
             news = latest,
-            countdown = countdown,
+            countdown = 0,
+            wifi = wifi,
         )
     }
 

@@ -78,7 +78,7 @@ internal fun NavigationManager.setRoutes(
             Settings(navController)
         }
 
-        register(Navigation.Wifi) {
+        register(Navigation.Wifi()) {
             Wifi(navController)
         }
 
