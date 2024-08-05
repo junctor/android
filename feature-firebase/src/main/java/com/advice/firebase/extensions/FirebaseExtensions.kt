@@ -67,7 +67,7 @@ internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference
 
 
 fun logSnapshotClosure(path: String) {
-    Timber.e("Snapshot listener for path: $path closed. $listeners_count active listeners.")
+    Timber.d("Snapshot listener for path: $path closed. $listeners_count active listeners.")
 }
 
 internal fun logFailure(path: String, error: FirebaseFirestoreException) {
@@ -78,7 +78,7 @@ internal fun logFailure(path: String, error: FirebaseFirestoreException) {
 }
 
 internal fun logSnapshot(path: String?, value: QuerySnapshot) {
-    Timber.e("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
+    Timber.d("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
     if (!value.metadata.isFromCache) {
         document_reads += value.size()
         Timber.e("$listeners_count active snapshot listeners, document reads: $document_reads(+${value.size()}) path: $path")

@@ -14,6 +14,7 @@ import com.advice.play.AppManager
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DragAnchors
+import com.google.firebase.messaging.FirebaseMessaging
 import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,12 @@ class MainViewModel : ViewModel(), KoinComponent {
             setAnchor(DragAnchors.Center)
         } else {
             setAnchor(DragAnchors.Start)
+        }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful) {
+                Timber.e("FCM Token: ${it.result}")
+            }
         }
     }
 

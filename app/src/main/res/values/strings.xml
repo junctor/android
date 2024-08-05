@@ -3,11 +3,11 @@
 
     <string name="app_name">Hacker Tracker</string>
 
+    <!--  Notifications  -->
+    <string name="default_notification_channel_id">1001</string>
+
     <!-- General -->
     <string name="tba">TBA</string>
-
-
-    <!-- Errors -->
 
     <!-- Main Nav -->
     <string name="home">Home</string>
@@ -16,42 +16,8 @@
     <string name="settings">Settings</string>
     <string name="search">Search</string>
 
-
-    <!-- Event -->
-
-
     <!-- Time -->
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
-
-
-    <!-- Urls -->
-
-
-    <!-- Events -->
-
-
-    <!-- Speakers -->
-
-
-    <!-- Filters -->
-
-
-    <!-- Home -->
-
-
-    <!-- WiFi Helper -->
-
-
-    <!-- Settings -->
-
-
-    <!-- DEF CON Support Hotline -->
-
-
-    <!-- Code of Conduct-->
-
-
-    <!--  Twitter Badge  -->
 
 </resources>
