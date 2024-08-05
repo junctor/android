@@ -1,10 +1,15 @@
 package com.advice.wifi.ui.screens
 
-import com.advice.wifi.Profile
+import com.advice.core.local.wifi.WirelessNetwork
+import com.advice.wifi.ConnectionResult
 
-data class WiFiScreenViewState(
-    val ssid: String = "",
-    val username: String = "",
-    val password: String = "",
-    val profile: Profile = Profile.AllowAny,
-)
+
+sealed class WiFiScreenViewState {
+    data object Loading : WiFiScreenViewState()
+    data class Loaded(
+        val wirelessNetwork: WirelessNetwork,
+        val result: ConnectionResult? = null,
+    ) : WiFiScreenViewState()
+
+    data object Error : WiFiScreenViewState()
+}

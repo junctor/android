@@ -1,6 +1,6 @@
 package com.advice.core.local.wifi
 
-data class WiFiNetwork(
+data class WirelessNetwork(
     val anonymousIdentity: String?,
     val autoJoin: String,
     val certs: List<WifiCertificate>?,

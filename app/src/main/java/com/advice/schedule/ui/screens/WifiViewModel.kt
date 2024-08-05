@@ -2,8 +2,8 @@ package com.advice.schedule.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.advice.wifi.Profile
-import com.advice.wifi.WifiConnectionManager
+import com.advice.schedule.data.repositories.WifiNetworkRepository
+import com.advice.wifi.WirelessConnectionManager
 import com.advice.wifi.ui.screens.WiFiScreenViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -12,30 +12,28 @@ import org.koin.core.component.inject
 
 internal class WifiViewModel : ViewModel(), KoinComponent {
 
-    private val manager by inject<WifiConnectionManager>()
+    private val manager by inject<WirelessConnectionManager>()
+    private val repository by inject<WifiNetworkRepository>()
 
-    private val _state = MutableStateFlow(WiFiScreenViewState())
+    private val _state = MutableStateFlow<WiFiScreenViewState>(WiFiScreenViewState.Loading)
     val state = _state
 
-    fun saveWifiConfig() {
-        val state = _state.value
+    fun get(id: Long) {
         viewModelScope.launch {
-            if (state.profile is Profile.Custom) {
-                manager.saveWifiConfig(
-                    ssid = state.ssid,
-                    username = state.username,
-                    password = state.password,
-                )
+            val wifiNetworks = repository.get(id)
+            _state.value = if (wifiNetworks == null) {
+                WiFiScreenViewState.Error
             } else {
-                manager.saveWifiConfig(
-                    username = state.profile.username,
-                    password = state.profile.password,
-                )
+                WiFiScreenViewState.Loaded(wifiNetworks)
             }
         }
     }
 
-    fun updateState(state: WiFiScreenViewState) {
-        _state.value = state
+    fun saveWifiConfig() {
+        val state = _state.value as? WiFiScreenViewState.Loaded ?: return
+        viewModelScope.launch {
+            val result = manager.addNetworkSuggestion(state.wirelessNetwork)
+            _state.value = WiFiScreenViewState.Loaded(state.wirelessNetwork, result)
+        }
     }
 }

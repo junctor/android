@@ -41,7 +41,8 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        mainViewModel.onPermissionResult(isGranted)
+        // todo: this should handle more permissions
+        //  mainViewModel.onPermissionResult(isGranted)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,6 +141,19 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         } else {
             true
         }
+    }
+
+    fun hasWirelessPermissions(): Boolean {
+        return hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) && hasPermission(
+            android.Manifest.permission.ACCESS_WIFI_STATE
+        )
+    }
+
+    fun requestWirelessPermissions() {
+        if (!hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION))
+            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if (!hasPermission(android.Manifest.permission.ACCESS_WIFI_STATE))
+            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_WIFI_STATE)
     }
 
     /**

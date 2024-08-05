@@ -1,7 +1,7 @@
 package com.advice.firebase.data.sources
 
-import com.advice.core.local.wifi.WiFiNetwork
 import com.advice.core.local.wifi.WifiCertificate
+import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.data.session.UserSession
 import com.advice.data.sources.WiFiNetworksDataSource
 import com.advice.firebase.extensions.closeOnConferenceChange
@@ -12,6 +12,7 @@ import com.advice.firebase.models.wifi.FirebaseWiFiNetwork
 import com.advice.firebase.models.wifi.toWiFiNetwork
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.PropertyName
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -28,13 +29,13 @@ data class FirebaseWifiCertificate(
     var id: Long = -1,
     @get:PropertyName("name_text")
     @set:PropertyName("name_text")
-    var nameText: String,
+    var nameText: String = "",
     @get:PropertyName("crt_url")
     @set:PropertyName("crt_url")
-    var crtUrl: String,
+    var crtUrl: String = "",
     @get:PropertyName("pem_url")
     @set:PropertyName("pem_url")
-    var pemUrl: String,
+    var pemUrl: String = "",
 )
 
 class FirebaseWifiNetworksDataSource(
@@ -64,15 +65,34 @@ class FirebaseWifiNetworksDataSource(
         if (id == null) return null
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = firestore.document("conferences/${conference.code}/wifi_networks/$id")
-            .get()
-            .await()
+        val snapshot =
+            firestore.document("conferences/${conference.code}/networking_certificates/$id")
+                .get()
+                .await()
 
         return snapshot.toObjectOrNull(FirebaseWifiCertificate::class.java)?.toWiFiNetwork()
     }
 
-    override fun get(): Flow<List<WiFiNetwork>> {
+    override fun get(): Flow<List<WirelessNetwork>> {
         return wifiNetworks
+    }
+
+    override suspend fun get(id: Long): WirelessNetwork? {
+        val conference = userSession.currentConference ?: return null
+
+        val snapshot = firestore.document("conferences/${conference.code}/wifi_networks/$id")
+            .get(Source.CACHE)
+            .await()
+
+        val firebase = snapshot.toObjectOrNull(FirebaseWiFiNetwork::class.java) ?: return null
+        val certificates = firebase.certs?.mapNotNull { id ->
+            getCertificate(id)
+        }
+
+        Timber.e("Count: ${firebase.certs?.size}")
+        Timber.e("Certificates: $certificates")
+
+        return firebase.toWiFiNetwork(certificates)
     }
 }
 

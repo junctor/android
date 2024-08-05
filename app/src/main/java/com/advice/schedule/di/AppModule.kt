@@ -81,7 +81,7 @@ import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.schedule.ui.screens.WifiViewModel
-import com.advice.wifi.WifiConnectionManager
+import com.advice.wifi.WirelessConnectionManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -228,8 +228,8 @@ val appModule = module {
     single<WiFiNetworksDataSource> { FirebaseWifiNetworksDataSource(get(), get()) }
 
     // WiFi
-    single<WifiConnectionManager> {
-        WifiConnectionManager(
+    single<WirelessConnectionManager> {
+        WirelessConnectionManager(
             androidContext().resources,
             androidContext().getSystemService(WIFI_SERVICE) as WifiManager,
         )

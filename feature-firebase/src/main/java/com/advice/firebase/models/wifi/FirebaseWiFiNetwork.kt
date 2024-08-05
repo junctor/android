@@ -1,7 +1,7 @@
 package com.advice.firebase.models.wifi
 
 import com.advice.core.local.wifi.EapSubject
-import com.advice.core.local.wifi.WiFiNetwork
+import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.core.local.wifi.WifiCertificate
 import com.google.firebase.firestore.PropertyName
 
@@ -92,8 +92,8 @@ data class FirebaseWiFiNetwork(
     var tlsPreferredVersion: String? = null,
 )
 
-fun FirebaseWiFiNetwork.toWiFiNetwork(certificates: List<WifiCertificate>?): WiFiNetwork {
-    return WiFiNetwork(
+fun FirebaseWiFiNetwork.toWiFiNetwork(certificates: List<WifiCertificate>?): WirelessNetwork {
+    return WirelessNetwork(
         anonymousIdentity = this.anonymousIdentity,
         autoJoin = this.autoJoin,
         certs = certificates,

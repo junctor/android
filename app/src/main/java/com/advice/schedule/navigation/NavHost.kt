@@ -79,7 +79,7 @@ internal fun NavigationManager.setRoutes(
         }
 
         register(Navigation.Wifi()) {
-            Wifi(navController)
+            Wifi(navController, it.id)
         }
 
         register(Navigation.Menu()) {

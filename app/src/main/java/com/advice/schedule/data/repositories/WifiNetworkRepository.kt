@@ -6,4 +6,5 @@ class WifiNetworkRepository(
     private val wifiNetworksDataSource: WiFiNetworksDataSource,
 ) {
     fun get() = wifiNetworksDataSource.get()
+    suspend fun get(id: Long) = wifiNetworksDataSource.get(id)
 }

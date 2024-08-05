@@ -3,10 +3,10 @@ package com.advice.core.ui
 import com.advice.core.local.Conference
 import com.advice.core.local.Menu
 import com.advice.core.local.NewsArticle
-import com.advice.core.local.wifi.WiFiNetwork
+import com.advice.core.local.wifi.WirelessNetwork
 
 sealed class HomeState {
-    object Loading : HomeState()
+    data object Loading : HomeState()
 
     data class Loaded(
         val conferences: List<Conference>,
@@ -16,7 +16,7 @@ sealed class HomeState {
         val countdown: Long = -1L,
         val forceTimeZone: Boolean,
         val isUpdateAvailable: Boolean = false,
-        val wifi: List<WiFiNetwork>,
+        val wifi: List<WirelessNetwork>,
     ) : HomeState()
 
     data class Error(
