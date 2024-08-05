@@ -100,8 +100,8 @@ class FirebaseUserSession(
 
         val list = conferences.sortedBy { it.start }
 
-        val defcon = list.find { "DEFCON" in it.code }
-        if (defcon?.hasFinished == false) {
+        val defcon = list.find { "DEFCON" in it.code && !it.hasFinished }
+        if (defcon != null) {
             return defcon
         }
 
