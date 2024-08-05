@@ -163,8 +163,11 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
             copy(id = id, label = label)
         }
 
-        Navigation.Wifi -> {
-            Navigation.Wifi
+        is Navigation.Wifi -> {
+            val id =
+                backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
+            val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
+            copy(id = id, label = label)
         }
     }
 }
@@ -179,5 +182,6 @@ internal fun MenuItem.toNavigation(): Navigation? {
         is MenuItem.Organization -> Navigation.Organizations(label, organizationId)
         is MenuItem.Schedule -> Navigation.Schedule(label, tags)
         is MenuItem.SectionHeading -> null
+        is MenuItem.Wifi -> Navigation.Wifi(id, label)
     }
 }

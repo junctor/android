@@ -57,4 +57,10 @@ sealed class MenuItem(
         label: String,
         description: String?,
     ) : MenuItem(icon, label, description)
+
+    class Wifi(
+        label: String,
+        description: String?,
+        val id: Long,
+    ) : MenuItem("wifi", label, description)
 }

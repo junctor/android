@@ -128,6 +128,15 @@ private fun HomeScreen(
             }
         }
 
+        // todo: remove - this is a temporary solution to show the wifi networks
+        for (network in state.wifi) {
+            val menuItem =
+                MenuItem.Wifi("WiFi", "Connect to the ${network.titleText}", network.id)
+            MenuItem(menuItem) {
+                onNavigationClick(menuItem)
+            }
+        }
+
         // Required spacer to push content above the bottom bar
         Spacer(Modifier.height(124.dp))
     }
@@ -189,6 +198,7 @@ private fun HomeScreenViewPreview() {
                 news = null,
                 countdown = Date().time / 1000L,
                 forceTimeZone = false,
+                wifi = emptyList(),
             ),
             {},
             {},
