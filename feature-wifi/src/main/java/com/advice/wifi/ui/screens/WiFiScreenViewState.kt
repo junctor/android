@@ -8,6 +8,7 @@ sealed class WiFiScreenViewState {
     data object Loading : WiFiScreenViewState()
     data class Loaded(
         val wirelessNetwork: WirelessNetwork,
+        val forceLocalCert: Boolean = false,
         val result: ConnectionResult? = null,
     ) : WiFiScreenViewState()
 

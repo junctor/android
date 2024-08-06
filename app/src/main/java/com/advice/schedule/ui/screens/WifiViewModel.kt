@@ -33,7 +33,7 @@ internal class WifiViewModel : ViewModel(), KoinComponent {
     fun saveWifiConfig() {
         val state = _state.value as? WiFiScreenViewState.Loaded ?: return
         viewModelScope.launch {
-            val result = manager.addNetworkSuggestion(state.wirelessNetwork)
+            val result = manager.addNetworkSuggestion(state.wirelessNetwork, state.forceLocalCert)
             _state.value = state.copy(result = result)
         }
     }
@@ -46,5 +46,10 @@ internal class WifiViewModel : ViewModel(), KoinComponent {
                 _state.value = state.copy(result = result)
             }
         }
+    }
+
+    fun forceLocalCert(force: Boolean) {
+        val state = _state.value as? WiFiScreenViewState.Loaded ?: return
+        _state.value = state.copy(forceLocalCert = force)
     }
 }

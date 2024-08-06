@@ -230,6 +230,7 @@ val appModule = module {
     // WiFi
     single<WirelessConnectionManager> {
         WirelessConnectionManager(
+            androidContext().resources,
             androidContext().getSystemService(WIFI_SERVICE) as WifiManager,
         )
     }

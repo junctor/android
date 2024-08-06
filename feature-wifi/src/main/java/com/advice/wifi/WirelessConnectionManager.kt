@@ -1,5 +1,6 @@
 package com.advice.wifi
 
+import android.content.res.Resources
 import android.net.wifi.WifiEnterpriseConfig
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS
@@ -18,10 +19,12 @@ import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 
 class WirelessConnectionManager(
+    private val resources: Resources,
     private val wifiManager: WifiManager,
 ) {
     suspend fun addNetworkSuggestion(
         wirelessNetwork: WirelessNetwork,
+        forceLocalCert: Boolean = false,
     ): ConnectionResult {
 
         val current = wifiManager.connectionInfo
@@ -30,9 +33,13 @@ class WirelessConnectionManager(
         }
 
         val certificate = try {
-            wirelessNetwork.getCertificate()
+            if (forceLocalCert) {
+                wirelessNetwork.getLocalCertificate()
+            } else {
+                wirelessNetwork.getCertificate()
+            }
         } catch (ex: Exception) {
-            val message = "Error in downloading certificate: $ex"
+            val message = "Error in creating certificate: $ex"
             Timber.e(message)
             return ConnectionResult.Error(message)
         }
@@ -127,6 +134,29 @@ class WirelessConnectionManager(
             ConnectionResult.Error(message)
         }
     }
+
+    private suspend fun WirelessNetwork.getLocalCertificate(): X509Certificate? =
+        withContext(Dispatchers.IO) {
+            val certificates = certs
+            if (certificates.isNullOrEmpty()) {
+                return@withContext null
+            }
+
+            val certFactory = CertificateFactory.getInstance("X.509")
+            val inputStream: InputStream =
+                resources.openRawResource(R.raw.defcon32_harica_inter_root)
+            val availableBytes = inputStream.available()
+            Timber.e("Available bytes in the input stream: $availableBytes")
+
+            val certificateCollection = certFactory.generateCertificates(inputStream)
+
+            Timber.e("Certificate collection: ${certificateCollection.size}")
+            for (certificate in certificateCollection) {
+                Timber.e("Certificate: $certificate")
+            }
+
+            return@withContext certificateCollection.first() as X509Certificate
+        }
 
     /**
      * Downloads the certificate from the given URL and returns it as an X509Certificate.

@@ -16,6 +16,7 @@ import com.advice.core.local.wifi.WifiCertificate
 import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.SwitchPreference
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 
@@ -26,6 +27,7 @@ fun WifiScreen(
     onBackPressed: () -> Unit,
     onConnectPressed: () -> Unit,
     onDisconnectPressed: () -> Unit,
+    onForceLocalCert: (Boolean) -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -44,6 +46,7 @@ fun WifiScreen(
             modifier = Modifier.padding(it),
             onConnectPressed = onConnectPressed,
             onDisconnectPressed = onDisconnectPressed,
+            onForceLocalCert = onForceLocalCert,
         )
     }
 }
@@ -54,6 +57,7 @@ fun WifiScreenContent(
     modifier: Modifier,
     onConnectPressed: () -> Unit,
     onDisconnectPressed: () -> Unit,
+    onForceLocalCert: (Boolean) -> Unit,
 ) {
     when (state) {
         WiFiScreenViewState.Error -> {
@@ -80,6 +84,13 @@ fun WifiScreenContent(
                         Text(cert.name)
                         Text(cert.url)
                     }
+                }
+                SwitchPreference(
+                    title = "Force Local Cert",
+                    isChecked = state.forceLocalCert,
+                    summary = "defcon32_harica_inter_root.cer",
+                ) {
+                    onForceLocalCert(it)
                 }
 
                 Column {
@@ -152,6 +163,7 @@ private fun WifiScreenViewPreview() {
             onBackPressed = {},
             onConnectPressed = {},
             onDisconnectPressed = {},
+            onForceLocalCert = {},
         )
     }
 }

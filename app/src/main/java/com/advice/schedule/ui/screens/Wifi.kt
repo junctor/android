@@ -40,6 +40,9 @@ internal fun Wifi(navController: NavHostController, id: Long) {
         },
         onDisconnectPressed = {
             viewModel.disconnect()
+        },
+        onForceLocalCert = { forceLegacy ->
+            viewModel.forceLocalCert(forceLegacy)
         }
     )
 }
