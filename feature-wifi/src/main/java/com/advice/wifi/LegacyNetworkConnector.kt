@@ -39,8 +39,6 @@ fun enableNetwork(
     // GroupCiphers (Allow most ciphers)
     currentConfig.allowedGroupCiphers.clear()
     currentConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP)
-    currentConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP)
-    currentConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104)
 
     // PairwiseCiphers (CCMP = WPA2 only)
     currentConfig.allowedPairwiseCiphers.clear()

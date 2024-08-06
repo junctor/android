@@ -34,5 +34,8 @@ android {
 dependencies {
     implementation project(':core')
 
-    implementation(libs.firebase.analytics.ktx)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.config)
+
     testImplementation(libs.junit)}

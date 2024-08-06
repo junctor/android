@@ -4,7 +4,6 @@ import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiEnterpriseConfig
 import android.net.wifi.WifiManager
 import com.advice.core.local.wifi.WirelessNetwork
-import timber.log.Timber
 import java.security.cert.X509Certificate
 import java.util.Locale
 
@@ -69,7 +68,8 @@ private fun String?.toPhase2Method(): Int {
 }
 
 internal fun WirelessNetwork.toSubjectMatch(): String? {
-    return eapSubjects?.firstOrNull()?.value
+    val subject = eapSubjects?.firstOrNull() ?: return null
+    return "${subject.type}:${subject.value}"
 }
 
 fun surroundWithQuotes(string: String): String {

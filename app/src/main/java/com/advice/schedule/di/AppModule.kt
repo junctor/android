@@ -130,7 +130,7 @@ val appModule = module {
     // update manager
     single { AppManager(androidContext()) }
 
-    single { AnalyticsProvider(get()) }
+    single { AnalyticsProvider(get(), BuildConfig.VERSION_CODE) }
 
     // reminder
     single { NotificationHelper(get()) }

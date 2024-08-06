@@ -5,15 +5,36 @@ import com.advice.core.local.Conference
 import com.advice.core.utils.Storage
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.analytics.logEvent
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 
-class AnalyticsProvider(private val storage: Storage) {
+
+class AnalyticsProvider(
+    private val storage: Storage,
+    private val version: Int,
+) {
 
     private val analytics: FirebaseAnalytics = Firebase.analytics
+    private val remoteConfig = Firebase.remoteConfig
 
     private val isAnalyticsDisabled: Boolean
         get() = !storage.allowAnalytics
+
+    private var isWifiEnabled: Boolean = false
+
+    init {
+        remoteConfig.fetchAndActivate().addOnCompleteListener {
+            if (it.isSuccessful) {
+                val version = remoteConfig.getLong("wifi_min_version")
+                isWifiEnabled = isEnabled(version)
+            }
+        }
+    }
+
+    private fun isEnabled(minVersion: Long): Boolean {
+        return version == 1 || version >= minVersion
+    }
 
     fun onConferenceChangeEvent(conference: Conference) {
         if (isAnalyticsDisabled)
@@ -46,7 +67,7 @@ class AnalyticsProvider(private val storage: Storage) {
         if (isAnalyticsDisabled)
             return
 
-        analytics.logEvent(event,params)
+        analytics.logEvent(event, params)
     }
 
     fun onDestinationChanged(route: String) {
@@ -57,5 +78,9 @@ class AnalyticsProvider(private val storage: Storage) {
             param(FirebaseAnalytics.Param.SCREEN_NAME, route)
             param(FirebaseAnalytics.Param.SCREEN_CLASS, "MainActivity")
         }
+    }
+
+    fun isWifiEnabled(): Boolean {
+        return isWifiEnabled
     }
 }

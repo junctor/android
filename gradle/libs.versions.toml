@@ -77,7 +77,8 @@ accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist
 android-pdf-viewer = { group = "com.github.barteksc", name = "android-pdf-viewer", version.ref = "pdfViewer" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalytics" }
+firebase-config = { module = "com.google.firebase:firebase-config" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
