@@ -197,7 +197,6 @@ private fun HomeScreenViewPreview() {
                 menu = Menu(-1, "Home", listOf()),
                 news = null,
                 countdown = Date().time / 1000L,
-                forceTimeZone = false,
                 wifi = emptyList(),
             ),
             onNavigationClick = {},
