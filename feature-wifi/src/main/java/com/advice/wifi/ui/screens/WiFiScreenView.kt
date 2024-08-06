@@ -79,6 +79,11 @@ fun WifiScreenContent(
                     }
                 }
 
+                Column {
+                    Text("Result:")
+                    Text(state.result?.toString() ?: "-")
+                }
+
                 Button(
                     onClick = { onConnectPressed() },
                     modifier = Modifier.fillMaxWidth(),
