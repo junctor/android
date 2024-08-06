@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -202,13 +203,22 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     }
 
     fun openLink(url: String) {
-        mainViewModel.onLinkOpen(url)
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(intent)
+        try {
+            mainViewModel.onLinkOpen(url)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+            Toast.makeText(this, "Could not open link", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onPause() {
-        mainViewModel.onPause()
+        try {
+            mainViewModel.onPause()
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
         super.onPause()
     }
 
