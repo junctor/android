@@ -23,6 +23,12 @@ class WirelessConnectionManager(
     suspend fun addNetworkSuggestion(
         wirelessNetwork: WirelessNetwork,
     ): ConnectionResult {
+
+        val current = wifiManager.connectionInfo
+        if (current != null) {
+            Timber.e("Current connection: $current")
+        }
+
         val certificate = try {
             wirelessNetwork.getCertificate()
         } catch (ex: Exception) {
@@ -38,6 +44,8 @@ class WirelessConnectionManager(
             Timber.e(message)
             return ConnectionResult.Error(message)
         }
+
+        Timber.e("Enterprise config: $enterpriseConfig")
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // On Android 10 and above, we use the new API
