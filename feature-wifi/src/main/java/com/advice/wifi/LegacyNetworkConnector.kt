@@ -31,18 +31,23 @@ fun enableNetwork(
     currentConfig.SSID = surroundWithQuotes(wirelessNetwork.ssid)
     currentConfig.hiddenSSID = wirelessNetwork.isSsidHidden.toBoolean()
     currentConfig.priority = wirelessNetwork.priority
-    currentConfig.status = WifiConfiguration.Status.DISABLED
+    currentConfig.status = WifiConfiguration.Status.ENABLED
 
     currentConfig.allowedKeyManagement.clear()
     currentConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_EAP)
+    currentConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.IEEE8021X)
 
     // GroupCiphers (Allow most ciphers)
     currentConfig.allowedGroupCiphers.clear()
+    currentConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP)
     currentConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP)
+    currentConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.GCMP_256)
 
     // PairwiseCiphers (CCMP = WPA2 only)
     currentConfig.allowedPairwiseCiphers.clear()
+    currentConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP)
     currentConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP)
+    currentConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.GCMP_256)
 
     // Authentication Algorithms (OPEN)
     currentConfig.allowedAuthAlgorithms.clear()
@@ -50,6 +55,7 @@ fun enableNetwork(
 
     // Protocols (RSN/WPA2 only)
     currentConfig.allowedProtocols.clear()
+    currentConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA)
     currentConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN)
 
     val result = if (existing == null) {

@@ -30,9 +30,6 @@ fun WirelessNetwork.toWifiEnterpriseConfig(
     enterpriseConfig.caCertificate = caCertificate
     enterpriseConfig.identity = identity
     enterpriseConfig.password = password
-    // Example: "/CN=radius.c3noc.net"
-    enterpriseConfig.subjectMatch = toSubjectMatch()
-    // Example: "DNS:radius.c3noc.net"
     enterpriseConfig.altSubjectMatch = toSubjectMatch()
     return enterpriseConfig
 }
@@ -68,8 +65,14 @@ private fun String?.toPhase2Method(): Int {
 }
 
 internal fun WirelessNetwork.toSubjectMatch(): String? {
-    val subject = eapSubjects?.firstOrNull() ?: return null
-    return "${subject.type}:${subject.value}"
+    val subjects = eapSubjects
+    if (subjects.isNullOrEmpty()) {
+        return null
+    }
+
+    return subjects.joinToString(separator = ";") {
+        "${it.type}:${it.value}"
+    }
 }
 
 fun surroundWithQuotes(string: String): String {
