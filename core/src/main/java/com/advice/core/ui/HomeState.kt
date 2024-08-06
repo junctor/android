@@ -16,6 +16,7 @@ sealed class HomeState {
         val countdown: Long = -1L,
         val isUpdateAvailable: Boolean = false,
         val wifi: List<WirelessNetwork>,
+        val hasChicken: Boolean = false,
     ) : HomeState()
 
     data class Error(

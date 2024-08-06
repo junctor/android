@@ -55,6 +55,7 @@ dependencies {
     implementation project(":feature-analytics")
     implementation project(':feature-play')
     implementation project(':feature-feedback')
+    implementation project(':feature-glitch')
 
     def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom

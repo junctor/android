@@ -1,5 +1,6 @@
 package com.advice.schedule.data.repositories
 
+import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
@@ -18,6 +19,7 @@ class HomeRepository(
     newsRepository: NewsDataSource,
     networkRepository: WifiNetworkRepository,
     private val storage: Storage,
+    private val analyticsProvider: AnalyticsProvider,
 ) {
     val contents = combine(
         userSession.getConference(),
@@ -41,7 +43,12 @@ class HomeRepository(
             menu = getMenu(menu, conference),
             news = latest,
             wifi = wifi,
+            hasChicken = hasChicken(conference),
         )
+    }
+
+    private fun hasChicken(conference: Conference): Boolean {
+        return conference.code == "DEFCON32" && storage.easterEggs && analyticsProvider.isChickenEnabled()
     }
 
     private fun getMenu(

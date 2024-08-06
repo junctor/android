@@ -8,6 +8,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.logEvent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 
 
 class AnalyticsProvider(
@@ -22,12 +23,19 @@ class AnalyticsProvider(
         get() = !storage.allowAnalytics
 
     private var isWifiEnabled: Boolean = false
+    private var isChickenEnabled: Boolean = false
 
     init {
+        remoteConfig.setConfigSettingsAsync(remoteConfigSettings {
+            // One hour per sync
+            minimumFetchIntervalInSeconds = 3600
+        })
         remoteConfig.fetchAndActivate().addOnCompleteListener {
             if (it.isSuccessful) {
                 val version = remoteConfig.getLong("wifi_min_version")
                 isWifiEnabled = isEnabled(version)
+                val chicken = remoteConfig.getBoolean("chicken_enabled")
+                isChickenEnabled = chicken
             }
         }
     }
@@ -82,5 +90,9 @@ class AnalyticsProvider(
 
     fun isWifiEnabled(): Boolean {
         return isWifiEnabled
+    }
+
+    fun isChickenEnabled(): Boolean {
+        return isChickenEnabled
     }
 }

@@ -25,6 +25,7 @@ import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
+import com.advice.glitch.ui.SoundButton
 import com.advice.ui.components.Label
 import com.advice.ui.components.MenuIcon
 import com.advice.ui.components.ProgressSpinner
@@ -138,7 +139,18 @@ private fun HomeScreen(
         }
 
         // Required spacer to push content above the bottom bar
-        Spacer(Modifier.height(124.dp))
+        Spacer(Modifier.height(84.dp))
+
+        if (state.menu.items.isNotEmpty() && state.hasChicken) {
+            Box(
+                Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                SoundButton()
+            }
+
+            Spacer(Modifier.height(84.dp))
+        }
     }
 }
 
