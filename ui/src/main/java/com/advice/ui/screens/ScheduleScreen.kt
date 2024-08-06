@@ -234,7 +234,7 @@ private fun ScheduleScreenContent(
     } else {
         val message = when (filter) {
             ScheduleFilter.Default -> {
-                "Schedule not found"
+                "Try adjusting your filters"
             }
 
             is ScheduleFilter.Location -> {
