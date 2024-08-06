@@ -65,10 +65,14 @@ class FirebaseWifiNetworksDataSource(
         if (id == null) return null
         val conference = userSession.currentConference ?: return null
 
-        val snapshot =
+        val snapshot = try {
             firestore.document("conferences/${conference.code}/networking_certificates/$id")
                 .get()
                 .await()
+        } catch (ex: Exception) {
+            Timber.e(ex, "Error getting certificate")
+            return null
+        }
 
         return snapshot.toObjectOrNull(FirebaseWifiCertificate::class.java)?.toWiFiNetwork()
     }
@@ -80,17 +84,19 @@ class FirebaseWifiNetworksDataSource(
     override suspend fun get(id: Long): WirelessNetwork? {
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = firestore.document("conferences/${conference.code}/wifi_networks/$id")
-            .get(Source.CACHE)
-            .await()
+        val snapshot = try {
+            firestore.document("conferences/${conference.code}/wifi_networks/$id")
+                .get(Source.CACHE)
+                .await()
+        } catch (ex: Exception) {
+            Timber.e(ex, "Failed to get network with id: $id")
+            return null
+        }
 
         val firebase = snapshot.toObjectOrNull(FirebaseWiFiNetwork::class.java) ?: return null
         val certificates = firebase.certs?.mapNotNull { id ->
             getCertificate(id)
         }
-
-        Timber.e("Count: ${firebase.certs?.size}")
-        Timber.e("Certificates: $certificates")
 
         return firebase.toWiFiNetwork(certificates)
     }

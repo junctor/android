@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseDocumentsDataSource(
@@ -47,9 +48,14 @@ class FirebaseDocumentsDataSource(
     override suspend fun get(id: Long): Document? {
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = firestore.document("conferences/${conference.code}/documents/$id")
-            .get()
-            .await()
+        val snapshot = try {
+            firestore.document("conferences/${conference.code}/documents/$id")
+                .get()
+                .await()
+        } catch (ex: Exception) {
+            Timber.e(ex, "Failed to get document with id: $id")
+            return null
+        }
 
         return snapshot.toObjectOrNull(FirebaseDocument::class.java)?.toDocument()
     }

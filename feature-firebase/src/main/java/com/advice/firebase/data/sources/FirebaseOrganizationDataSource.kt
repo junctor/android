@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseOrganizationDataSource(
@@ -50,9 +51,14 @@ class FirebaseOrganizationDataSource(
     override suspend fun get(id: Long): Organization? {
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = firestore.document("conferences/${conference.code}/organizations/$id")
-            .get(Source.CACHE)
-            .await()
+        val snapshot = try {
+            firestore.document("conferences/${conference.code}/organizations/$id")
+                .get(Source.CACHE)
+                .await()
+        } catch (ex: Exception) {
+            Timber.e(ex, "Failed to get organization with id: $id")
+            return null
+        }
 
         return snapshot.toObjectOrNull(FirebaseOrganization::class.java)?.toOrganization()
     }

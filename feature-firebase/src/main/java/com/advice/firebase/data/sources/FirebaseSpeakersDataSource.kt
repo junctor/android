@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -66,9 +67,14 @@ class FirebaseSpeakersDataSource(
     override suspend fun get(id: Long): Speaker? {
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = firestore.document("conferences/${conference.code}/speakers/$id")
-            .get()
-            .await()
+        val snapshot = try {
+            firestore.document("conferences/${conference.code}/speakers/$id")
+                .get()
+                .await()
+        } catch (ex: Exception) {
+            Timber.e(ex, "Failed to get speaker with id: $id")
+            return null
+        }
 
         return snapshot.toObjectOrNull(FirebaseSpeaker::class.java)?.toSpeaker()
     }
