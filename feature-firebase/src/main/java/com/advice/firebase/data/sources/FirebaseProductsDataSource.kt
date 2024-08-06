@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -60,6 +61,7 @@ class FirebaseProductsDataSource(
                 querySnapshot.toObjectsOrEmpty(FirebaseProduct::class.java)
                     .sortedBy { it.sortOrder }
             }
+            .onStart { emit(emptyList()) }
 
     override fun get(): Flow<List<Product>> {
         return products

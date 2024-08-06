@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -42,6 +43,7 @@ class FirebaseSpeakersDataSource(
                         .mapNotNull { it.toSpeaker() }
                         .sortedBy { it.name.lowercase(Locale.getDefault()) }
                 }
+                .onStart { emit(emptyList()) }
             listener
         }.stateIn(
             scope = CoroutineScope(Dispatchers.IO),

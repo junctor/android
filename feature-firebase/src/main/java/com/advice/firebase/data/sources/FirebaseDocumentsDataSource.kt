@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -37,6 +38,7 @@ class FirebaseDocumentsDataSource(
                 it.toObjectsOrEmpty(FirebaseDocument::class.java)
                     .mapNotNull { it.toDocument() }
             }
+            .onStart { emit(emptyList()) }
     }.shareIn(
         CoroutineScope(Dispatchers.IO),
         started = SharingStarted.Lazily,

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -36,6 +37,7 @@ class FirebaseNewsDataSource(
                     .sortedByDescending { it.updatedAt }
                     .mapNotNull { it.toArticle() }
             }
+            .onStart { emit(emptyList()) }
     }.stateIn(
         scope = CoroutineScope(Dispatchers.IO),
         started = SharingStarted.Eagerly,

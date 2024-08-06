@@ -17,6 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -32,6 +33,7 @@ class FirebaseFAQDataSource(
                 .mapSnapshot {
                     it.toObjectsOrEmpty(FirebaseFAQ::class.java).map { it.toFAQ() }
                 }
+                .onStart { emit(FlowResult.Loading) }
         }.shareIn(
             CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Lazily,

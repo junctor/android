@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
 
@@ -33,6 +34,7 @@ class FirebaseFeedbackDataSource(
                     it.toObjectsOrEmpty(FirebaseFeedbackForm::class.java)
                         .mapNotNull { it.toFeedbackForm() }
                 }
+                .onStart { emit(FlowResult.Loading) }
         }.shareIn(
             CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Lazily,

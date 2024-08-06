@@ -17,6 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -35,6 +36,7 @@ class FirebaseMenuDataSource(
                     querySnapshot.toObjectsOrEmpty(FirebaseMenu::class.java)
                         .mapNotNull { it.toMenu() }
                 }
+                .onStart { emit(FlowResult.Loading) }
         }.shareIn(
             CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Lazily,

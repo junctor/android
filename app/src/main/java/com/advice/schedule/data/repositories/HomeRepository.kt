@@ -50,25 +50,22 @@ class HomeRepository(
         conference: Conference
     ): Menu {
         return when (menu) {
-            is FlowResult.Failure -> Menu(
-                -1,
-                "ERROR",
-                emptyList(),
-            )
-
-            FlowResult.Loading -> Menu(
-                -1,
-                "LOADING",
-                emptyList(),
-            )
-
-            is FlowResult.Success -> menu.value.find { it.id == conference.homeMenuId }
-                ?: menu.value.firstOrNull() ?: Menu(
-                    -1,
-                    "Nothing",
-                    emptyList(),
-                )
+            is FlowResult.Failure -> Menu.ERROR
+            FlowResult.Loading -> Menu.LOADING
+            is FlowResult.Success -> menu(menu, conference)
         }
+    }
+
+    private fun menu(
+        result: FlowResult.Success<List<Menu>>,
+        conference: Conference
+    ): Menu {
+        if (result.value.isEmpty()) return Menu.ERROR
+        val menu = result.value.find { it.id == conference.homeMenuId }
+        if (menu != null) {
+            return menu
+        }
+        return result.value.first()
     }
 
     fun markLatestNewsAsRead(newsArticle: NewsArticle) {

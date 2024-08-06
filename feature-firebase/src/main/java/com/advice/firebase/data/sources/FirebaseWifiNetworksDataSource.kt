@@ -9,35 +9,23 @@ import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.wifi.FirebaseWiFiNetwork
+import com.advice.firebase.models.wifi.FirebaseWifiCertificate
 import com.advice.firebase.models.wifi.toWiFiNetwork
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.PropertyName
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
-data class FirebaseWifiCertificate(
-    @get:PropertyName("id")
-    @set:PropertyName("id")
-    var id: Long = -1,
-    @get:PropertyName("name_text")
-    @set:PropertyName("name_text")
-    var nameText: String = "",
-    @get:PropertyName("crt_url")
-    @set:PropertyName("crt_url")
-    var crtUrl: String = "",
-    @get:PropertyName("pem_url")
-    @set:PropertyName("pem_url")
-    var pemUrl: String = "",
-)
-
+@OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseWifiNetworksDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
@@ -55,6 +43,7 @@ class FirebaseWifiNetworksDataSource(
                     it.toWiFiNetwork(certificates)
                 }
             }
+            .onStart { emit(emptyList()) }
     }.shareIn(
         CoroutineScope(Dispatchers.IO),
         started = SharingStarted.Lazily,

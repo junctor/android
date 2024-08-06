@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.tasks.await
@@ -64,6 +65,7 @@ class FirebaseContentDataSource(
                         .toObjectsOrEmpty(FirebaseContent::class.java)
                         .filter { (!it.hidden || userSession.isDeveloper) }
                 }
+                .onStart { emit(emptyList()) }
         }.stateIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Eagerly,
