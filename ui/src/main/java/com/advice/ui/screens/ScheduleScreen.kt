@@ -29,10 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
+import com.advice.core.local.Tag
 import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
@@ -43,6 +43,7 @@ import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.FakeEventProvider
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.rememberScrollContext
 import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.theme.ScheduleTheme
@@ -130,6 +131,7 @@ private fun ScheduleScreenContent(
 
             is ScheduleScreenState.Success -> {
                 ScheduleScreenContent(
+                    state.filter,
                     state.days,
                     onEventClick,
                     onBookmarkClick,
@@ -141,6 +143,7 @@ private fun ScheduleScreenContent(
 
 @Composable
 private fun ScheduleScreenContent(
+    filter: ScheduleFilter,
     days: Map<String, List<Event>>,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event, Boolean) -> Unit,
@@ -229,11 +232,39 @@ private fun ScheduleScreenContent(
             }
         }
     } else {
-        EmptyMessage("Schedule not found")
+        val message = when (filter) {
+            ScheduleFilter.Default -> {
+                "Schedule not found"
+            }
+
+            is ScheduleFilter.Location -> {
+                "No events found in this location"
+            }
+
+            is ScheduleFilter.Tag -> {
+                if (filter.id == Tag.bookmark.id) {
+                    "Bookmark events to see them here"
+                } else {
+                    "No events found with selected tag"
+                }
+            }
+
+            is ScheduleFilter.Tags -> {
+                if (filter.ids?.contains(Tag.bookmark.id) == true) {
+                    "Bookmark events to see them here"
+                } else {
+                    "No events found with selected tags"
+                }
+            }
+        }
+        EmptyMessage(
+            message = message,
+            title = "No events found",
+        )
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun ScheduleScreenPreview(@PreviewParameter(FakeEventProvider::class) event: Event) {
     ScheduleTheme {
@@ -243,6 +274,21 @@ private fun ScheduleScreenPreview(@PreviewParameter(FakeEventProvider::class) ev
                 mapOf(
                     "May 19" to listOf(event),
                 ),
+                true,
+            )
+
+        ScheduleScreen(state, {}, {}, {}, { event, isBookmarked -> })
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ScheduleScreenEmptyPreview(@PreviewParameter(FakeEventProvider::class) event: Event) {
+    ScheduleTheme {
+        val state =
+            ScheduleScreenState.Success(
+                ScheduleFilter.Tag(Tag.bookmark.id),
+                emptyMap(),
                 true,
             )
 

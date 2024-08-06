@@ -72,7 +72,6 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                 val state = mainViewModel.state.collectAsState(MainViewState()).value
 
                 if (state.permissionDialog) {
-
                     PopupContainer(
                         onDismiss = { mainViewModel.dismissPermissionDialog() },
                     ) {

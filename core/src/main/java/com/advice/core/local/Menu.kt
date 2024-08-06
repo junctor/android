@@ -15,7 +15,7 @@ sealed class MenuItem(
         label: String,
     ) : MenuItem(null, label)
 
-    object Divider : MenuItem(null, "")
+    data object Divider : MenuItem(null, "")
 
     class Document(
         icon: String,
@@ -63,4 +63,10 @@ sealed class MenuItem(
         description: String?,
         val id: Long,
     ) : MenuItem("wifi", label, description)
+
+    class Maps(
+        icon: String,
+        label: String,
+        description: String?,
+    ) : MenuItem(icon, label, description)
 }

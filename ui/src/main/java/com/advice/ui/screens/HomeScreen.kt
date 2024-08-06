@@ -200,8 +200,8 @@ private fun HomeScreenViewPreview() {
                 forceTimeZone = false,
                 wifi = emptyList(),
             ),
-            {},
-            {},
+            onNavigationClick = {},
+            onDismissNews = {},
         )
     }
 }
@@ -217,7 +217,7 @@ private fun MenuItemPreview() {
                 description = "This is a description",
                 function = "news",
             ),
-            {},
+            onNavigationClick = {},
         )
     }
 }

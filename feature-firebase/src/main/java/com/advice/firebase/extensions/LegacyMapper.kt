@@ -181,7 +181,8 @@ fun FirebaseContent.toContents(
             )
         }.sortedBy { it.start }
 
-        val isBookmarked = bookmarkedEvents.any { bookmark -> bookmark is Bookmark.ContentBookmark && bookmark.id == id.toString() }
+        val isBookmarked =
+            bookmarkedEvents.any { bookmark -> bookmark is Bookmark.ContentBookmark && bookmark.id == id.toString() }
 
         val feedback = feedbackforms.find { it.id == feedbackFormId }
         val feedbackForm = if (feedback != null) {
@@ -390,12 +391,20 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
                 )
 
             "schedule" -> {
-                if (appliedTagIds.isEmpty()) error("empty tags: $titleText")
                 MenuItem.Schedule(
                     googleMaterialsymbol,
                     titleText,
                     description,
                     appliedTagIds,
+                )
+            }
+
+            "schedule_bookmark" -> {
+                MenuItem.Schedule(
+                    googleMaterialsymbol,
+                    titleText,
+                    description,
+                    listOf(Tag.bookmark.id),
                 )
             }
 
@@ -407,7 +416,7 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
                     menuId ?: error("null menu id: $titleText"),
                 )
 
-            "people", "locations", "products", "news", "faq" ->
+            "people", "locations", "products", "news", "faq"->
                 MenuItem.Navigation(
                     googleMaterialsymbol,
                     titleText,
@@ -425,6 +434,13 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
 
             "content" ->
                 MenuItem.Content(
+                    googleMaterialsymbol,
+                    titleText,
+                    description,
+                )
+
+            "maps" ->
+                MenuItem.Maps(
                     googleMaterialsymbol,
                     titleText,
                     description,

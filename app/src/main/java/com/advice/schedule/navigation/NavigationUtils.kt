@@ -183,5 +183,6 @@ internal fun MenuItem.toNavigation(): Navigation? {
         is MenuItem.Schedule -> Navigation.Schedule(label, tags)
         is MenuItem.SectionHeading -> null
         is MenuItem.Wifi -> Navigation.Wifi(id, label)
+        is MenuItem.Maps -> Navigation.Maps
     }
 }

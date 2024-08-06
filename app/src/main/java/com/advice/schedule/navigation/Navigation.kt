@@ -1,11 +1,11 @@
 package com.advice.schedule.navigation
 
 sealed class Navigation {
-    object Home : Navigation() {
+    data object Home : Navigation() {
         override fun route(): String = "home"
     }
 
-    object Maps : Navigation() {
+    data object Maps : Navigation() {
         override fun route(): String = "maps"
     }
 
@@ -14,7 +14,7 @@ sealed class Navigation {
         override fun destination(): String = "news/$label"
     }
 
-    object Search : Navigation() {
+    data object Search : Navigation() {
         override fun route(): String = "search"
     }
 
@@ -64,7 +64,7 @@ sealed class Navigation {
         override fun destination(): String = "speaker/$id/$name"
     }
 
-    object Settings : Navigation() {
+    data object Settings : Navigation() {
         override fun route(): String = "settings"
     }
 

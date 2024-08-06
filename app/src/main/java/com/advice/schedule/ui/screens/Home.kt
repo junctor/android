@@ -60,7 +60,23 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
             HomeScreen(state = homeState, onConferenceClick = {
                 homeViewModel.setConference(it)
             }, onNavigationClick = {
-                navController.navigate(it.toNavigation())
+                when (val navigation = it.toNavigation()) {
+                    is Navigation.Schedule -> {
+                        if (navigation.ids.isEmpty()) {
+                            mainViewModel.setAnchor(DragAnchors.Center)
+                            return@HomeScreen
+                        }
+                        navController.navigate(navigation)
+                    }
+
+                    is Navigation.Maps -> {
+                        navController.navigate(navigation)
+                    }
+
+                    else -> {
+                        navController.navigate(navigation)
+                    }
+                }
             }, onDismissNews = {
                 homeViewModel.markLatestNewsAsRead(it)
             })
