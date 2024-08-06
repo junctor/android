@@ -63,7 +63,7 @@ class SharedPreferencesBookmarkDataSource(
     private fun Map.Entry<String, Any?>.toBookmark(): Bookmark? {
         if (!key.contains(":"))
             return null
-        
+
         val (type, id) = key.split(":")
 
         return when (type) {

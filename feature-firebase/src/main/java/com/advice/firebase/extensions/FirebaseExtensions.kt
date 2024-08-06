@@ -40,6 +40,7 @@ fun CollectionReference.snapshotFlowLegacy(): Flow<QuerySnapshot> {
 }
 
 internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference>): Flow<T> {
+    val path = this.toString()
     return callbackFlow {
         var currentConference: Conference? = null
         val collector = launch {
@@ -49,6 +50,7 @@ internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference
                     if (currentConference == null) {
                         currentConference = newConference
                     } else {
+                        Timber.d("Closing snapshot listener for path: $path, conference changed.")
                         close()
                     }
                 }
@@ -60,6 +62,7 @@ internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference
         }
 
         awaitClose {
+            logSnapshotClosure(path)
             collector.cancel()
         }
     }

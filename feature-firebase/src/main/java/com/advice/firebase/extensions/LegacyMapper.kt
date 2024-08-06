@@ -145,21 +145,19 @@ fun FirebaseContent.toContents(
                     list.find { it.id == id }
                 }.sortedBy { list.indexOf(it) }
 
-        val speakers =
-            people
-                .map { person ->
-                    val roles = person.tagIds.mapNotNull { id -> list.find { it.id == id } }
-                    val speaker = speakers.find { it.id == person.personId }
-                    person to speaker?.copy(roles = roles)
-                }.sortedWith(compareBy({ it.first.sortOrder }, { it.second?.name }))
-                .mapNotNull { it.second }
+        val speakers = people.map { person ->
+            val roles = person.tagIds.mapNotNull { id -> list.find { it.id == id } }
+            val speaker = speakers.find { it.id == person.personId }
+            person to speaker?.copy(roles = roles)
+        }.sortedWith(compareBy({ it.first.sortOrder }, { it.second?.name }))
+            .mapNotNull { it.second }
 
         if (types.isEmpty()) {
             Timber.e("Could not find tags for content: $title")
             return null
         }
 
-        val new_sessions = sessions.mapNotNull { session ->
+        val newSessions = sessions.mapNotNull { session ->
             // if we cannot find the location, ignore this session
             val location = locations.find { it.id == session.locationId }
 
@@ -206,7 +204,7 @@ fun FirebaseContent.toContents(
             urls = links,
             media = media.mapNotNull { it.toMedia() },
             isBookmarked = isBookmarked,
-            sessions = new_sessions,
+            sessions = newSessions,
             feedback = feedbackForm,
         )
     } catch (ex: Exception) {
@@ -416,7 +414,7 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
                     menuId ?: error("null menu id: $titleText"),
                 )
 
-            "people", "locations", "products", "news", "faq"->
+            "people", "locations", "products", "news", "faq" ->
                 MenuItem.Navigation(
                     googleMaterialsymbol,
                     titleText,
