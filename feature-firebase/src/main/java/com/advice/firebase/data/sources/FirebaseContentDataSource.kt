@@ -118,8 +118,8 @@ class FirebaseContentDataSource(
         firebaseContent: List<FirebaseContent>,
         bookmarks: List<Bookmark>
     ): List<Content>? {
+        // Return null if any of the required data is empty.
         if (tags.isEmpty() || locations.isEmpty() || firebaseContent.isEmpty()) {
-            Timber.e("Could not fetch conference content: ${conference.code}, tags: ${tags.size}, locations: ${locations.size}, content: ${firebaseContent.size}")
             return null
         }
 
