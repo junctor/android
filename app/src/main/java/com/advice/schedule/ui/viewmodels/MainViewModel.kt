@@ -41,7 +41,7 @@ class MainViewModel : ViewModel(), KoinComponent {
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             if (it.isSuccessful) {
-                Timber.e("FCM Token: ${it.result}")
+                Timber.d("FCM Token: ${it.result}")
             }
         }
     }
