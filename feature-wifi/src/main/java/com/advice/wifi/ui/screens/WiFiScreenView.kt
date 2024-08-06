@@ -25,6 +25,7 @@ fun WifiScreen(
     state: WiFiScreenViewState,
     onBackPressed: () -> Unit,
     onConnectPressed: () -> Unit,
+    onDisconnectPressed: () -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -42,6 +43,7 @@ fun WifiScreen(
             state,
             modifier = Modifier.padding(it),
             onConnectPressed = onConnectPressed,
+            onDisconnectPressed = onDisconnectPressed,
         )
     }
 }
@@ -50,7 +52,8 @@ fun WifiScreen(
 fun WifiScreenContent(
     state: WiFiScreenViewState,
     modifier: Modifier,
-    onConnectPressed: () -> Unit
+    onConnectPressed: () -> Unit,
+    onDisconnectPressed: () -> Unit,
 ) {
     when (state) {
         WiFiScreenViewState.Error -> {
@@ -90,6 +93,14 @@ fun WifiScreenContent(
                     shape = roundedCornerShape,
                 ) {
                     Text("Connect to WiFi")
+                }
+
+                Button(
+                    onClick = { onDisconnectPressed() },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = roundedCornerShape,
+                ) {
+                    Text("Disconnect from WiFi")
                 }
             }
         }
@@ -140,6 +151,7 @@ private fun WifiScreenViewPreview() {
             ),
             onBackPressed = {},
             onConnectPressed = {},
+            onDisconnectPressed = {},
         )
     }
 }

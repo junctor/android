@@ -37,6 +37,9 @@ internal fun Wifi(navController: NavHostController, id: Long) {
                 Toast.makeText(context, "Attempting to save wifi config", Toast.LENGTH_SHORT).show()
                 viewModel.saveWifiConfig()
             }
+        },
+        onDisconnectPressed = {
+            viewModel.disconnect()
         }
     )
 }

@@ -22,8 +22,15 @@ class WirelessConnectionManager(
     suspend fun addNetworkSuggestion(
         wirelessNetwork: WirelessNetwork,
     ): ConnectionResult {
+        val certificate = try {
+            wirelessNetwork.getCertificate()
+        } catch (ex: Exception) {
+            val message = "Error in downloading certificate: $ex"
+            Timber.e(message)
+            return ConnectionResult.Error(message)
+        }
+
         val enterpriseConfig = try {
-            val certificate = wirelessNetwork.getCertificate()
             wirelessNetwork.toWifiEnterpriseConfig(certificate)
         } catch (ex: Exception) {
             val message = "Error in applying Android 4.3 enterprise settings: $ex"
@@ -60,6 +67,25 @@ class WirelessConnectionManager(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun removeNetworkSuggestion(
+        wirelessNetwork: WirelessNetwork,
+    ): ConnectionResult {
+        return try {
+            val suggestion =
+                WifiNetworkSuggestion.Builder()
+                    .setSsid(wirelessNetwork.ssid)
+                    .build()
+
+            wifiManager.removeNetworkSuggestions(listOf(suggestion))
+            ConnectionResult.Success
+        } catch (ex: Exception) {
+            val message = "Error in removing wifi config: $ex"
+            Timber.e(message)
+            ConnectionResult.Error(message)
+        }
+    }
+
     /**
      * Downloads the certificate from the given URL and returns it as an X509Certificate.
      */
@@ -80,7 +106,11 @@ class WirelessConnectionManager(
             val client = Network.client
             val request = Request.Builder().url(urlString).build()
 
+            Timber.e("Downloading certificate from $urlString")
+
             val response = client.newCall(request).execute()
+
+            Timber.e("Response: $response")
 
             if (!response.isSuccessful) {
                 val message = "Unexpected code $response"

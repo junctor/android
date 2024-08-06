@@ -1,5 +1,6 @@
 package com.advice.schedule.ui.screens
 
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.schedule.data.repositories.WifiNetworkRepository
@@ -34,6 +35,16 @@ internal class WifiViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             val result = manager.addNetworkSuggestion(state.wirelessNetwork)
             _state.value = WiFiScreenViewState.Loaded(state.wirelessNetwork, result)
+        }
+    }
+
+    fun disconnect() {
+        val state = _state.value as? WiFiScreenViewState.Loaded ?: return
+        viewModelScope.launch {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val result = manager.removeNetworkSuggestion(state.wirelessNetwork)
+                _state.value = WiFiScreenViewState.Loaded(state.wirelessNetwork, result)
+            }
         }
     }
 }
