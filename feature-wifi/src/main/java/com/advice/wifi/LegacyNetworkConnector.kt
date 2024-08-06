@@ -52,14 +52,17 @@ fun enableNetwork(
     currentConfig.allowedProtocols.clear()
     currentConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN)
 
-    if (existing == null) {
+    val result = if (existing == null) {
         val networkId = wifiManager.addNetwork(currentConfig)
+        Timber.e("Network ID: $networkId")
         wifiManager.enableNetwork(networkId, false)
     } else {
+        Timber.e("Existing Network ID: ${existing.networkId}")
         wifiManager.updateNetwork(currentConfig)
         wifiManager.enableNetwork(currentConfig.networkId, false)
     }
     wifiManager.saveConfiguration()
+    Timber.e("Enable network result: $result")
 
     return ConnectionResult.Success
 }
