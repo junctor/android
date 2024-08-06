@@ -4,13 +4,11 @@ import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
 import com.advice.core.local.NewsArticle
-import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.NewsDataSource
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
 class HomeRepository(
@@ -21,23 +19,14 @@ class HomeRepository(
     networkRepository: WifiNetworkRepository,
     private val storage: Storage,
 ) {
-    private val _countdown = MutableStateFlow(-1L)
 
     val contents = combine(
         userSession.getConference(),
         conferencesDataSource.get(),
-        menuRepository.menu,
+        menuRepository.get(),
         newsRepository.get(),
         networkRepository.get(),
-        _countdown,
-    ) { array ->
-        val conference = array[0] as Conference
-        val conferences = array[1] as FlowResult<List<Conference>>
-        val menu = array[2] as FlowResult<List<Menu>>
-        val news = array[3] as List<NewsArticle>
-        val wifi = array[4] as List<WirelessNetwork>
-        val countdown = array[5] as Long
-
+    ) { conference, conferences, menu, news, wifi ->
         val latest = news.firstOrNull().takeUnless {
             it == null || storage.hasReadNews(conference.code, it.id)
         }
@@ -48,12 +37,10 @@ class HomeRepository(
         }
 
         HomeState.Loaded(
-            forceTimeZone = storage.forceTimeZone,
             conferences = list,
             conference = conference,
             menu = getMenu(menu, conference),
             news = latest,
-            countdown = countdown,
             wifi = wifi,
         )
     }
@@ -89,11 +76,6 @@ class HomeRepository(
     }
 
     fun setConference(conference: Conference) {
-        _countdown.value = -1L
         userSession.setConference(conference)
-    }
-
-    suspend fun setCountdown(remainder: Long) {
-        _countdown.emit(remainder)
     }
 }

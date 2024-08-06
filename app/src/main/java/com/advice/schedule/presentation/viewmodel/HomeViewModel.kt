@@ -23,7 +23,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
     private val analytics by inject<AnalyticsProvider>()
     private val appManager by inject<AppManager>()
 
-    private val state = MutableStateFlow<HomeState>(HomeState.Loading)
+    private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
 
     private var countdownJob: Job? = null
 
@@ -38,7 +38,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
                     is HomeState.Loaded -> {
                         // Check if there is any updates available
                         val isUpdateAvailable = appManager.isUpdateAvailable()
-                        state.value = it.copy(isUpdateAvailable = isUpdateAvailable)
+                        _state.value = it.copy(isUpdateAvailable = isUpdateAvailable)
 
                         if (countdownJob == null) {
                             startCountdown(it.conference)
@@ -59,7 +59,10 @@ class HomeViewModel : ViewModel(), KoinComponent {
             countdownJob = viewModelScope.launch {
                 while (remainder > 0L) {
                     remainder = conference.kickoffDate.toEpochMilli() - Date().time
-                    repository.setCountdown(remainder)
+                    val value = _state.value as? HomeState.Loaded
+                    if (value != null) {
+                        _state.value = value.copy(countdown = remainder)
+                    }
                     delay(COUNTDOWN_DELAY)
                 }
             }
@@ -75,13 +78,13 @@ class HomeViewModel : ViewModel(), KoinComponent {
         analytics.onConferenceChangeEvent(conference)
     }
 
-    fun getHomeState(): Flow<HomeState> = state
+    fun getHomeState(): Flow<HomeState> = _state
 
     fun markLatestNewsAsRead(newsArticle: NewsArticle) {
         viewModelScope.launch {
-            val temp = state.value
+            val temp = _state.value
             if (temp is HomeState.Loaded) {
-                state.value = temp.copy(news = null)
+                _state.value = temp.copy(news = null)
             }
             repository.markLatestNewsAsRead(newsArticle)
         }

@@ -26,7 +26,7 @@ class MenuViewModel : ViewModel(), KoinComponent {
 
     init {
         viewModelScope.launch {
-            menuRepository.menu.collect {
+            menuRepository.get().collect {
                 _state.value = when (it) {
                     is FlowResult.Failure -> MenuScreenState.Error
                     FlowResult.Loading -> MenuScreenState.Loading

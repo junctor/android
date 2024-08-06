@@ -14,7 +14,6 @@ sealed class HomeState {
         val menu: Menu,
         val news: NewsArticle?,
         val countdown: Long = -1L,
-        val forceTimeZone: Boolean,
         val isUpdateAvailable: Boolean = false,
         val wifi: List<WirelessNetwork>,
     ) : HomeState()
