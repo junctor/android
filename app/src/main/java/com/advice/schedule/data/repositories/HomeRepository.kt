@@ -4,6 +4,7 @@ import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
 import com.advice.core.local.NewsArticle
+import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
@@ -28,8 +29,15 @@ class HomeRepository(
         menuRepository.menu,
         newsRepository.get(),
         networkRepository.get(),
-//        _countdown,
-    ) { conference, conferences, menu, news, wifi ->
+        _countdown,
+    ) { array ->
+        val conference = array[0] as Conference
+        val conferences = array[1] as FlowResult<List<Conference>>
+        val menu = array[2] as FlowResult<List<Menu>>
+        val news = array[3] as List<NewsArticle>
+        val wifi = array[4] as List<WirelessNetwork>
+        val countdown = array[5] as Long
+
         val latest = news.firstOrNull().takeUnless {
             it == null || storage.hasReadNews(conference.code, it.id)
         }
@@ -45,7 +53,7 @@ class HomeRepository(
             conference = conference,
             menu = getMenu(menu, conference),
             news = latest,
-            countdown = 0,
+            countdown = countdown,
             wifi = wifi,
         )
     }
