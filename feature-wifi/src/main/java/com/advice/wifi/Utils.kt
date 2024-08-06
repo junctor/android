@@ -16,7 +16,7 @@ fun WifiManager.existingWirelessConfig(ssid: String): WifiConfiguration? {
 }
 
 fun WirelessNetwork.toWifiEnterpriseConfig(
-    caCertificate: X509Certificate,
+    caCertificate: X509Certificate?,
 ): WifiEnterpriseConfig {
     val enterpriseConfig = WifiEnterpriseConfig()
     if (phase2Method != null) {
