@@ -125,6 +125,10 @@ private fun ScheduleScreenContent(
                 EmptyMessage("Schedule not found")
             }
 
+            is ScheduleScreenState.Empty -> {
+                EmptyMessage(message = state.message, title = "No events found")
+            }
+
             ScheduleScreenState.Loading -> {
                 ProgressSpinner()
             }
@@ -287,7 +291,7 @@ private fun ScheduleScreenEmptyPreview(@PreviewParameter(FakeEventProvider::clas
     ScheduleTheme {
         val state =
             ScheduleScreenState.Success(
-                ScheduleFilter.Tag(Tag.bookmark.id),
+                ScheduleFilter.Tag(Tag.bookmark.id, Tag.bookmark.label),
                 emptyMap(),
                 true,
             )

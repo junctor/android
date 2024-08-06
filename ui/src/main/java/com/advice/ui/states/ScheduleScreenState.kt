@@ -12,6 +12,10 @@ sealed class ScheduleScreenState {
         val showFab: Boolean,
     ) : ScheduleScreenState()
 
+    data class Empty(
+        val message: String,
+    ) : ScheduleScreenState()
+
     data class Error(
         val error: String,
     ) : ScheduleScreenState()

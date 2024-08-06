@@ -10,6 +10,7 @@ import com.advice.core.utils.Storage
 import com.advice.core.utils.TimeUtil
 import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.data.repositories.ScheduleRepository
+import com.advice.schedule.data.repositories.ScheduleResult
 import com.advice.ui.states.EventScreenState
 import com.advice.ui.states.ScheduleScreenState
 import kotlinx.coroutines.flow.Flow
@@ -57,7 +58,8 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
         }
 
         // Find the session, if session is not null.
-        _state.value = EventScreenState.Success(content, content.sessions.find { it.id == sessionId })
+        _state.value =
+            EventScreenState.Success(content, content.sessions.find { it.id == sessionId })
     }
 
     private suspend fun refreshEvent() {
@@ -66,9 +68,26 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
     }
 
     fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> {
-        return repository.getSchedule(filter).map { elements ->
-            val days = elements.groupBy { TimeUtil.getDateStamp(it.session, storage.forceTimeZone) }
-            return@map ScheduleScreenState.Success(filter, days, storage.showFilters)
+        return repository.getSchedule(filter).map { result ->
+            when (result) {
+                ScheduleResult.Loading -> {
+                    ScheduleScreenState.Loading
+                }
+
+                is ScheduleResult.Empty -> {
+                    ScheduleScreenState.Empty(result.message)
+                }
+
+                is ScheduleResult.Success -> {
+                    val days = result.events.groupBy {
+                        TimeUtil.getDateStamp(
+                            it.session,
+                            storage.forceTimeZone
+                        )
+                    }
+                    ScheduleScreenState.Success(filter, days, storage.showFilters)
+                }
+            }
         }
     }
 

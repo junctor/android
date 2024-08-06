@@ -19,7 +19,6 @@ class HomeRepository(
     networkRepository: WifiNetworkRepository,
     private val storage: Storage,
 ) {
-
     val contents = combine(
         userSession.getConference(),
         conferencesDataSource.get(),

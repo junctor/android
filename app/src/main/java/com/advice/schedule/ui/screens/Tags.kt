@@ -20,7 +20,7 @@ import com.advice.ui.states.ScheduleScreenState
 fun Tag(context: AppCompatActivity, navController: NavHostController, id: Long?, label: String?) {
     val viewModel = viewModel<ScheduleViewModel>(context)
     val state = remember {
-        viewModel.getState(ScheduleFilter.Tag(id))
+        viewModel.getState(ScheduleFilter.Tag(id, label))
     }.collectAsState(initial = ScheduleScreenState.Loading).value
 
     ScheduleScreen(

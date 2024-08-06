@@ -118,8 +118,8 @@ class FirebaseContentDataSource(
         firebaseContent: List<FirebaseContent>,
         bookmarks: List<Bookmark>
     ): List<Content>? {
-        if (tags.isEmpty() || speakers.isEmpty() || locations.isEmpty() || firebaseContent.isEmpty() || bookmarks.isEmpty()) {
-            Timber.e("Could not fetch conference content: ${conference.code}")
+        if (tags.isEmpty() || locations.isEmpty() || firebaseContent.isEmpty()) {
+            Timber.e("Could not fetch conference content: ${conference.code}, tags: ${tags.size}, locations: ${locations.size}, content: ${firebaseContent.size}")
             return null
         }
 
