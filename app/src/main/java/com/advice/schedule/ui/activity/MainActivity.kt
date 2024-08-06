@@ -12,12 +12,14 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.navigate
 import com.advice.schedule.navigation.setRoutes
@@ -27,8 +29,10 @@ import com.advice.ui.components.notifications.NotificationsPopup
 import com.advice.ui.components.notifications.PopupContainer
 import com.advice.ui.theme.ScheduleTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), KoinComponent {
 
@@ -168,10 +172,33 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val uri = intent.data
+        Timber.i("onNewIntent: $uri")
         if (uri != null) {
-            val destination = mainViewModel.onNewIntent(uri)
-            navController.navigate(destination)
+            return try {
+                val destination = getDestination(uri)
+                navController.navigate(destination)
+
+                FirebaseAnalytics.getInstance(this).logEvent(
+                    "open_deep_link",
+                    bundleOf(
+                        "uri" to uri.toString()
+                    )
+                )
+            } catch (ex: Exception) {
+                Timber.e("Could not navigate to deep link: $uri")
+            }
         }
+    }
+
+    private fun getDestination(uri: Uri): Navigation? {
+        val conference = uri.getQueryParameter("c") ?: return null
+        val event = uri.getQueryParameter("e") ?: return null
+        val (content, session) = if (event.contains(":")) {
+            event.split(":")
+        } else {
+            listOf(event, "")
+        }
+        return Navigation.Event(conference, content, session)
     }
 
     fun openLink(url: String) {

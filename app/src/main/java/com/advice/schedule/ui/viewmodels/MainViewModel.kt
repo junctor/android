@@ -1,6 +1,5 @@
 package com.advice.schedule.ui.viewmodels
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import com.advice.firebase.extensions.document_cache_reads
 import com.advice.firebase.extensions.document_reads
 import com.advice.firebase.extensions.listeners_count
 import com.advice.play.AppManager
-import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DragAnchors
 import com.google.firebase.messaging.FirebaseMessaging
@@ -149,23 +147,5 @@ class MainViewModel : ViewModel(), KoinComponent {
 
         Timber.i("navigating to: $route")
         analytics.onDestinationChanged(route)
-    }
-
-    fun onNewIntent(uri: Uri): Navigation? {
-        Timber.i("onNewIntent: $uri")
-        analytics.logEvent(
-            "open_deep_link",
-            bundleOf(
-                "uri" to uri.toString()
-            )
-        )
-        val conference = uri.getQueryParameter("c") ?: return null
-        val event = uri.getQueryParameter("e") ?: return null
-        val (content, session) = if (event.contains(":")) {
-            event.split(":")
-        } else {
-            listOf(event, "")
-        }
-        return Navigation.Event(conference, content, session)
     }
 }
