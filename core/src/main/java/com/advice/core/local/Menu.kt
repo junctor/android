@@ -69,4 +69,10 @@ sealed class MenuItem(
         label: String,
         description: String?,
     ) : MenuItem(icon, label, description)
+
+    class Search(
+        icon: String,
+        label: String,
+        description: String?,
+    ) : MenuItem(icon, label, description)
 }
