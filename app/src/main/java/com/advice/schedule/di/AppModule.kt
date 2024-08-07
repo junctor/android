@@ -1,5 +1,7 @@
 package com.advice.schedule.di
 
+import android.app.AlarmManager
+import android.content.Context.ALARM_SERVICE
 import android.content.Context.WIFI_SERVICE
 import android.net.wifi.WifiManager
 import androidx.work.WorkManager
@@ -134,7 +136,12 @@ val appModule = module {
 
     // reminder
     single { NotificationHelper(get()) }
-    single { ReminderManager(get()) }
+    single {
+        ReminderManager(
+            androidContext(),
+            androidContext().getSystemService(ALARM_SERVICE) as AlarmManager,
+        )
+    }
 
     // navigation
     single { NavigationManager() }

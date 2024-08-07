@@ -13,7 +13,6 @@ import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.advice.core.local.Event
 import com.shortstack.core.R
 
 @SuppressLint("MissingPermission")
@@ -35,22 +34,38 @@ class NotificationHelper(private val context: Context) {
         manager.createNotificationChannel(channel)
     }
 
-    private fun getStartingSoonNotification(event: Event): Notification = notification {
-        setContentTitle(event.title)
-        setContentText(context.getString(R.string.notification_text, event.session.location.name))
-        setContentIntent(getPendingIntent(event))
+    private fun getStartingSoonNotification(
+        conference: String,
+        content: Long,
+        event: Long,
+        title: String,
+        location: String,
+    ): Notification = notification {
+        setContentTitle(title)
+        setContentText(context.getString(R.string.notification_text, location))
+        setContentIntent(getPendingIntent(conference, content, event))
     }
 
-    private fun getUpdatedNotification(event: Event): Notification = notification {
-        setContentTitle(event.title)
+    private fun getUpdatedNotification(
+        conference: String,
+        content: Long,
+        event: Long,
+        title: String,
+    ): Notification = notification {
+        setContentTitle(title)
         setContentText("Heads up, session details has been updated!")
-        setContentIntent(getPendingIntent(event))
+        setContentIntent(getPendingIntent(conference, content, event))
     }
 
-    private fun getFeedbackReminderNotification(event: Event): Notification = notification {
-        setContentTitle(event.title)
+    private fun getFeedbackReminderNotification(
+        conference: String,
+        content: Long,
+        event: Long,
+        title: String,
+    ): Notification = notification {
+        setContentTitle(title)
         setContentText("Enjoying the session? Leave us feedback!")
-        setContentIntent(getPendingIntent(event))
+        setContentIntent(getPendingIntent(conference, content, event))
     }
 
     private fun notification(block: NotificationCompat.Builder.() -> Unit): Notification {
@@ -65,9 +80,9 @@ class NotificationHelper(private val context: Context) {
         }.build()
     }
 
-    private fun getPendingIntent(event: Event): PendingIntent {
+    private fun getPendingIntent(conference: String, content: Long, event: Long): PendingIntent {
         val deepLink =
-            Uri.parse("https://hackertracker.app/event?c=${event.conference}&e=${event.eventId}")
+            Uri.parse("https://hackertracker.app/event?c=${conference}&e=$content:$event")
 
         val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
             setPackage("com.shortstack.hackertracker")
@@ -80,16 +95,38 @@ class NotificationHelper(private val context: Context) {
         )
     }
 
-    fun notifyStartingSoon(event: Event) {
-        manager.notify(event.id.toInt(), getStartingSoonNotification(event))
+    fun notifyStartingSoon(
+        conference: String,
+        content: Long,
+        event: Long,
+        title: String,
+        location: String,
+    ) {
+        manager.notify(
+            event.toInt(),
+            getStartingSoonNotification(conference, content, event, title, location)
+        )
     }
 
-    fun notifySessionUpdated(event: Event) {
-        manager.notify(event.id.toInt(), getUpdatedNotification(event))
+    fun notifySessionUpdated(
+        conference: String,
+        content: Long,
+        event: Long,
+        title: String,
+    ) {
+        manager.notify(event.toInt(), getUpdatedNotification(conference, content, event, title))
     }
 
-    fun notifyFeedbackAvailable(event: Event) {
-        manager.notify(1001 + event.id.toInt(), getFeedbackReminderNotification(event))
+    fun notifyFeedbackAvailable(
+        conference: String,
+        content: Long,
+        event: Long,
+        title: String,
+    ) {
+        manager.notify(
+            1001 + event.toInt(),
+            getFeedbackReminderNotification(conference, content, event, title)
+        )
     }
 
     companion object {

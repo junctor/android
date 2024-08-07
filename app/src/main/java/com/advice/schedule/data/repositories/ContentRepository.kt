@@ -2,7 +2,6 @@ package com.advice.schedule.data.repositories
 
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
-import com.advice.core.local.Event
 import com.advice.core.local.Session
 import com.advice.core.utils.NotificationHelper
 import com.advice.core.utils.Storage
@@ -47,14 +46,19 @@ class ContentRepository(
                 }
             }
             .filter { storage.getContentUpdatedTimestamp(it.id) < it.updated.toEpochMilli() }
-        for (bookmark in updatedBookmarks) {
-            val sessions = bookmark.sessions.filter { it.isBookmarked }
+        for (content in updatedBookmarks) {
+            val sessions = content.sessions.filter { it.isBookmarked }
 
             for (session in sessions) {
-                reminderManager.updateReminders(bookmark, session)
-                notificationHelper.notifySessionUpdated(Event(bookmark, session))
+                reminderManager.updateReminders(content, session)
+                notificationHelper.notifySessionUpdated(
+                    content.conference,
+                    content.id,
+                    session.id,
+                    content.title
+                )
             }
-            storage.setContentUpdatedTimestamp(bookmark.id, bookmark.updated.toEpochMilli())
+            storage.setContentUpdatedTimestamp(content.id, content.updated.toEpochMilli())
         }
     }
 

@@ -80,5 +80,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <!--    Reminder    -->
+        <receiver android:name="com.advice.reminder.AlarmReceiver" />
+
     </application>
 </manifest>
