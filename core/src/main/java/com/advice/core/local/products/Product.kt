@@ -50,7 +50,7 @@ data class Product(
         }
 
     val variant: ProductVariant?
-        get() = variants.find { it == selectedOption }
+        get() = if (requiresSelection) variants.find { it == selectedOption } else variants.first()
 
     val requiresSelection: Boolean
         get() = variants.size > 1
