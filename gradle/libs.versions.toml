@@ -1,11 +1,11 @@
 [versions]
-compileSdk = "34"
+compileSdk = "36"
 minSdk = "26"
-targetSdk = "34"
+targetSdk = "36"
 
 kotlin = "2.0.0"
 compose = "2024.06.00"
-androidGradlePlugin = "8.4.2"
+androidGradlePlugin = "8.9.2"
 kotlinxCoroutinesTest = "1.8.1"
 ktx = "1.13.1"
 ktlintGradlePlugin = "10.2.0"
@@ -35,7 +35,7 @@ okhttp = "5.0.0-alpha.14"
 retrofit = "2.9.0"
 gson = "2.10.1"
 accompanist = "0.31.3-beta"
-pdfViewer = "3.2.0-beta.1"
+pdfViewer = "3.2.0-beta.3"
 richtext = "0.16.0"
 workRuntimeKtx = "2.9.0"
 zxingCore = "3.4.1"
@@ -74,7 +74,7 @@ accompanist-pager = { group = "com.google.accompanist", name = "accompanist-page
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 
-android-pdf-viewer = { group = "com.github.barteksc", name = "android-pdf-viewer", version.ref = "pdfViewer" }
+android-pdf-viewer = { group = "com.github.mhiew", name = "android-pdf-viewer", version.ref = "pdfViewer" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
