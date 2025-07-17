@@ -23,14 +23,15 @@ fun ContentRow(
     onContentPressed: () -> Unit,
     onBookmark: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    canBookmark: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-            modifier
-                .clickable {
-                    onContentPressed()
-                }.fillMaxWidth(),
+        modifier = modifier
+            .clickable {
+                onContentPressed()
+            }
+            .fillMaxWidth(),
     ) {
         CategoryDash(tags, height = 52.dp)
         Spacer(modifier = Modifier.width(24.dp))
@@ -43,8 +44,10 @@ fun ContentRow(
             Title(title)
             Categories(tags)
         }
-        BookmarkButton(isBookmarked = isBookmarked) {
-            onBookmark(it)
+        if (canBookmark) {
+            BookmarkButton(isBookmarked = isBookmarked) {
+                onBookmark(it)
+            }
         }
     }
 }
@@ -52,4 +55,42 @@ fun ContentRow(
 @PreviewLightDark
 @Composable
 private fun ContentRowPreview() {
+    val beginnerFriendly = Tag(
+        id = 1,
+        label = "Beginner Friendly",
+        description = "",
+        color = "#ABCABC",
+        sortOrder = -1,
+    )
+    val talk = Tag(
+        id = 2,
+        label = "Talk",
+        description = "",
+        color = "#FF1212",
+        sortOrder = -1,
+    )
+    Column {
+        ContentRow(
+            title = "DEF CON 101",
+            tags = listOf(beginnerFriendly),
+            isBookmarked = false,
+            onContentPressed = {},
+            onBookmark = {},
+        )
+        ContentRow(
+            title = "How to make new friends",
+            tags = listOf(talk),
+            isBookmarked = true,
+            onContentPressed = {},
+            onBookmark = {},
+        )
+        ContentRow(
+            title = "DEF CON 102",
+            tags = listOf(beginnerFriendly, talk),
+            isBookmarked = false,
+            onContentPressed = {},
+            onBookmark = {},
+            canBookmark = false,
+        )
+    }
 }

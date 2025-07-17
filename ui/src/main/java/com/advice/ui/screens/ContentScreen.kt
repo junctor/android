@@ -56,6 +56,7 @@ import com.advice.ui.components.BookmarkButton
 import com.advice.ui.components.CategorySize
 import com.advice.ui.components.CategoryView
 import com.advice.ui.components.ClickableUrl
+import com.advice.ui.components.ContentRow
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.components.Speaker
@@ -68,11 +69,13 @@ import com.advice.ui.utils.parseColor
 fun ContentScreen(
     content: Content,
     session: Session?,
+    relatedContent: List<Content>,
     onBookmark: (Content, Session?, Boolean) -> Unit,
     onBackPressed: () -> Unit,
     onTagClicked: (Tag) -> Unit,
     onLocationClicked: (Location) -> Unit,
     onSessionClicked: (Session) -> Unit,
+    onRelatedContentPressed: (Content) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
     onFeedbackClicked: (FeedbackForm) -> Unit,
@@ -93,9 +96,11 @@ fun ContentScreen(
             EventScreenContent(
                 content = content,
                 session = session,
+                relatedContent = relatedContent,
                 onTagClicked = onTagClicked,
                 onLocationClicked = onLocationClicked,
                 onSessionClicked = onSessionClicked,
+                onRelatedContentPressed = onRelatedContentPressed,
                 onBookmark = onBookmark,
                 onUrlClicked = onUrlClicked,
                 onSpeakerClicked = onSpeakerClicked,
@@ -232,16 +237,16 @@ internal fun DetailsCard(
     Surface(
         shape = RoundedCornerShape(12.dp),
         modifier =
-        modifier
-            .fillMaxWidth()
-            .padding(horizontal = 0.dp, vertical = 4.dp),
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 0.dp, vertical = 4.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
-            Modifier
-                .clickable(enabled = isClickable, onClick = onClick ?: {})
-                .padding(16.dp),
+                Modifier
+                    .clickable(enabled = isClickable, onClick = onClick ?: {})
+                    .padding(16.dp),
         ) {
             Icon(icon, null)
             Spacer(Modifier.width(12.dp))
@@ -255,9 +260,11 @@ internal fun DetailsCard(
 private fun EventScreenContent(
     content: Content,
     session: Session?,
+    relatedContent: List<Content>,
     onTagClicked: (Tag) -> Unit,
     onLocationClicked: (Location) -> Unit,
     onSessionClicked: (Session) -> Unit,
+    onRelatedContentPressed: (Content) -> Unit,
     onBookmark: (Content, Session, Boolean) -> Unit,
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
@@ -289,9 +296,9 @@ private fun EventScreenContent(
                         category,
                         size = CategorySize.Medium,
                         modifier =
-                        Modifier.clickable {
-                            onTagClicked(category)
-                        },
+                            Modifier.clickable {
+                                onTagClicked(category)
+                            },
                     )
                 }
             }
@@ -299,7 +306,6 @@ private fun EventScreenContent(
 
         val otherSessions = content.sessions.filter { it != session }
         if (otherSessions.isNotEmpty()) {
-
             Column(Modifier.padding(8.dp)) {
                 Text(
                     if (session == null) "Sessions" else "Other Sessions",
@@ -359,6 +365,33 @@ private fun EventScreenContent(
             Spacer(Modifier.height(32.dp))
             NoDetailsView()
         }
+
+        // Related Content
+        if (relatedContent.isNotEmpty()) {
+            Column(Modifier.padding(8.dp)) {
+                Text(
+                    "Related Content",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                )
+
+                for (content in relatedContent) {
+                    ContentRow(
+                        content.title,
+                        content.types,
+                        content.isBookmarked,
+                        onBookmark = {
+                            // do nothing - can not bookmark content from this screen
+                        },
+                        onContentPressed = {
+                            onRelatedContentPressed(content)
+                        },
+                        canBookmark = false,
+                    )
+                }
+            }
+        }
+
+
         Spacer(modifier = Modifier.height(64.dp))
     }
 }
@@ -407,11 +440,13 @@ private fun EventScreenPreview(
         ContentScreen(
             content = content,
             session = null,
+            relatedContent = emptyList(),
             onBookmark = { _, _, _ -> },
             onBackPressed = {},
             onTagClicked = {},
             onLocationClicked = {},
             onSessionClicked = {},
+            onRelatedContentPressed = {},
             onUrlClicked = {},
             onSpeakerClicked = {},
             onFeedbackClicked = {},

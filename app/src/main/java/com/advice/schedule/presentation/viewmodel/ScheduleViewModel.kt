@@ -57,9 +57,17 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
             return
         }
 
+        val relatedContent = content.relatedContentIds.mapNotNull {
+            contentRepository.getContent(conference, it)
+        }
+
         // Find the session, if session is not null.
         _state.value =
-            EventScreenState.Success(content, content.sessions.find { it.id == sessionId })
+            EventScreenState.Success(
+                content = content,
+                session = content.sessions.find { it.id == sessionId },
+                relatedContent = relatedContent,
+            )
     }
 
     private suspend fun refreshEvent() {

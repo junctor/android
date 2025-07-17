@@ -46,6 +46,9 @@ data class FirebaseContent(
     @get:PropertyName("tag_ids")
     @set:PropertyName("tag_ids")
     var tag_ids: List<Long> = emptyList(),
+    @get:PropertyName("related_content_ids")
+    @set:PropertyName("related_content_ids")
+    var related_content_ids: List<Long> = emptyList(),
     @get:PropertyName("title")
     @set:PropertyName("title")
     var title: String = "",

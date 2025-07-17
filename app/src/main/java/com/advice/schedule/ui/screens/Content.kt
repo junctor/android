@@ -87,6 +87,7 @@ fun Event(
                 context = context,
                 content = state.content,
                 session = state.session,
+                relatedContent = state.relatedContent,
                 navController = navController
             ) { content, session, isBookmarked ->
                 viewModel.bookmark(state.content, session, isBookmarked)
@@ -100,12 +101,14 @@ private fun Content(
     context: Context,
     content: Content,
     session: Session?,
+    relatedContent: List<Content>,
     navController: NavHostController,
     onBookmark: (Content, Session?, Boolean) -> Unit,
 ) {
     ContentScreen(
         content = content,
         session = session,
+        relatedContent = relatedContent,
         onBookmark = { content, session, isBookmarked ->
             onBookmark(content, session, isBookmarked)
             (context as MainActivity).onBookmarkEvent()
@@ -129,6 +132,14 @@ private fun Content(
                     content.conference,
                     content.id.toString(),
                     it.id.toString()
+                )
+            )
+        },
+        onRelatedContentPressed = {
+            navController.navigate(
+                Navigation.Event(
+                    content.conference,
+                    it.id.toString(),
                 )
             )
         },

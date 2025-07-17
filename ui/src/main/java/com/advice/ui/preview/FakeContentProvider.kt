@@ -17,6 +17,19 @@ class FakeContentProvider : PreviewParameterProvider<Content> {
                 conference = "THOTCON 0xC",
                 title = "DOORS OPEN 喝一杯",
                 description = "",
+                updated = Instant.now(),
+                speakers = emptyList(),
+                types = listOf(
+                    Tag(
+                        -1L,
+                        "Misc",
+                        "",
+                        "#e73dd2",
+                        -1,
+                    ),
+                ),
+                urls = emptyList(),
+                media = emptyList(),
                 sessions = listOf(
                     Session(
                         id = 1,
@@ -32,19 +45,7 @@ class FakeContentProvider : PreviewParameterProvider<Content> {
                         ),
                     )
                 ),
-                updated = Instant.now(),
-                speakers = emptyList(),
-                types = listOf(
-                    Tag(
-                        -1L,
-                        "Misc",
-                        "",
-                        "#e73dd2",
-                        -1,
-                    ),
-                ),
-                urls = emptyList(),
-                media = emptyList(),
+                relatedContentIds = emptyList(),
             ),
         )
     }
