@@ -86,6 +86,7 @@ fun FirebaseConference.toConference(): Conference? =
                 "enable_merch_cart" to enableMerchCart,
                 "enable_wifi" to enableWifi,
             ),
+            emergencyDocumentId,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Conference: ${ex.message}")
@@ -239,9 +240,9 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? =
             description = description,
             affiliations = affiliations.mapNotNull { it.toAffiliation() },
             links =
-            links
-                .sortedBy { it.sortOrder }
-                .mapNotNull { it.toLink() },
+                links
+                    .sortedBy { it.sortOrder }
+                    .mapNotNull { it.toLink() },
             roles = emptyList(),
         )
     } catch (ex: Exception) {
