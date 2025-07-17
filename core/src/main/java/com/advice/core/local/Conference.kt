@@ -18,6 +18,7 @@ data class Conference(
     val end: Instant,
     val timezone: String,
     val flags: Map<String, Boolean>,
+    val emergencyDocumentId: Long?,
     var isSelected: Boolean = false
 ) : Parcelable {
 
@@ -38,6 +39,7 @@ data class Conference(
             end = Instant.now(),
             timezone = "",
             flags = emptyMap(),
+            emergencyDocumentId = 123,
             isSelected = false
         )
     }

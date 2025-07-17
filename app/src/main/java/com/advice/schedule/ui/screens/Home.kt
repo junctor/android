@@ -57,29 +57,33 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
 
     Box {
         OverlappingPanelsView(viewState.currentAnchor, leftPanel = {
-            HomeScreen(state = homeState, onConferenceClick = {
-                homeViewModel.setConference(it)
-            }, onNavigationClick = {
-                when (val navigation = it.toNavigation()) {
-                    is Navigation.Schedule -> {
-                        if (navigation.ids.isEmpty()) {
-                            mainViewModel.setAnchor(DragAnchors.Center)
-                            return@HomeScreen
+            HomeScreen(
+                state = homeState, onConferenceClick = {
+                    homeViewModel.setConference(it)
+                }, onNavigationClick = {
+                    when (val navigation = it.toNavigation()) {
+                        is Navigation.Schedule -> {
+                            if (navigation.ids.isEmpty()) {
+                                mainViewModel.setAnchor(DragAnchors.Center)
+                                return@HomeScreen
+                            }
+                            navController.navigate(navigation)
                         }
-                        navController.navigate(navigation)
-                    }
 
-                    is Navigation.Maps -> {
-                        navController.navigate(navigation)
-                    }
+                        is Navigation.Maps -> {
+                            navController.navigate(navigation)
+                        }
 
-                    else -> {
-                        navController.navigate(navigation)
+                        else -> {
+                            navController.navigate(navigation)
+                        }
                     }
-                }
-            }, onDismissNews = {
-                homeViewModel.markLatestNewsAsRead(it)
-            })
+                }, onDismissNews = {
+                    homeViewModel.markLatestNewsAsRead(it)
+                },
+                onDocumentClick = {
+                    navController.navigate(Navigation.Document(it))
+                })
         }, rightPanel = {
             FilterScreen(state = filtersScreenState, onClick = {
                 filtersViewModel.toggle(it)

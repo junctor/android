@@ -6,6 +6,7 @@ import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.Conference
 import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
+import com.advice.core.utils.NotificationHelper
 import com.advice.play.AppManager
 import com.advice.schedule.data.repositories.HomeRepository
 import kotlinx.coroutines.Job
@@ -22,10 +23,12 @@ class HomeViewModel : ViewModel(), KoinComponent {
     private val repository by inject<HomeRepository>()
     private val analytics by inject<AnalyticsProvider>()
     private val appManager by inject<AppManager>()
+    private val notificationHelper by inject<NotificationHelper>()
 
     private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
 
     private var countdownJob: Job? = null
+    private var emergencyDocumentId: Long? = null
 
     init {
         viewModelScope.launch {
@@ -40,10 +43,19 @@ class HomeViewModel : ViewModel(), KoinComponent {
                         val isUpdateAvailable = appManager.isUpdateAvailable()
                         _state.value = it.copy(
                             isUpdateAvailable = isUpdateAvailable,
-                            wifi = if(analytics.isWifiEnabled()) it.wifi else emptyList(),
+                            wifi = if (analytics.isWifiEnabled()) it.wifi else emptyList(),
                         )
                         if (countdownJob == null) {
                             startCountdown(it.conference)
+                        }
+
+                        // Showing notification in emergency document is present
+                        val id = it.conference.emergencyDocumentId
+                        if (id != emergencyDocumentId) {
+                            emergencyDocumentId = id
+                            if (id != null) {
+                                notificationHelper.notifyEmergency(id)
+                            }
                         }
                     }
 

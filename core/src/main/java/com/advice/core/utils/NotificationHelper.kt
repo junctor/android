@@ -53,6 +53,13 @@ class NotificationHelper(private val context: Context) {
         setContentIntent(getPendingIntent(event))
     }
 
+    private fun getDocumentNotification(title: String, text: String, id: Long): Notification =
+        notification {
+            setContentTitle(title)
+            setContentText(text)
+            setContentIntent(getPendingIntent(id))
+        }
+
     private fun notification(block: NotificationCompat.Builder.() -> Unit): Notification {
         return NotificationCompat.Builder(context, CHANNEL_UPDATES).apply {
             setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -80,6 +87,21 @@ class NotificationHelper(private val context: Context) {
         )
     }
 
+    private fun getPendingIntent(documentId: Long): PendingIntent {
+        val deepLink =
+            Uri.parse("https://hackertracker.app/document?id=$documentId")
+
+        val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
+            setPackage("com.shortstack.hackertracker")
+        }
+        return PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
+
     fun notifyStartingSoon(event: Event) {
         manager.notify(event.id.toInt(), getStartingSoonNotification(event))
     }
@@ -90,6 +112,13 @@ class NotificationHelper(private val context: Context) {
 
     fun notifyFeedbackAvailable(event: Event) {
         manager.notify(1001 + event.id.toInt(), getFeedbackReminderNotification(event))
+    }
+
+    fun notifyEmergency(emergencyDocumentId: Long) {
+        manager.notify(
+            911 + emergencyDocumentId.toInt(),
+            getDocumentNotification("Emergency", "Please read", emergencyDocumentId)
+        )
     }
 
     companion object {
