@@ -48,7 +48,7 @@ class HomeRepository(
     }
 
     private fun hasChicken(conference: Conference): Boolean {
-        return conference.code == "DEFCON32" && storage.easterEggs && analyticsProvider.isChickenEnabled()
+        return conference.code == "DEFCON33" && storage.easterEggs && analyticsProvider.isChickenEnabled()
     }
 
     private fun getMenu(
