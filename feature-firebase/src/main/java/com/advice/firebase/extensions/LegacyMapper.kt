@@ -207,7 +207,7 @@ fun FirebaseContent.toContents(
             isBookmarked = isBookmarked,
             sessions = newSessions,
             feedback = feedbackForm,
-            relatedContentIds = related_content_ids,
+            relatedContentIds = related_content_ids ?: emptyList(),
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Content: ${ex.message}")

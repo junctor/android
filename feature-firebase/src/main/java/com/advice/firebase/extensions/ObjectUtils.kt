@@ -13,7 +13,9 @@ fun <T> QuerySnapshot.toObjectsOrEmpty(clazz: Class<T>): List<T> {
                 result.add(d.toObject(clazz))
             } catch (ex: Exception) {
                 val path = (this.query as CollectionReference).path + "/${d.id}"
-                Timber.e("Could not map $path to object: ${ex.message}")
+                val message = "Could not map $path to object: ${ex.message}"
+                ex.printStackTrace()
+                Timber.e(message)
             }
         }
         result
