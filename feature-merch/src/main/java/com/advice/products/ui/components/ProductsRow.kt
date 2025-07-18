@@ -20,7 +20,11 @@ internal fun ProductsRow(
 ) {
     Row {
         for (product in products) {
-            ProductSquare(product, onProductClicked, Modifier.weight(1f))
+            ProductSquare(
+                product = product,
+                onMerchClicked = onProductClicked,
+                modifier = Modifier.weight(1f),
+            )
         }
         if (products.size == 1) Box(modifier = Modifier.weight(1f))
     }

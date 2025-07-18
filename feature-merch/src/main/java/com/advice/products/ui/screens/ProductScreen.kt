@@ -38,6 +38,7 @@ import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariant
+import com.advice.core.local.products.ProductVariantSelection
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.LabelButton
 import com.advice.products.ui.components.LegalLabel
@@ -60,7 +61,7 @@ fun ProductScreen(
     product: Product,
     taxStatement: String?,
     canAdd: Boolean,
-    onAddClicked: (ProductSelection) -> Unit,
+    onAddClicked: (ProductVariantSelection) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     var quantity by remember {
@@ -68,7 +69,9 @@ fun ProductScreen(
     }
 
     var selection by remember {
-        mutableStateOf(product.selectedOption)
+        // if the product only has 1 variant, select it by default.
+        val variant = if (product.variants.size == 1) product.variants.first() else null
+        mutableStateOf(variant)
     }
 
     var showing by remember { mutableStateOf(false) }
@@ -124,7 +127,7 @@ fun Product(
     canAdd: Boolean,
     quantity: Int,
     selection: ProductVariant?,
-    onAddClicked: (ProductSelection) -> Unit,
+    onAddClicked: (ProductVariantSelection) -> Unit,
     onExpandBottomSheet: () -> Unit,
     onQuantityChanged: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -148,7 +151,8 @@ fun Product(
             ) {
                 Text(product.label, fontWeight = FontWeight.SemiBold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    PriceLabel(product.currentCost.toCurrency(showCents = true))
+                    val currentCost = selection?.price ?: product.baseCost
+                    PriceLabel(currentCost.toCurrency(showCents = true))
                     Spacer(Modifier.weight(1f))
                     if (product.stockStatus == StockStatus.LOW_STOCK) {
                         LowStockLabel()
@@ -165,7 +169,8 @@ fun Product(
                 ProductRow(
                     label = "Variant", modifier = Modifier.clickable(onClick = onExpandBottomSheet)
                 ) {
-                    val label = selection?.label ?: stringResource(com.advice.products.R.string.select_variant)
+                    val label = selection?.label
+                        ?: stringResource(com.advice.products.R.string.select_variant)
                     Text(label, modifier = Modifier.padding(end = 16.dp))
                 }
             }
@@ -217,7 +222,7 @@ private fun ProductRow(
 private fun FooterButton(
     selection: ProductVariant?,
     product: Product,
-    onAddClicked: (ProductSelection) -> Unit,
+    onAddClicked: (ProductVariantSelection) -> Unit,
     quantity: Int
 ) {
     val enabled = !product.requiresSelection || selection != null
@@ -230,12 +235,12 @@ private fun FooterButton(
     LabelButton(
         label = label,
         onClick = {
-            if (enabled || !product.requiresSelection) {
+            if (selection != null) {
                 onAddClicked(
-                    ProductSelection(
+                    ProductVariantSelection(
                         id = product.id,
                         quantity = quantity,
-                        variant = selection,
+                        variant = selection.id,
                     ),
                 )
             }
@@ -287,10 +292,7 @@ private fun ProductScreenVariantSelectedPreview(
     ScheduleTheme {
         val product = state.products.first()
         ProductScreen(
-            product = product.copy(
-                quantity = 1,
-                selectedOption = product.variants.last(),
-            ),
+            product = product.copy(),
             taxStatement = state.merchTaxStatement,
             canAdd = true,
             onAddClicked = {},

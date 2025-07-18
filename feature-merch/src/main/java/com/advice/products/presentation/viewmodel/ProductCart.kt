@@ -1,13 +1,12 @@
 package com.advice.products.presentation.viewmodel
 
-import com.advice.core.local.products.ProductSelection
-import com.advice.core.local.products.ProductVariant
+import com.advice.core.local.products.ProductVariantSelection
 
 class ProductCart {
 
-    private val selections = mutableListOf<ProductSelection>()
+    private val selections = mutableListOf<ProductVariantSelection>()
 
-    fun add(selection: ProductSelection) {
+    fun add(selection: ProductVariantSelection) {
         // Look to see if it already exists in our selection
         val indexOf =
             selections.indexOfFirst { it.id == selection.id && it.variant == selection.variant }
@@ -21,9 +20,9 @@ class ProductCart {
         }
     }
 
-    fun setQuantity(id: Long, quantity: Int, selectedOption: ProductVariant?) {
+    fun setQuantity(id: Long, quantity: Int, variant: Long?) {
         val indexOf =
-            selections.indexOfFirst { it.id == id && it.variant == selectedOption }
+            selections.indexOfFirst { it.id == id && it.variant == variant }
         if (indexOf != -1) {
             val element = selections[indexOf]
             if (quantity == 0) {
@@ -34,7 +33,11 @@ class ProductCart {
         }
     }
 
-    fun getSelections(): List<ProductSelection> {
+    fun clear() {
+        selections.clear()
+    }
+
+    fun getSelections(): List<ProductVariantSelection> {
         return selections
     }
 }

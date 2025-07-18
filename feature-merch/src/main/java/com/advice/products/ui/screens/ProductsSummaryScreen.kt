@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.advice.core.local.products.Product
+import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.EditableProduct
@@ -44,11 +45,9 @@ import com.advice.ui.theme.roundedCornerShape
 @Composable
 fun ProductsSummaryScreen(
     state: ProductsState,
-    onQuantityChanged: (Long, Int, ProductVariant?) -> Unit,
+    onQuantityChanged: (Long, Int, Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    val list = state.cart
-
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("Merch") }, navigationIcon = {
             BackButton(onBackPressed)
@@ -56,8 +55,8 @@ fun ProductsSummaryScreen(
     }) {
         Box(Modifier.padding(it)) {
             ProductsSummaryContent(
-                list,
-                state.json,
+                state.cart,
+                state.data,
                 state.merchTaxStatement,
                 onQuantityChanged = onQuantityChanged,
             )
@@ -67,11 +66,11 @@ fun ProductsSummaryScreen(
 
 @Composable
 private fun ProductsSummaryContent(
-    list: List<Product>,
+    list: List<ProductSelection>,
     json: String?,
     taxStatement: String?,
     modifier: Modifier = Modifier,
-    onQuantityChanged: (Long, Int, ProductVariant?) -> Unit,
+    onQuantityChanged: (Long, Int, Long) -> Unit,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
         Box(
@@ -126,7 +125,7 @@ private fun ProductsSummaryContent(
 
             for (merch in list) {
                 EditableProduct(merch, onQuantityChanged = {
-                    onQuantityChanged(merch.id, it, merch.selectedOption)
+                    onQuantityChanged(merch.id, it, merch.variant.id)
                 })
             }
 
@@ -148,7 +147,7 @@ private fun ProductsSummaryContent(
     }
 }
 
-private fun getSubtotal(list: List<Product>): Long =
+private fun getSubtotal(list: List<ProductSelection>): Long =
     list.sumOf { element ->
         element.cost
     }
@@ -169,7 +168,7 @@ private fun ProductsSummaryScreenPreview(
 private fun ProductsSummaryScreenErrorPreview(
     @PreviewParameter(ProductsProvider::class) state: ProductsState,
 ) {
-    val state = state.copy(json = null)
+    val state = state.copy(data = null)
     ScheduleTheme {
         ProductsSummaryScreen(state, { _, _, _ -> }, {})
     }

@@ -7,13 +7,13 @@ import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
-import com.advice.core.local.products.ProductVariant
+import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.utils.Storage
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.DismissibleInformation
-import com.advice.products.utils.toJson
+import com.advice.products.utils.toStringData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -31,6 +31,8 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     private val products = mutableListOf<Product>()
     private val productVariantTags = mutableListOf<TagType>()
+
+    private var conference: Long? = null
     private var canAdd: Boolean = false
     private var merchDocument: Long? = null
     private var merchMandatoryAcknowledgement: String? = null
@@ -39,6 +41,16 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             repository.conference.collect {
+                // todo: clean this up - this is to restore merch items between restarts.
+                if (it.id != conference) {
+                    cart.clear()
+                    val selections = storage.getSelectedProducts(it.id)
+                    for (selection in selections) {
+                        cart.add(selection)
+                    }
+                }
+
+                conference = it.id
                 canAdd = it.flags["enable_merch_cart"] ?: false
                 merchDocument = it.merchInformation?.merchHelpDocId
                 merchMandatoryAcknowledgement = it.merchInformation?.merchMandatoryAcknowledgement
@@ -49,7 +61,6 @@ class ProductsViewModel : ViewModel(), KoinComponent {
             repository.products.collect {
                 products.clear()
                 products.addAll(it.sortedByDescending { it.inStock })
-                updateList()
                 updateSummary()
             }
         }
@@ -58,49 +69,30 @@ class ProductsViewModel : ViewModel(), KoinComponent {
                 productVariantTags.clear()
                 productVariantTags.addAll(it)
                 if (products.isNotEmpty()) {
-                    updateList()
                     updateSummary()
                 }
             }
         }
     }
 
-    fun addToCart(selection: ProductSelection) {
+    fun addToCart(selection: ProductVariantSelection) {
         viewModelScope.launch {
             cart.add(selection)
-            updateList()
             updateSummary()
         }
     }
 
-    private suspend fun updateList() {
-        // merging the merch list with the selections
-        val list = products.map { model ->
-            val quantity = cart.getSelections().filter { it.id == model.id }.sumOf { it.quantity }
-            model.copy(quantity = quantity)
-        }
-
-        updateState(
-            products = list,
-        )
-    }
-
     private suspend fun updateSummary() {
-        // updating the summary broke down based on selections
-        val summary = cart.getSelections().mapNotNull { selection ->
-            products.find { it.id == selection.id }?.update(selection)
-        }
+        val selections = cart.getSelections()
 
         updateState(
-            cart = summary,
-            json = summary.toJson(),
+            selections = selections,
         )
     }
 
-    fun setQuantity(id: Long, quantity: Int, selectedOption: ProductVariant?) {
+    fun setQuantity(id: Long, quantity: Int, variant: Long?) {
         viewModelScope.launch {
-            cart.setQuantity(id, quantity, selectedOption)
-            updateList()
+            cart.setQuantity(id, quantity, variant)
             updateSummary()
         }
     }
@@ -143,14 +135,20 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         merchMandatoryAcknowledgement: String? = this.merchMandatoryAcknowledgement,
         merchTaxStatement: String? = this.merchTaxStatement,
         canAdd: Boolean = this.canAdd,
-        cart: List<Product> = emptyList(),
-        json: String? = null,
+        selections: List<ProductVariantSelection> = emptyList(),
     ) {
         val filter = productVariantTags.flatMap { it.tags }.filter { it.isSelected }
 
         val filteredProducts: List<Product> = getFilteredProducts(products, filter)
 
-        val data = ProductsState(
+        val cart = selections.mapNotNull { selection ->
+            val product = products.find { it.id == selection.id } ?: return@mapNotNull null
+            val variant =
+                product.variants.find { it.id == selection.variant } ?: return@mapNotNull null
+            return@mapNotNull ProductSelection(product, variant, selection.quantity)
+        }
+
+        val state = ProductsState(
             groups = groupProducts(filteredProducts),
             productVariantTagTypes = productVariantTags,
             informationList = getInformationList(),
@@ -159,10 +157,10 @@ class ProductsViewModel : ViewModel(), KoinComponent {
             merchTaxStatement = merchTaxStatement,
             canAdd = canAdd,
             cart = cart,
-            json = json,
+            data = cart.toStringData(conference = conference),
         )
 
-        _state.tryEmit(ProductsScreenState.Success(data))
+        _state.tryEmit(ProductsScreenState.Success(state))
     }
 
     private fun groupProducts(products: List<Product>): Map<Tag, List<Product>> {

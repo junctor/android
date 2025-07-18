@@ -38,7 +38,11 @@ import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
+fun ProductRow(
+    product: Product,
+    onMerchClicked: (Product) -> Unit,
+    quantity: Int = 0,
+) {
     Row(
         Modifier
             .clickable { onMerchClicked(product) }
@@ -64,7 +68,7 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
         }
         BadgedBox(
             badge = {
-                if (product.quantity > 0) {
+                if (quantity > 0) {
                     Badge(
                         containerColor = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
@@ -72,7 +76,7 @@ fun ProductRow(product: Product, onMerchClicked: (Product) -> Unit) {
                             .offset(x = -12.dp, y = 12.dp)
                     ) {
                         Text(
-                            text = "${product.quantity}",
+                            text = "$quantity",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 16.sp,
                             style = MaterialTheme.typography.labelLarge,
@@ -107,6 +111,7 @@ private fun ProductViewPreview(
             ProductRow(
                 product = state.products.first(),
                 onMerchClicked = {},
+                quantity = 1,
             )
         }
     }

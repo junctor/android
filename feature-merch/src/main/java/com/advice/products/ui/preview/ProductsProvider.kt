@@ -6,10 +6,11 @@ import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductMedia
+import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariant
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.DismissibleInformation
-import com.advice.products.utils.toJson
+import com.advice.products.utils.toStringData
 
 class ProductsProvider : PreviewParameterProvider<ProductsState> {
     override val values: Sequence<ProductsState>
@@ -35,14 +36,18 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                         url = "https://firebasestorage.googleapis.com/v0/b/hackertest-5a202.appspot.com/o/DEFCON30%2Fm_pride_tee.jpeg?alt=media",
                     )
                 ),
-                quantity = 1,
                 tags = listOf(tag),
             )
 
             val elements = listOf(
-                product.copy(quantity = 1, selectedOption = null),
-                product.copy(variants = listOf(options.first()), selectedOption = options.first()),
-                product.copy(variants = listOf(options.last()), selectedOption = options.last()),
+                product.copy(),
+                product.copy(variants = listOf(options.first())),
+                product.copy(variants = listOf(options.last())),
+            )
+
+            val cart = listOf(
+                ProductSelection(product, options.first(), 1),
+                ProductSelection(product, options.last(), 1),
             )
 
             return listOf(
@@ -76,8 +81,8 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                     ),
                     merchMandatoryAcknowledgement = "All sales are **CASH ONLY**. Prices include Nevada State Sales Tax.",
                     merchTaxStatement = "Prices include Nevada State Sales Tax.",
-                    cart = elements,
-                    json = elements.toJson(),
+                    cart = cart,
+                    data = cart.toStringData(conference = 133),
                 )
             ).asSequence()
         }

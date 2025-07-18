@@ -30,12 +30,15 @@ import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
-
+/**
+ * todo: pass in state to enable "is_added" flag on the ui.
+ */
 @Composable
 fun ProductSquare(
     product: Product,
     onMerchClicked: (Product) -> Unit,
     modifier: Modifier = Modifier,
+    isAdded: Boolean = false,
 ) {
     Box(
         modifier = modifier
@@ -79,13 +82,16 @@ fun ProductSquare(
                     OutOfStockLabel()
                 } else {
                     PriceLabel(
-                        text = product.baseCost.toCurrency(showCents = true, showPlus = product.hasPriceVariation),
+                        text = product.baseCost.toCurrency(
+                            showCents = true,
+                            showPlus = product.hasPriceVariation
+                        ),
                     )
                 }
             }
         }
 
-        if (product.quantity > 0) {
+        if (isAdded) {
             LabelBadge(
                 text = "Added",
                 modifier = Modifier
@@ -107,6 +113,7 @@ private fun InStockProductSquarePreview(@PreviewParameter(ProductsProvider::clas
                 product = state.products.find { it.stockStatus == StockStatus.IN_STOCK }!!,
                 onMerchClicked = {},
                 modifier = Modifier.size(300.dp),
+                isAdded = false,
             )
         }
     }
@@ -121,6 +128,7 @@ private fun OutOfStockProductSquarePreview(@PreviewParameter(ProductsProvider::c
                 product = state.products.find { it.stockStatus == StockStatus.OUT_OF_STOCK }!!,
                 onMerchClicked = {},
                 modifier = Modifier.size(300.dp),
+                isAdded = false,
             )
         }
     }
@@ -135,6 +143,7 @@ private fun LowStockProductSquarePreview(@PreviewParameter(ProductsProvider::cla
                 product = state.products.find { it.stockStatus == StockStatus.LOW_STOCK }!!,
                 onMerchClicked = {},
                 modifier = Modifier.size(300.dp),
+                isAdded = true,
             )
         }
     }

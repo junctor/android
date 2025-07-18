@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
+import com.advice.core.local.products.ProductSelection
 import com.advice.products.R
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.preview.ProductsProvider
@@ -40,13 +41,13 @@ import com.advice.ui.theme.roundedCornerShape
 
 @Composable
 internal fun EditableProduct(
-    product: Product,
+    product: ProductSelection,
     onQuantityChanged: (Int) -> Unit,
 ) {
     val height = 128.dp
 
     Box {
-        val inStock = product.variant?.stockStatus != StockStatus.OUT_OF_STOCK
+        val inStock = product.variant.stockStatus != StockStatus.OUT_OF_STOCK
         Row(
             Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -177,9 +178,10 @@ private fun EditableProductPreview(@PreviewParameter(ProductsProvider::class) st
             Column {
                 for (variant in product.variants) {
                     EditableProduct(
-                        product = product.copy(
-                            quantity = 1,
-                            selectedOption = variant,
+                        product = ProductSelection(
+                            product = product,
+                            variant = variant,
+                            quantity = 1
                         ),
                         onQuantityChanged = {},
                     )

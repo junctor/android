@@ -14,10 +14,10 @@ data class Product(
     val baseCost: Long,
     val variants: List<ProductVariant>,
     val media: List<ProductMedia>,
-    val quantity: Int = 0,
-    val cost: Long = baseCost * quantity,
+//    val quantity: Int = 0,
+//    val cost: Long = baseCost * quantity,
     val tags: List<Tag>,
-    val selectedOption: ProductVariant? = null,
+//    val selectedOption: ProductVariant? = null,
     val stockStatusOverride: StockStatus? = null,
 ) : Parcelable {
 
@@ -49,30 +49,30 @@ data class Product(
             return stockStatus
         }
 
-    val variant: ProductVariant?
-        get() = if (requiresSelection) variants.find { it == selectedOption } else variants.first()
+//    val variant: ProductVariant?
+//        get() = if (requiresSelection) variants.find { it == selectedOption } else variants.first()
 
     val requiresSelection: Boolean
         get() = variants.size > 1
 
-    val currentCost: Long
-        get() = variant?.price ?: baseCost
+//    val currentCost: Long
+//        get() = variant?.price ?: baseCost
 
     val hasPriceVariation: Boolean
         get() = variants.any { it.price != baseCost }
 
-    fun update(selection: ProductSelection): Product {
-        val variantCost = if (selection.variant != null) {
-            variants.find { it == selection.variant }?.price ?: 0
-        } else {
-            baseCost
-        }
-
-        val cost = variantCost * selection.quantity
-        return copy(
-            quantity = selection.quantity,
-            selectedOption = selection.variant,
-            cost = cost,
-        )
-    }
+//    fun update(selection: ProductSelection): Product {
+//        val variantCost = if (selection.variant != null) {
+//            variants.find { it == selection.variant }?.price ?: 0
+//        } else {
+//            baseCost
+//        }
+//
+//        val cost = variantCost * selection.quantity
+//        return copy(
+//            quantity = selection.quantity,
+//            selectedOption = selection.variant,
+//            cost = cost,
+//        )
+//    }
 }

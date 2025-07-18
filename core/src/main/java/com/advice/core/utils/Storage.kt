@@ -2,7 +2,11 @@ package com.advice.core.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.advice.core.local.products.ProductSelection
+import com.advice.core.local.products.ProductVariantSelection
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import timber.log.Timber
 
 class Storage(context: Context, private val gson: Gson) {
 
@@ -160,5 +164,26 @@ class Storage(context: Context, private val gson: Gson) {
 
     fun getContentUpdatedTimestamp(id: Long): Long {
         return preferences.getLong("content_updated_timestamp_$id", 0)
+    }
+
+    fun setSelectedProducts(id: Long, list: List<ProductVariantSelection>) {
+        preferences.edit().putString("merch_products_selection_$id", gson.toJson(list)).apply()
+    }
+
+    fun getSelectedProducts(id: Long): List<ProductVariantSelection> {
+        val json = preferences.getString("merch_products_selection_$id", null) ?: return emptyList()
+        try {
+            val list = gson.fromJson<List<ProductVariantSelection>>(
+                json,
+                object : TypeToken<List<ProductVariantSelection>>() {}.type
+            )
+            return list
+        } catch (ex: Exception) {
+            Timber.e(
+                "Could not convert stored merch products selection to product variant selection",
+                ex
+            )
+            return emptyList()
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.advice.products.presentation.state
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
+import com.advice.core.local.products.ProductSelection
+import com.advice.core.local.products.ProductVariantSelection
 import com.advice.products.ui.components.DismissibleInformation
 
 sealed class ProductsScreenState {
@@ -19,8 +21,8 @@ data class ProductsState(
     val merchMandatoryAcknowledgement: String? = null,
     val merchTaxStatement: String? = null,
     val canAdd: Boolean = false,
-    val cart: List<Product> = emptyList(),
-    val json: String? = null,
+    val cart: List<ProductSelection> = emptyList(),
+    val data: String? = null,
 ) {
     val products = groups.values.flatten()
 }
