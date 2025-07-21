@@ -2,6 +2,7 @@ package com.advice.products.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.advice.core.local.Conference
 import com.advice.core.local.StockStatus
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
@@ -41,13 +42,8 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             repository.conference.collect {
-                // todo: clean this up - this is to restore merch items between restarts.
                 if (it.id != conference) {
-                    cart.clear()
-                    val selections = storage.getSelectedProducts(it.id)
-                    for (selection in selections) {
-                        cart.add(selection)
-                    }
+                    loadProductSelections(it)
                 }
 
                 conference = it.id
@@ -75,6 +71,26 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         }
     }
 
+    /**
+     * Loading any previously selected products.
+     */
+    private fun loadProductSelections(conference: Conference) {
+        cart.clear()
+        val selections = storage.getSelectedProducts(conference.id)
+        for (selection in selections) {
+            cart.add(selection)
+        }
+    }
+
+    /**
+     * Saving the product selections to local storage to handle restarts.
+     */
+    private fun saveProductSelection(selections: List<ProductVariantSelection>) {
+        conference?.let {
+            storage.setSelectedProducts(it, selections)
+        }
+    }
+
     fun addToCart(selection: ProductVariantSelection) {
         viewModelScope.launch {
             cart.add(selection)
@@ -82,12 +98,10 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    private suspend fun updateSummary() {
+    private fun updateSummary() {
         val selections = cart.getSelections()
-
-        updateState(
-            selections = selections,
-        )
+        saveProductSelection(selections)
+        updateState(selections = selections)
     }
 
     fun setQuantity(id: Long, quantity: Int, variant: Long?) {
