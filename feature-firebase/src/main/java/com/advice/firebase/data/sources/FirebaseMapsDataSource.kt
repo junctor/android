@@ -18,6 +18,9 @@ import timber.log.Timber
 import java.io.File
 
 
+/**
+ * @Deprecated No longer storing maps on Firebase, using Retrofit to download via url instead.
+ */
 class FirebaseMapsDataSource(
     private val userSession: UserSession,
     private val filesDir: File?,

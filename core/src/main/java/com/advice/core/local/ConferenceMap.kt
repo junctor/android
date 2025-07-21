@@ -7,4 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class ConferenceMap(
     val name: String = "",
     val filename: String = "",
+    val url: String = "",
 ) : Parcelable

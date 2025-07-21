@@ -464,6 +464,7 @@ fun FirebaseMap.toMap(): ConferenceMap? =
         ConferenceMap(
             nameText,
             filename,
+            url,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Map: ${ex.message}")

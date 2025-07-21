@@ -29,5 +29,5 @@ data class FirebaseMap(
     var sortOrder: Int = 0,
     @get:PropertyName("url")
     @set:PropertyName("url")
-    var url: String? = null,
+    var url: String = "",
 ) : Parcelable

@@ -51,6 +51,7 @@ import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.viewmodel.ProductCart
 import com.advice.products.presentation.viewmodel.ProductsViewModel
 import com.advice.reminder.ReminderManager
+import com.advice.retrofit.datasource.RetrofitMapsDataSource
 import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.data.repositories.FAQRepository
 import com.advice.schedule.data.repositories.FeedbackRepository
@@ -191,10 +192,9 @@ val appModule = module {
     single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
     single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
     single<MapsDataSource> {
-        FirebaseMapsDataSource(
+        RetrofitMapsDataSource(
             get(),
             androidContext().applicationContext.getExternalFilesDir(null),
-            get(),
         )
     }
 
