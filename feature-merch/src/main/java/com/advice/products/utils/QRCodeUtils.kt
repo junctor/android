@@ -17,12 +17,12 @@ import java.util.EnumMap
 /**
  * Generate the QR Code data based on a more concise format.
  *
- * Example: $1%133%99999%5432:1/6666:3/1234:2/$
- * $1%<platform_code%<conference_id>%<txn_number>%<product_variant_id>:<product_variant_quantity>/$
+ * Encoded: 1:123:A726:456:2;789:3
+ * Decoded: { cc: 123, p: "A726", i: [ { v: 456, q: 2 }, { v: 789, q: 3 } ] }
  *
- * https://github.com/junctor/post-dc32-triage/issues/2
+ * https://github.com/junctor/ht-qrcode/
  */
-fun List<ProductSelection>.toStringData(conference: Long?): String? {
+fun List<ProductSelection>.toStringData(conference: Long?, platformVersion: String): String? {
     try {
         if (isEmpty()) {
             return null
@@ -44,22 +44,27 @@ fun List<ProductSelection>.toStringData(conference: Long?): String? {
 
         val products = map { ProductVariantSelection(it.id, it.variant.id, it.quantity) }
 
-        return products.toStringData(conference)
+        return products.toStringData(conference, platformVersion)
     } catch (ex: Exception) {
         Timber.e(ex, "Error converting products to JSON")
         return null
     }
 }
 
-fun List<ProductVariantSelection>.toStringData(conference: Long): String {
-    // A is for Android
-    val platform = "A"
-    // txn is always empty on client app
+fun List<ProductVariantSelection>.toStringData(conference: Long, platformVersion: String): String {
+    // Version 1 of the compat encoding scheme
+    val version = 1
+    // A is for Android 🤖
+    val platform = "A${platformVersion.replace(".", "")}"
+    // txn is always empty on the client
     val txn = ""
     // mapping each product to "<id>:<quantity>/"
-    val products = mapNotNull { "${it.variant}:${it.quantity}/" }.joinToString(separator = "")
-
-    return "\$1%$platform%$conference%$txn%$products\$"
+    val items = joinToString(";") { "${it.variant}:${it.quantity}" }
+    val compact = "$version:${conference}:${platform}:$items"
+    if (txn.isNotEmpty()) {
+        return "$compact:$txn"
+    }
+    return compact
 }
 
 fun generateQRCode(data: String): Bitmap {
