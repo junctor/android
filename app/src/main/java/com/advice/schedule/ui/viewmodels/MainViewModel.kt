@@ -3,9 +3,11 @@ package com.advice.schedule.ui.viewmodels
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.utils.Storage
+import com.advice.data.session.UserSession
 import com.advice.firebase.extensions.document_cache_reads
 import com.advice.firebase.extensions.document_reads
 import com.advice.firebase.extensions.listeners_count
@@ -16,12 +18,14 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
 class MainViewModel : ViewModel(), KoinComponent {
 
+    private val userSession by inject<UserSession>()
     private val appManager by inject<AppManager>()
     private val analytics by inject<AnalyticsProvider>()
     private val storage by inject<Storage>()
@@ -40,6 +44,15 @@ class MainViewModel : ViewModel(), KoinComponent {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             if (it.isSuccessful) {
                 Timber.d("FCM Token: ${it.result}")
+            }
+        }
+
+        viewModelScope.launch {
+            // Any time the current Conference changes, update the emergency document id
+            userSession.getConference().collect {
+                _state.value = _state.value.copy(
+                    emergencyDocumentId = it.emergencyDocumentId
+                )
             }
         }
     }

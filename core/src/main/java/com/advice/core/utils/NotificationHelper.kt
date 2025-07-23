@@ -117,7 +117,7 @@ class NotificationHelper(private val context: Context) {
     fun notifyEmergency(emergencyDocumentId: Long) {
         manager.notify(
             911 + emergencyDocumentId.toInt(),
-            getDocumentNotification("Emergency", "Please read", emergencyDocumentId)
+            getDocumentNotification("Emergency", "Tape for more details", emergencyDocumentId)
         )
     }
 

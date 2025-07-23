@@ -7,4 +7,5 @@ data class MainViewState(
     val isShown: Boolean = false,
     val alpha: Float = 1f,
     val permissionDialog: Boolean = false,
+    val emergencyDocumentId: Long? = null,
 )

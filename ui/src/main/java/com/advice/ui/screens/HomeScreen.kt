@@ -7,23 +7,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.local.Menu
@@ -50,7 +45,6 @@ fun HomeScreen(
     onConferenceClick: (Conference) -> Unit,
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
-    onDocumentClick: (Long) -> Unit,
 ) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
@@ -60,7 +54,6 @@ fun HomeScreen(
             state,
             onNavigationClick,
             onDismissNews,
-            onDocumentClick,
             modifier =
                 Modifier
                     .padding(contentPadding),
@@ -73,7 +66,6 @@ private fun HomeScreenContent(
     state: HomeState?,
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
-    onDocumentClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -82,7 +74,7 @@ private fun HomeScreenContent(
             }
 
             is HomeState.Loaded -> {
-                HomeScreen(state, onNavigationClick, onDismissNews, onDocumentClick)
+                HomeScreen(state, onNavigationClick, onDismissNews)
             }
 
             HomeState.Loading -> {
@@ -100,17 +92,8 @@ private fun HomeScreen(
     state: HomeState.Loaded,
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
-    onDocumentClick: (Long) -> Unit,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-
-        val id = state.conference.emergencyDocumentId
-        if (id != null) {
-            EmergencyBanner {
-                onDocumentClick(id)
-            }
-        }
-
         ConferenceView(state.conference)
 
         val remainder = state.countdown
@@ -171,43 +154,6 @@ private fun HomeScreen(
     }
 }
 
-@Composable
-private fun EmergencyBanner(onClick: () -> Unit) {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.errorContainer,
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-                .clickable(onClick = onClick),
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-            modifier = Modifier.padding(16.dp),
-        ) {
-
-            Text(
-                "Emergency",
-                fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-
-            Text(
-                "Click for more details",
-                fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-
-        }
-    }
-}
 
 @Composable
 private fun Divider() {
@@ -268,7 +214,6 @@ private fun HomeScreenViewPreview() {
                 ),
             onNavigationClick = {},
             onDismissNews = {},
-            onDocumentClick = {},
         )
     }
 }

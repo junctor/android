@@ -80,9 +80,6 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                     }
                 }, onDismissNews = {
                     homeViewModel.markLatestNewsAsRead(it)
-                },
-                onDocumentClick = {
-                    navController.navigate(Navigation.Document(it))
                 })
         }, rightPanel = {
             FilterScreen(state = filtersScreenState, onClick = {
