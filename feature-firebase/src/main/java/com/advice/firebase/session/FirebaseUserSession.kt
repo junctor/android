@@ -6,16 +6,12 @@ import com.advice.core.local.User
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -53,15 +49,15 @@ class FirebaseUserSession(
                     }
 
                     is FlowResult.Success -> {
-                        val conference = getConference(preferences.preferredConference, it.value)
-                        if (conference != null) {
-                            _conferenceFlow.value = FlowResult.Success(conference)
+                        val previousConference = _conferenceFlow.value.toResultOrNull()
+
+                        val activeConference = getActiveConference(previousConference, it.value)
+                        _conferenceFlow.value = if (activeConference != null) {
+                            FlowResult.Success(activeConference)
                         } else {
-                            _conferenceFlow.value =
-                                FlowResult.Failure(Exception("Could not load conference"))
+                            FlowResult.Failure(Exception("Could not load conference"))
                         }
-                        Timber.d("Current Conference is: ${conference?.code}")
-                        conference
+                        activeConference
                     }
                 }
             }
@@ -84,7 +80,26 @@ class FirebaseUserSession(
         }
     }
 
-    private fun getConference(
+    private fun getActiveConference(
+        previous: Conference?,
+        conferences: List<Conference>
+    ): Conference? {
+        // if we were already looking at a Conference, load the new data for the current Conference
+        if (previous != null) {
+            val conference = conferences.find { it.id == previous.id }
+            if (conference != null) {
+                return conference
+            }
+        }
+
+        return findAvailableConference(preferences.preferredConference, conferences)
+    }
+
+    /**
+     * Select an appropriate Conference based on what's currently running, what they have previously selected
+     * and if Def Con is available or not.
+     */
+    private fun findAvailableConference(
         preferred: Long,
         conferences: List<Conference>,
     ): Conference? {
@@ -117,7 +132,6 @@ class FirebaseUserSession(
     }
 
     override fun setConference(conference: Conference) {
-        Timber.e("setConference: ${conference.code}")
         preferences.preferredConference = conference.id
         _conference.value = conference
         _conferenceFlow.value = FlowResult.Success(conference)
@@ -129,20 +143,3 @@ class FirebaseUserSession(
     override val currentUser: User?
         get() = _user.value
 }
-
-fun Task<AuthResult>.snapshotFlow(): Flow<AuthResult> =
-    callbackFlow {
-        val listenerRegistration =
-            addOnCompleteListener {
-                if (!it.isSuccessful) {
-                    close()
-                    return@addOnCompleteListener
-                }
-                if (it.result != null) {
-                    trySend(it.result)
-                }
-            }
-        awaitClose {
-            listenerRegistration
-        }
-    }
