@@ -171,7 +171,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
             merchTaxStatement = merchTaxStatement,
             canAdd = canAdd,
             cart = cart,
-            data = cart.toStringData(conference = conference, platformVersion = storage.version),
+            data = cart.toStringData(conference = conference, versionCode = storage.versionCode),
         )
 
         _state.tryEmit(ProductsScreenState.Success(state))

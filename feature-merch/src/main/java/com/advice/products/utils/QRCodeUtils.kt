@@ -22,7 +22,7 @@ import java.util.EnumMap
  *
  * https://github.com/junctor/ht-qrcode/
  */
-fun List<ProductSelection>.toStringData(conference: Long?, platformVersion: String): String? {
+fun List<ProductSelection>.toStringData(conference: Long?, versionCode: Int): String? {
     try {
         if (isEmpty()) {
             return null
@@ -44,18 +44,18 @@ fun List<ProductSelection>.toStringData(conference: Long?, platformVersion: Stri
 
         val products = map { ProductVariantSelection(it.id, it.variant.id, it.quantity) }
 
-        return products.toStringData(conference, platformVersion)
+        return products.toStringData(conference, versionCode)
     } catch (ex: Exception) {
         Timber.e(ex, "Error converting products to JSON")
         return null
     }
 }
 
-fun List<ProductVariantSelection>.toStringData(conference: Long, platformVersion: String): String {
+fun List<ProductVariantSelection>.toStringData(conference: Long, versionCode: Int): String {
     // Version 1 of the compat encoding scheme
     val version = 1
     // A is for Android 🤖
-    val platform = "A${platformVersion.replace(".", "")}"
+    val platform = "A$versionCode"
     // txn is always empty on the client
     val txn = ""
     // mapping each product to "<id>:<quantity>/"

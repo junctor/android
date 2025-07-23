@@ -6,7 +6,7 @@ import org.junit.Test
 
 class QRCodeUtilsKtTest {
 
-    // 1:123:A726:456:2;789:3
+    // 1:123:A42:456:2;789:3
     @Test
     fun `test generate qr code data string`() {
 
@@ -15,8 +15,8 @@ class QRCodeUtilsKtTest {
             ProductVariantSelection(id = 2, variant = 789, quantity = 3),
         )
 
-        val data = products.toStringData(conference = 123, platformVersion = "7.2.6")
+        val data = products.toStringData(conference = 123, versionCode = 42)
 
-        assertEquals("String data does not match", "1:123:A726:456:2;789:3", data)
+        assertEquals("String data does not match", "1:123:A42:456:2;789:3", data)
     }
 }

@@ -101,7 +101,7 @@ import org.koin.dsl.module
 
 val appModule = module {
 
-    single { Storage(get(), get(), BuildConfig.VERSION_NAME) }
+    single { Storage(get(), get(), BuildConfig.VERSION_CODE) }
 
     single {
         GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()

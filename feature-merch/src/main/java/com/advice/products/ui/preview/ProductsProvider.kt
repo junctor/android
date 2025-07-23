@@ -82,7 +82,7 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                     merchMandatoryAcknowledgement = "All sales are **CASH ONLY**. Prices include Nevada State Sales Tax.",
                     merchTaxStatement = "Prices include Nevada State Sales Tax.",
                     cart = cart,
-                    data = cart.toStringData(conference = 133, "1.7.0"),
+                    data = cart.toStringData(conference = 133, versionCode = 42),
                 )
             ).asSequence()
         }

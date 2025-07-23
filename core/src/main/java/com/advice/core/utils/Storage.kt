@@ -2,17 +2,15 @@ package com.advice.core.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariantSelection
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.shortstack.core.BuildConfig
 import timber.log.Timber
 
 class Storage(
     context: Context,
     private val gson: Gson,
-    val version: String
+    val versionCode: Int,
 ) {
 
     companion object {
