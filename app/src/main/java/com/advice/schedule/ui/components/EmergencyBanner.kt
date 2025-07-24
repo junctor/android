@@ -14,10 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.advice.core.local.Document
 
 
 @Composable
-fun EmergencyBanner(onClick: () -> Unit) {
+fun EmergencyBanner(document: Document, onClick: () -> Unit) {
     Surface(
         shape = RoundedCornerShape(0.dp),
         color = MaterialTheme.colorScheme.errorContainer,
@@ -31,7 +32,7 @@ fun EmergencyBanner(onClick: () -> Unit) {
             modifier = Modifier.padding(top = 48.dp, bottom = 32.dp),
         ) {
             Text(
-                "Emergency",
+                text = document.title,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineLarge,
@@ -40,7 +41,7 @@ fun EmergencyBanner(onClick: () -> Unit) {
             )
 
             Text(
-                "Tap for more details",
+                text = "Tap for more details",
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,

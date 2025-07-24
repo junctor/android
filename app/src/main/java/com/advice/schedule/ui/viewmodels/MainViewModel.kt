@@ -8,6 +8,7 @@ import androidx.navigation.NavDestination
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
+import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.firebase.extensions.document_cache_reads
 import com.advice.firebase.extensions.document_reads
 import com.advice.firebase.extensions.listeners_count
@@ -29,6 +30,7 @@ class MainViewModel : ViewModel(), KoinComponent {
     private val appManager by inject<AppManager>()
     private val analytics by inject<AnalyticsProvider>()
     private val storage by inject<Storage>()
+    private val documentRepository by inject<DocumentsRepository>()
 
     private val _state = MutableStateFlow(MainViewState())
     val state: Flow<MainViewState> = _state
@@ -50,8 +52,14 @@ class MainViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             // Any time the current Conference changes, update the emergency document id
             userSession.getConference().collect {
+                val emergencyDocumentId = it.emergencyDocumentId
+                val document = if (emergencyDocumentId != null) {
+                    documentRepository.get(emergencyDocumentId)
+                } else {
+                    null
+                }
                 _state.value = _state.value.copy(
-                    emergencyDocumentId = it.emergencyDocumentId
+                    emergencyDocument = document
                 )
             }
         }

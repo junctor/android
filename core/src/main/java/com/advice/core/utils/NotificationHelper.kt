@@ -13,6 +13,7 @@ import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.shortstack.core.R
 
@@ -53,11 +54,11 @@ class NotificationHelper(private val context: Context) {
         setContentIntent(getPendingIntent(event))
     }
 
-    private fun getDocumentNotification(title: String, text: String, id: Long): Notification =
+    private fun getDocumentNotification(document: Document): Notification =
         notification {
-            setContentTitle(title)
-            setContentText(text)
-            setContentIntent(getPendingIntent(id))
+            setContentTitle(document.title)
+            setContentText("Tape for more details")
+            setContentIntent(getPendingIntent(document.id))
         }
 
     private fun notification(block: NotificationCompat.Builder.() -> Unit): Notification {
@@ -114,10 +115,10 @@ class NotificationHelper(private val context: Context) {
         manager.notify(1001 + event.id.toInt(), getFeedbackReminderNotification(event))
     }
 
-    fun notifyEmergency(emergencyDocumentId: Long) {
+    fun notifyEmergency(document: Document) {
         manager.notify(
-            911 + emergencyDocumentId.toInt(),
-            getDocumentNotification("Emergency", "Tape for more details", emergencyDocumentId)
+            911 + document.id.toInt(),
+            getDocumentNotification(document)
         )
     }
 

@@ -86,9 +86,9 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                         .fillMaxSize()
                 ) {
                     // Emergency banner that pushes content down
-                    if (state.emergencyDocumentId != null) {
-                        EmergencyBanner {
-                            navController.navigate(Navigation.Document(state.emergencyDocumentId))
+                    if (state.emergencyDocument != null) {
+                        EmergencyBanner(state.emergencyDocument) {
+                            navController.navigate(Navigation.Document(state.emergencyDocument.id))
                         }
                     }
 

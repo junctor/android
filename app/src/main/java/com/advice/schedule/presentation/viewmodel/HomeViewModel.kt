@@ -7,6 +7,7 @@ import com.advice.core.local.Conference
 import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
 import com.advice.core.utils.NotificationHelper
+import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.play.AppManager
 import com.advice.schedule.data.repositories.HomeRepository
 import kotlinx.coroutines.Job
@@ -24,6 +25,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
     private val analytics by inject<AnalyticsProvider>()
     private val appManager by inject<AppManager>()
     private val notificationHelper by inject<NotificationHelper>()
+    private val documentRepository by inject<DocumentsRepository>()
 
     private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
 
@@ -54,7 +56,10 @@ class HomeViewModel : ViewModel(), KoinComponent {
                         if (id != emergencyDocumentId) {
                             emergencyDocumentId = id
                             if (id != null) {
-                                notificationHelper.notifyEmergency(id)
+                                val document = documentRepository.get(id)
+                                if (document != null) {
+                                    notificationHelper.notifyEmergency(document)
+                                }
                             }
                         }
                     }
