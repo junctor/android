@@ -26,9 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
-import com.advice.core.local.products.ProductVariant
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.EditableProduct
 import com.advice.products.ui.components.LegalLabel

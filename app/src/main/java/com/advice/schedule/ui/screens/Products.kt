@@ -2,6 +2,7 @@ package com.advice.schedule.ui.screens
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -99,6 +100,12 @@ fun ProductsSummary(context: AppCompatActivity, navController: NavHostController
         }
 
         is ProductsScreenState.Success -> {
+            LaunchedEffect(Unit) {
+                val attributes = context.window.attributes
+                attributes.screenBrightness = 1.0f
+                context.window.attributes = attributes
+            }
+
             ProductsSummaryScreen(
                 state = state.data,
                 onQuantityChanged = { id, quantity, variant ->
