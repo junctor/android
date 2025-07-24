@@ -2,6 +2,7 @@ package com.advice.schedule.ui.screens
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -88,6 +89,11 @@ fun Product(
 @Composable
 fun ProductsSummary(context: AppCompatActivity, navController: NavHostController) {
     val viewModel = viewModel<ProductsViewModel>(context)
+
+    // Storing the previous brightness for when we exit the Summary screen
+    val attributes = context.window.attributes
+    val previousBrightness = attributes.screenBrightness
+
     when (val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value) {
         ProductsScreenState.Loading -> {
             ProgressSpinner()
@@ -100,10 +106,18 @@ fun ProductsSummary(context: AppCompatActivity, navController: NavHostController
         }
 
         is ProductsScreenState.Success -> {
+            // Setting screen brightness to max when viewing Summary with QR Code
             LaunchedEffect(Unit) {
-                val attributes = context.window.attributes
                 attributes.screenBrightness = 1.0f
                 context.window.attributes = attributes
+            }
+
+            // Resetting screen brightness to previous brightness on exit
+            DisposableEffect(Unit) {
+                onDispose {
+                    attributes.screenBrightness = previousBrightness
+                    context.window.attributes = attributes
+                }
             }
 
             ProductsSummaryScreen(
