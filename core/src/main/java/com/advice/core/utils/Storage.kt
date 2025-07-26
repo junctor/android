@@ -3,6 +3,7 @@ package com.advice.core.utils
 import android.content.Context
 import android.content.SharedPreferences
 import com.advice.core.local.products.ProductVariantSelection
+import com.advice.core.network.CachedFeedbackRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
@@ -188,5 +189,34 @@ class Storage(
             )
             return emptyList()
         }
+    }
+
+    fun storeFeedbackRequest(cachedFeedbackRequest: CachedFeedbackRequest) {
+        val cache = getCachedFeedbackRequest() + cachedFeedbackRequest
+
+        preferences.edit().putString("cached_feedback_requests", gson.toJson(cache)).apply()
+    }
+
+    fun getCachedFeedbackRequest(): List<CachedFeedbackRequest> {
+        val json = preferences.getString("cached_feedback_requests", null) ?: return emptyList()
+        try {
+            val list = gson.fromJson<List<CachedFeedbackRequest>>(
+                json,
+                object : TypeToken<List<CachedFeedbackRequest>>() {}.type
+            )
+            return list
+        } catch (ex: Exception) {
+            Timber.e(
+                "Could not convert stored cached feedback request to list",
+                ex
+            )
+            return emptyList()
+        }
+    }
+
+    fun removeCachedFeedbackRequest(request: CachedFeedbackRequest) {
+        val cache = getCachedFeedbackRequest().toMutableList().remove(request)
+
+        preferences.edit().putString("cached_feedback_requests", gson.toJson(cache)).apply()
     }
 }

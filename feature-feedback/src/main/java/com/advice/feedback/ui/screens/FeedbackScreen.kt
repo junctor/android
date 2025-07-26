@@ -3,6 +3,7 @@ package com.advice.feedback.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -29,66 +30,51 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FeedbackScreen(
+fun FeedbackContent(
     form: FeedbackForm,
     onValueChanged: (FeedbackItem, String) -> Unit,
-    onBackPressed: () -> Unit,
     onSubmitPressed: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Box {
-        Scaffold(topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(form.title)
-                },
-                navigationIcon = {
-                    BackButton(onClick = onBackPressed)
-                },
-            )
-        }) {
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-            ) {
-                form.items.forEach { item ->
-                    when (val type = item.type) {
-                        FeedbackType.DisplayOnly -> DisplayOnlyItem(item.caption)
-                        is FeedbackType.SelectOne -> SelectOneItem(
-                            item.caption,
-                            type.options,
-                            type.selection
-                        ) {
-                            onValueChanged(item, it.toString())
-                        }
-
-                        is FeedbackType.MultiSelect -> MultiSelectItem(
-                            item.caption,
-                            type.options
-                        ) {
-                            onValueChanged(item, it.toString())
-                        }
-
-                        is FeedbackType.TextBox -> TextBoxItem(item.caption, type.value) {
-                            onValueChanged(item, it)
-                        }
-                    }
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        form.items.forEach { item ->
+            when (val type = item.type) {
+                FeedbackType.DisplayOnly -> DisplayOnlyItem(item.caption)
+                is FeedbackType.SelectOne -> SelectOneItem(
+                    item.caption,
+                    type.options,
+                    type.selection
+                ) {
+                    onValueChanged(item, it.toString())
                 }
 
-                val label = if (form.hasUserData) "Submit" else "Please enter feedback"
-                Button(
-                    onClick = onSubmitPressed,
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = form.hasUserData,
-                    shape = roundedCornerShape,
+                is FeedbackType.MultiSelect -> MultiSelectItem(
+                    item.caption,
+                    type.options
                 ) {
-                    Text(label)
+                    onValueChanged(item, it.toString())
+                }
+
+                is FeedbackType.TextBox -> TextBoxItem(item.caption, type.value) {
+                    onValueChanged(item, it)
                 }
             }
+        }
+
+        val label = if (form.hasUserData) "Submit" else "Please enter feedback"
+        Button(
+            onClick = onSubmitPressed,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = form.hasUserData,
+            shape = roundedCornerShape,
+        ) {
+            Text(label)
         }
     }
 }
@@ -99,10 +85,9 @@ private fun FeedbackScreenPreview(
     @PreviewParameter(FeedbackFormProvider::class) feedback: FeedbackForm,
 ) {
     ScheduleTheme {
-        FeedbackScreen(
+        FeedbackContent(
             form = feedback,
             onValueChanged = { _, _ -> },
-            onBackPressed = {},
             onSubmitPressed = {},
         )
     }

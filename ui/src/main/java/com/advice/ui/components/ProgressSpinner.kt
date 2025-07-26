@@ -10,8 +10,8 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun ProgressSpinner() {
-    Box(modifier = Modifier.fillMaxSize()) {
+fun ProgressSpinner(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     }
 }

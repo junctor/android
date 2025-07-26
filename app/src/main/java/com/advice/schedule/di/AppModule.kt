@@ -6,6 +6,7 @@ import androidx.work.WorkManager
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.utils.NotificationHelper
 import com.advice.core.utils.Storage
+import com.advice.core.utils.ToastManager
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.SharedPreferencesBookmarkDataSource
 import com.advice.data.session.UserSession
@@ -135,6 +136,7 @@ val appModule = module {
 
     // reminder
     single { NotificationHelper(get()) }
+    single { ToastManager() }
     single { ReminderManager(get()) }
 
     // navigation

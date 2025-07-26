@@ -4,11 +4,16 @@ import com.advice.core.local.feedback.FeedbackForm
 
 sealed class FeedbackState {
     data object Loading : FeedbackState()
-    data class Success(
+
+    data class Content(
         val feedback: FeedbackForm,
         val showingDiscardPopup: Boolean = false,
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isComplete: Boolean = false,
+        val errorMessage: String? = null,
     ) : FeedbackState()
 
-    data object Error : FeedbackState()
+    data class Error(
+        val exception: Exception,
+    ) : FeedbackState()
 }

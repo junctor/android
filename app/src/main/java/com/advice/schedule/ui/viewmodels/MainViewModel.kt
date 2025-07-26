@@ -1,14 +1,19 @@
 package com.advice.schedule.ui.viewmodels
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.advice.analytics.core.AnalyticsProvider
+import com.advice.core.network.NetworkResponse
+import com.advice.core.utils.Response
 import com.advice.core.utils.Storage
+import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
 import com.advice.documents.data.repositories.DocumentsRepository
+import com.advice.feedback.network.FeedbackRepository
 import com.advice.firebase.extensions.document_cache_reads
 import com.advice.firebase.extensions.document_reads
 import com.advice.firebase.extensions.listeners_count
@@ -31,6 +36,8 @@ class MainViewModel : ViewModel(), KoinComponent {
     private val analytics by inject<AnalyticsProvider>()
     private val storage by inject<Storage>()
     private val documentRepository by inject<DocumentsRepository>()
+    private val feedbackRepository by inject<FeedbackRepository>()
+    private val toastManager by inject<ToastManager>()
 
     private val _state = MutableStateFlow(MainViewState())
     val state: Flow<MainViewState> = _state
@@ -46,6 +53,18 @@ class MainViewModel : ViewModel(), KoinComponent {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             if (it.isSuccessful) {
                 Timber.d("FCM Token: ${it.result}")
+            }
+        }
+
+        // Attempting to submit any feedback that previously failed
+        viewModelScope.launch {
+            val cachedFeedbackRequests = storage.getCachedFeedbackRequest()
+            for (request in cachedFeedbackRequests) {
+                val response =
+                    feedbackRepository.submitFeedback(request.contentId, request.feedbackForm)
+                if (response is NetworkResponse.Success) {
+                    storage.removeCachedFeedbackRequest(request)
+                }
             }
         }
 
@@ -118,6 +137,15 @@ class MainViewModel : ViewModel(), KoinComponent {
             "12h"
         }
         analytics.setUserProperty("time_format", format)
+
+        viewModelScope.launch {
+            toastManager.messages.collect {
+                if (it != null) {
+                    Toast.makeText(context, it.text, it.duration).show()
+                    toastManager.clear()
+                }
+            }
+        }
     }
 
     fun onLinkOpen(url: String) {
