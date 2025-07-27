@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ import com.advice.ui.utils.parseColor
 fun CategoryView(
     tag: Tag,
     size: CategorySize = CategorySize.Small,
+    color: Color = MaterialTheme.colorScheme.onSurface,
     hasIcon: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
@@ -79,7 +81,7 @@ fun CategoryView(
         }
         Text(
             tag.label,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = color,
             fontWeight = fontWeight,
             style = style,
             maxLines = 1,

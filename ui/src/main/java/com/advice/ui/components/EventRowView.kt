@@ -49,7 +49,8 @@ fun EventRow(
             modifier
                 .clickable {
                     onEventPressed()
-                }.fillMaxWidth(),
+                }
+                .fillMaxWidth(),
     ) {
         CategoryDash(event.types)
         Spacer(Modifier.width(24.dp))
@@ -84,7 +85,8 @@ fun EventRowView(
             modifier
                 .clickable {
                     onEventPressed()
-                }.fillMaxWidth(),
+                }
+                .fillMaxWidth(),
     ) {
         CategoryDash(tags)
         Text(
@@ -102,9 +104,10 @@ fun EventRowView(
             Location(location)
             Categories(tags)
         }
-        BookmarkButton(isBookmarked = isBookmarked) {
-            onBookmark(it)
-        }
+        BookmarkButton(
+            isBookmarked = isBookmarked,
+            onCheckChange = { onBookmark(it) },
+        )
     }
 }
 

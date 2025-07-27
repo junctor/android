@@ -1,5 +1,8 @@
 package com.advice.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -12,13 +15,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun BookmarkButton(
     isBookmarked: Boolean,
     onCheckChange: (Boolean) -> Unit,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     var state by remember(isBookmarked) {
         mutableStateOf(isBookmarked)
@@ -35,31 +42,26 @@ fun BookmarkButton(
         colors =
             IconButtonDefaults.iconToggleButtonColors(
                 checkedContentColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onSurface,
+                contentColor = contentColor,
             ),
     ) {
         Icon(icon, contentDescription = null)
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun BookmarkButtonPreview() {
     ScheduleTheme {
-        BookmarkButton(
-            isBookmarked = false,
-            onCheckChange = {},
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun BookmarkButtonCheckedPreview() {
-    ScheduleTheme {
-        BookmarkButton(
-            isBookmarked = true,
-            onCheckChange = {},
-        )
+        Row(Modifier.background(MaterialTheme.colorScheme.surface)) {
+            BookmarkButton(
+                isBookmarked = false,
+                onCheckChange = {},
+            )
+            BookmarkButton(
+                isBookmarked = true,
+                onCheckChange = {},
+            )
+        }
     }
 }

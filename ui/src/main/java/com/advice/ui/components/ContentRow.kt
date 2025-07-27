@@ -45,9 +45,10 @@ fun ContentRow(
             Categories(tags)
         }
         if (canBookmark) {
-            BookmarkButton(isBookmarked = isBookmarked) {
-                onBookmark(it)
-            }
+            BookmarkButton(
+                isBookmarked = isBookmarked,
+                onCheckChange = { onBookmark(it) },
+            )
         }
     }
 }

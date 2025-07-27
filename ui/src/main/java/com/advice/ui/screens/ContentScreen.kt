@@ -140,17 +140,23 @@ private fun TopBar(
             Text(
                 title,
                 modifier = Modifier.alpha(alpha.value),
+                color = Color.White,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
         },
         navigationIcon = {
-            BackButton(onBackPressed)
+            BackButton(
+                onClick = onBackPressed,
+                tint = Color.White,
+            )
         },
         actions = {
-            BookmarkButton(isBookmarked = isBookmarked) {
-                onBookmark(content, session, it)
-            }
+            BookmarkButton(
+                isBookmarked = isBookmarked,
+                onCheckChange = { onBookmark(content, session, it) },
+                contentColor = Color.White,
+            )
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = getContainerColour(content).copy(alpha = alpha.value),
@@ -198,6 +204,7 @@ private fun HeaderSection(
                 CategoryView(
                     categories.first(),
                     size = CategorySize.Large,
+                    color = Color.White,
                     hasIcon = false,
                     modifier = Modifier.clickable { onTagClicked(categories.first()) },
                 )
@@ -414,9 +421,10 @@ private fun SessionRow(
                 onSessionClicked(session)
             }
         )
-        BookmarkButton(isBookmarked = session.isBookmarked) {
-            onBookmark(it)
-        }
+        BookmarkButton(
+            isBookmarked = session.isBookmarked,
+            onCheckChange = { onBookmark(it) },
+        )
     }
 }
 
