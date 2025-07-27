@@ -115,30 +115,34 @@ private fun FeedbackScreen(
                 ) {
                     onBackPressed()
                 }
-                return@Scaffold
-            }
-            Column {
-                FeedbackContent(
-                    form = state.feedback,
-                    onValueChanged = onValueChanged,
-                    onSubmitPressed = onSubmitContent,
-                )
-            }
-
-            if (state.isLoading) {
-                ProgressSpinner(
-                    modifier = Modifier.background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
-                )
-            }
-
-            if (state.showingDiscardPopup) {
-                PopupContainer(
-                    onDismiss = onCancelDiscardPressed,
-                ) {
-                    DiscardPopup(
-                        onDiscard = onDiscardPressed,
-                        onCancel = onCancelDiscardPressed,
+            } else {
+                Column {
+                    FeedbackContent(
+                        form = state.feedback,
+                        onValueChanged = onValueChanged,
+                        onSubmitPressed = onSubmitContent,
                     )
+                }
+
+                if (state.isLoading) {
+                    ProgressSpinner(
+                        modifier = Modifier.background(
+                            MaterialTheme.colorScheme.background.copy(
+                                alpha = 0.5f
+                            )
+                        )
+                    )
+                }
+
+                if (state.showingDiscardPopup) {
+                    PopupContainer(
+                        onDismiss = onCancelDiscardPressed,
+                    ) {
+                        DiscardPopup(
+                            onDiscard = onDiscardPressed,
+                            onCancel = onCancelDiscardPressed,
+                        )
+                    }
                 }
             }
         }
