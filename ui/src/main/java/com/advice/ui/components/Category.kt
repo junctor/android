@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
@@ -96,12 +98,14 @@ private fun AnimatedCircleTextView(
                             radius = circleSizePixels,
                         )
                     }
-                }.padding(4.dp),
+                }
+                .padding(4.dp),
         contentAlignment = Alignment.CenterStart,
     ) {
         Text(
             text = text,
             modifier = Modifier.padding(start = 12.dp, end = 12.dp),
+            color = if (selected) Color.White else Color.Unspecified,
         )
     }
 }
@@ -112,9 +116,11 @@ private fun CategoryPreview() {
     val tag = createTag(label = "Talk", color = "#FF0066")
 
     ScheduleTheme {
-        Column {
-            Category(tag, onClick = {})
-            Category(tag.copy(isSelected = true), onClick = {})
+        Surface {
+            Column {
+                Category(tag, onClick = {})
+                Category(tag.copy(isSelected = true), onClick = {})
+            }
         }
     }
 }
