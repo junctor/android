@@ -72,7 +72,7 @@ fun generateQRCode(data: String): Bitmap {
     val height = 400
     val hintMap: MutableMap<EncodeHintType, Any> = EnumMap(EncodeHintType::class.java)
     hintMap[EncodeHintType.CHARACTER_SET] = "UTF-8"
-    hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.L
+    hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.M
 
     val qrCodeWriter = QRCodeWriter()
     val bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, width, height, hintMap)
