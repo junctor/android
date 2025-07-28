@@ -149,7 +149,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         merchMandatoryAcknowledgement: String? = this.merchMandatoryAcknowledgement,
         merchTaxStatement: String? = this.merchTaxStatement,
         canAdd: Boolean = this.canAdd,
-        selections: List<ProductVariantSelection> = emptyList(),
+        selections: List<ProductVariantSelection> = this.cart.getSelections(),
     ) {
         val filter = productVariantTags.flatMap { it.tags }.filter { it.isSelected }
 
