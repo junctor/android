@@ -65,7 +65,7 @@ fun Feedback(navController: NavController, id: Long, content: Long) {
             FeedbackScreen(
                 state = state,
                 onBackPressed = {
-                    if (state.feedback.hasUserData) {
+                    if (!state.isComplete && state.feedback.hasUserData) {
                         viewModel.onBackPressed()
                     } else {
                         navController.onBackPressed()
