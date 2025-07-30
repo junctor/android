@@ -61,12 +61,12 @@ class FirebaseTagsDataSource(
                 .map {
                     it.copy(
                         tags =
-                        it.tags.sortedWith(
-                            compareBy(
-                                { it.sortOrder },
-                                { it.label },
+                            it.tags.sortedWith(
+                                compareBy(
+                                    { it.sortOrder },
+                                    { it.label },
+                                ),
                             ),
-                        ),
                     )
                 }
 
@@ -81,17 +81,4 @@ class FirebaseTagsDataSource(
             }
             temp
         }
-
-    override suspend fun fetch(conference: String): List<TagType> {
-        val snapshot = firestore
-            .collection("conferences")
-            .document(conference)
-            .collection("tagtypes")
-            .get(Source.CACHE)
-            .await()
-
-        return snapshot.toObjectsOrEmpty(FirebaseTagType::class.java)
-            .sortedBy { it.sortOrder }
-            .mapNotNull { it.toTagType() }
-    }
 }

@@ -8,7 +8,7 @@ class FeedbackRepository(
     private val feedbackDataSource: FeedbackDataSource,
 ) {
     suspend fun getFeedbackForm(id: Long): FeedbackForm? {
-        val forms = feedbackDataSource.get().first().toResultOrNull() ?: emptyList()
+        val forms = feedbackDataSource.get().first()
         return forms.find { it.id == id }
     }
 }

@@ -5,7 +5,6 @@ import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
 import com.advice.core.local.Event
-import com.advice.core.local.FlowResult
 import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Speaker
@@ -21,7 +20,6 @@ import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toContents
-import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseContent
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,7 +36,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 class FirebaseContentDataSource(
@@ -86,7 +83,7 @@ class FirebaseContentDataSource(
             val tags = array[1] as List<TagType>
             val speakers = array[2] as List<Speaker>
             val locations = array[3] as List<Location>
-            val feedbackforms = array[4] as FlowResult<List<FeedbackForm>>
+            val feedbackforms = array[4] as List<FeedbackForm>
             val firebaseContent = array[5] as List<FirebaseContent>
             val bookmarks = array[6] as List<Bookmark>
 
@@ -114,7 +111,7 @@ class FirebaseContentDataSource(
         tags: List<TagType>,
         speakers: List<Speaker>,
         locations: List<Location>,
-        feedbackforms: FlowResult<List<FeedbackForm>>,
+        feedbackforms: List<FeedbackForm>,
         firebaseContent: List<FirebaseContent>,
         bookmarks: List<Bookmark>
     ): List<Content>? {
@@ -130,7 +127,7 @@ class FirebaseContentDataSource(
                 speakers = speakers,
                 bookmarkedEvents = bookmarks,
                 locations = locations.flatten(),
-                feedbackforms = feedbackforms.toResultOrNull() ?: emptyList(),
+                feedbackforms = feedbackforms,
             )
         }
 
@@ -156,33 +153,7 @@ class FirebaseContentDataSource(
     }
 
     override suspend fun getContent(conference: String, contentId: Long): Content? {
-        val tags = tagsDataSource.fetch(conference)
-        val speakers = speakersDataSource.fetch(conference)
-        val locations = locationsDataSource.fetch(conference).flatten()
-        val bookmarks = bookmarkedEventsDataSource.get().first()
-        val feedbackforms = feedbackDataSource.fetch(conference)
-
-        val firebaseContent = getFirebaseContentOrNull(conference, contentId)
-        if (firebaseContent == null) {
-            Timber.e("Content not found: $contentId")
-            return null
-        }
-
-        val content = firebaseContent.toContents(
-            code = conference,
-            tags = tags,
-            speakers = speakers,
-            bookmarkedEvents = bookmarks,
-            locations = locations,
-            feedbackforms = feedbackforms,
-        )
-
-        if (content == null) {
-            Timber.e("Could not map FirebaseContent to Content: $contentId")
-            return null
-        }
-
-        return content
+        return _conferenceContent.first().content.find { it.conference == conference && it.id == contentId }
     }
 
     override suspend fun getEvent(conference: String, contentId: Long, sessionId: Long): Event? {
@@ -202,19 +173,6 @@ class FirebaseContentDataSource(
         return Event(content, session)
     }
 
-    private suspend fun getFirebaseContentOrNull(
-        conference: String,
-        id: Long,
-    ): FirebaseContent? {
-        val snapshot =
-            firestore.collection("conferences")
-                .document(conference)
-                .collection("content")
-                .document(id.toString())
-                .get()
-                .await()
-        return snapshot.toObjectOrNull(FirebaseContent::class.java)
-    }
 }
 
 // todo: this needs to be recursive.

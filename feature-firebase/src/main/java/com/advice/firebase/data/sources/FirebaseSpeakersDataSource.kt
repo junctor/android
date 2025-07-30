@@ -53,19 +53,6 @@ class FirebaseSpeakersDataSource(
 
     override fun get(): Flow<List<Speaker>> = speakers
 
-    override suspend fun fetch(conference: String): List<Speaker> {
-        val snapshot = firestore.collection("conferences")
-            .document(conference)
-            .collection("speakers")
-            .get(Source.CACHE)
-            .await()
-
-        return snapshot.toObjectsOrEmpty(FirebaseSpeaker::class.java)
-            .filter { !it.hidden || userSession.isDeveloper }
-            .mapNotNull { it.toSpeaker() }
-            .sortedBy { it.name.lowercase(Locale.getDefault()) }
-    }
-
     override suspend fun get(id: Long): Speaker? {
         val conference = userSession.currentConference ?: return null
 

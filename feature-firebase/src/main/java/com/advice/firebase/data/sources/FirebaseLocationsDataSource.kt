@@ -16,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -60,18 +61,5 @@ class FirebaseLocationsDataSource(
             val children = getChildrenNodes(locations, it.id)
             it.toLocation(children)
         }
-    }
-
-    override suspend fun fetch(conference: String): List<Location> {
-        val snapshot = firestore.collection("conferences")
-            .document(conference)
-            .collection("locations")
-            .get(Source.CACHE)
-            .await()
-
-        val locations = snapshot.toObjectsOrEmpty(FirebaseLocation::class.java)
-            .sortedBy { it.hierExtentLeft }
-
-        return getChildrenNodes(locations)
     }
 }
