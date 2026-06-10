@@ -37,6 +37,7 @@ dependencies {
 
     implementation(libs.google.play.update)
     implementation(libs.google.play.update.ktx)
+    implementation(libs.google.play.age.signals)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

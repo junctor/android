@@ -24,6 +24,7 @@ timber = "5.0.1"
 coil = "2.7.0"
 google = "4.4.2"
 appUpdate = "2.1.0"
+ageSignals = "0.0.3"
 firebaseGradlePlugin = "3.0.2"
 firebaseBom = "33.1.2"
 firebaseAnalytics = "22.0.2"
@@ -65,6 +66,7 @@ androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 google-play-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
 google-play-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
+google-play-age-signals = { module = "com.google.android.play:age-signals", version.ref = "ageSignals"}
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }

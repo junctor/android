@@ -9,6 +9,7 @@ import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Speaker
 import com.advice.core.local.TagType
+import com.advice.core.local.User
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
@@ -72,6 +73,7 @@ class FirebaseContentDataSource(
     private val _conferenceContent =
         combine(
             userSession.getConference(),
+            userSession.user,
             tagsDataSource.get(),
             speakersDataSource.get(),
             locationsDataSource.get(),
@@ -80,15 +82,17 @@ class FirebaseContentDataSource(
             bookmarkedEventsDataSource.get(),
         ) { array ->
             val conference = array[0] as Conference
-            val tags = array[1] as List<TagType>
-            val speakers = array[2] as List<Speaker>
-            val locations = array[3] as List<Location>
-            val feedbackforms = array[4] as List<FeedbackForm>
-            val firebaseContent = array[5] as List<FirebaseContent>
-            val bookmarks = array[6] as List<Bookmark>
+            val user = array[1] as User
+            val tags = array[2] as List<TagType>
+            val speakers = array[3] as List<Speaker>
+            val locations = array[4] as List<Location>
+            val feedbackforms = array[5] as List<FeedbackForm>
+            val firebaseContent = array[6] as List<FirebaseContent>
+            val bookmarks = array[7] as List<Bookmark>
 
             val content = getConferenceContent(
                 conference = conference,
+                user = user,
                 tags = tags,
                 speakers = speakers,
                 locations = locations,
@@ -108,6 +112,7 @@ class FirebaseContentDataSource(
 
     private fun getConferenceContent(
         conference: Conference,
+        user: User,
         tags: List<TagType>,
         speakers: List<Speaker>,
         locations: List<Location>,
@@ -130,7 +135,7 @@ class FirebaseContentDataSource(
                 feedbackforms = feedbackforms,
             )
         }
-
+        // todo: filter if content is mature content and user is not allowed to view mature content
         return content
     }
 

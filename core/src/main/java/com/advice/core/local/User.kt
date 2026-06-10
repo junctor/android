@@ -1,3 +1,3 @@
 package com.advice.core.local
 
-data class User(val id: String)
+data class User(val id: String, val isAllowedMatureContent: Boolean)
