@@ -93,5 +93,12 @@ private fun ContentRowPreview() {
             onBookmark = {},
             canBookmark = false,
         )
+        ContentRow(
+            title = "DEF CON 103",
+            tags = emptyList(),
+            isBookmarked = true,
+            onContentPressed = {},
+            onBookmark = {},
+        )
     }
 }

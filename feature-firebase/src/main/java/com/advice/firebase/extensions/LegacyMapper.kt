@@ -153,11 +153,6 @@ fun FirebaseContent.toContents(
         }.sortedWith(compareBy({ it.first.sortOrder }, { it.second?.name }))
             .mapNotNull { it.second }
 
-        if (types.isEmpty()) {
-            Timber.e("Could not find tags for content: $title")
-            return null
-        }
-
         val newSessions = sessions.mapNotNull { session ->
             // if we cannot find the location, ignore this session
             val location = locations.find { it.id == session.locationId }

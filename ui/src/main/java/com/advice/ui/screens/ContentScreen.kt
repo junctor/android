@@ -165,6 +165,10 @@ private fun TopBar(
 }
 
 private fun getContainerColour(content: Content): Color {
+    if (content.types.isEmpty()) {
+        return Color.Black
+    }
+
     return parseColor(content.types.first().color)
 }
 
@@ -176,7 +180,11 @@ private fun HeaderSection(
     onTagClicked: (Tag) -> Unit,
     onLocationClicked: (Location) -> Unit,
 ) {
-    val color = parseColor(categories.first().color)
+    val color = if (categories.isEmpty()) {
+        Color.Black
+    } else {
+        parseColor(categories.first().color)
+    }
     Column(
         Modifier
             .fillMaxWidth()
@@ -200,14 +208,16 @@ private fun HeaderSection(
                 style = MaterialTheme.typography.headlineLarge,
             )
 
-            Box(Modifier.padding(vertical = 8.dp)) {
-                CategoryView(
-                    categories.first(),
-                    size = CategorySize.Large,
-                    color = Color.White,
-                    hasIcon = false,
-                    modifier = Modifier.clickable { onTagClicked(categories.first()) },
-                )
+            if(categories.isNotEmpty()) {
+                Box(Modifier.padding(vertical = 8.dp)) {
+                    CategoryView(
+                        categories.first(),
+                        size = CategorySize.Large,
+                        color = Color.White,
+                        hasIcon = false,
+                        modifier = Modifier.clickable { onTagClicked(categories.first()) },
+                    )
+                }
             }
 
             if (session != null) {
@@ -446,7 +456,7 @@ private fun EventScreenPreview(
 ) {
     ScheduleTheme {
         ContentScreen(
-            content = content,
+            content = content.copy(types = emptyList()),
             session = null,
             relatedContent = emptyList(),
             onBookmark = { _, _, _ -> },
