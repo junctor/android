@@ -119,9 +119,16 @@ class FirebaseUserSession(
 
         val list = conferences.sortedBy { it.start }
 
-        val defcon = list.find { "DEFCON" in it.code && !it.hasFinished }
-        if (defcon != null) {
-            return defcon
+        // Grabbing the latest DEFCON and setting it as the active conference if it's not complete yet.
+        val latestDefcon = list
+            .filter { "DEFCON" in it.code }
+            .maxBy {
+                val regex = Regex("DEFCON(\\d{2})").find(it.code)
+                regex?.groups?.firstOrNull()?.value?.toIntOrNull() ?: -1
+            }
+
+        if (!latestDefcon.hasFinished) {
+            return latestDefcon
         }
 
         return list.firstOrNull { !it.hasFinished } ?: conferences.lastOrNull()
