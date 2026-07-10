@@ -22,14 +22,20 @@ class AppManager(context: Context) {
         }
 
         return suspendCoroutine {
-            appUpdateManager.appUpdateInfo
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        it.resumeWith(Result.success(task.result.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE))
-                    } else {
-                        it.resumeWith(Result.success(false))
+            try {
+                appUpdateManager.appUpdateInfo
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            it.resumeWith(Result.success(task.result.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE))
+                        } else {
+                            it.resumeWith(Result.success(false))
+                        }
                     }
-                }
+            } catch (ex: SecurityException) {
+                it.resumeWith(Result.success(false))
+            } catch (ex: Exception) {
+                it.resumeWith(Result.success(false))
+            }
         }
     }
 
@@ -38,15 +44,19 @@ class AppManager(context: Context) {
             return
         }
 
-        appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                appUpdateManager.startUpdateFlowForResult(
-                    appUpdateInfo,
-                    AppUpdateType.FLEXIBLE,
-                    activity,
-                    requestCode
-                )
+        try {
+            appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.FLEXIBLE,
+                        activity,
+                        requestCode
+                    )
+                }
             }
+        } catch (ex: Exception) {
+            // ignore
         }
     }
 
@@ -55,17 +65,56 @@ class AppManager(context: Context) {
             return true
         }
 
+        return suspendCoroutine { routine ->
+            try {
+                // Request an age signals check
+                ageSignalsManager
+                    .checkAgeSignals(AgeSignalsRequest.builder().build())
+                    .addOnSuccessListener { ageSignalsResult ->
+                        val verified = ageSignalsResult.userStatus() == AgeSignalsVerificationStatus.VERIFIED
+                        val minAge = ageSignalsResult.ageLower() ?: 0
+                        // Actual 'mature content' threshold likely varies by jurisdiction
+                        routine.resumeWith(Result.success(verified && minAge >= 18))
+                    }
+                    .addOnFailureListener {
+                        routine.resumeWith(Result.failure(it))
+                    }
+            } catch (ex: SecurityException) {
+                routine.resumeWith(Result.success(false))
+            } catch (ex: Exception) {
+                routine.resumeWith(Result.failure(ex))
+            }
+        }
+    }
+
+    suspend fun lowerAge(): Int {
+        if (BuildConfig.DEBUG) {
+            return 18
+        }
 
         return suspendCoroutine { routine ->
-            // Request an age signals check
-            ageSignalsManager
-                .checkAgeSignals(AgeSignalsRequest.builder().build())
-                .addOnSuccessListener { ageSignalsResult ->
-                    routine.resumeWith(Result.success(ageSignalsResult.userStatus() == AgeSignalsVerificationStatus.VERIFIED))
-                }
-                .addOnFailureListener {
-                    routine.resumeWith(Result.failure(it))
-                }
+            try {
+                // Request an age signals check
+                ageSignalsManager
+                    .checkAgeSignals(AgeSignalsRequest.builder().build())
+                    .addOnSuccessListener { ageSignalsResult ->
+
+                        if (ageSignalsResult.userStatus() == AgeSignalsVerificationStatus.VERIFIED) {
+                            // Get the age lower bound
+                            routine.resumeWith(Result.success(ageSignalsResult.ageLower() ?: 0))
+                        } else {
+                            // Do something else if the user is DECLARED, SUPERVISED, etc.
+                            routine.resumeWith(Result.success(0))
+                        }
+                    }
+                    .addOnFailureListener {
+                        routine.resumeWith(Result.failure(it))
+                    }
+            } catch (ex: SecurityException) {
+                routine.resumeWith(Result.success(0))
+            } catch (ex: Exception) {
+                routine.resumeWith(Result.failure(ex))
+            }
         }
     }
 }

@@ -69,11 +69,12 @@ class FirebaseUserSession(
             try {
                 val it = auth.signInAnonymously().await()
                 val isAllowedMatureContent = appManager.isAllowedMatureContent()
+                val lowerAge = appManager.lowerAge()
                 val user = it.user
                 if (user != null) {
                     Timber.d("User uid: ${user.uid}")
                     _user.value =
-                        User(id = user.uid, isAllowedMatureContent = isAllowedMatureContent)
+                        User(id = user.uid, isAllowedMatureContent = isAllowedMatureContent, lowerAge = lowerAge)
                 } else {
                     crashlytics.log("user cannot be signed in")
                     Timber.e("User could not be signed in")

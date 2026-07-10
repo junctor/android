@@ -126,7 +126,7 @@ class FirebaseContentDataSource(
         }
 
         val content = firebaseContent.mapNotNull { firebaseItem ->
-            if (!user.isAllowedMatureContent && (firebaseItem.visibleAgeMin ?: 0) >= 18) {
+            if ((firebaseItem.visibleAgeMin ?: 0) > user.lowerAge) {
                 return@mapNotNull null
             }
             firebaseItem.toContents(
