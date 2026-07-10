@@ -125,8 +125,11 @@ class FirebaseContentDataSource(
             return null
         }
 
-        val content = firebaseContent.mapNotNull {
-            it.toContents(
+        val content = firebaseContent.mapNotNull { firebaseItem ->
+            if (!user.isAllowedMatureContent && (firebaseItem.visibleAgeMin ?: 0) >= 18) {
+                return@mapNotNull null
+            }
+            firebaseItem.toContents(
                 code = conference.code,
                 tags = tags,
                 speakers = speakers,
@@ -135,7 +138,6 @@ class FirebaseContentDataSource(
                 feedbackforms = feedbackforms,
             )
         }
-        // todo: filter if content is mature content and user is not allowed to view mature content
         return content
     }
 

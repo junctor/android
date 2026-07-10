@@ -37,4 +37,19 @@ data class FirebaseOrganization(
     @get:PropertyName("tag_ids")
     @set:PropertyName("tag_ids")
     var tagIds: List<Long> = emptyList(),
+    @get:PropertyName("documents")
+    @set:PropertyName("documents")
+    var documents: List<Map<String, String>> = emptyList(),
+    @get:PropertyName("people")
+    @set:PropertyName("people")
+    var people: List<Map<String, String>> = emptyList(),
+    @get:PropertyName("logo")
+    @set:PropertyName("logo")
+    var logo: FirebaseMedia? = null,
+    @get:PropertyName("updated_at")
+    @set:PropertyName("updated_at")
+    var updatedAt: String? = null,
+    @get:PropertyName("updated_tsz")
+    @set:PropertyName("updated_tsz")
+    var updatedTsz: String? = null,
 ) : Parcelable

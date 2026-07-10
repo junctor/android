@@ -24,4 +24,7 @@ data class FirebaseTag(
     @get:PropertyName("sort_order")
     @set:PropertyName("sort_order")
     var sortOrder: Int = 0,
+    @get:PropertyName("tag_type_id")
+    @set:PropertyName("tag_type_id")
+    var tagTypeId: Long? = null,
 ) : Parcelable

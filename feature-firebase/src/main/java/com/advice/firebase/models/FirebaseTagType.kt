@@ -30,4 +30,10 @@ data class FirebaseTagType(
     @get:PropertyName("tags")
     @set:PropertyName("tags")
     var tags: List<FirebaseTag> = emptyList(),
+    @get:PropertyName("uuid")
+    @set:PropertyName("uuid")
+    var uuid: String? = null,
+    @get:PropertyName("well_known_uuid")
+    @set:PropertyName("well_known_uuid")
+    var wellKnownUuid: String? = null,
 )

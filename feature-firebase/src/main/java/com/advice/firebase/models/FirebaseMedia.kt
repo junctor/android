@@ -36,4 +36,10 @@ data class FirebaseMedia(
     @get:PropertyName("url")
     @set:PropertyName("url")
     var url: String = "",
+    @get:PropertyName("asset_uuid")
+    @set:PropertyName("asset_uuid")
+    var assetUuid: String? = null,
+    @get:PropertyName("orga_id")
+    @set:PropertyName("orga_id")
+    var orgaId: Long? = null,
 ) : Parcelable

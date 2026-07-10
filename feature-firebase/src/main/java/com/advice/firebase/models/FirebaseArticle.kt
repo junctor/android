@@ -28,4 +28,7 @@ data class FirebaseArticle(
     @get:PropertyName("hidden")
     @set:PropertyName("hidden")
     var hidden: Boolean = false,
+    @get:PropertyName("updated_at_str")
+    @set:PropertyName("updated_at_str")
+    var updatedAtStr: String? = null,
 )

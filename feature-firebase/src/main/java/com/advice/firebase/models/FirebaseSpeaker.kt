@@ -63,4 +63,7 @@ data class FirebaseSpeaker(
     @get:PropertyName("hidden")
     @set:PropertyName("hidden")
     var hidden: Boolean = false,
+    @get:PropertyName("avatar")
+    @set:PropertyName("avatar")
+    var avatar: FirebaseMedia? = null,
 ) : Parcelable

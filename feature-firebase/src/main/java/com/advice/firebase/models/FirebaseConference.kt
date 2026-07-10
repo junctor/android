@@ -113,4 +113,7 @@ data class FirebaseConference(
     @get:PropertyName("updated_at")
     @set:PropertyName("updated_at")
     var updatedAt: Timestamp = Timestamp.now(),
+    @get:PropertyName("media")
+    @set:PropertyName("media")
+    var media: Map<String, FirebaseConferenceMediaTheme> = emptyMap(),
 ) : Parcelable

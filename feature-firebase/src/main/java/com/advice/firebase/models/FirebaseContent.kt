@@ -61,4 +61,7 @@ data class FirebaseContent(
     @get:PropertyName("hidden")
     @set:PropertyName("hidden")
     var hidden: Boolean = false,
+    @get:PropertyName("visible_age_min")
+    @set:PropertyName("visible_age_min")
+    var visibleAgeMin: Int? = null,
 ) : Parcelable
