@@ -1,6 +1,7 @@
 package com.advice.ui.components.home
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
+import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
@@ -57,6 +59,19 @@ fun ConferenceSelectorView(
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
+
+        val logo = conference.squareLogo(isSystemInDarkTheme())
+        if (logo != null) {
+            Image(
+                model = logo,
+                contentDescription = conference.name,
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .alpha(alpha),
+            )
+        }
+
         Icon(
             painterResource(R.drawable.arrow_back),
             null,

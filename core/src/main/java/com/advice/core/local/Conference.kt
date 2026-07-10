@@ -19,11 +19,22 @@ data class Conference(
     val timezone: String,
     val flags: Map<String, Boolean>,
     val emergencyDocumentId: Long?,
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    val media: ConferenceMediaEntry? = null,
 ) : Parcelable {
 
     val hasFinished: Boolean
         get() = end.compareTo(Instant.now()) == -1
+
+    fun squareLogo(darkTheme: Boolean): String? {
+        return media?.let {
+            if (darkTheme) {
+                it.dark?.squareLogo
+            } else {
+                it.light?.squareLogo
+            }
+        }
+    }
 
     companion object {
         val Zero = Conference(
@@ -40,7 +51,35 @@ data class Conference(
             timezone = "",
             flags = emptyMap(),
             emergencyDocumentId = 123,
-            isSelected = false
+            isSelected = false,
+            media =
+                ConferenceMediaEntry(
+                    dark =
+                        ConferenceMediaImages(
+                            "https://info.defcon.org/blobs/v_aerospace.png",
+                            "https://info.defcon.org/blobs/v_aerospace.png",
+                            "https://info.defcon.org/blobs/v_aerospace.png",
+                        ),
+                    light =
+                        ConferenceMediaImages(
+                            "https://info.defcon.org/blobs/v_aerospace.png",
+                            "https://info.defcon.org/blobs/v_aerospace.png",
+                            "https://info.defcon.org/blobs/v_aerospace.png",
+                        ),
+                ),
         )
     }
 }
+
+@Parcelize
+data class ConferenceMediaEntry(
+    val dark: ConferenceMediaImages?,
+    val light: ConferenceMediaImages?,
+) : Parcelable
+
+@Parcelize
+data class ConferenceMediaImages(
+    val bannerBackground: String?,
+    val bannerLogo: String?,
+    val squareLogo: String?
+) : Parcelable
