@@ -176,7 +176,7 @@ val appModule = module {
         )
     }
 
-    single<UserSession> { FirebaseUserSession(get(), get(), get(), get()) }
+    single<UserSession> { FirebaseUserSession(get(), get(), get(), get(), get()) }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<ContentDataSource> {
