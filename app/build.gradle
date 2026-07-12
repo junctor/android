@@ -56,6 +56,7 @@ dependencies {
     implementation project(':feature-feedback')
     implementation project(':feature-glitch')
     implementation project(':feature-retrofit')
+    implementation libs.google.play.age.signals
 
     def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom

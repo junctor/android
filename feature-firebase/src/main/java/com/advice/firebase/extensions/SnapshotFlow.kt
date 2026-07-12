@@ -13,10 +13,10 @@ fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
     return callbackFlow {
         // Emit loading state
         trySend(SnapshotResult.Loading)
+        listeners_count++
         // Create a listener
         val listenerRegistration =
             addSnapshotListener { value, error ->
-                listeners_count++
                 if (error != null) {
                     logFailure(path, error)
                     trySend(SnapshotResult.Failure(error))

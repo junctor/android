@@ -56,15 +56,15 @@ data class Conference(
                 ConferenceMediaEntry(
                     dark =
                         ConferenceMediaImages(
-                            "https://info.defcon.org/blobs/v_aerospace.png",
-                            "https://info.defcon.org/blobs/v_aerospace.png",
-                            "https://info.defcon.org/blobs/v_aerospace.png",
+                            null,
+                            null,
+                            "https://info.defcon.org/blobs/dc34/dc-34-logo.webp",
                         ),
                     light =
                         ConferenceMediaImages(
-                            "https://info.defcon.org/blobs/v_aerospace.png",
-                            "https://info.defcon.org/blobs/v_aerospace.png",
-                            "https://info.defcon.org/blobs/v_aerospace.png",
+                            null,
+                            null,
+                            "https://info.defcon.org/blobs/dc34/dc-34-logo.webp",
                         ),
                 ),
         )

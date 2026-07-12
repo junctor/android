@@ -76,8 +76,10 @@ fun logSnapshotClosure(path: String) {
 internal fun logFailure(path: String, error: FirebaseFirestoreException) {
     val crashlytics = FirebaseCrashlytics.getInstance()
     Timber.e("Failed to get snapshot for path: $path, ${error.message}")
-    crashlytics.log("Failed to get snapshot for path: $path")
-    crashlytics.recordException(error)
+    if (error.code != FirebaseFirestoreException.Code.UNAVAILABLE) {
+        crashlytics.log("Failed to get snapshot for path: $path")
+        crashlytics.recordException(error)
+    }
 }
 
 internal fun logSnapshot(path: String?, value: QuerySnapshot) {

@@ -6,7 +6,7 @@ import com.advice.core.local.User
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
-import com.advice.play.AppManager
+import com.advice.play.AgeSignalsRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +21,7 @@ import timber.log.Timber
 
 class FirebaseUserSession(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
-    private val appManager: AppManager,
+    private val ageSignals: AgeSignalsRepository,
     private val crashlytics: FirebaseCrashlytics,
     conferencesDataSource: ConferencesDataSource,
     private val preferences: Storage,
@@ -68,13 +68,11 @@ class FirebaseUserSession(
         CoroutineScope(Job()).launch {
             try {
                 val it = auth.signInAnonymously().await()
-                val isAllowedMatureContent = appManager.isAllowedMatureContent()
-                val lowerAge = appManager.lowerAge()
                 val user = it.user
                 if (user != null) {
                     Timber.d("User uid: ${user.uid}")
                     _user.value =
-                        User(id = user.uid, isAllowedMatureContent = isAllowedMatureContent, lowerAge = lowerAge)
+                        User(id = user.uid, ageInfo = ageSignals.get())
                 } else {
                     crashlytics.log("user cannot be signed in")
                     Timber.e("User could not be signed in")

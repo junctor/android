@@ -28,9 +28,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
+    implementation project(':core')
+
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
@@ -38,6 +44,11 @@ dependencies {
     implementation(libs.google.play.update)
     implementation(libs.google.play.update.ktx)
     implementation(libs.google.play.age.signals)
+    implementation(libs.timber)
+    implementation(libs.kotlinx.coroutines.core)
+
+    implementation platform(libs.firebase.bom)
+    implementation(libs.firebase.crashlytics)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

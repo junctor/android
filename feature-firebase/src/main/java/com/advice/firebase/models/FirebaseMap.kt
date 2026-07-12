@@ -30,4 +30,10 @@ data class FirebaseMap(
     @get:PropertyName("url")
     @set:PropertyName("url")
     var url: String = "",
+    @get:PropertyName("svg_filename")
+    @set:PropertyName("svg_filename")
+    var svgFileName: String? = null,
+    @get:PropertyName("svg_url")
+    @set:PropertyName("svg_url")
+    var svgUrl: String? = null,
 ) : Parcelable

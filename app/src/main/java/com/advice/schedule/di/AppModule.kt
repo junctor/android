@@ -34,7 +34,6 @@ import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
 import com.advice.firebase.data.sources.FirebaseFAQDataSource
 import com.advice.firebase.data.sources.FirebaseFeedbackDataSource
 import com.advice.firebase.data.sources.FirebaseLocationsDataSource
-import com.advice.firebase.data.sources.FirebaseMapsDataSource
 import com.advice.firebase.data.sources.FirebaseMenuDataSource
 import com.advice.firebase.data.sources.FirebaseNewsDataSource
 import com.advice.firebase.data.sources.FirebaseOrganizationDataSource
@@ -47,7 +46,9 @@ import com.advice.firebase.data.sources.FirebaseWifiNetworksDataSource
 import com.advice.firebase.session.FirebaseUserSession
 import com.advice.locations.data.repositories.LocationRepository
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
+import com.advice.play.AgeSignalsRepository
 import com.advice.play.AppManager
+import com.advice.play.createAgeSignalsManager
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.viewmodel.ProductCart
 import com.advice.products.presentation.viewmodel.ProductsViewModel
@@ -84,6 +85,7 @@ import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.schedule.ui.screens.WifiViewModel
 import com.advice.wifi.WirelessConnectionManager
+import com.google.android.play.agesignals.AgeSignalsManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -112,15 +114,17 @@ val appModule = module {
     single {
         val cacheSize: Long = 250 * 1024 * 1024 // 250 MB
 
-        val newBuilder = PersistentCacheSettings.newBuilder()
+        val cacheSettings = PersistentCacheSettings.newBuilder()
             .setSizeBytes(cacheSize)
             .build()
 
-        FirebaseFirestoreSettings.Builder()
-            .setLocalCacheSettings(newBuilder)
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setLocalCacheSettings(cacheSettings)
             .build()
 
-        FirebaseFirestore.getInstance()
+        FirebaseFirestore.getInstance().apply {
+            firestoreSettings = settings
+        }
     }
     single { FirebaseAuth.getInstance() }
     single { FirebaseStorage.getInstance() }
@@ -176,7 +180,9 @@ val appModule = module {
         )
     }
 
-    single<UserSession> { FirebaseUserSession(get(), get(), get(), get(), get()) }
+    single<UserSession> { FirebaseUserSession(
+        get(), get(), get(), get(), get()
+    ) }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<ContentDataSource> {
@@ -236,6 +242,11 @@ val appModule = module {
             androidContext().getSystemService(WIFI_SERVICE) as WifiManager,
         )
     }
+
+    single<AgeSignalsManager> {
+        createAgeSignalsManager(androidContext())
+    }
+    single { AgeSignalsRepository(get(), get()) }
 
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }

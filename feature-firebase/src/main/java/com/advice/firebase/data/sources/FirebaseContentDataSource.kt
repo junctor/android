@@ -10,6 +10,7 @@ import com.advice.core.local.Session
 import com.advice.core.local.Speaker
 import com.advice.core.local.TagType
 import com.advice.core.local.User
+import com.advice.core.local.canView
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
@@ -126,7 +127,8 @@ class FirebaseContentDataSource(
         }
 
         val content = firebaseContent.mapNotNull { firebaseItem ->
-            if ((firebaseItem.visibleAgeMin ?: 0) > user.lowerAge) {
+            if (!user.canView(firebaseItem.visibleAgeMin)) {
+                Timber.d("Content blocked! Visible age minimum not met.")
                 return@mapNotNull null
             }
             firebaseItem.toContents(
