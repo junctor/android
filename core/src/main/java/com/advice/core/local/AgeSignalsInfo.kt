@@ -9,15 +9,17 @@ class AgeSignalsInfo(
     val status: AgeStatus?, // VERIFIED, SUPERVISED, DECLARED, UNKNOWN, ...
 )
 
-fun AgeSignalsInfo.canView(minAge: Int?): Boolean {
+fun AgeSignalsInfo.canView(minAge: Int?, item: Any? = null): Boolean {
     val decision = when {
         minAge == null -> true
         lowerAge == null -> true
         else -> lowerAge >= minAge
     }
     if (BuildConfig.DEBUG) {
-        Timber.d("AgeSignalsInfo.canView: minAge $minAge, status $status, lowerAge $lowerAge")
-        Timber.d("AgeSignalsInfo.canView: decision $decision")
+        Timber.d(
+            "AgeSignalsInfo.canView: type=${item?.javaClass?.simpleName}, " +
+                "minAge=$minAge, status=$status, lowerAge=$lowerAge, decision=$decision"
+        )
     }
     return decision
 }

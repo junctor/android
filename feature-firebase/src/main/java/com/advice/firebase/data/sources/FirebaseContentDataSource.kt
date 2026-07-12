@@ -127,8 +127,7 @@ class FirebaseContentDataSource(
         }
 
         val content = firebaseContent.mapNotNull { firebaseItem ->
-            if (!user.canView(firebaseItem.visibleAgeMin)) {
-                Timber.d("Content blocked! Visible age minimum not met.")
+            if (!user.canView(firebaseItem.visibleAgeMin, firebaseItem)) {
                 return@mapNotNull null
             }
             firebaseItem.toContents(

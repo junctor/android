@@ -2,6 +2,7 @@ package com.advice.firebase.data.sources
 
 import com.advice.core.local.Conference
 import com.advice.core.local.TagType
+import com.advice.core.local.canView
 import com.advice.core.local.products.Product
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ProductsDataSource
@@ -32,8 +33,14 @@ class FirebaseProductsDataSource(
 
     private val products: Flow<List<Product>> =
         userSession.getConference().flatMapMerge { conference ->
-            combine(collectionReference(conference), tagsDataSource.get()) { products, tags ->
-                products.mapNotNull { it.toMerch(tags) }
+            combine(
+                collectionReference(conference),
+                tagsDataSource.get(),
+                userSession.user
+            ) { products, tags, user ->
+                products
+                    .filter { user?.canView(it.visibleAgeMin, it) != false }
+                    .mapNotNull { it.toMerch(tags) }
             }
         }.shareIn(
             CoroutineScope(Dispatchers.IO),

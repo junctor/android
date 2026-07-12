@@ -66,4 +66,7 @@ data class FirebaseSpeaker(
     @get:PropertyName("avatar")
     @set:PropertyName("avatar")
     var avatar: FirebaseMedia? = null,
+    @get:PropertyName("visible_age_min")
+    @set:PropertyName("visible_age_min")
+    var visibleAgeMin: Int? = null,
 ) : Parcelable

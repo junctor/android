@@ -52,4 +52,7 @@ data class FirebaseOrganization(
     @get:PropertyName("updated_tsz")
     @set:PropertyName("updated_tsz")
     var updatedTsz: String? = null,
+    @get:PropertyName("visible_age_min")
+    @set:PropertyName("visible_age_min")
+    var visibleAgeMin: Int? = null,
 ) : Parcelable

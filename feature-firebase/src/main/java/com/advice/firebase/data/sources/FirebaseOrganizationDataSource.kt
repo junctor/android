@@ -1,6 +1,7 @@
 package com.advice.firebase.data.sources
 
 import com.advice.core.local.Organization
+import com.advice.core.local.canView
 import com.advice.data.session.UserSession
 import com.advice.data.sources.OrganizationsDataSource
 import com.advice.firebase.extensions.closeOnConferenceChange
@@ -16,8 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
@@ -29,17 +30,18 @@ class FirebaseOrganizationDataSource(
     private val firestore: FirebaseFirestore,
 ) : OrganizationsDataSource {
     private val organizations = userSession.getConference().flatMapMerge { conference ->
-        firestore.collection("conferences")
+        val snapshotFlow = firestore.collection("conferences")
             .document(conference.code)
             .collection("organizations")
             .snapshotFlowLegacy()
             .closeOnConferenceChange(userSession.getConference())
-            .map {
-                it.toObjectsOrEmpty(FirebaseOrganization::class.java)
-                    .sortedBy { it.name }
-                    .mapNotNull { it.toOrganization() }
-            }
-            .onStart { emit(emptyList()) }
+
+        combine(snapshotFlow, userSession.user) { querySnapshot, user ->
+            querySnapshot.toObjectsOrEmpty(FirebaseOrganization::class.java)
+                .filter { user?.canView(it.visibleAgeMin, it) != false }
+                .mapNotNull { it.toOrganization() }
+                .sortedBy { it.name }
+        }.onStart { emit(emptyList()) }
     }.shareIn(
         CoroutineScope(Dispatchers.IO),
         started = SharingStarted.Lazily,

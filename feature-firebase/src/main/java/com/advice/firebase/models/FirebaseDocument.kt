@@ -28,4 +28,7 @@ data class FirebaseDocument(
     @get:PropertyName("updated_at_str")
     @set:PropertyName("updated_at_str")
     var updatedAtStr: String? = null,
+    @get:PropertyName("visible_age_min")
+    @set:PropertyName("visible_age_min")
+    var visibleAgeMin: Int? = null,
 )

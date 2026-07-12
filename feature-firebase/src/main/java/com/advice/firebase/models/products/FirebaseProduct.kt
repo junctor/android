@@ -41,5 +41,8 @@ data class FirebaseProduct(
     var tags: List<Long> = emptyList(),
     @get:PropertyName("variants")
     @set:PropertyName("variants")
-    var variants: List<FirebaseProductVariant> = emptyList()
+    var variants: List<FirebaseProductVariant> = emptyList(),
+    @get:PropertyName("visible_age_min")
+    @set:PropertyName("visible_age_min")
+    var visibleAgeMin: Int? = null,
 )
