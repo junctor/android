@@ -6,6 +6,8 @@ import com.advice.core.local.Affiliation
 import com.advice.core.local.Bookmark
 import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceMap
+import com.advice.core.local.ConferenceMediaEntry
+import com.advice.core.local.ConferenceMediaImages
 import com.advice.core.local.Content
 import com.advice.core.local.Document
 import com.advice.core.local.FAQ
@@ -38,6 +40,7 @@ import com.advice.firebase.models.FirebaseAction
 import com.advice.firebase.models.FirebaseAffiliation
 import com.advice.firebase.models.FirebaseArticle
 import com.advice.firebase.models.FirebaseConference
+import com.advice.firebase.models.FirebaseConferenceMediaTheme
 import com.advice.firebase.models.FirebaseContent
 import com.advice.firebase.models.FirebaseDocument
 import com.advice.firebase.models.FirebaseFAQ
@@ -87,11 +90,22 @@ fun FirebaseConference.toConference(): Conference? =
                 "enable_wifi" to enableWifi,
             ),
             emergencyDocumentId,
+            media = ConferenceMediaEntry(
+                dark = media["dark"]?.toMediaImages(),
+                light = media["light"]?.toMediaImages(),
+            )
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Conference: ${ex.message}")
         null
     }
+
+fun FirebaseConferenceMediaTheme.toMediaImages(): ConferenceMediaImages =
+    ConferenceMediaImages(
+        bannerBackground = bannerBackground,
+        bannerLogo = bannerLogo,
+        squareLogo = squareLogo,
+    )
 
 fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Location? =
     try {

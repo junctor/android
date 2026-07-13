@@ -76,7 +76,10 @@ fun ConferenceView(
                 Image(
                     model = logo,
                     contentDescription = conference.name,
-                    modifier = Modifier.size(80.dp),
+                    modifier =
+                        Modifier
+                            .padding(start = 16.dp)
+                            .size(80.dp),
                 )
             }
         }
