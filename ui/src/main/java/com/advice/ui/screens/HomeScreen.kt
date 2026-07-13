@@ -2,6 +2,7 @@ package com.advice.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +28,7 @@ import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
 import com.advice.glitch.ui.SoundButton
+import com.advice.ui.components.Image
 import com.advice.ui.components.Label
 import com.advice.ui.components.MenuIcon
 import com.advice.ui.components.ProgressSpinner
@@ -135,6 +138,23 @@ private fun HomeScreen(
                 MenuItem.Wifi("WiFi", "Connect to the ${network.titleText}", network.id)
             MenuItem(menuItem) {
                 onNavigationClick(menuItem)
+            }
+        }
+
+        val logo = state.conference.squareLogo(isSystemInDarkTheme())
+        if (logo != null) {
+            Box(
+                Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    model = logo,
+                    contentDescription = state.conference.name,
+                    modifier =
+                        Modifier
+                            .size(160.dp)
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                )
             }
         }
 

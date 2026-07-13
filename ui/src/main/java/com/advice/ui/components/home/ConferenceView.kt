@@ -70,18 +70,6 @@ fun ConferenceView(
                     )
                 }
             }
-
-            val logo = conference.squareLogo(isSystemInDarkTheme())
-            if (logo != null) {
-                Image(
-                    model = logo,
-                    contentDescription = conference.name,
-                    modifier =
-                        Modifier
-                            .padding(start = 16.dp)
-                            .size(80.dp),
-                )
-            }
         }
     }
 }
