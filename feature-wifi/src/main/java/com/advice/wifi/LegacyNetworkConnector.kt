@@ -7,15 +7,20 @@ import com.advice.core.local.wifi.WirelessNetwork
 import timber.log.Timber
 
 /**
- * Enable a network using the old API.
+ * Enable an enterprise network using the old API.
  *
- * This is used on Android 9 and below.
+ * This is used on Android 9 and below. Open and WPA Personal networks are rejected upstream.
  */
 fun enableNetwork(
     wifiManager: WifiManager,
     wirelessNetwork: WirelessNetwork,
     enterpriseConfig: WifiEnterpriseConfig,
-): ConnectionResult.Success {
+): ConnectionResult {
+    wirelessNetwork.validateEnterpriseOnly()?.let { error ->
+        Timber.e(error)
+        return ConnectionResult.Error(error)
+    }
+
     val existing = wifiManager.existingWirelessConfig(wirelessNetwork.ssid)
     if (existing != null) {
         Timber.e("Wifi config already exists for ${wirelessNetwork.ssid}")
@@ -26,10 +31,9 @@ fun enableNetwork(
     // This sets the CA certificate.
     currentConfig.enterpriseConfig = enterpriseConfig
 
-    // todo: ensure these values are all correctly set from the wifi_network configuration.
-    // General (old) config settings
+    // General (old) config settings — enterprise (WPA-EAP) only
     currentConfig.SSID = surroundWithQuotes(wirelessNetwork.ssid)
-    currentConfig.hiddenSSID = wirelessNetwork.isSsidHidden.toBoolean()
+    currentConfig.hiddenSSID = wirelessNetwork.isSsidHidden.toBooleanFlag()
     currentConfig.priority = wirelessNetwork.priority
     currentConfig.status = WifiConfiguration.Status.ENABLED
 
@@ -49,7 +53,7 @@ fun enableNetwork(
     currentConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP)
     currentConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.GCMP_256)
 
-    // Authentication Algorithms (OPEN)
+    // Authentication Algorithms (OPEN = open auth algorithm for EAP, not an open network)
     currentConfig.allowedAuthAlgorithms.clear()
     currentConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN)
 
@@ -70,5 +74,5 @@ fun enableNetwork(
     wifiManager.saveConfiguration()
     Timber.e("Enable network result: $result")
 
-    return ConnectionResult.Success
+    return ConnectionResult.Suggested
 }

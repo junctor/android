@@ -1,6 +1,8 @@
 package com.advice.schedule.ui.screens
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,6 +22,12 @@ internal fun Wifi(navController: NavHostController, id: Long) {
         viewModel.get(id)
     }
 
+    val addNetworksLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        viewModel.onAddNetworksResult(activityResult.resultCode)
+    }
+
     val state = viewModel.state.collectAsState().value
 
     WifiScreen(
@@ -34,15 +42,16 @@ internal fun Wifi(navController: NavHostController, id: Long) {
                     .show()
                 mainActivity.requestWirelessPermissions()
             } else {
-                Toast.makeText(context, "Attempting to save wifi config", Toast.LENGTH_SHORT).show()
-                viewModel.saveWifiConfig()
+                viewModel.saveWifiConfig { intent ->
+                    addNetworksLauncher.launch(intent)
+                }
             }
         },
         onDisconnectPressed = {
             viewModel.disconnect()
         },
-        onForceLocalCert = { forceLegacy ->
-            viewModel.forceLocalCert(forceLegacy)
+        onForceLocalCert = { forceLocal ->
+            viewModel.forceLocalCert(forceLocal)
         }
     )
 }

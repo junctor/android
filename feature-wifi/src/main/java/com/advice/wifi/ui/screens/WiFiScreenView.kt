@@ -94,16 +94,21 @@ fun WifiScreenContent(
                 }
 
                 Column {
-                    Text("Result:")
-                    Text(state.result?.toString() ?: "-")
+                    Text("Status:")
+                    Text(state.result?.displayMessage() ?: "Not saved yet")
                 }
+
+                Text(
+                    "Saving credentials does not connect immediately. " +
+                        "Android connects when this network is in range."
+                )
 
                 Button(
                     onClick = { onConnectPressed() },
                     modifier = Modifier.fillMaxWidth(),
                     shape = roundedCornerShape,
                 ) {
-                    Text("Connect to WiFi")
+                    Text("Save Wi-Fi credentials")
                 }
 
                 Button(
@@ -111,7 +116,7 @@ fun WifiScreenContent(
                     modifier = Modifier.fillMaxWidth(),
                     shape = roundedCornerShape,
                 ) {
-                    Text("Disconnect from WiFi")
+                    Text("Remove Wi-Fi credentials")
                 }
             }
         }
@@ -137,17 +142,17 @@ private fun WifiScreenViewPreview() {
                     descriptionText = "Description",
                     disableAssociationMacRandomization = "N",
                     disableCaptiveNetworkDetection = "N",
-                    eapMethod = "eapMethod",
+                    eapMethod = "PEAP",
                     eapSubjects = emptyList(),
                     enableIpv6 = "N",
                     id = 1,
                     identity = "identity",
                     isIdentityUserEditable = "N",
                     isSsidHidden = "N",
-                    networkType = "networkType",
-                    passphrase = "passphrase",
+                    networkType = "WPA2-Enterprise",
+                    passphrase = null,
                     password = "password",
-                    phase2Method = "phase2Method",
+                    phase2Method = "MSCHAPV2",
                     priority = 1,
                     restrictFastLaneQosMarking = "N",
                     sortOrder = 1,
