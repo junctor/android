@@ -17,9 +17,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,13 +29,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
-import com.advice.core.local.Tag
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.utils.createTag
-import com.advice.ui.utils.parseColor
 
 @Composable
 fun EventRow(
@@ -42,6 +41,10 @@ fun EventRow(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val row = remember(event) { event.toScheduleEventUi(context) }
+    val dateTime = remember(event.session) {
+        TimeUtil.getDateTimeStamp(context, event.session)
+    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -52,7 +55,7 @@ fun EventRow(
                 }
                 .fillMaxWidth(),
     ) {
-        CategoryDash(event.types)
+        CategoryDash(color = row.dashColor)
         Spacer(Modifier.width(24.dp))
         Column(
             Modifier
@@ -60,10 +63,10 @@ fun EventRow(
                 .padding(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Title(event.title)
-            Location(event.session.location.name)
-            DateTime(TimeUtil.getDateTimeStamp(context, event.session))
-            Categories(event.types)
+            Title(row.title)
+            Location(row.location)
+            DateTime(dateTime)
+            Categories(row.tags)
         }
     }
 }
@@ -73,11 +76,12 @@ fun EventRowView(
     title: String,
     time: String,
     location: String,
-    tags: List<Tag>,
+    tags: List<EventTagUi>,
     isBookmarked: Boolean,
     onEventPressed: () -> Unit,
     onBookmark: ((Boolean) -> Unit),
     modifier: Modifier = Modifier,
+    dashColor: Color? = tags.firstOrNull()?.color,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -88,9 +92,9 @@ fun EventRowView(
                 }
                 .fillMaxWidth(),
     ) {
-        CategoryDash(tags)
+        CategoryDash(color = dashColor)
         Text(
-            time.replace(" ", "\n"),
+            time,
             textAlign = TextAlign.Center,
             modifier = Modifier.width(85.dp),
         )
@@ -112,8 +116,28 @@ fun EventRowView(
 }
 
 @Composable
-internal fun CategoryDash(tags: List<Tag>, height: Dp = 80.dp) {
-    if (tags.isNotEmpty()) {
+fun EventRowView(
+    row: ScheduleEventUi,
+    onEventPressed: () -> Unit,
+    onBookmark: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    EventRowView(
+        title = row.title,
+        time = row.time,
+        location = row.location,
+        tags = row.tags,
+        isBookmarked = row.isBookmarked,
+        onEventPressed = onEventPressed,
+        onBookmark = onBookmark,
+        modifier = modifier,
+        dashColor = row.dashColor,
+    )
+}
+
+@Composable
+internal fun CategoryDash(color: Color?, height: Dp = 80.dp) {
+    if (color != null) {
         Box(
             modifier =
                 Modifier
@@ -121,21 +145,24 @@ internal fun CategoryDash(tags: List<Tag>, height: Dp = 80.dp) {
                     .padding(start = 4.dp, top = 4.dp, bottom = 4.dp)
                     .height(height)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(parseColor(tags.first().color)),
+                    .background(color),
         )
     }
 }
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-internal fun Categories(tags: List<Tag>) {
+internal fun Categories(tags: List<EventTagUi>) {
     val padding = 4.dp
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(padding),
         verticalArrangement = Arrangement.spacedBy(padding),
     ) {
         for (tag in tags) {
-            CategoryView(tag)
+            CategoryView(
+                label = tag.label,
+                indicatorColor = tag.color,
+            )
         }
     }
 }
@@ -179,7 +206,10 @@ private fun EventRowViewPreview() {
                 location = "Track 1",
                 tags =
                     listOf(
-                        createTag(label = "Introduction", color = "#EEAAFF"),
+                        EventTagUi(
+                            label = "Introduction",
+                            color = Color(0xFFEEAAFF),
+                        ),
                     ),
                 isBookmarked = true,
                 onEventPressed = {},
@@ -191,8 +221,8 @@ private fun EventRowViewPreview() {
                 location = "Track 1",
                 tags =
                     listOf(
-                        createTag(label = "Talk", color = "#FF61EEAA"),
-                        createTag(label = "Introduction", color = "#EEAAFF"),
+                        EventTagUi(label = "Talk", color = Color(0xFF61EEAA)),
+                        EventTagUi(label = "Introduction", color = Color(0xFFEEAAFF)),
                     ),
                 isBookmarked = false,
                 onEventPressed = {},

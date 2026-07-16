@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Tag
 import com.advice.core.ui.ScheduleFilter
-import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.DayHeader
@@ -44,9 +43,10 @@ import com.advice.ui.components.DaySelectorView
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.EventRowView
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.toScheduleEventUi
 import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.preview.PreviewLightDark
-import com.advice.ui.rememberScrollContext
+import com.advice.ui.rememberDaySelectorScrollState
 import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.topRoundedCornerShape
@@ -130,7 +130,7 @@ private fun ScheduleScreenContent(
     Box(modifier) {
         when (state) {
             is ScheduleScreenState.Error -> {
-                EmptyMessage("Schedule not found")
+                EmptyMessage(message = "Schedule not found")
             }
 
             is ScheduleScreenState.Empty -> {
@@ -170,11 +170,32 @@ private fun ScheduleScreenContent(
 
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    val scrollContext = rememberScrollContext(listState = listState)
 
     val elements =
         remember(key1 = days) {
             days.flatMap { listOf(it.key) + it.value }
+        }
+
+    val dayKeys =
+        remember(key1 = days) {
+            days.keys.toList()
+        }
+
+    val headerIndices =
+        remember(key1 = elements) {
+            elements.mapIndexedNotNull { index, item ->
+                index.takeIf { item is String }
+            }
+        }
+
+    val daySelectorState = rememberDaySelectorScrollState(
+        listState = listState,
+        headerIndices = headerIndices,
+    )
+
+    val scheduleDays =
+        remember(days, context) {
+            days.toScheduleEventUi(context)
         }
 
     // Scrolling to the first event that is not started
@@ -192,20 +213,15 @@ private fun ScheduleScreenContent(
         }
     }
 
-    val temp =
-        remember(key1 = elements) {
-            elements
-                .mapIndexed { index, any -> index to any }
-                .filter { it.second is String }
-                .map { it.first }
-        }
-
-    val start = temp.indexOfLast { it <= scrollContext.start }
-    val end = temp.indexOfLast { it <= scrollContext.end }
-
     if (days.isNotEmpty()) {
         Column(modifier = modifier) {
-            DaySelectorView(days = days.map { it.key }, start = start, end = end) {
+            DaySelectorView(
+                days = dayKeys,
+                start = daySelectorState.highlight.start,
+                end = daySelectorState.highlight.end,
+                stripScrollStart = daySelectorState.settled.start,
+                stripScrollEnd = daySelectorState.settled.end,
+            ) {
                 coroutineScope.launch {
                     val index = elements.indexOf(it)
                     if (index != -1) {
@@ -214,25 +230,21 @@ private fun ScheduleScreenContent(
                 }
             }
             LazyColumn(state = listState) {
-                for (day in days) {
+                for ((day, events) in scheduleDays) {
                     // Header
-                    item(key = day.key) {
-                        DayHeader(day.key)
+                    item(key = day) {
+                        DayHeader(day)
                     }
                     // Events
-                    for (it in day.value) {
-                        item(key = it.session.id) {
+                    for (row in events) {
+                        item(key = row.event.session.id) {
                             EventRowView(
-                                title = it.title,
-                                time = TimeUtil.getTimeStamp(context, it.session),
-                                location = it.session.location.name,
-                                tags = it.types,
-                                isBookmarked = it.session.isBookmarked,
+                                row = row,
                                 onEventPressed = {
-                                    onEventClick(it)
+                                    onEventClick(row.event)
                                 },
                                 onBookmark = { isChecked ->
-                                    onBookmarkClick(it, isChecked)
+                                    onBookmarkClick(row.event, isChecked)
                                 },
                             )
                         }
@@ -289,13 +301,13 @@ private fun ScheduleScreenPreview(@PreviewParameter(FakeEventProvider::class) ev
                 true,
             )
 
-        ScheduleScreen(state, {}, {}, {}, { event, isBookmarked -> })
+        ScheduleScreen(state, {}, {}, {}, { _, _ -> })
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun ScheduleScreenEmptyPreview(@PreviewParameter(FakeEventProvider::class) event: Event) {
+private fun ScheduleScreenEmptyPreview(@PreviewParameter(FakeEventProvider::class) @Suppress("UNUSED_PARAMETER") event: Event) {
     ScheduleTheme {
         val state =
             ScheduleScreenState.Success(
@@ -304,6 +316,6 @@ private fun ScheduleScreenEmptyPreview(@PreviewParameter(FakeEventProvider::clas
                 true,
             )
 
-        ScheduleScreen(state, {}, {}, {}, { event, isBookmarked -> })
+        ScheduleScreen(state, {}, {}, {}, { _, _ -> })
     }
 }
