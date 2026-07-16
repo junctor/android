@@ -14,7 +14,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +57,8 @@ internal fun SearchScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val focusRequested = remember { FocusRequester() }
+    // Local: Idle has no query, so Results-only binding clears characters while typing.
+    var query by remember { mutableStateOf("") }
 
     val scrollState = rememberLazyListState()
 
@@ -75,17 +80,18 @@ internal fun SearchScreen(
             ) {
                 BackButton(
                     onClick = {
-                        // clear the search
+                        query = ""
                         onQueryChanged("")
                         navController.onBackPressed()
                     },
                 )
 
                 SearchBar(
-                    query = (state as? SearchState.Results)?.results?.query ?: "",
+                    query = query,
                     placeholder = "Search " + (conference?.name ?: " anywhere"),
                     modifier = Modifier.focusRequester(focusRequested),
                 ) {
+                    query = it
                     onQueryChanged(it)
                 }
             }
