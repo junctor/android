@@ -8,6 +8,8 @@ import com.advice.data.session.UserSession
 import com.advice.data.sources.MapsDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -17,6 +19,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.Request
 import timber.log.Timber
 import java.io.ByteArrayInputStream
+import java.io.Closeable
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -26,7 +29,9 @@ import java.nio.file.StandardCopyOption
 class RetrofitMapsDataSource(
     userSession: UserSession,
     private val filesDir: File?,
-) : MapsDataSource {
+) : MapsDataSource, Closeable {
+    private val sharingScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     private val _mapsFlow: Flow<FlowResult<Maps>> = userSession.getConferenceFlow().map { state ->
         when (state) {
             FlowResult.Loading -> FlowResult.Loading
@@ -52,7 +57,7 @@ class RetrofitMapsDataSource(
             }
         }
     }.distinctUntilChanged().shareIn(
-        CoroutineScope(Dispatchers.IO),
+        sharingScope,
         started = SharingStarted.Lazily,
         replay = 1,
     )
@@ -78,4 +83,8 @@ class RetrofitMapsDataSource(
     }
 
     override fun get(): Flow<FlowResult<Maps>> = _mapsFlow
+
+    override fun close() {
+        sharingScope.cancel()
+    }
 }
