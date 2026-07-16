@@ -11,6 +11,7 @@ import com.advice.firebase.models.feedback.FirebaseFeedbackForm
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,13 +24,14 @@ class FirebaseFeedbackDataSource(
     private val firestore: FirebaseFirestore,
     private val userSession: UserSession,
 ) : FeedbackDataSource {
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val feedback: StateFlow<List<FeedbackForm>> =
         userSession.getConference().flatMapMerge { conference ->
             firestore.collection("conferences/${conference.code}/feedbackforms")
                 .snapshotFlowLegacy()
                 .closeOnConferenceChange(userSession.getConference())
-                .map {
-                    it.toObjectsOrEmpty(FirebaseFeedbackForm::class.java)
+                .map { snapshot ->
+                    snapshot.toObjectsOrEmpty(FirebaseFeedbackForm::class.java)
                         .mapNotNull { it.toFeedbackForm() }
                 }
                 .onStart { emit(emptyList()) }

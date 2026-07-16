@@ -194,12 +194,12 @@ private fun BottomSheetPreview() {
         "test",
         LocationStatus.Open,
         1,
-        true,
-        true,
-        listOf(LocationSchedule(Instant.now(), Instant.now(), "test", "open")),
+        hasChildren = true,
+        isExpanded = true,
+        schedule = listOf(LocationSchedule(Instant.now(), Instant.now(), "test", "open")),
     )
     ScheduleTheme {
-        ScheduleBottomSheet(context, row, {
-        })
+        ScheduleBottomSheet(context, row) {
+        }
     }
 }

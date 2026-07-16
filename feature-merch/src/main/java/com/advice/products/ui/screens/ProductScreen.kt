@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,7 +37,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.StockStatus
 import com.advice.core.local.products.Product
-import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariant
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.products.presentation.state.ProductsState
@@ -65,7 +65,7 @@ fun ProductScreen(
     onBackPressed: () -> Unit,
 ) {
     var quantity by remember {
-        mutableStateOf(1)
+        mutableIntStateOf(1)
     }
 
     var selection by remember {
@@ -98,7 +98,7 @@ fun ProductScreen(
             onExpandBottomSheet = {
                 showing = true
             },
-            onQuantityChanged = {
+            onQuantityChanged = { it ->
                 quantity = it
             },
             modifier = Modifier.padding(it),
@@ -108,7 +108,7 @@ fun ProductScreen(
             VariantsBottomSheet(
                 variants = product.variants,
                 selection = selection,
-                onVariantSelected = {
+                onVariantSelected = { it ->
                     selection = it
                     showing = false
                 },

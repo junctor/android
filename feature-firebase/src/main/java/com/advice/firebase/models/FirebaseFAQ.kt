@@ -9,6 +9,9 @@ data class FirebaseFAQ(
     @get:PropertyName("conference")
     @set:PropertyName("conference")
     var conference: String = "",
+    @get:PropertyName("conference_id")
+    @set:PropertyName("conference_id")
+    var conferenceId: Long = -1,
     @get:PropertyName("question")
     @set:PropertyName("question")
     var question: String = "",
@@ -18,4 +21,7 @@ data class FirebaseFAQ(
     @get:PropertyName("updated_at")
     @set:PropertyName("updated_at")
     var updatedAt: String? = null,
+    @get:PropertyName("updated_tsz")
+    @set:PropertyName("updated_tsz")
+    var updatedTsz: String? = null,
 )

@@ -1,5 +1,6 @@
 package com.advice.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.ui.theme.ScheduleTheme
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun ImageGallery(urls: List<String>, aspectRatio: Float = 0.90909f) {
     BoxWithConstraints(
@@ -49,7 +51,7 @@ fun ImageGallery(urls: List<String>, aspectRatio: Float = 0.90909f) {
                         .width(with(LocalDensity.current) { imageWidth.toDp() })
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.Black),
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))

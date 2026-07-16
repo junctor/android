@@ -15,9 +15,7 @@ import com.advice.ui.screens.FAQScreen
 internal fun FAQ(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<FAQViewModel>()
 
-    val state = viewModel.state.collectAsState(initial = FAQScreenState.Loading).value
-
-    when (state) {
+    when (val state = viewModel.state.collectAsState(initial = FAQScreenState.Loading).value) {
         is FAQScreenState.Error -> {
             ErrorScreen(
                 message = state.error.message ?: "An error occurred",

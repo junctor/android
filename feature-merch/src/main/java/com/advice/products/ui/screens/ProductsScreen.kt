@@ -99,7 +99,7 @@ fun ProductsScreen(
                 }
 
                 ProductsScreenState.Error -> {
-                    EmptyMessage("Merch not found")
+                    EmptyMessage(message = "Merch not found")
                 }
 
                 is ProductsScreenState.Success -> {
@@ -113,7 +113,7 @@ fun ProductsScreen(
                             onDismiss = onDismiss,
                         )
 
-                        val itemCount = state.data.cart.sumOf { it.quantity }
+                        val itemCount = state.data.cart.sumOf { it -> it.quantity }
                         if (itemCount > 0) {
                             LabelButton(
                                 label = "View List ($itemCount)",
@@ -131,7 +131,7 @@ fun ProductsScreen(
                                 onDismiss = {
                                     showing = false
                                 },
-                                onClick = {
+                                onClick = { it ->
                                     onTagClicked(it)
                                 },
                             )

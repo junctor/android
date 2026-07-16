@@ -1,3 +1,5 @@
+@file:Suppress("GrazieInspectionRunner", "GrazieInspectionRunner")
+
 package com.advice.play
 
 import com.advice.core.local.AgeSignalsInfo
@@ -14,6 +16,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.time.Duration.Companion.milliseconds
 
+@Suppress("GrazieInspectionRunner", "GrazieInspectionRunner")
 class AgeSignalsRepository(
     private val manager: AgeSignalsManager,
     private val crashlytics: FirebaseCrashlytics,

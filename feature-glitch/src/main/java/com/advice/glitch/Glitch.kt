@@ -3,6 +3,8 @@ package com.advice.glitch
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
 
 object Glitch {
 
@@ -13,35 +15,21 @@ object Glitch {
 
     var layout: Bitmap? = null
 
-    fun apply(canvas: Canvas, view: View) {
-        if (layout == null) {
-            layout = convertLayout(view)
-        }
-
-        val bitmap = layout
-        if (bitmap != null) {
-            val effect = ColorChannelShift(bitmap)
-            effect.apply(canvas, bitmap)
-            // bitmap.recycle()
-        }
-    }
-
-    private fun convertLayout(_view: View): Bitmap? {
-        _view.isDrawingCacheEnabled = true
-        _view.measure(
-            View.MeasureSpec.makeMeasureSpec(
-                0,
-                View.MeasureSpec.UNSPECIFIED
-            ),
-            View.MeasureSpec.makeMeasureSpec(
-                0,
-                View.MeasureSpec.UNSPECIFIED
-            )
+    private fun convertLayout(view: View): Bitmap? {
+        view.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         )
-        _view.layout(0, 0, _view.measuredWidth, _view.measuredHeight)
-        _view.buildDrawingCache(true)
-        val drawingCache = _view.drawingCache ?: return null
+        view.layout(0, 0, view.measuredWidth, view.measuredHeight)
 
-        return Bitmap.createScaledBitmap(drawingCache, 400, 780, true)
+        if (view.measuredWidth <= 0 || view.measuredHeight <= 0) {
+            return null
+        }
+
+        val bitmap = createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+
+        return bitmap.scale(400, 780)
     }
 }

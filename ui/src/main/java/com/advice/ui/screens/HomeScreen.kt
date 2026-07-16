@@ -48,6 +48,7 @@ fun HomeScreen(
     onConferenceClick: (Conference) -> Unit,
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
+    countdownContent: @Composable () -> Unit = {},
 ) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
@@ -57,6 +58,7 @@ fun HomeScreen(
             state,
             onNavigationClick,
             onDismissNews,
+            countdownContent,
             modifier =
                 Modifier
                     .padding(contentPadding),
@@ -69,6 +71,7 @@ private fun HomeScreenContent(
     state: HomeState?,
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
+    countdownContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -77,7 +80,7 @@ private fun HomeScreenContent(
             }
 
             is HomeState.Loaded -> {
-                HomeScreen(state, onNavigationClick, onDismissNews)
+                HomeScreen(state, onNavigationClick, onDismissNews, countdownContent)
             }
 
             HomeState.Loading -> {
@@ -95,14 +98,12 @@ private fun HomeScreen(
     state: HomeState.Loaded,
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
+    countdownContent: @Composable () -> Unit,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         ConferenceView(state.conference)
 
-        val remainder = state.countdown
-        if (remainder > 0L) {
-            CountdownView(remainder)
-        }
+        countdownContent()
 
         // Latest news
         val news = state.news
@@ -229,11 +230,13 @@ private fun HomeScreenViewPreview() {
                     conference = Conference.Zero,
                     menu = Menu(-1, "Home", listOf()),
                     news = null,
-                    countdown = Date().time / 1000L,
                     wifi = emptyList(),
                 ),
             onNavigationClick = {},
             onDismissNews = {},
+            countdownContent = {
+                CountdownView(Date().time / 1000L)
+            },
         )
     }
 }

@@ -37,6 +37,7 @@ import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
+import com.advice.ui.components.home.CountdownView
 
 @Composable
 internal fun Home(context: AppCompatActivity, navController: NavHostController) {
@@ -58,9 +59,11 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
     Box {
         OverlappingPanelsView(viewState.currentAnchor, leftPanel = {
             HomeScreen(
-                state = homeState, onConferenceClick = {
+                state = homeState,
+                onConferenceClick = {
                     homeViewModel.setConference(it)
-                }, onNavigationClick = {
+                },
+                onNavigationClick = {
                     when (val navigation = it.toNavigation()) {
                         is Navigation.Schedule -> {
                             if (navigation.ids.isEmpty()) {
@@ -78,9 +81,14 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                             navController.navigate(navigation)
                         }
                     }
-                }, onDismissNews = {
+                },
+                onDismissNews = {
                     homeViewModel.markLatestNewsAsRead(it)
-                })
+                },
+                countdownContent = {
+                    HomeCountdown(homeViewModel)
+                },
+            )
         }, rightPanel = {
             FilterScreen(state = filtersScreenState, onClick = {
                 filtersViewModel.toggle(it)
@@ -147,5 +155,13 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun HomeCountdown(homeViewModel: HomeViewModel) {
+    val countdown by homeViewModel.getCountdown().collectAsState()
+    if (countdown > 0L) {
+        CountdownView(countdown)
     }
 }

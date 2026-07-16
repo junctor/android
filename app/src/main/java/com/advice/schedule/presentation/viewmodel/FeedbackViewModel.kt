@@ -73,8 +73,7 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
         _state.value = state.copy(isLoading = true)
 
         viewModelScope.launch {
-            val response = feedbackRepository.submitFeedback(content, state.feedback)
-            when (response) {
+            when (val response = feedbackRepository.submitFeedback(content, state.feedback)) {
                 NetworkResponse.Success -> {
                     _state.value = state.copy(
                         isLoading = false,

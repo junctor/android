@@ -6,10 +6,10 @@ import com.advice.data.sources.VendorsDataSource
 import com.advice.data.sources.VillagesDataSource
 
 class InformationRepository(
-    private val userSession: UserSession,
-    private val vendorsDataSource: VendorsDataSource,
-    private val villagesDataSource: VillagesDataSource,
-    private val documentsDataSource: DocumentsDataSource,
+    userSession: UserSession,
+    vendorsDataSource: VendorsDataSource,
+    villagesDataSource: VillagesDataSource,
+    documentsDataSource: DocumentsDataSource,
 ) {
     val conference = userSession.getConference()
     val vendors = vendorsDataSource.get()

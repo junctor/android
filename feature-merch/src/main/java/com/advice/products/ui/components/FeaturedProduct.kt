@@ -37,6 +37,7 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -52,7 +53,7 @@ fun FeaturedProducts(
     LaunchedEffect(Unit) {
         scope.launch {
             while (true) {
-                delay(4000L)
+                delay(4000L.milliseconds)
                 with(state) {
                     animateScrollToPage((currentPage + 1) % pageCount)
                 }
@@ -111,7 +112,7 @@ private fun FeaturedProduct(
                 model = product.media.first().url,
                 contentDescription = product.label,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
             )
             Box(
                 Modifier

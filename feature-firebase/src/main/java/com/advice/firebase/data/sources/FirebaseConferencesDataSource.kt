@@ -13,14 +13,14 @@ import kotlinx.coroutines.flow.Flow
 
 
 class FirebaseConferencesDataSource(
-    private val firestore: FirebaseFirestore,
+    firestore: FirebaseFirestore,
 ) : ConferencesDataSource {
 
     private val conferences: Flow<FlowResult<List<Conference>>> =
         firestore.collection("conferences")
             .snapshotFlow()
-            .mapSnapshot {
-                it.toObjectsOrEmpty(FirebaseConference::class.java)
+            .mapSnapshot {snapshot ->
+                snapshot.toObjectsOrEmpty(FirebaseConference::class.java)
                     .mapNotNull { it.toConference() }
                     .sortedWith(compareBy({ it.hasFinished }, { it.start }))
             }

@@ -147,7 +147,7 @@ val appModule = module {
     single { NavigationManager() }
 
     // repo
-    single { ScheduleRepository(get(), get(), get(), get()) }
+    single { ScheduleRepository(get(), get(), get()) }
     single { HomeRepository(get(), get(), get(), get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
     single { ContentRepository(get(), get(), get(), get()) }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -18,9 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,8 +44,7 @@ fun Feedback(navController: NavController, id: Long, content: Long) {
     LaunchedEffect("$id/$content") {
         viewModel.fetchFeedbackForm(id)
     }
-    val state = viewModel.state.collectAsState(initial = FeedbackState.Loading).value
-    when (state) {
+    when (val state = viewModel.state.collectAsState(initial = FeedbackState.Loading).value) {
         is FeedbackState.Error -> {
             ErrorScreen(
                 message = state.exception.message ?: "Could not load feedback form"
@@ -112,9 +108,7 @@ private fun FeedbackScreen(
             if (state.isComplete) {
                 CompletedScreen(
                     errorMessage = state.errorMessage,
-                ) {
-                    onBackPressed()
-                }
+                )
             } else {
                 Column {
                     FeedbackContent(
@@ -150,7 +144,7 @@ private fun FeedbackScreen(
 }
 
 @Composable
-private fun CompletedScreen(errorMessage: String?, onCompletePressed: () -> Unit) {
+private fun CompletedScreen(errorMessage: String?) {
     Column(
         Modifier
             .fillMaxSize()

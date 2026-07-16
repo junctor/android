@@ -42,4 +42,7 @@ data class FirebaseMedia(
     @get:PropertyName("orga_id")
     @set:PropertyName("orga_id")
     var orgaId: Long? = null,
+    @get:PropertyName("person_id")
+    @set:PropertyName("person_id")
+    var personId: Long = -1L,
 ) : Parcelable

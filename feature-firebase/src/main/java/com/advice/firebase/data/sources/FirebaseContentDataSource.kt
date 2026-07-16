@@ -43,10 +43,10 @@ import timber.log.Timber
 class FirebaseContentDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val tagsDataSource: TagsDataSource,
-    private val speakersDataSource: SpeakersDataSource,
-    private val locationsDataSource: LocationsDataSource,
-    private val feedbackDataSource: FeedbackDataSource,
+    tagsDataSource: TagsDataSource,
+    speakersDataSource: SpeakersDataSource,
+    locationsDataSource: LocationsDataSource,
+    feedbackDataSource: FeedbackDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : ContentDataSource {
 
@@ -77,29 +77,28 @@ class FirebaseContentDataSource(
             userSession.user,
             tagsDataSource.get(),
             speakersDataSource.get(),
-            locationsDataSource.get(),
-            feedbackDataSource.get(),
-            content,
-            bookmarkedEventsDataSource.get(),
-        ) { array ->
-            val conference = array[0] as Conference
-            val user = array[1] as User
-            val tags = array[2] as List<TagType>
-            val speakers = array[3] as List<Speaker>
-            val locations = array[4] as List<Location>
-            val feedbackforms = array[5] as List<FeedbackForm>
-            val firebaseContent = array[6] as List<FirebaseContent>
-            val bookmarks = array[7] as List<Bookmark>
+            combine(
+                locationsDataSource.get(),
+                feedbackDataSource.get(),
+                content,
+                bookmarkedEventsDataSource.get(),
+            ) { locations, feedbackforms, firebaseContent, bookmarks ->
+                AdditionalData(locations, feedbackforms, firebaseContent, bookmarks)
+            },
+        ) { conference, user, tags, speakers, additional ->
+            if (user == null) {
+                return@combine ConferenceContent(emptyList())
+            }
 
             val content = getConferenceContent(
                 conference = conference,
                 user = user,
                 tags = tags,
                 speakers = speakers,
-                locations = locations,
-                feedbackforms = feedbackforms,
-                firebaseContent = firebaseContent,
-                bookmarks = bookmarks,
+                locations = additional.locations,
+                feedbackforms = additional.feedbackforms,
+                firebaseContent = additional.firebaseContent,
+                bookmarks = additional.bookmarks,
             )
 
             ConferenceContent(
@@ -110,6 +109,13 @@ class FirebaseContentDataSource(
             started = SharingStarted.Lazily,
             replay = 1,
         )
+
+    private data class AdditionalData(
+        val locations: List<Location>,
+        val feedbackforms: List<FeedbackForm>,
+        val firebaseContent: List<FirebaseContent>,
+        val bookmarks: List<Bookmark>,
+    )
 
     private fun getConferenceContent(
         conference: Conference,

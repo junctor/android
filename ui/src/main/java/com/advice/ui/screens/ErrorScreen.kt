@@ -23,7 +23,7 @@ fun ErrorScreen(message: String = "Something went wrong", onBackPress: () -> Uni
         },
     ) { contentPadding ->
         EmptyMessage(
-            message, modifier = Modifier
+            message = message, modifier = Modifier
                 .padding(contentPadding)
         )
     }

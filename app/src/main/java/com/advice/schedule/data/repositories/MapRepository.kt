@@ -3,7 +3,7 @@ package com.advice.schedule.data.repositories
 import com.advice.data.sources.MapsDataSource
 
 class MapRepository(
-    private val dataSource: MapsDataSource,
+    dataSource: MapsDataSource,
 ) {
     val maps = dataSource.get()
 }

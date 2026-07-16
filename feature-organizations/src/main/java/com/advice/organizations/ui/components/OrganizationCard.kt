@@ -53,7 +53,7 @@ internal fun OrganizationCard(
                     contentDescription = "logo",
                     modifier = Modifier
                         .fillMaxSize(),
-                    contentScale = ContentScale.FillWidth,
+                    contentScale = ContentScale.Fit,
                 )
             }
 

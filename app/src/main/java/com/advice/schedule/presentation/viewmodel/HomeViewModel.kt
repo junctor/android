@@ -14,10 +14,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Date
+import kotlin.time.Duration.Companion.milliseconds
 
 class HomeViewModel : ViewModel(), KoinComponent {
 
@@ -28,6 +31,7 @@ class HomeViewModel : ViewModel(), KoinComponent {
     private val documentRepository by inject<DocumentsRepository>()
 
     private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
+    private val _countdown = MutableStateFlow(0L)
 
     private var countdownJob: Job? = null
     private var emergencyDocumentId: Long? = null
@@ -78,19 +82,20 @@ class HomeViewModel : ViewModel(), KoinComponent {
             countdownJob = viewModelScope.launch {
                 while (remainder > 0L) {
                     remainder = conference.kickoffDate.toEpochMilli() - Date().time
-                    val value = _state.value as? HomeState.Loaded
-                    if (value != null) {
-                        _state.value = value.copy(countdown = remainder)
-                    }
-                    delay(COUNTDOWN_DELAY)
+                    _countdown.value = remainder.coerceAtLeast(0L)
+                    delay(COUNTDOWN_DELAY.milliseconds)
                 }
+                _countdown.value = 0L
             }
+        } else {
+            _countdown.value = 0L
         }
     }
 
     fun setConference(conference: Conference) {
         countdownJob?.cancel()
         countdownJob = null
+        _countdown.value = 0L
         viewModelScope.launch {
             repository.setConference(conference)
         }
@@ -98,6 +103,8 @@ class HomeViewModel : ViewModel(), KoinComponent {
     }
 
     fun getHomeState(): Flow<HomeState> = _state
+
+    fun getCountdown(): StateFlow<Long> = _countdown.asStateFlow()
 
     fun markLatestNewsAsRead(newsArticle: NewsArticle) {
         viewModelScope.launch {

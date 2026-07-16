@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class SharedPreferencesBookmarkDataSource(
-    private val context: Context,
+    context: Context,
 ) : BookmarkedElementDataSource {
 
     private val prefs: SharedPreferences =

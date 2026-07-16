@@ -90,9 +90,6 @@ fun ConferenceSelector(
                 onConferenceClick(it)
                 expanded = false
             },
-            onDismiss = {
-                expanded = false
-            },
         )
         Box(
             Modifier

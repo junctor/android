@@ -35,12 +35,12 @@ class FirebaseWifiNetworksDataSource(
         firestore.collection("conferences/${conference.code}/wifi_networks")
             .snapshotFlowLegacy()
             .closeOnConferenceChange(userSession.getConference())
-            .map {
-                it.toObjectsOrEmpty(FirebaseWiFiNetwork::class.java).map {
-                    val certificates = it.certs?.mapNotNull { id ->
+            .map { snapshot ->
+                snapshot.toObjectsOrEmpty(FirebaseWiFiNetwork::class.java).map { network ->
+                    val certificates = network.certs?.mapNotNull { id ->
                         getCertificate(id)
                     }
-                    it.toWiFiNetwork(certificates)
+                    network.toWiFiNetwork(certificates)
                 }
             }
             .onStart { emit(emptyList()) }

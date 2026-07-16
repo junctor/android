@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,7 +29,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.advice.core.local.StockStatus
-import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
 import com.advice.products.R
 import com.advice.products.presentation.state.ProductsState
@@ -65,7 +65,8 @@ internal fun EditableProduct(
                 Image(
                     model = product.media.firstOrNull()?.url,
                     contentDescription = product.label,
-                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
                 )
             }
 
@@ -88,13 +89,11 @@ internal fun EditableProduct(
                             lineHeight = 15.sp,
                         )
                         val variant = product.variant
-                        if (variant != null) {
-                            Text(
-                                text = variant.label,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = 12.sp,
-                            )
-                        }
+                        Text(
+                            text = variant.label,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 12.sp,
+                        )
                     }
 
                     Spacer(Modifier.width(8.dp))
@@ -106,7 +105,7 @@ internal fun EditableProduct(
                             text = product.cost.toCurrency(showCents = true),
                         )
                         // Stock status
-                        if (product.variant?.stockStatus == StockStatus.LOW_STOCK) {
+                        if (product.variant.stockStatus == StockStatus.LOW_STOCK) {
                             Spacer(Modifier.height(4.dp))
                             LowStockLabel()
                         }
@@ -114,7 +113,7 @@ internal fun EditableProduct(
                 }
                 Spacer(Modifier.weight(1f))
 
-                if (product.variant?.stockStatus == StockStatus.OUT_OF_STOCK) {
+                if (product.variant.stockStatus == StockStatus.OUT_OF_STOCK) {
                     Row(
                         modifier = Modifier
                             .background(

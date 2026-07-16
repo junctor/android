@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
 class LocationRepository(
-    private val locationsDataSource: LocationsDataSource,
+    locationsDataSource: LocationsDataSource,
 ) {
     private val expanded = MutableStateFlow(emptyList<Long>())
 

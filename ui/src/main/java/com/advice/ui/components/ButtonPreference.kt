@@ -96,7 +96,7 @@ private fun Dialog(
 @Composable
 private fun ButtonPreferencePreview() {
     ScheduleTheme {
-        ButtonPreference({})
+        ButtonPreference {}
     }
 }
 

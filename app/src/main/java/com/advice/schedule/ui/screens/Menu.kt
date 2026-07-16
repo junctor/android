@@ -20,9 +20,7 @@ internal fun Menu(
     id: Long?,
 ) {
     val viewModel = navController.navGraphViewModel<MenuViewModel>()
-    val state = viewModel.state.collectAsState(initial = MenuScreenState.Loading).value
-
-    when (state) {
+    when (val state = viewModel.state.collectAsState(initial = MenuScreenState.Loading).value) {
         is MenuScreenState.Error -> {
             ErrorScreen {
 

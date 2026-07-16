@@ -43,13 +43,13 @@ fun NewsScreen(
                 }
 
                 news.isEmpty() -> {
-                    EmptyMessage("News not found")
+                    EmptyMessage(message = "News not found")
                 }
 
                 else -> {
                     LazyColumn {
-                        items(news) {
-                            ArticleView(title = it.name, text = it.text, date = it.date)
+                        items(news) { article ->
+                            ArticleView(title = article.name, text = article.text, date = article.date)
                         }
                         item {
                             Spacer(Modifier.height(64.dp))

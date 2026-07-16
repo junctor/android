@@ -40,7 +40,7 @@ fun SpeakersScreen(
                 }
 
                 speakers.isEmpty() -> {
-                    EmptyMessage("Speakers not found")
+                    EmptyMessage(message = "Speakers not found")
                 }
 
                 else -> {

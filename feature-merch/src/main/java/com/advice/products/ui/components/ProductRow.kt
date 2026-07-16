@@ -73,7 +73,7 @@ fun ProductRow(
                         containerColor = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(24.dp)
-                            .offset(x = -12.dp, y = 12.dp)
+                            .offset(x = (-12).dp, y = 12.dp)
                     ) {
                         Text(
                             text = "$quantity",

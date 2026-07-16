@@ -70,6 +70,6 @@ private fun PreviewImage() {
         request = request,
         contentDescription = "example image",
         modifier = Modifier.size(240.dp),
-        contentScale = ContentScale.FillWidth,
+        contentScale = ContentScale.Fit,
     )
 }

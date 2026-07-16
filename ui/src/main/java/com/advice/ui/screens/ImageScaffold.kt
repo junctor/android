@@ -81,7 +81,7 @@ fun ImageScaffold(
                     Image(
                         request = request,
                         contentDescription = "background image",
-                        contentScale = ContentScale.FillWidth,
+                        contentScale = ContentScale.Fit,
                         modifier = imageModifier,
                     )
                 }
