@@ -1,6 +1,5 @@
 package com.advice.schedule.data.repositories
 
-import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
 import com.advice.core.local.Document
 import com.advice.core.local.Event
@@ -54,33 +53,36 @@ class SearchRepository(
         eventsDataSource.content,
         speakersDataSource.speakers,
         organizationsDataSource.organizations,
-        faqDataSource.faqs,
-        documentsDataSource.documents,
-    ) { values ->
-        val data = values.toSearchableData()
-        val query = values[QUERY_INDEX] as String
+        combine(faqDataSource.faqs, documentsDataSource.documents, ::Pair),
+    ) { query, conferenceContent, speakers, organizations, faqsAndDocuments ->
         if (query.length < MIN_QUERY_LENGTH) {
             return@combine SearchState.Idle
         }
 
+        val (faqs, documents) = faqsAndDocuments
+        val faqList = when (faqs) {
+            is FlowResult.Success -> faqs.value
+            else -> emptyList()
+        }
+
         SearchState.Results(
             SearchResults(
-                query = data.query,
-                contents = data.events.filter { event ->
+                query = query,
+                contents = conferenceContent.content.filter { event ->
                     event.title.contains(query, ignoreCase = true) ||
                         event.description.contains(query, ignoreCase = true)
                 },
-                speakers = data.speakers.filter { speaker ->
+                speakers = speakers.filter { speaker ->
                     speaker.name.contains(query, ignoreCase = true)
                 },
-                organizations = data.organizations.filter { organization ->
+                organizations = organizations.filter { organization ->
                     organization.name.contains(query, ignoreCase = true)
                 },
-                faq = data.faq.filter { faq ->
+                faq = faqList.filter { faq ->
                     faq.question.contains(query, ignoreCase = true) ||
                         faq.answer.contains(query, ignoreCase = true)
                 },
-                documents = data.documents.filter { document ->
+                documents = documents.filter { document ->
                     document.title.contains(query, ignoreCase = true) ||
                         document.description.contains(query, ignoreCase = true)
                 },
@@ -93,31 +95,4 @@ class SearchRepository(
     }
 }
 
-data class SearchableData(
-    val query: String,
-    val events: List<Content>,
-    val speakers: List<Speaker>,
-    val organizations: List<Organization>,
-    val faq: List<FAQ>,
-    val documents: List<Document>,
-)
-
-private fun <T> Array<T>.toSearchableData(): SearchableData {
-    return SearchableData(
-        query = this[QUERY_INDEX] as String,
-        events = (this[EVENTS_INDEX] as? ConferenceContent)?.content ?: emptyList(),
-        speakers = this[SPEAKERS_INDEX] as? List<Speaker> ?: emptyList(),
-        organizations = this[ORGANIZATIONS_INDEX] as? List<Organization> ?: emptyList(),
-        faq = (this[FAQ_INDEX] as FlowResult<List<FAQ>> as? FlowResult.Success)?.value
-            ?: emptyList(),
-        documents = this[DOCUMENTS_INDEX] as? List<Document> ?: emptyList(),
-    )
-}
-
 private const val MIN_QUERY_LENGTH = 2
-private const val QUERY_INDEX = 0
-private const val EVENTS_INDEX = 1
-private const val SPEAKERS_INDEX = 2
-private const val ORGANIZATIONS_INDEX = 3
-private const val FAQ_INDEX = 4
-private const val DOCUMENTS_INDEX = 5

@@ -44,7 +44,7 @@ fun FAQScreen(
                 }
 
                 faqs.isEmpty() -> {
-                    EmptyMessage("FAQ not found")
+                    EmptyMessage(message = "FAQ not found")
                 }
 
                 else -> {

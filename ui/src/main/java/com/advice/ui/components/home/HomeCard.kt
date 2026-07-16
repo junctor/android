@@ -30,6 +30,7 @@ fun HomeCard(
     }
 }
 
+@Suppress("PreviewShouldNotBeCalledRecursively")
 @PreviewLightDark
 @Composable
 private fun HomeCard() {

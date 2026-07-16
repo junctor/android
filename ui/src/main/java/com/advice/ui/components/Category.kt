@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
@@ -47,7 +46,7 @@ fun Category(
         alpha.animateTo(if (tag.isSelected) 1f else 0f)
     })
 
-    val tagColor = parseColor(tag.color)
+    val tagColor = remember(tag.color) { parseColor(tag.color) }
 
     Row(
         modifier

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 
 
 class SettingsRepository(
-    private val userSession: UserSession,
+    userSession: UserSession,
     private val preferences: Storage,
     private val version: String,
 ) {

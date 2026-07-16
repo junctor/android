@@ -57,7 +57,7 @@ fun ProductSquare(
                 modifier = Modifier
                     .fillMaxSize()
                     .alpha(if (product.inStock) 1f else 0.5f),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
             )
 
             LabelBadge(

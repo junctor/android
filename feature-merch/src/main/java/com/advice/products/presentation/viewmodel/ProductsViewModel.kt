@@ -56,7 +56,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             repository.products.collect {
                 products.clear()
-                products.addAll(it.sortedByDescending { it.inStock })
+                products.addAll(it.sortedByDescending { it -> it.inStock })
                 updateSummary()
             }
         }
@@ -118,15 +118,15 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     fun onTagClicked(tag: Tag) {
         viewModelScope.launch {
-            val tagTypes = productVariantTags.map {
-                val tags = it.tags.map {
-                    if (it.id == tag.id) {
-                        it.copy(isSelected = !it.isSelected)
+            val tagTypes = productVariantTags.map { type ->
+                val tags = type.tags.map { productTag ->
+                    if (productTag.id == tag.id) {
+                        productTag.copy(isSelected = !productTag.isSelected)
                     } else {
-                        it
+                        productTag
                     }
                 }
-                it.copy(tags = tags)
+                type.copy(tags = tags)
             }
             productVariantTags.clear()
             productVariantTags.addAll(tagTypes)

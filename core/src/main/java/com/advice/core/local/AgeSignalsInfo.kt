@@ -2,7 +2,6 @@ package com.advice.core.local
 
 import com.shortstack.core.BuildConfig
 import timber.log.Timber
-import kotlin.Int
 
 class AgeSignalsInfo(
     val lowerAge: Int?,
@@ -15,10 +14,10 @@ fun AgeSignalsInfo.canView(minAge: Int?, item: Any? = null): Boolean {
         lowerAge == null -> true
         else -> lowerAge >= minAge
     }
-    if (BuildConfig.DEBUG) {
+    if (BuildConfig.DEBUG && !decision) {
         Timber.d(
-            "AgeSignalsInfo.canView: type=${item?.javaClass?.simpleName}, " +
-                "minAge=$minAge, status=$status, lowerAge=$lowerAge, decision=$decision"
+            "AgeSignalsInfo.canView: Blocked item: type=${item?.javaClass?.simpleName}, " +
+                "minAge=$minAge, status=$status, lowerAge=$lowerAge"
         )
     }
     return decision

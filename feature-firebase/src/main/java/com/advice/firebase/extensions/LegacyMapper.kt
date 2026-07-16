@@ -1,6 +1,5 @@
 package com.advice.firebase.extensions
 
-import android.annotation.SuppressLint
 import com.advice.core.local.Action
 import com.advice.core.local.Affiliation
 import com.advice.core.local.Bookmark
@@ -27,7 +26,6 @@ import com.advice.core.local.Speaker
 import com.advice.core.local.StockStatus
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
-import com.advice.core.local.Vendor
 import com.advice.core.local.feedback.ContentFeedbackForm
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.local.feedback.FeedbackItem
@@ -50,7 +48,6 @@ import com.advice.firebase.models.FirebaseSpeaker
 import com.advice.firebase.models.FirebaseSpeakerLink
 import com.advice.firebase.models.FirebaseTag
 import com.advice.firebase.models.FirebaseTagType
-import com.advice.firebase.models.FirebaseVendor
 import com.advice.firebase.models.feedback.FirebaseFeedbackForm
 import com.advice.firebase.models.feedback.FirebaseFeedbackItem
 import com.advice.firebase.models.location.FirebaseLocation
@@ -64,7 +61,9 @@ import com.advice.firebase.models.products.FirebaseProduct
 import com.advice.firebase.models.products.FirebaseProductMedia
 import com.advice.firebase.models.products.FirebaseProductVariant
 import timber.log.Timber
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneId
 
 fun FirebaseConference.toConference(): Conference? =
     try {
@@ -127,13 +126,15 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
         null
     }
 
-@SuppressLint("SimpleDateFormat")
 fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? =
     try {
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        val start = runCatching { OffsetDateTime.parse(begin).toInstant() }
+            .getOrElse { LocalDateTime.parse(begin).atZone(ZoneId.systemDefault()).toInstant() }
+        val end = runCatching { OffsetDateTime.parse(end).toInstant() }
+            .getOrElse { LocalDateTime.parse(end).atZone(ZoneId.systemDefault()).toInstant() }
         LocationSchedule(
-            format.parse(begin).toInstant(),
-            format.parse(end).toInstant(),
+            start,
+            end,
             notes,
             status,
         )
@@ -151,11 +152,11 @@ fun FirebaseContent.toContents(
     feedbackforms: List<FeedbackForm>,
 ): Content? {
     try {
-        val list = tags.flatMap { it.tags.sortedBy { it.sortOrder } }
+        val list = tags.flatMap { el -> el.tags.sortedBy { it.sortOrder } }
 
         val links = links.map { it.toAction() }
         val types =
-            tag_ids
+            tagIds
                 .mapNotNull { id ->
                     list.find { it.id == id }
                 }.sortedBy { list.indexOf(it) }
@@ -216,7 +217,7 @@ fun FirebaseContent.toContents(
             isBookmarked = isBookmarked,
             sessions = newSessions,
             feedback = feedbackForm,
-            relatedContentIds = related_content_ids ?: emptyList(),
+            relatedContentIds = relatedContentIds ?: emptyList(),
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Content: ${ex.message}")
@@ -275,20 +276,6 @@ fun FirebaseSpeakerLink.toLink(): Link? =
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Link: ${ex.message}")
-        null
-    }
-
-fun FirebaseVendor.toVendor(): Vendor? =
-    try {
-        Vendor(
-            id,
-            name,
-            description,
-            link,
-            partner,
-        )
-    } catch (ex: Exception) {
-        Timber.e("Could not map data to Vendor: ${ex.message}")
         null
     }
 
@@ -500,7 +487,7 @@ fun FirebaseFAQ.toFAQ() = FAQ(question, answer)
 fun FirebaseProduct.toMerch(tagTypes: List<TagType>): Product? =
     try {
         val defaultTags = listOf(Tag(1, "Other", "", "", -1))
-        val productTags = tags.mapNotNull { id ->
+        val productTags = tagIds.mapNotNull { id ->
             tagTypes.flatMap { it.tags }.find { it.id == id }
         }
         Product(
@@ -524,7 +511,7 @@ fun FirebaseProductVariant.toMerchOption(): ProductVariant? =
         ProductVariant(
             id = variantId,
             label = title,
-            tags = tags,
+            tags = tagIds,
             price = price,
             stockStatus = StockStatus.fromString(stockStatus) ?: StockStatus.IN_STOCK,
         )

@@ -6,7 +6,6 @@ import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.ScheduleFilter
-import com.advice.core.utils.Storage
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -22,7 +21,6 @@ class ScheduleRepository(
     private val contentRepository: ContentRepository,
     private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
-    private val storage: Storage,
 ) {
 
     fun getSchedule(filter: ScheduleFilter): Flow<ScheduleResult> {
@@ -38,7 +36,7 @@ class ScheduleRepository(
             }
 
             val sortedEvents = events.sortedBy { it.session.start }
-            val selected = tags.filter { it.tags.any { it.isSelected } }
+            val selected = tags.filter { it.tags.any { it -> it.isSelected } }
 
             val filteredEvents = when (filter) {
                 ScheduleFilter.Default -> {
@@ -53,7 +51,7 @@ class ScheduleRepository(
                     if (filter.id == Tag.bookmark.id) {
                         sortedEvents.filter { it.session.isBookmarked }
                     } else {
-                        sortedEvents.filter { it.types.any { it.id == filter.id } }
+                        sortedEvents.filter { it.types.any { it -> it.id == filter.id } }
                     }
                 }
 
@@ -63,7 +61,7 @@ class ScheduleRepository(
                         sortedEvents.filter { it.session.isBookmarked }
                     } else {
                         // Any content that have any of the selected tags
-                        sortedEvents.filter { it.types.any { it.id in ids } }
+                        sortedEvents.filter { it.types.any { it -> it.id in ids } }
                     }
                 }
             }
@@ -113,13 +111,13 @@ class ScheduleRepository(
         }
 
         val groups = filter.map {
-            it.tags.filter { it.isSelected }.map { it.id }
+            it.tags.filter { it -> it.isSelected }.map { it -> it.id }
         }
 
         return events
             .filter {
                 groups.all { ids ->
-                    it.types.any { it.id in ids }
+                    it.types.any { it -> it.id in ids }
                 }
             }
     }

@@ -18,7 +18,6 @@ fun ConferenceDropdown(
     expanded: Boolean,
     conferences: List<Conference>,
     onConferenceClick: (Conference) -> Unit,
-    onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
@@ -44,6 +43,6 @@ fun ConferenceDropdown(
 @Composable
 private fun ConferenceDropdownPreview() {
     ScheduleTheme {
-        ConferenceDropdown(true, listOf(Conference.Zero, Conference.Zero), {}, {})
+        ConferenceDropdown(true, listOf(Conference.Zero, Conference.Zero), {})
     }
 }

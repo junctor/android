@@ -11,7 +11,6 @@ import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toTagType
 import com.advice.firebase.models.FirebaseTagType
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,7 +22,6 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseTagsDataSource(
@@ -58,10 +56,10 @@ class FirebaseTagsDataSource(
             val temp = tags
                 .toMutableList()
                 .sortedBy { it.sortOrder }
-                .map {
-                    it.copy(
+                .map { sorted ->
+                    sorted.copy(
                         tags =
-                            it.tags.sortedWith(
+                            sorted.tags.sortedWith(
                                 compareBy(
                                     { it.sortOrder },
                                     { it.label },

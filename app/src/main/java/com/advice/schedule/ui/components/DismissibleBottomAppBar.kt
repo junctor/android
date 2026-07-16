@@ -15,7 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -31,7 +31,7 @@ fun DismissibleBottomAppBar(
     isShown: Boolean,
     content: @Composable RowScope.() -> Unit,
 ) {
-    var offsetY by rememberSaveable { mutableStateOf(0f) }
+    var offsetY by rememberSaveable { mutableFloatStateOf(0f) }
     offsetY = if (isShown) 0f else with(LocalDensity.current) { 48.dp.toPx() }
     val animatedOffsetY by animateFloatAsState(
         targetValue = offsetY,

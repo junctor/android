@@ -8,10 +8,10 @@ import java.security.cert.X509Certificate
 import java.util.Locale
 
 fun WifiManager.existingWirelessConfig(ssid: String): WifiConfiguration? {
-    setWifiEnabled(true)
+    isWifiEnabled = true
 
     val configs = configuredNetworks
-    val existing = configs.firstOrNull { it.SSID == surroundWithQuotes(ssid) }
+    val existing = configs?.firstOrNull { it.SSID == surroundWithQuotes(ssid) }
     return existing
 }
 
@@ -39,7 +39,7 @@ fun String.toBoolean(): Boolean {
 }
 
 private fun String?.convertEapMethod(): Int {
-    return when (this?.toUpperCase(Locale.ROOT)) {
+    return when (this?.uppercase(Locale.ROOT)) {
         "PEAP" -> WifiEnterpriseConfig.Eap.PEAP
         "TLS" -> WifiEnterpriseConfig.Eap.TLS
         "TTLS" -> WifiEnterpriseConfig.Eap.TTLS
@@ -52,7 +52,7 @@ private fun String?.convertEapMethod(): Int {
 }
 
 private fun String?.toPhase2Method(): Int {
-    return when (this?.toUpperCase(Locale.ROOT)) {
+    return when (this?.uppercase(Locale.ROOT)) {
         "PAP" -> WifiEnterpriseConfig.Phase2.PAP
         "MSCHAP" -> WifiEnterpriseConfig.Phase2.MSCHAP
         "MSCHAPV2" -> WifiEnterpriseConfig.Phase2.MSCHAPV2

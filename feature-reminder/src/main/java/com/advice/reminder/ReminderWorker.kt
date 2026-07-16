@@ -10,7 +10,7 @@ import org.koin.core.component.inject
 import timber.log.Timber
 
 class ReminderWorker(
-    private val context: Context,
+    context: Context,
     params: WorkerParameters,
 ) : CoroutineWorker(context, params), KoinComponent {
 

@@ -211,7 +211,7 @@ private fun HeaderSection(
             if(categories.isNotEmpty()) {
                 Box(Modifier.padding(vertical = 8.dp)) {
                     CategoryView(
-                        categories.first(),
+                        tag = categories.first(),
                         size = CategorySize.Large,
                         color = Color.White,
                         hasIcon = false,
@@ -310,7 +310,7 @@ private fun EventScreenContent(
                 val tags = content.types.takeLast(content.types.size - 1)
                 for (category in tags) {
                     CategoryView(
-                        category,
+                        tag = category,
                         size = CategorySize.Medium,
                         modifier =
                             Modifier.clickable {

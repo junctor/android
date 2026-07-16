@@ -1,20 +1,26 @@
 package com.advice.ui.utils
 
 import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.toColorInt
 import com.advice.core.local.Tag
 import com.advice.ui.R
 import timber.log.Timber
+import java.util.concurrent.ConcurrentHashMap
+
+private val colorCache = ConcurrentHashMap<String, Color>()
 
 fun parseColor(color: String?): Color {
     if (color == null) {
         return Color.Blue
     }
 
+    colorCache[color]?.let { return it }
+
     return try {
-        Color(android.graphics.Color.parseColor(color))
+        Color(color.toColorInt()).also { colorCache[color] = it }
     } catch (ex: Exception) {
         Timber.e("Error parsing color: $color")
-        Color.Green
+        Color.Green.also { colorCache[color] = it }
     }
 }
 

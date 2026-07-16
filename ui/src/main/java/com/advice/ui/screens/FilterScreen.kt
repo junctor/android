@@ -91,7 +91,7 @@ fun FilterScreenContent(
     }
 }
 
-@PreviewLightDark()
+@PreviewLightDark
 @Composable
 private fun FilterScreenViewPreview(
     @PreviewParameter(TagTypeProvider::class) tagType: TagType,

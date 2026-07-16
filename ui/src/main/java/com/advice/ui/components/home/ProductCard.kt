@@ -47,7 +47,7 @@ internal fun ProductCard(
                         modifier = Modifier
                             .background(Color.White)
                             .aspectRatio(2f),
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.Fit,
                     )
                 } else {
                     val colors =

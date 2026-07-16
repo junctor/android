@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.graphics.createBitmap
 
 class GlitchContainerView(context: Context, attrs: AttributeSet?) :
     CoordinatorLayout(context, attrs) {
@@ -28,7 +30,7 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
         corruption = GLITCH_NONE
         isGlitch = false
         // if enabled via attrs, always use these settings
-        isOverriding = isGlitch
+        isOverriding = false
 
         setWillNotDraw(false)
     }
@@ -44,9 +46,7 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
         val delay = getDelay(corruption)
 
         if (isGlitch) {
-            isDrawingCacheEnabled = true
-
-            val handler = Handler()
+            val handler = Handler(Looper.getMainLooper())
             normalRunnable = Runnable {
                 if (isRunning) {
                     isNormal = true
@@ -78,15 +78,18 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
             return
         }
 
-        synchronized(this) {
-            isDrawing = true
-            val bitmap: Bitmap? = drawingCache
-            if (bitmap != null) {
-                Glitch.apply(canvas, bitmap, isGlitch = true)
-                destroyDrawingCache()
-            }
-            isDrawing = false
+        if (width <= 0 || height <= 0) {
+            super.draw(canvas)
+            return
         }
+
+        isDrawing = true
+        val bitmap = createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val tempCanvas = Canvas(bitmap)
+        super.draw(tempCanvas)
+        Glitch.apply(canvas, bitmap, isGlitch = true)
+        bitmap.recycle()
+        isDrawing = false
     }
 
     private fun getDelay(corruption: Int): Long {

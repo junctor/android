@@ -37,12 +37,12 @@ class ContentRepository(
      */
     private fun updateBookmarkedContent(conferenceContent: ConferenceContent) {
         val updatedBookmarks = conferenceContent.content
-            .filter { it.isBookmarked || it.sessions.any { it.isBookmarked } }
+            .filter { it -> it.isBookmarked || it.sessions.any { it.isBookmarked } }
             .also {
                 // Handling edge case for users that have bookmarked items before this update.
-                it.forEach {
-                    if (storage.getContentUpdatedTimestamp(it.id) == 0L) {
-                        storage.setContentUpdatedTimestamp(it.id, it.updated.toEpochMilli())
+                it.forEach { content ->
+                    if (storage.getContentUpdatedTimestamp(content.id) == 0L) {
+                        storage.setContentUpdatedTimestamp(content.id, content.updated.toEpochMilli())
                     }
                 }
             }

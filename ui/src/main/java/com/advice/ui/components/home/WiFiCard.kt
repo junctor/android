@@ -27,6 +27,6 @@ internal fun WiFiCard(onConnectClicked: () -> Unit) {
 @Composable
 private fun WiFiCardPreview() {
     ScheduleTheme {
-        WiFiCard({})
+        WiFiCard {}
     }
 }

@@ -35,7 +35,7 @@ fun OrganizationsScreen(
                 }
 
                 organizations.isEmpty() -> {
-                    EmptyMessage("$label not found")
+                    EmptyMessage(message = "$label not found")
                 }
 
                 else -> {

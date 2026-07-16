@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
 import com.advice.ui.components.BackButton
-import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.MenuIcon
 import com.advice.ui.components.ProgressSpinner
 
@@ -42,22 +41,17 @@ fun MenuScreen(
         })
     }) {
         Box(Modifier.padding(it)) {
-            when {
-                menu == null -> {
+            when (menu) {
+                null -> {
                     ProgressSpinner()
                 }
-
-                menu == null -> {
-                    EmptyMessage("$label not found")
-                }
-
                 else -> {
                     Column(
                         Modifier
                             .padding(16.dp)
                             .verticalScroll(rememberScrollState()),
                     ) {
-                        menu.items.forEach {
+                        menu.items.forEach { menuItem ->
                             Surface(
                                 border = BorderStroke(
                                     1.dp,
@@ -72,14 +66,14 @@ fun MenuScreen(
                                     Modifier
                                         .fillMaxWidth()
                                         .clickable {
-                                            onNavigationClick(it)
+                                            onNavigationClick(menuItem)
                                         }
                                         .padding(16.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 ) {
-                                    MenuIcon(it.icon)
-                                    Text(it.label)
+                                    MenuIcon(menuItem.icon)
+                                    Text(menuItem.label)
                                 }
                             }
                         }

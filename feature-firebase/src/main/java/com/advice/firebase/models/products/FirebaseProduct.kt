@@ -38,7 +38,7 @@ data class FirebaseProduct(
     var media: List<FirebaseProductMedia> = emptyList(),
     @get:PropertyName("tag_ids")
     @set:PropertyName("tag_ids")
-    var tags: List<Long> = emptyList(),
+    var tagIds: List<Long> = emptyList(),
     @get:PropertyName("variants")
     @set:PropertyName("variants")
     var variants: List<FirebaseProductVariant> = emptyList(),

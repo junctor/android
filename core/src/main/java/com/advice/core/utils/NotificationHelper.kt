@@ -9,15 +9,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.media.RingtoneManager
-import android.net.Uri
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.advice.core.local.Document
 import com.advice.core.local.Event
 import com.shortstack.core.R
-import kotlinx.coroutines.flow.Flow
 
 @SuppressLint("MissingPermission")
 class NotificationHelper(private val context: Context) {
@@ -59,7 +57,7 @@ class NotificationHelper(private val context: Context) {
     private fun getDocumentNotification(document: Document): Notification =
         notification {
             setContentTitle(document.title)
-            setContentText("Tape for more details")
+            setContentText("Tap here for more details")
             setContentIntent(getPendingIntent(document.id))
         }
 
@@ -77,7 +75,7 @@ class NotificationHelper(private val context: Context) {
 
     private fun getPendingIntent(event: Event): PendingIntent {
         val deepLink =
-            Uri.parse("https://hackertracker.app/event?c=${event.conference}&e=${event.eventId}")
+            "https://hackertracker.app/event?c=${event.conference}&e=${event.eventId}".toUri()
 
         val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
             setPackage("com.shortstack.hackertracker")
@@ -92,7 +90,7 @@ class NotificationHelper(private val context: Context) {
 
     private fun getPendingIntent(documentId: Long): PendingIntent {
         val deepLink =
-            Uri.parse("https://hackertracker.app/document?id=$documentId")
+            "https://hackertracker.app/document?id=$documentId".toUri()
 
         val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
             setPackage("com.shortstack.hackertracker")

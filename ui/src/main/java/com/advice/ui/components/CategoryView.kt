@@ -26,11 +26,30 @@ import com.advice.ui.utils.parseColor
 
 @Composable
 fun CategoryView(
+    modifier: Modifier = Modifier,
     tag: Tag,
     size: CategorySize = CategorySize.Small,
     color: Color = MaterialTheme.colorScheme.onSurface,
     hasIcon: Boolean = true,
+) {
+    CategoryView(
+        label = tag.label,
+        indicatorColor = parseColor(tag.color),
+        modifier = modifier,
+        size = size,
+        color = color,
+        hasIcon = hasIcon,
+    )
+}
+
+@Composable
+fun CategoryView(
+    label: String,
+    indicatorColor: Color,
     modifier: Modifier = Modifier,
+    size: CategorySize = CategorySize.Small,
+    color: Color = MaterialTheme.colorScheme.onSurface,
+    hasIcon: Boolean = true,
 ) {
     val style =
         when (size) {
@@ -76,11 +95,11 @@ fun CategoryView(
                 Modifier
                     .size(iconSize)
                     .clip(CircleShape)
-                    .background(parseColor(tag.color)),
+                    .background(indicatorColor),
             )
         }
         Text(
-            tag.label,
+            label,
             color = color,
             fontWeight = fontWeight,
             style = style,
@@ -97,7 +116,7 @@ private fun CategoryViewPreview() {
 
     ScheduleTheme {
         Surface {
-            CategoryView(tag)
+            CategoryView(tag = tag)
         }
     }
 }

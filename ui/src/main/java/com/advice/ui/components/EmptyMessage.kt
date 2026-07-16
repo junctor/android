@@ -32,8 +32,8 @@ fun ErrorMessage(
 
 @Composable
 fun EmptyMessage(
-    message: String = "404",
     modifier: Modifier = Modifier,
+    message: String = "404",
     title: String = "404",
 ) {
     Box(modifier.fillMaxSize()) {

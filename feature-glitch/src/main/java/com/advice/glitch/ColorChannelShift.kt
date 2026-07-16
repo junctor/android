@@ -8,6 +8,7 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import androidx.core.graphics.withSave
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -31,25 +32,20 @@ class ColorChannelShift : GlitchEffect {
     }
 
     override fun apply(canvas: Canvas, bitmap: Bitmap, isGlitch: Boolean) {
-        canvas.save()
+        canvas.withSave {
+            drawColor(Color.TRANSPARENT)
 
-        canvas.drawColor(Color.TRANSPARENT)
+            val width = bitmap.width
+            val height = bitmap.height
 
-        val width = bitmap.width
-        val height = bitmap.height
+            translate(canvas.width / 2f - width / 2f, canvas.height / 2f - height / 2f)
 
-        canvas.translate(canvas.width / 2f - width / 2f, canvas.height / 2f - height / 2f)
-
-        canvas.drawBitmap(modify(ColorChannel.RED, isGlitch), redPaint)
-        canvas.drawBitmap(modify(ColorChannel.GREEN, isGlitch), greenPaint)
-        canvas.drawBitmap(modify(ColorChannel.BLUE, isGlitch), bluePaint)
+            drawBitmap(modify(ColorChannel.RED, isGlitch), redPaint)
+            drawBitmap(modify(ColorChannel.GREEN, isGlitch), greenPaint)
+            drawBitmap(modify(ColorChannel.BLUE, isGlitch), bluePaint)
+        }
 
         offset++
-
-        try {
-            canvas.restore()
-        } catch (ex: Exception) {
-        }
     }
 
     private val redPaint = getPaint(ColorChannel.RED)
@@ -134,7 +130,7 @@ class ColorChannelShift : GlitchEffect {
                 if (shift != 0) {
                     if (shift > 0) {
                         matrix[index] = matrix[index] + Random(offset).nextInt(50)
-                    } else if (shift < 0) {
+                    } else {
                         matrix[index] = matrix[index] - Random(offset).nextInt(50)
                     }
                 }

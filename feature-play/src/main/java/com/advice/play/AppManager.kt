@@ -3,9 +3,10 @@ package com.advice.play
 import android.app.Activity
 import android.content.Context
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.suspendCancellableCoroutine
 class AppManager(context: Context) {
 
     private val appUpdateManager = AppUpdateManagerFactory.create(context)
@@ -14,7 +15,7 @@ class AppManager(context: Context) {
             return false
         }
 
-        return suspendCoroutine {
+        return suspendCancellableCoroutine {
             try {
                 appUpdateManager.appUpdateInfo
                     .addOnCompleteListener { task ->
@@ -39,11 +40,13 @@ class AppManager(context: Context) {
 
         try {
             appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                    appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+                ) {
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
-                        AppUpdateType.FLEXIBLE,
                         activity,
+                        AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build(),
                         requestCode
                     )
                 }

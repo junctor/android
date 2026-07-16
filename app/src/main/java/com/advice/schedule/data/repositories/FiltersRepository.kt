@@ -13,8 +13,8 @@ class FiltersRepository(
     private val bookmarksDataSource: BookmarkedElementDataSource,
 ) {
     val tags = tagsRepository.tags
-        .map {
-            it.filter { it.isBrowsable && it.category == "content" }
+        .map { types ->
+            types.filter { it.isBrowsable && it.category == "content" }
         }.shareIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Eagerly,
