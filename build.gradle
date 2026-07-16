@@ -8,6 +8,6 @@ plugins {
     alias libs.plugins.ktlint
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }
