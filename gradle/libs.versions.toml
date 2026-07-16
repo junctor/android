@@ -31,12 +31,10 @@ firebaseBom = "34.16.0"
 okhttp = "5.4.0"
 retrofit = "3.0.0"
 gson = "2.14.0"
-accompanist = "0.36.0"
 pdfViewer = "3.2.0-beta.3"
 richtext = "0.20.0"
 workRuntimeKtx = "2.11.2"
 zxingCore = "3.5.4"
-zxingAndroidCore = "3.3.0"
 junit = "4.13.2"
 extJunit = "1.3.0"
 espressoCore = "3.7.0"
@@ -69,10 +67,6 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 
-accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
-accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
-
 android-pdf-viewer = { group = "com.github.mhiew", name = "android-pdf-viewer", version.ref = "pdfViewer" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -96,7 +90,6 @@ compose-richtext-common = { group = "com.halilibo.compose-richtext", name = "ric
 compose-richtext-material = { group = "com.halilibo.compose-richtext", name = "richtext-ui-material3", version.ref = "richtext" }
 
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxingCore" }
-zxing-android-core = { module = "com.google.zxing:android-core", version.ref = "zxingAndroidCore" }
 
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 

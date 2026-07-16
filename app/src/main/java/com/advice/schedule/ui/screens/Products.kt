@@ -13,7 +13,6 @@ import com.advice.products.ui.screens.ProductScreen
 import com.advice.products.ui.screens.ProductsScreen
 import com.advice.products.ui.screens.ProductsSummaryScreen
 import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
