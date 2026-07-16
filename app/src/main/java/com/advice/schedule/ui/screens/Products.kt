@@ -64,7 +64,7 @@ fun Product(
 
         ProductsScreenState.Error -> {
             ErrorScreen {
-                // todo: implement
+                viewModel.retry()
             }
         }
 
@@ -101,7 +101,7 @@ fun ProductsSummary(context: AppCompatActivity, navController: NavHostController
 
         ProductsScreenState.Error -> {
             ErrorScreen {
-                // todo: implement
+                viewModel.retry()
             }
         }
 

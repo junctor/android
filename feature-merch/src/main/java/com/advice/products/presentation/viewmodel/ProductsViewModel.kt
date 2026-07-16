@@ -15,11 +15,14 @@ import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.DismissibleInformation
 import com.advice.products.utils.toStringData
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import timber.log.Timber
 
 class ProductsViewModel : ViewModel(), KoinComponent {
 
@@ -39,36 +42,65 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     private var merchMandatoryAcknowledgement: String? = null
     private var merchTaxStatement: String? = null
 
-    init {
-        viewModelScope.launch {
-            repository.conference.collect {
-                if (it.id != conference) {
-                    loadProductSelections(it)
-                }
+    private var observeJob: Job? = null
 
-                conference = it.id
-                canAdd = it.flags["enable_merch_cart"] ?: false
-                merchDocument = it.merchInformation?.merchHelpDocId
-                merchMandatoryAcknowledgement = it.merchInformation?.merchMandatoryAcknowledgement
-                merchTaxStatement = it.merchInformation?.merchTaxStatement
+    init {
+        observe()
+    }
+
+    /**
+     * Re-subscribe to merch data after an error.
+     */
+    fun retry() {
+        observe()
+    }
+
+    private fun observe() {
+        observeJob?.cancel()
+        _state.value = ProductsScreenState.Loading
+        observeJob = viewModelScope.launch {
+            launch {
+                repository.conference
+                    .catch { emitError("conference", it) }
+                    .collect {
+                        if (it.id != conference) {
+                            loadProductSelections(it)
+                        }
+
+                        conference = it.id
+                        canAdd = it.flags["enable_merch_cart"] ?: false
+                        merchDocument = it.merchInformation?.merchHelpDocId
+                        merchMandatoryAcknowledgement =
+                            it.merchInformation?.merchMandatoryAcknowledgement
+                        merchTaxStatement = it.merchInformation?.merchTaxStatement
+                    }
+            }
+            launch {
+                repository.products
+                    .catch { emitError("products", it) }
+                    .collect {
+                        products.clear()
+                        products.addAll(it.sortedByDescending { product -> product.inStock })
+                        updateSummary()
+                    }
+            }
+            launch {
+                repository.variants
+                    .catch { emitError("variants", it) }
+                    .collect {
+                        productVariantTags.clear()
+                        productVariantTags.addAll(it)
+                        if (products.isNotEmpty()) {
+                            updateSummary()
+                        }
+                    }
             }
         }
-        viewModelScope.launch {
-            repository.products.collect {
-                products.clear()
-                products.addAll(it.sortedByDescending { it -> it.inStock })
-                updateSummary()
-            }
-        }
-        viewModelScope.launch {
-            repository.variants.collect {
-                productVariantTags.clear()
-                productVariantTags.addAll(it)
-                if (products.isNotEmpty()) {
-                    updateSummary()
-                }
-            }
-        }
+    }
+
+    private fun emitError(source: String, throwable: Throwable) {
+        Timber.e(throwable, "Failed to load merch $source")
+        _state.value = ProductsScreenState.Error
     }
 
     /**
