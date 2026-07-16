@@ -7,17 +7,9 @@
     <string name="default_notification_channel_id">1001</string>
 
     <!-- General -->
-    <string name="tba">TBA</string>
 
     <!-- Main Nav -->
-    <string name="home">Home</string>
-    <string name="information">Information</string>
-    <string name="map">Maps</string>
-    <string name="settings">Settings</string>
-    <string name="search">Search</string>
 
     <!-- Time -->
-    <string name="today">Today</string>
-    <string name="tomorrow">Tomorrow</string>
 
 </resources>

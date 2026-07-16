@@ -6,8 +6,6 @@
 
     <color name="background">#22222a</color>
     <!--  todo: change to #0e0e0e  -->
-    <color name="status_bar_color">#000000</color>
-    <color name="navigation_color">#22222a</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

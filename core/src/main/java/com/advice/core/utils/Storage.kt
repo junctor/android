@@ -7,6 +7,7 @@ import com.advice.core.network.CachedFeedbackRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
+import androidx.core.content.edit
 
 class Storage(
     context: Context,
@@ -22,15 +23,10 @@ class Storage(
         private const val PREFERRED_CONFERENCE = "preferred_conference"
 
         const val EASTER_EGGS_ENABLED_KEY = "easter_eggs_enabled"
-        const val NAV_DRAWER_ON_BACK_KEY = "nav_drawer_on_back"
         const val FILTER_BUTTON_SHOWN = "filter_button_shown"
         const val FORCE_TIME_ZONE_KEY = "force_time_zone"
         const val SHOW_SCHEDULE_BY_DEFAULT = "show_schedule_by_default"
         const val USER_ANALYTICS_KEY = "user_analytics"
-
-        const val TUTORIAL_FILTERS = "tutorial_filters"
-        const val TUTORIAL_EVENT_LOCATIONS = "tutorial_event_locations"
-        const val TUTORIAL_NOTIFICATIONS = "notification_popup"
 
         const val LATEST_NEWS_READ = "latest_news_read"
     }
@@ -41,67 +37,49 @@ class Storage(
     var allowAnalytics: Boolean
         get() = preferences.getBoolean(USER_ANALYTICS_KEY, false)
         set(value) {
-            preferences.edit().putBoolean(USER_ANALYTICS_KEY, value).apply()
-        }
-
-    var navDrawerOnBack: Boolean
-        get() = preferences.getBoolean(NAV_DRAWER_ON_BACK_KEY, false)
-        set(value) {
-            preferences.edit().putBoolean(NAV_DRAWER_ON_BACK_KEY, value).apply()
+            preferences.edit { putBoolean(USER_ANALYTICS_KEY, value) }
         }
 
     var showFilters: Boolean
         get() = preferences.getBoolean(FILTER_BUTTON_SHOWN, true)
         set(value) {
-            preferences.edit().putBoolean(FILTER_BUTTON_SHOWN, value).apply()
+            preferences.edit { putBoolean(FILTER_BUTTON_SHOWN, value) }
         }
 
     var forceTimeZone: Boolean
         get() = preferences.getBoolean(FORCE_TIME_ZONE_KEY, true)
         set(value) {
-            preferences.edit().putBoolean(FORCE_TIME_ZONE_KEY, value).apply()
+            preferences.edit { putBoolean(FORCE_TIME_ZONE_KEY, value) }
         }
 
     var showSchedule: Boolean
         get() = preferences.getBoolean(SHOW_SCHEDULE_BY_DEFAULT, false)
         set(value) {
-            preferences.edit().putBoolean(SHOW_SCHEDULE_BY_DEFAULT, value).apply()
+            preferences.edit { putBoolean(SHOW_SCHEDULE_BY_DEFAULT, value) }
         }
 
     var easterEggs: Boolean
         get() = preferences.getBoolean(EASTER_EGGS_ENABLED_KEY, false)
         set(value) {
-            preferences.edit().putBoolean(EASTER_EGGS_ENABLED_KEY, value).apply()
-        }
-
-    var tutorialFilters: Boolean
-        get() = preferences.getBoolean(TUTORIAL_FILTERS, true)
-        set(value) {
-            preferences.edit().putBoolean(TUTORIAL_FILTERS, value).apply()
-        }
-
-    var tutorialEventLocations: Boolean
-        get() = preferences.getBoolean(TUTORIAL_EVENT_LOCATIONS, true)
-        set(value) {
-            preferences.edit().putBoolean(TUTORIAL_EVENT_LOCATIONS, value).apply()
+            preferences.edit { putBoolean(EASTER_EGGS_ENABLED_KEY, value) }
         }
 
     var preferredConference: Long
         get() = preferences.getLong(PREFERRED_CONFERENCE, -1L)
         set(value) {
-            preferences.edit().putLong(PREFERRED_CONFERENCE, value).apply()
+            preferences.edit { putLong(PREFERRED_CONFERENCE, value) }
         }
 
     var theme: String?
         get() = preferences.getString(USER_THEME, null)
         set(value) {
-            preferences.edit().putString(USER_THEME, value).apply()
+            preferences.edit { putString(USER_THEME, value) }
         }
 
     var updateVersion: Int?
         get() = preferences.getInt("update_version", -1)
         set(value) {
-            preferences.edit().putInt("update_version", value ?: -1).apply()
+            preferences.edit { putInt("update_version", value ?: -1) }
         }
 
     val userUUID: String
@@ -109,35 +87,15 @@ class Storage(
             var uuid = preferences.getString(USER_UUID, null)
             if (uuid == null) {
                 uuid = java.util.UUID.randomUUID().toString()
-                preferences.edit().putString(USER_UUID, uuid).apply()
+                preferences.edit { putString(USER_UUID, uuid) }
             }
             return uuid
         }
 
-    fun setPreference(key: String, isChecked: Boolean) {
-        when (key) {
-            USER_ANALYTICS_KEY -> allowAnalytics = isChecked
-            NAV_DRAWER_ON_BACK_KEY -> navDrawerOnBack = isChecked
-            FORCE_TIME_ZONE_KEY -> forceTimeZone = isChecked
-            EASTER_EGGS_ENABLED_KEY -> easterEggs = isChecked
-            else -> preferences.edit().putBoolean(key, isChecked).apply()
-        }
-    }
-
-    fun getPreference(key: String, defaultValue: Boolean): Boolean {
-        return when (key) {
-            USER_ANALYTICS_KEY -> allowAnalytics
-            NAV_DRAWER_ON_BACK_KEY -> navDrawerOnBack
-            FORCE_TIME_ZONE_KEY -> forceTimeZone
-            EASTER_EGGS_ENABLED_KEY -> easterEggs
-            else -> preferences.getBoolean(key, defaultValue)
-        }
-    }
-
     fun markNewsAsRead(code: String?, id: Int) {
         if (code == null)
             return
-        preferences.edit().putInt("$LATEST_NEWS_READ-$code", id).apply()
+        preferences.edit { putInt("$LATEST_NEWS_READ-$code", id) }
     }
 
     fun hasReadNews(code: String?, id: Int): Boolean {
@@ -146,8 +104,8 @@ class Storage(
         return preferences.getInt("$LATEST_NEWS_READ-$code", -1) == id
     }
 
-    fun dismissMerchInformation(key: String): Boolean {
-        return preferences.edit().putBoolean("merch_information_$key", true).commit()
+    fun dismissMerchInformation(key: String) {
+        return preferences.edit(commit = true) { putBoolean("merch_information_$key", true) }
     }
 
     fun hasSeenMerchInformation(key: String): Boolean {
@@ -155,7 +113,7 @@ class Storage(
     }
 
     fun dismissNotificationPopup() {
-        preferences.edit().putBoolean("notification_popup", true).apply()
+        preferences.edit { putBoolean("notification_popup", true) }
     }
 
     fun hasSeenNotificationPopup(): Boolean {
@@ -163,7 +121,7 @@ class Storage(
     }
 
     fun setContentUpdatedTimestamp(id: Long, timestamp: Long) {
-        preferences.edit().putLong("content_updated_timestamp_$id", timestamp).apply()
+        preferences.edit { putLong("content_updated_timestamp_$id", timestamp) }
     }
 
     fun getContentUpdatedTimestamp(id: Long): Long {
@@ -171,7 +129,7 @@ class Storage(
     }
 
     fun setSelectedProducts(id: Long, list: List<ProductVariantSelection>) {
-        preferences.edit().putString("merch_products_selection_$id", gson.toJson(list)).apply()
+        preferences.edit { putString("merch_products_selection_$id", gson.toJson(list)) }
     }
 
     fun getSelectedProducts(id: Long): List<ProductVariantSelection> {
@@ -183,10 +141,8 @@ class Storage(
             )
             return list
         } catch (ex: Exception) {
-            Timber.e(
-                "Could not convert stored merch products selection to product variant selection",
-                ex
-            )
+            Timber.e("Could not convert stored merch products selection to product variant selection")
+            Timber.e(ex)
             return emptyList()
         }
     }
@@ -194,7 +150,7 @@ class Storage(
     fun storeFeedbackRequest(cachedFeedbackRequest: CachedFeedbackRequest) {
         val cache = getCachedFeedbackRequest() + cachedFeedbackRequest
 
-        preferences.edit().putString("cached_feedback_requests", gson.toJson(cache)).apply()
+        preferences.edit { putString("cached_feedback_requests", gson.toJson(cache)) }
     }
 
     fun getCachedFeedbackRequest(): List<CachedFeedbackRequest> {
@@ -206,10 +162,8 @@ class Storage(
             )
             return list
         } catch (ex: Exception) {
-            Timber.e(
-                "Could not convert stored cached feedback request to list",
-                ex
-            )
+            Timber.e("Could not convert stored cached feedback request to list")
+            Timber.e(ex)
             return emptyList()
         }
     }
@@ -217,6 +171,6 @@ class Storage(
     fun removeCachedFeedbackRequest(request: CachedFeedbackRequest) {
         val cache = getCachedFeedbackRequest().toMutableList().remove(request)
 
-        preferences.edit().putString("cached_feedback_requests", gson.toJson(cache)).apply()
+        preferences.edit { putString("cached_feedback_requests", gson.toJson(cache)) }
     }
 }

@@ -41,15 +41,7 @@ data class Product(
             return StockStatus.IN_STOCK
         }
 
-    val filteredStockStatus: StockStatus
-        get() {
-            if (stockStatusOverride != null) {
-                return stockStatusOverride
-            }
-            return stockStatus
-        }
-
-//    val variant: ProductVariant?
+    //    val variant: ProductVariant?
 //        get() = if (requiresSelection) variants.find { it == selectedOption } else variants.first()
 
     val requiresSelection: Boolean

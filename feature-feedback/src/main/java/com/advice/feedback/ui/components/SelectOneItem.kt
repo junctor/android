@@ -88,27 +88,6 @@ fun SelectOneItem(
     }
 }
 
-@Composable
-private fun FeedbackOption(
-    choice: Long?,
-    feedbackOption: FeedbackOption,
-    onSelectOption: (Long) -> Unit,
-    modifier: Modifier = Modifier,
-    textAlign: TextAlign = TextAlign.Start,
-) {
-    RadioButton(
-        selected = choice == feedbackOption.id,
-        onClick = {
-            onSelectOption(feedbackOption.id)
-        },
-    )
-    Text(
-        text = feedbackOption.value,
-        modifier = modifier,
-        textAlign = textAlign,
-    )
-}
-
 @PreviewLightDark
 @Composable
 private fun SelectOneItemPreview() {

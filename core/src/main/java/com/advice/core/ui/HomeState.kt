@@ -13,7 +13,6 @@ sealed class HomeState {
         val conference: Conference,
         val menu: Menu,
         val news: NewsArticle?,
-        val countdown: Long = -1L,
         val isUpdateAvailable: Boolean = false,
         val wifi: List<WirelessNetwork>,
         val hasChicken: Boolean = false,

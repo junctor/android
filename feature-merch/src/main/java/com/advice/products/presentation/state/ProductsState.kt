@@ -4,7 +4,6 @@ import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
-import com.advice.core.local.products.ProductVariantSelection
 import com.advice.products.ui.components.DismissibleInformation
 
 sealed class ProductsScreenState {
