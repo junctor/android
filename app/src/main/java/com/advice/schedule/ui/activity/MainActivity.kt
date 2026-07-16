@@ -55,6 +55,10 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         //  mainViewModel.onPermissionResult(isGranted)
     }
 
+    private val requestWirelessPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { /* join APIs do not require follow-up beyond grant state */ }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -168,17 +172,26 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         }
     }
 
+    /**
+     * Runtime grants needed for the Wi-Fi join path on this API level.
+     * [android.provider.Settings.ACTION_WIFI_ADD_NETWORKS] and
+     * [android.net.wifi.WifiManager.addNetworkSuggestions] do not require location,
+     * NEARBY_WIFI_DEVICES, or ACCESS_WIFI_STATE at runtime.
+     */
     fun hasWirelessPermissions(): Boolean {
-        return hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) && hasPermission(
-            android.Manifest.permission.ACCESS_WIFI_STATE
-        )
+        return requiredWirelessPermissions().all { hasPermission(it) }
     }
 
     fun requestWirelessPermissions() {
-        if (!hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION))
-            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-        if (!hasPermission(android.Manifest.permission.ACCESS_WIFI_STATE))
-            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_WIFI_STATE)
+        val missing = requiredWirelessPermissions().filterNot { hasPermission(it) }
+        if (missing.isNotEmpty()) {
+            requestWirelessPermissionsLauncher.launch(missing.toTypedArray())
+        }
+    }
+
+    private fun requiredWirelessPermissions(): Array<String> {
+        // No dangerous runtime permissions are required for the current join APIs.
+        return emptyArray()
     }
 
     /**
