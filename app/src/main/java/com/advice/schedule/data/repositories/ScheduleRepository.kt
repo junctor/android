@@ -50,12 +50,21 @@ class ScheduleRepository(
                 }
 
                 is ScheduleFilter.Tag -> {
-                    sortedEvents.filter { it.types.any { it.id == filter.id } }
+                    if (filter.id == Tag.bookmark.id) {
+                        sortedEvents.filter { it.session.isBookmarked }
+                    } else {
+                        sortedEvents.filter { it.types.any { it.id == filter.id } }
+                    }
                 }
 
                 is ScheduleFilter.Tags -> {
-                    // Any content that have any of the selected tags
-                    sortedEvents.filter { it.types.any { it.id in (filter.ids ?: emptyList()) } }
+                    val ids = filter.ids ?: emptyList()
+                    if (ids == listOf(Tag.bookmark.id)) {
+                        sortedEvents.filter { it.session.isBookmarked }
+                    } else {
+                        // Any content that have any of the selected tags
+                        sortedEvents.filter { it.types.any { it.id in ids } }
+                    }
                 }
             }
 
@@ -63,7 +72,8 @@ class ScheduleRepository(
                 val defaultFilter = filter is ScheduleFilter.Default && Tag.bookmark.isSelected
                 val onlyBookmarks = selected.size == 1 && selected.any { it.id == Tag.bookmark.id }
                 val filterByBookmarks =
-                    (filter as? ScheduleFilter.Tags)?.ids == listOf(Tag.bookmark.id)
+                    (filter as? ScheduleFilter.Tag)?.id == Tag.bookmark.id ||
+                        (filter as? ScheduleFilter.Tags)?.ids == listOf(Tag.bookmark.id)
                 val isDisplayingBookmarks = defaultFilter || onlyBookmarks || filterByBookmarks
                 val message = when {
                     // Bookmarks
