@@ -1,47 +1,47 @@
 [versions]
-compileSdk = "36"
+compileSdk = "37"
 minSdk = "26"
 targetSdk = "36"
 jvmTarget = "17"
 
-kotlin = "2.2.10"
-compose = "2024.06.00"
+kotlin = "2.4.10"
+compose = "2026.06.01"
 androidGradlePlugin = "9.3.0"
-kotlinxCoroutinesTest = "1.8.1"
-ktx = "1.13.1"
-ktlintGradlePlugin = "10.2.0"
-appcompat = "1.7.0"
-lifecycleViewmodelCompose = "2.8.3"
-lifecycleViewmodelKtx = "2.8.3"
-material = "1.12.0"
-coroutines = "1.8.1"
-activityCompose = "1.9.0"
-foundation = "1.6.8"
-navigationCompose = "2.7.7"
-ui = "1.6.8"
-koin = "3.4.2"
-koinAndroidxCompose = "3.4.5"
+kotlinxCoroutinesTest = "1.11.0"
+ktx = "1.19.0"
+ktlintGradlePlugin = "14.2.0"
+appcompat = "1.7.1"
+lifecycleViewmodelCompose = "2.11.0"
+lifecycleViewmodelKtx = "2.11.0"
+material = "1.14.0"
+coroutines = "1.11.0"
+activityCompose = "1.13.0"
+foundation = "1.11.4"
+navigationCompose = "2.9.8"
+ui = "1.11.4"
+koin = "4.2.2"
+koinAndroidxCompose = "4.2.2"
 timber = "5.0.1"
 coil = "2.7.0"
-google = "4.4.2"
+google = "4.5.0"
 appUpdate = "2.1.0"
 ageSignals = "0.0.3"
-firebaseGradlePlugin = "3.0.2"
-firebaseBom = "33.1.2"
-okhttp = "5.0.0-alpha.14"
-retrofit = "2.9.0"
-gson = "2.10.1"
-accompanist = "0.31.3-beta"
+firebaseGradlePlugin = "3.0.7"
+firebaseBom = "34.16.0"
+okhttp = "5.4.0"
+retrofit = "3.0.0"
+gson = "2.14.0"
+accompanist = "0.36.0"
 pdfViewer = "3.2.0-beta.3"
-richtext = "0.16.0"
-workRuntimeKtx = "2.9.0"
-zxingCore = "3.4.1"
+richtext = "0.20.0"
+workRuntimeKtx = "2.11.2"
+zxingCore = "3.5.4"
 zxingAndroidCore = "3.3.0"
 junit = "4.13.2"
-extJunit = "1.2.1"
-espressoCore = "3.6.1"
-annotation = "1.8.0"
-mockk = "1.13.5"
+extJunit = "1.3.0"
+espressoCore = "3.7.0"
+annotation = "1.10.0"
+mockk = "1.14.11"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -50,6 +50,8 @@ androidx-foundation = { module = "androidx.compose.foundation:foundation", versi
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
@@ -80,7 +82,7 @@ firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
@@ -107,7 +109,6 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 google-services = { id = "com.google.gms.google-services", version.ref = "google" }

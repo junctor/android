@@ -10,7 +10,7 @@ import com.advice.ui.theme.HotPink
 import com.advice.ui.theme.ScheduleTheme
 import com.halilibo.richtext.markdown.Markdown
 import com.halilibo.richtext.ui.RichTextStyle
-import com.halilibo.richtext.ui.material3.Material3RichText
+import com.halilibo.richtext.ui.material3.RichText
 import com.halilibo.richtext.ui.string.RichTextStringStyle
 
 @Composable
@@ -18,7 +18,7 @@ fun Paragraph(
     text: String,
     modifier: Modifier = Modifier,
 ) {
-    Material3RichText(
+    RichText(
         modifier =
             modifier
                 .padding(16.dp),

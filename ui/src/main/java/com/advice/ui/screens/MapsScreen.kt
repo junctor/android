@@ -1,5 +1,7 @@
 package com.advice.ui.screens
 
+import android.app.Activity
+import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -36,6 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,7 +50,6 @@ import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.states.MapsScreenState
 import com.advice.ui.theme.ScheduleTheme
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -61,18 +64,24 @@ fun MapsScreen(
     var showSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
+    val view = LocalView.current
 
-    val systemUiController = rememberSystemUiController()
+    DisposableEffect(view) {
+        val window = generateSequence(view.context) { (it as? ContextWrapper)?.baseContext }
+            .filterIsInstance<Activity>()
+            .firstOrNull()
+            ?.window
+            ?: return@DisposableEffect onDispose {}
 
-    DisposableEffect(Unit) {
-        systemUiController.setSystemBarsColor(
-            color = Color.Black.copy(0.40f),
-        )
+        val previousStatusBarColor = window.statusBarColor
+        val previousNavigationBarColor = window.navigationBarColor
+        val scrim = Color.Black.copy(alpha = 0.40f).toArgb()
+        window.statusBarColor = scrim
+        window.navigationBarColor = scrim
 
         onDispose {
-            systemUiController.setSystemBarsColor(
-                color = Color.Transparent,
-            )
+            window.statusBarColor = previousStatusBarColor
+            window.navigationBarColor = previousNavigationBarColor
         }
     }
 

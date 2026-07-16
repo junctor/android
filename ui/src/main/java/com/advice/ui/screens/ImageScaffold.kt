@@ -1,5 +1,7 @@
 package com.advice.ui.screens
 
+import android.app.Activity
+import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,14 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import coil.request.ImageRequest
 import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun ImageScaffold(
@@ -42,18 +45,25 @@ fun ImageScaffold(
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     content: @Composable () -> Unit,
 ) {
-    val systemUiController = rememberSystemUiController()
+    val view = LocalView.current
 
     if (url != null) {
-        DisposableEffect(Unit) {
-            systemUiController.setSystemBarsColor(
-                color = Color.Black.copy(0.40f),
-            )
+        DisposableEffect(view) {
+            val window = generateSequence(view.context) { (it as? ContextWrapper)?.baseContext }
+                .filterIsInstance<Activity>()
+                .firstOrNull()
+                ?.window
+                ?: return@DisposableEffect onDispose {}
+
+            val previousStatusBarColor = window.statusBarColor
+            val previousNavigationBarColor = window.navigationBarColor
+            val scrim = Color.Black.copy(alpha = 0.40f).toArgb()
+            window.statusBarColor = scrim
+            window.navigationBarColor = scrim
 
             onDispose {
-                systemUiController.setSystemBarsColor(
-                    color = Color.Transparent,
-                )
+                window.statusBarColor = previousStatusBarColor
+                window.navigationBarColor = previousNavigationBarColor
             }
         }
     }

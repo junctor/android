@@ -4,6 +4,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.AnchoredDraggableDefaults
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
@@ -21,8 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -68,49 +67,27 @@ fun OverlappingPanelsView(
 
     val dragState =
         rememberSaveable(
-            saver = object : Saver<AnchoredDraggableState<DragAnchors>, Any> {
-                override fun restore(value: Any): AnchoredDraggableState<DragAnchors> {
-                    // Your logic for restoring the state from the saved value
-                    val restoredAnchor = when (value as String) {
-                        "start" -> DragAnchors.Start
-                        "center" -> DragAnchors.Center
-                        "end" -> DragAnchors.End
-                        else -> DragAnchors.Start // Default value
-                    }
-
-                    return AnchoredDraggableState(
-                        initialValue = restoredAnchor,
-                        positionalThreshold = { distance: Float -> distance * 0.5f },
-                        velocityThreshold = { with(density) { 100.dp.toPx() } },
-                        animationSpec = tween(),
-                        confirmValueChange = { anchor ->
-                            onPanelChangedListener?.invoke(anchor)
-                            true
-                        }
-                    )
+            saver = AnchoredDraggableState.Saver(
+                confirmValueChange = { anchor ->
+                    onPanelChangedListener?.invoke(anchor)
+                    true
                 }
-
-                override fun SaverScope.save(value: AnchoredDraggableState<DragAnchors>): Any {
-                    // Your logic for saving the state to a persistent value
-                    return when (value.currentValue) {
-                        DragAnchors.Start -> "start"
-                        DragAnchors.Center -> "center"
-                        DragAnchors.End -> "end"
-                    }
-                }
-            }
+            )
         ) {
             AnchoredDraggableState(
                 initialValue = DragAnchors.Start,
-                positionalThreshold = { distance: Float -> distance * 0.5f },
-                velocityThreshold = { with(density) { 100.dp.toPx() } },
-                animationSpec = tween(),
                 confirmValueChange = { anchor ->
                     onPanelChangedListener?.invoke(anchor)
                     true
                 }
             )
         }
+
+    val flingBehavior = AnchoredDraggableDefaults.flingBehavior(
+        state = dragState,
+        positionalThreshold = { distance: Float -> distance * 0.5f },
+        animationSpec = tween(),
+    )
 
     dragState.updateAnchors(
         DraggableAnchors {
@@ -136,7 +113,9 @@ fun OverlappingPanelsView(
             .onGloballyPositioned { isComposableReady.value = true }
             .fillMaxSize()
             .anchoredDraggable(
-                dragState, Orientation.Horizontal,
+                state = dragState,
+                orientation = Orientation.Horizontal,
+                flingBehavior = flingBehavior
             )
             .onSizeChanged { newSize ->
                 size = newSize

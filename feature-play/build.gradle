@@ -1,6 +1,5 @@
 plugins {
     alias libs.plugins.android.library
-    alias libs.plugins.org.jetbrains.kotlin.android
 }
 
 android {
@@ -24,9 +23,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
         targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
-    }
-    kotlinOptions {
-        jvmTarget = libs.versions.jvmTarget.get()
     }
 
     buildFeatures {

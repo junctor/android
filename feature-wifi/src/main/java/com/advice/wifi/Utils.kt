@@ -1,12 +1,15 @@
 package com.advice.wifi
 
+import android.Manifest
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiEnterpriseConfig
 import android.net.wifi.WifiManager
+import androidx.annotation.RequiresPermission
 import com.advice.core.local.wifi.WirelessNetwork
 import java.security.cert.X509Certificate
 import java.util.Locale
 
+@RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
 fun WifiManager.existingWirelessConfig(ssid: String): WifiConfiguration? {
     isWifiEnabled = true
 

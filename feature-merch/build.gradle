@@ -1,6 +1,5 @@
 plugins {
     alias libs.plugins.android.library
-    alias libs.plugins.org.jetbrains.kotlin.android
     alias libs.plugins.compose.compiler
     alias libs.plugins.ktlint
 }
@@ -30,9 +29,6 @@ android {
         sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
         targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
     }
-    kotlinOptions {
-        jvmTarget = libs.versions.jvmTarget.get()
-    }
 }
 
 dependencies {
@@ -45,6 +41,8 @@ dependencies {
     androidTestImplementation composeBom
 
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
 
@@ -53,7 +51,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.zxing.core)
-    implementation(libs.zxing.android.core)
 
     implementation(libs.gson)
     implementation(libs.koin)
