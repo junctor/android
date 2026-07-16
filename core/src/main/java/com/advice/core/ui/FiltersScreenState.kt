@@ -4,5 +4,9 @@ import com.advice.core.local.TagType
 
 sealed class FiltersScreenState {
     data object Loading : FiltersScreenState()
-    class Success(val filters: List<TagType>) : FiltersScreenState()
+
+    data class Success(
+        val filters: List<TagType>,
+        val isBookmarkSelected: Boolean = false,
+    ) : FiltersScreenState()
 }

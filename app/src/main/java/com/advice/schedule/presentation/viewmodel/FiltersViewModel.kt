@@ -17,8 +17,8 @@ class FiltersViewModel : ViewModel(), KoinComponent {
 
     val state = flow {
         emit(FiltersScreenState.Loading)
-        repository.tags.collect {
-            emit(FiltersScreenState.Success(it))
+        repository.state.collect {
+            emit(it)
         }
     }
 

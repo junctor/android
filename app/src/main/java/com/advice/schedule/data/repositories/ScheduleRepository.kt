@@ -1,11 +1,13 @@
 package com.advice.schedule.data.repositories
 
+import com.advice.core.local.Bookmark
 import com.advice.core.local.Content
 import com.advice.core.local.Event
 import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.ScheduleFilter
+import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -21,10 +23,15 @@ class ScheduleRepository(
     private val contentRepository: ContentRepository,
     private val tagsRepository: TagsRepository,
     private val reminderManager: ReminderManager,
+    private val bookmarksDataSource: BookmarkedElementDataSource,
 ) {
 
     fun getSchedule(filter: ScheduleFilter): Flow<ScheduleResult> {
-        return combine(contentRepository.content, tagsRepository.tags) { content, tags ->
+        return combine(
+            contentRepository.content,
+            tagsRepository.tags,
+            bookmarksDataSource.get(),
+        ) { content, tags, bookmarks ->
             if (content.content.isEmpty()) {
                 return@combine ScheduleResult.Loading
             }
@@ -37,10 +44,14 @@ class ScheduleRepository(
 
             val sortedEvents = events.sortedBy { it.session.start }
             val selected = tags.filter { it.tags.any { it -> it.isSelected } }
+            val isBookmarkFilterSelected =
+                bookmarks
+                    .filterIsInstance<Bookmark.TagBookmark>()
+                    .any { it.id == Tag.bookmark.id.toString() && it.value }
 
             val filteredEvents = when (filter) {
                 ScheduleFilter.Default -> {
-                    filter(sortedEvents, selected)
+                    filter(sortedEvents, selected, isBookmarkFilterSelected)
                 }
 
                 is ScheduleFilter.Location -> {
@@ -67,7 +78,7 @@ class ScheduleRepository(
             }
 
             if (filteredEvents.isEmpty()) {
-                val defaultFilter = filter is ScheduleFilter.Default && Tag.bookmark.isSelected
+                val defaultFilter = filter is ScheduleFilter.Default && isBookmarkFilterSelected
                 val onlyBookmarks = selected.size == 1 && selected.any { it.id == Tag.bookmark.id }
                 val filterByBookmarks =
                     (filter as? ScheduleFilter.Tag)?.id == Tag.bookmark.id ||
@@ -102,9 +113,10 @@ class ScheduleRepository(
     private fun filter(
         events: List<Event>,
         filter: List<TagType>,
+        isBookmarkFilterSelected: Boolean,
     ): List<Event> {
         if (filter.isEmpty()) {
-            if (Tag.bookmark.isSelected) {
+            if (isBookmarkFilterSelected) {
                 return events.filter { it.session.isBookmarked }
             }
             return events

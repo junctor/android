@@ -39,9 +39,12 @@ fun FilterScreen(
             CenterAlignedTopAppBar(title = { Text("Filter") }, actions = {
                 val showClearButton =
                     state is FiltersScreenState.Success &&
-                        state.filters
-                            .flatMap { it.tags }
-                            .any { it.isSelected }
+                        (
+                            state.isBookmarkSelected ||
+                                state.filters
+                                    .flatMap { it.tags }
+                                    .any { it.isSelected }
+                            )
                 if (showClearButton) {
                     IconButton(onClear) {
                         Icon(Icons.Default.Close, null)
@@ -57,7 +60,11 @@ fun FilterScreen(
                 }
 
                 is FiltersScreenState.Success -> {
-                    FilterScreenContent(state.filters, onClick = onClick)
+                    FilterScreenContent(
+                        tags = state.filters,
+                        isBookmarkSelected = state.isBookmarkSelected,
+                        onClick = onClick,
+                    )
                 }
             }
         }
@@ -68,20 +75,22 @@ fun FilterScreen(
 fun FilterScreenContent(
     tags: List<TagType>,
     modifier: Modifier = Modifier,
+    isBookmarkSelected: Boolean = false,
     onClick: (Tag) -> Unit,
 ) {
     LazyColumn(modifier = modifier) {
-        item {
-            Category(tag = Tag.bookmark, modifier = Modifier.fillMaxWidth()) {
-                onClick(Tag.bookmark)
+        item(key = Tag.bookmark.id) {
+            val bookmark = Tag.bookmark.copy(isSelected = isBookmarkSelected)
+            Category(tag = bookmark, modifier = Modifier.fillMaxWidth()) {
+                onClick(bookmark)
             }
         }
-        for (tag in tags) {
-            item {
-                SectionHeader(tag.label)
+        for (tagType in tags) {
+            item(key = "header-${tagType.id}") {
+                SectionHeader(tagType.label)
             }
-            for (tag in tag.tags) {
-                item {
+            for (tag in tagType.tags) {
+                item(key = tag.id) {
                     Category(tag, modifier = Modifier.fillMaxWidth()) {
                         onClick(tag)
                     }

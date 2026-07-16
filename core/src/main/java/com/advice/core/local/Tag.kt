@@ -18,5 +18,5 @@ data class Tag(
     }
 
     val isBookmark: Boolean
-        get() = this == bookmark
+        get() = id == bookmark.id
 }
