@@ -2,10 +2,11 @@
 compileSdk = "36"
 minSdk = "26"
 targetSdk = "36"
+jvmTarget = "17"
 
 kotlin = "2.0.0"
 compose = "2024.06.00"
-androidGradlePlugin = "8.9.2"
+androidGradlePlugin = "8.13.2"
 kotlinxCoroutinesTest = "1.8.1"
 ktx = "1.13.1"
 ktlintGradlePlugin = "10.2.0"
@@ -27,11 +28,6 @@ appUpdate = "2.1.0"
 ageSignals = "0.0.3"
 firebaseGradlePlugin = "3.0.2"
 firebaseBom = "33.1.2"
-firebaseAnalytics = "22.0.2"
-firebaseFirestore = "24.4.2"
-firebaseStorage = "20.1.0"
-firebaseAuth = "21.1.0"
-firebaseCrashlytics = "18.3.3"
 okhttp = "5.0.0-alpha.14"
 retrofit = "2.9.0"
 gson = "2.10.1"
@@ -57,7 +53,6 @@ androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = 
 android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-androidx-material = { module = "androidx.compose.material:material" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
