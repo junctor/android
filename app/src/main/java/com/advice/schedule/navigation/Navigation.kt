@@ -47,16 +47,9 @@ sealed class Navigation {
         }
     }
 
-    @Deprecated("Use Event instead.")
     data class Content(val label: String = "") : Navigation() {
         override fun route(): String = "content/{label}"
         override fun destination(): String = "content/$label"
-    }
-
-    @Deprecated("Use Event instead.")
-    data class ContentDetails(val conference: String = "", val id: String = "") : Navigation() {
-        override fun route(): String = "content/{conference}/{id}"
-        override fun destination(): String = "content/$conference/$id"
     }
 
     data class Speaker(val id: Long = 0, val name: String = "") : Navigation() {
