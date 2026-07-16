@@ -1,7 +1,6 @@
 package com.advice.glitch.ui
 
 import android.content.Context
-import android.media.AudioManager
 import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,16 +28,6 @@ fun SoundButton() {
                 // todo: maybe don't - setVolume(audioManager)
                 playRandomChickenNoise(context)
             }
-    )
-}
-
-private fun setVolume(
-    audioManager: AudioManager,
-) {
-    audioManager.setStreamVolume(
-        AudioManager.STREAM_MUSIC,
-        audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
-        0
     )
 }
 

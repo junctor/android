@@ -51,9 +51,6 @@ data class Event(
     val types: List<Tag>
         get() = content.types
 
-    val urls: List<Action>
-        get() = content.urls
-
     val hasStarted: Boolean
         get() = session.hasStarted
 

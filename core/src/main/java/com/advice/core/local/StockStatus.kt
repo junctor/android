@@ -9,6 +9,6 @@ enum class StockStatus(
     ;
 
     companion object {
-        fun fromString(value: String) = values().find { it.value == value }
+        fun fromString(value: String) = StockStatus.entries.find { it.value == value }
     }
 }
