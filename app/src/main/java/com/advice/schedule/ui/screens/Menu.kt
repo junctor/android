@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.navigation.toNavigation
 import com.advice.schedule.presentation.viewmodel.MenuScreenState
@@ -37,7 +37,7 @@ internal fun Menu(
                 menu = menu,
                 label = label ?: "",
                 onNavigationClick = {
-                    navController.navigate(it.toNavigation())
+                    navController.navigateTo(it.toNavigation())
                 },
                 onBackPressed = {
                     navController.onBackPressed()

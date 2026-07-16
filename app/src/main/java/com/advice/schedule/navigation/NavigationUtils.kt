@@ -5,7 +5,8 @@ import androidx.navigation.NavController
 import com.advice.core.local.MenuItem
 import timber.log.Timber
 
-fun NavController.navigate(navigation: Navigation?) {
+/** String-route helper; named to avoid clashing with Navigation 2.8+ type-safe [NavController.navigate]. */
+fun NavController.navigateTo(navigation: Navigation?) {
     if (navigation == null) {
         Timber.e("Navigation is null")
         return

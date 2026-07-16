@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,8 @@ fun EmptyMessage(
     modifier: Modifier = Modifier,
     message: String = "404",
     title: String = "404",
+    actionLabel: String? = null,
+    onAction: (() -> Unit)? = null,
 ) {
     Box(modifier.fillMaxSize()) {
         Column(
@@ -57,6 +60,11 @@ fun EmptyMessage(
                 fontFamily = FontFamily.Monospace,
                 textAlign = TextAlign.Center,
             )
+            if (actionLabel != null && onAction != null) {
+                Button(onClick = onAction) {
+                    Text(actionLabel)
+                }
+            }
         }
     }
 }

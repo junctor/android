@@ -13,6 +13,7 @@ import com.advice.products.ui.screens.ProductScreen
 import com.advice.products.ui.screens.ProductsScreen
 import com.advice.products.ui.screens.ProductsSummaryScreen
 import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
@@ -26,18 +27,21 @@ fun Products(context: AppCompatActivity, navController: NavHostController, label
         label = label,
         state = state,
         onSummaryClicked = {
-            navController.navigate(Navigation.ProductsSummary)
+            navController.navigateTo(Navigation.ProductsSummary)
         },
         onProductClicked = {
-            navController.navigate(Navigation.Product(it.id))
+            navController.navigateTo(Navigation.Product(it.id))
         },
         onBackPressed = {
             navController.onBackPressed()
         },
+        onRetry = {
+            viewModel.retry()
+        },
         onLearnMore = {
             val merchDocument = (state as? ProductsScreenState.Success)?.data?.merchDocument
             if (merchDocument != null) {
-                navController.navigate(Navigation.Document(merchDocument))
+                navController.navigateTo(Navigation.Document(merchDocument))
             }
         },
         onTagClicked = {
@@ -62,13 +66,23 @@ fun Product(
         }
 
         ProductsScreenState.Error -> {
-            ErrorScreen {
-                viewModel.retry()
-            }
+            ErrorScreen(
+                message = "Could not load merch",
+                onRetry = { viewModel.retry() },
+                onBackPress = { navController.onBackPressed() },
+            )
         }
 
         is ProductsScreenState.Success -> {
-            val product = state.data.products.find { it.id == id } ?: return
+            val product = state.data.products.find { it.id == id }
+            if (product == null) {
+                ErrorScreen(
+                    message = "Product not found",
+                ) {
+                    navController.onBackPressed()
+                }
+                return
+            }
             ProductScreen(
                 product = product,
                 taxStatement = state.data.merchTaxStatement,
@@ -99,9 +113,11 @@ fun ProductsSummary(context: AppCompatActivity, navController: NavHostController
         }
 
         ProductsScreenState.Error -> {
-            ErrorScreen {
-                viewModel.retry()
-            }
+            ErrorScreen(
+                message = "Could not load merch",
+                onRetry = { viewModel.retry() },
+                onBackPress = { navController.onBackPressed() },
+            )
         }
 
         is ProductsScreenState.Success -> {

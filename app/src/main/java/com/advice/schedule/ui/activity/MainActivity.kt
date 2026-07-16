@@ -11,15 +11,16 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
@@ -27,7 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.SetRoutes
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.ui.components.EmergencyBanner
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.schedule.ui.viewmodels.MainViewState
@@ -42,17 +43,22 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity(), KoinComponent {
 
     private val navigation by inject<NavigationManager>()
+    private val mainViewModel: MainViewModel by viewModels()
 
-    // todo: fix this - this is a hack to get the navController to work
-    private lateinit var navController: NavController
-    private lateinit var mainViewModel: MainViewModel
+    /**
+     * Bridge for deep links handled outside composition ([onNewIntent]).
+     * Set/cleared from [DisposableEffect] so it is never held across teardown.
+     */
+    private var navController: NavHostController? = null
+    private var pendingDeepLink: Uri? = null
 
+    /**
+     * Grant/deny is intentionally unused: the notification popup is dismissed and marked seen
+     * before the system dialog returns, and no further product behavior depends on the result.
+     */
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        // todo: this should handle more permissions
-        //  mainViewModel.onPermissionResult(isGranted)
-    }
+    ) { /* no-op: popup already dismissed/marked seen */ }
 
     private val requestWirelessPermissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -65,14 +71,28 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             navigationBarStyle = SystemBarStyle.dark(AndroidColor.TRANSPARENT),
         )
 
-        setContent {
-            navController = rememberNavController()
-            navController.addOnDestinationChangedListener { _, navDestination, args ->
-                onDestinationChanged(navDestination, args)
-            }
+        pendingDeepLink = intent.data
+        mainViewModel.onAppStart(this)
 
-            mainViewModel = viewModel<MainViewModel>()
-            mainViewModel.onAppStart(this)
+        setContent {
+            val navController = rememberNavController()
+
+            DisposableEffect(navController) {
+                this@MainActivity.navController = navController
+                val listener =
+                    NavController.OnDestinationChangedListener { _, navDestination, args ->
+                        onDestinationChanged(navDestination, args)
+                    }
+                navController.addOnDestinationChangedListener(listener)
+                consumePendingDeepLink(navController)
+
+                onDispose {
+                    navController.removeOnDestinationChangedListener(listener)
+                    if (this@MainActivity.navController === navController) {
+                        this@MainActivity.navController = null
+                    }
+                }
+            }
 
             ScheduleTheme {
                 val state = mainViewModel.state.collectAsState(MainViewState()).value
@@ -84,14 +104,14 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                     // Emergency banner that pushes content down
                     if (state.emergencyDocument != null) {
                         EmergencyBanner(state.emergencyDocument) {
-                            navController.navigate(Navigation.Document(state.emergencyDocument.id))
+                            navController.navigateTo(Navigation.Document(state.emergencyDocument.id))
                         }
                     }
 
                     // Main screen content
                     navigation.SetRoutes(
                         this@MainActivity,
-                        navController = navController as NavHostController
+                        navController = navController
                     )
                 }
 
@@ -102,7 +122,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                         NotificationsPopup(
                             hasPermission = hasNotificationPermission(),
                             onRequestPermission = {
-                                requestNotificationPermissionLegacy()
+                                requestNotificationPermission()
                                 mainViewModel.dismissPermissionDialog()
                             },
                             onDismiss = {
@@ -146,7 +166,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         }
     }
 
-    private fun requestNotificationPermissionLegacy() {
+    private fun requestNotificationPermission() {
         val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             android.Manifest.permission.POST_NOTIFICATIONS
         } else {
@@ -200,22 +220,38 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setIntent(intent)
         val uri = intent.data
         Timber.i("onNewIntent: $uri")
-        if (uri != null) {
-            return try {
-                val destination = getDestination(uri)
-                navController.navigate(destination)
+        if (uri == null) return
 
-                FirebaseAnalytics.getInstance(this).logEvent(
-                    "open_deep_link",
-                    bundleOf(
-                        "uri" to uri.toString()
-                    )
+        val controller = navController
+        if (controller != null) {
+            navigateDeepLink(controller, uri)
+        } else {
+            pendingDeepLink = uri
+        }
+    }
+
+    private fun consumePendingDeepLink(controller: NavHostController) {
+        val uri = pendingDeepLink ?: return
+        pendingDeepLink = null
+        navigateDeepLink(controller, uri)
+    }
+
+    private fun navigateDeepLink(controller: NavHostController, uri: Uri) {
+        try {
+            val destination = getDestination(uri) ?: return
+            controller.navigate(destination)
+
+            FirebaseAnalytics.getInstance(this).logEvent(
+                "open_deep_link",
+                bundleOf(
+                    "uri" to uri.toString()
                 )
-            } catch (ex: Exception) {
-                Timber.e("Could not navigate to deep link: $uri")
-            }
+            )
+        } catch (ex: Exception) {
+            Timber.e(ex, "Could not navigate to deep link: $uri")
         }
     }
 

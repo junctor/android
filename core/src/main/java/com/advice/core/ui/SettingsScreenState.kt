@@ -8,5 +8,4 @@ data class SettingsScreenState(
     val showFilterButton: Boolean,
     val enableEasterEggs: Boolean,
     val enableAnalytics: Boolean,
-    val showTwitterHandle: Boolean,
 )

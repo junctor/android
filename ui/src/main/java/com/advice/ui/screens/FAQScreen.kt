@@ -10,6 +10,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -60,23 +64,40 @@ private fun FAQScreenContent(
     faqs: List<FAQ>,
     modifier: Modifier = Modifier,
 ) {
+    var query by remember { mutableStateOf("") }
+    val filtered = remember(faqs, query) {
+        filterFaqs(faqs, query)
+    }
+
     Column(modifier) {
         LazyColumn {
             item {
-                TopBar()
+                Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+                    SearchBar(
+                        query = query,
+                        placeholder = "Search frequently asked questions",
+                        onQuery = { query = it },
+                    )
+                }
             }
-            items(faqs) {
-                FreqAskedQuestion(it.question, it.answer)
+            if (filtered.isEmpty()) {
+                item {
+                    EmptyMessage(message = "No matching questions")
+                }
+            } else {
+                items(filtered) {
+                    FreqAskedQuestion(it.question, it.answer)
+                }
             }
         }
     }
 }
 
-@Composable
-private fun TopBar() {
-    Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-        SearchBar("", "Search frequently asked questions") {
-        }
+internal fun filterFaqs(faqs: List<FAQ>, query: String): List<FAQ> {
+    if (query.length < 2) return faqs
+    val needle = query.lowercase()
+    return faqs.filter {
+        it.question.lowercase().contains(needle) || it.answer.lowercase().contains(needle)
     }
 }
 

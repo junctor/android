@@ -16,7 +16,7 @@ import androidx.navigation.NavHostController
 import com.advice.core.local.Content
 import com.advice.core.local.Session
 import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.ContentViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
@@ -41,7 +41,7 @@ fun Contents(context: AppCompatActivity, navController: NavHostController, label
             navController.onBackPressed()
         },
         onContentClick = {
-            navController.navigate(Navigation.Event(it.conference, it.id.toString()))
+            navController.navigateTo(Navigation.Event(it.conference, it.id.toString()))
         },
         onBookmark = { content, isBookmarked ->
             viewModel.bookmark(content, isBookmarked)
@@ -118,19 +118,19 @@ private fun Content(
         },
         onBackPressed = { navController.onBackPressed() },
         onTagClicked = {
-            navController.navigate(Navigation.Tag(it.id, it.label))
+            navController.navigateTo(Navigation.Tag(it.id, it.label))
         },
         onLocationClicked = { location ->
             // todo: move this logic into the Navigation class.
             val label = location.shortName?.replace(
                 "/", "\\"
             ) ?: ""
-            navController.navigate(
+            navController.navigateTo(
                 Navigation.Location(location.id, label)
             )
         },
         onSessionClicked = {
-            navController.navigate(
+            navController.navigateTo(
                 Navigation.Event(
                     content.conference,
                     content.id.toString(),
@@ -139,7 +139,7 @@ private fun Content(
             )
         },
         onRelatedContentPressed = {
-            navController.navigate(
+            navController.navigateTo(
                 Navigation.Event(
                     content.conference,
                     it.id.toString(),
@@ -150,10 +150,10 @@ private fun Content(
             (context as MainActivity).openLink(url)
         },
         onSpeakerClicked = {
-            navController.navigate(Navigation.Speaker(it.id, it.name))
+            navController.navigateTo(Navigation.Speaker(it.id, it.name))
         },
         onFeedbackClicked = {
-            navController.navigate(Navigation.Feedback(it.id, content.id))
+            navController.navigateTo(Navigation.Feedback(it.id, content.id))
         }
     )
 }

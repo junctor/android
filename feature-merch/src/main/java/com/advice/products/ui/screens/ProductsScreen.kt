@@ -56,6 +56,7 @@ fun ProductsScreen(
     onDismiss: (DismissibleInformation) -> Unit,
     onTagClicked: (Tag) -> Unit,
     onBackPressed: () -> Unit,
+    onRetry: () -> Unit = {},
 ) {
     var showing by remember { mutableStateOf(false) }
 
@@ -99,7 +100,12 @@ fun ProductsScreen(
                 }
 
                 ProductsScreenState.Error -> {
-                    EmptyMessage(message = "Merch not found")
+                    EmptyMessage(
+                        title = "Error",
+                        message = "Could not load merch",
+                        actionLabel = "Retry",
+                        onAction = onRetry,
+                    )
                 }
 
                 is ProductsScreenState.Success -> {

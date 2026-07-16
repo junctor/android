@@ -10,8 +10,9 @@ import com.advice.core.ui.ScheduleFilter
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
+import com.advice.schedule.presentation.viewmodel.ConferenceViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.screens.ScheduleScreen
@@ -20,15 +21,23 @@ import com.advice.ui.states.ScheduleScreenState
 @Composable
 internal fun Locations(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<LocationsViewModel>()
+    val conferenceViewModel = viewModel<ConferenceViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value ?: return
-    com.advice.locations.ui.screens.LocationsScreen(containers = state.list, onToggleClicked = {
-        viewModel.toggle(it)
-    }, onScheduleClicked = {
-        // todo: this should URL encode the title
-        navController.navigate(Navigation.Location(it.id, it.title))
-    }, onBackPressed = {
-        navController.onBackPressed()
-    })
+    val conference = conferenceViewModel.conference.collectAsState(initial = null).value ?: return
+    com.advice.locations.ui.screens.LocationsScreen(
+        containers = state.list,
+        timezone = conference.timezone,
+        onToggleClicked = {
+            viewModel.toggle(it)
+        },
+        onScheduleClicked = {
+            // todo: this should URL encode the title
+            navController.navigateTo(Navigation.Location(it.id, it.title))
+        },
+        onBackPressed = {
+            navController.onBackPressed()
+        },
+    )
 }
 
 @Composable
@@ -50,7 +59,7 @@ fun Location(
             navController.onBackPressed()
         },
         onEventClick = {
-            navController.navigate(
+            navController.navigateTo(
                 Navigation.Event(
                     it.conference,
                     it.content.id.toString(),

@@ -133,15 +133,6 @@ private fun HomeScreen(
             }
         }
 
-        // todo: remove - this is a temporary solution to show the wifi networks
-        for (network in state.wifi) {
-            val menuItem =
-                MenuItem.Wifi("WiFi", "Connect to the ${network.titleText}", network.id)
-            MenuItem(menuItem) {
-                onNavigationClick(menuItem)
-            }
-        }
-
         val logo = state.conference.squareLogo(isSystemInDarkTheme())
         if (logo != null) {
             Box(
@@ -230,7 +221,6 @@ private fun HomeScreenViewPreview() {
                     conference = Conference.Zero,
                     menu = Menu(-1, "Home", listOf()),
                     news = null,
-                    wifi = emptyList(),
                 ),
             onNavigationClick = {},
             onDismissNews = {},

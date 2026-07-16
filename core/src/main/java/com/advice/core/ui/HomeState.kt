@@ -3,7 +3,6 @@ package com.advice.core.ui
 import com.advice.core.local.Conference
 import com.advice.core.local.Menu
 import com.advice.core.local.NewsArticle
-import com.advice.core.local.wifi.WirelessNetwork
 
 sealed class HomeState {
     data object Loading : HomeState()
@@ -14,7 +13,6 @@ sealed class HomeState {
         val menu: Menu,
         val news: NewsArticle?,
         val isUpdateAvailable: Boolean = false,
-        val wifi: List<WirelessNetwork>,
         val hasChicken: Boolean = false,
     ) : HomeState()
 

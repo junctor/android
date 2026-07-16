@@ -21,7 +21,6 @@ class SettingsRepository(
             preferences.showFilters,
             preferences.easterEggs,
             preferences.allowAnalytics,
-            showTwitterHandle = false,
         )
     }
 

@@ -4,7 +4,9 @@ import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
+import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
+import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
@@ -40,9 +42,8 @@ class HomeRepository(
         HomeState.Loaded(
             conferences = list,
             conference = conference,
-            menu = getMenu(menu, conference),
+            menu = getMenu(menu, conference, wifi),
             news = latest,
-            wifi = wifi,
             hasChicken = hasChicken(conference),
         )
     }
@@ -53,25 +54,34 @@ class HomeRepository(
 
     private fun getMenu(
         menu: FlowResult<List<Menu>>,
-        conference: Conference
+        conference: Conference,
+        wifi: List<WirelessNetwork>,
     ): Menu {
         return when (menu) {
             is FlowResult.Failure -> Menu.ERROR
             FlowResult.Loading -> Menu.LOADING
-            is FlowResult.Success -> menu(menu, conference)
+            is FlowResult.Success -> menu(menu, conference, wifi)
         }
     }
 
     private fun menu(
         result: FlowResult.Success<List<Menu>>,
-        conference: Conference
+        conference: Conference,
+        wifi: List<WirelessNetwork>,
     ): Menu {
         if (result.value.isEmpty()) return Menu.ERROR
-        val menu = result.value.find { it.id == conference.homeMenuId }
-        if (menu != null) {
+        val menu = result.value.find { it.id == conference.homeMenuId } ?: result.value.first()
+        if (!analyticsProvider.isWifiEnabled() || wifi.isEmpty()) {
             return menu
         }
-        return result.value.first()
+        val wifiItems = wifi.map { network ->
+            MenuItem.Wifi(
+                label = "WiFi",
+                description = "Connect to the ${network.titleText}",
+                id = network.id,
+            )
+        }
+        return menu.copy(items = menu.items + wifiItems)
     }
 
     fun markLatestNewsAsRead(newsArticle: NewsArticle) {

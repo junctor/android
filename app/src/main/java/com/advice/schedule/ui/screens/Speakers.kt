@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
@@ -26,7 +26,7 @@ internal fun Speakers(navController: NavHostController, label: String) {
             navController.onBackPressed()
         },
         onSpeakerClick = {
-            navController.navigate(Navigation.Speaker(it.id, it.name))
+            navController.navigateTo(Navigation.Speaker(it.id, it.name))
         },
     )
 }
@@ -53,7 +53,7 @@ fun Speaker(
         },
         onLinkClick = onLinkClicked,
         onEventClick = {
-            navController.navigate(
+            navController.navigateTo(
                 Navigation.Event(
                     it.conference,
                     it.content.id.toString(),

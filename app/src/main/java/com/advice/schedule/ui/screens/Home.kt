@@ -22,7 +22,7 @@ import androidx.navigation.NavHostController
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
 import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.toNavigation
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
@@ -70,15 +70,15 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                                 mainViewModel.setAnchor(DragAnchors.Center)
                                 return@HomeScreen
                             }
-                            navController.navigate(navigation)
+                            navController.navigateTo(navigation)
                         }
 
                         is Navigation.Maps -> {
-                            navController.navigate(navigation)
+                            navController.navigateTo(navigation)
                         }
 
                         else -> {
-                            navController.navigate(navigation)
+                            navController.navigateTo(navigation)
                         }
                     }
                 },
@@ -106,7 +106,7 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                 },
                 onEventClick = {
                     // passing the content id and the session id
-                    navController.navigate(
+                    navController.navigateTo(
                         Navigation.Event(
                             it.conference,
                             it.content.id.toString(),
@@ -139,7 +139,7 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                     )
                 }
                 IconButton(onClick = {
-                    navController.navigate(Navigation.Maps)
+                    navController.navigateTo(Navigation.Maps)
                 }) {
                     Icon(
                         painterResource(
@@ -147,10 +147,10 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                         ), contentDescription = "Maps"
                     )
                 }
-                IconButton(onClick = { navController.navigate(Navigation.Search) }) {
+                IconButton(onClick = { navController.navigateTo(Navigation.Search) }) {
                     Icon(Icons.Default.Search, contentDescription = "Search")
                 }
-                IconButton(onClick = { navController.navigate(Navigation.Settings) }) {
+                IconButton(onClick = { navController.navigateTo(Navigation.Settings) }) {
                     Icon(Icons.Default.Settings, contentDescription = "Settings")
                 }
             }

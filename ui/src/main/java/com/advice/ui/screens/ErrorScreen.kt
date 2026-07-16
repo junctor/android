@@ -14,7 +14,11 @@ import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorScreen(message: String = "Something went wrong", onBackPress: () -> Unit) {
+fun ErrorScreen(
+    message: String = "Something went wrong",
+    onRetry: (() -> Unit)? = null,
+    onBackPress: () -> Unit,
+) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Error") }, navigationIcon = {
@@ -23,8 +27,11 @@ fun ErrorScreen(message: String = "Something went wrong", onBackPress: () -> Uni
         },
     ) { contentPadding ->
         EmptyMessage(
-            message = message, modifier = Modifier
-                .padding(contentPadding)
+            message = message,
+            title = "Error",
+            actionLabel = if (onRetry != null) "Retry" else null,
+            onAction = onRetry,
+            modifier = Modifier.padding(contentPadding),
         )
     }
 }
@@ -35,6 +42,7 @@ private fun ErrorScreenViewPreview() {
     ScheduleTheme {
         ErrorScreen(
             message = "Could not load data",
+            onRetry = {},
             onBackPress = {},
         )
     }

@@ -31,7 +31,7 @@ import com.advice.organizations.ui.components.OrganizationRow
 import com.advice.schedule.data.repositories.SearchResults
 import com.advice.schedule.data.repositories.SearchState
 import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.R
 import com.advice.ui.components.BackButton
@@ -134,7 +134,7 @@ private fun SearchResults(
             EventRow(
                 event = it,
                 onEventPressed = {
-                    navController.navigate(
+                    navController.navigateTo(
                         Navigation.Event(
                             it.conference,
                             it.content.id.toString(),
@@ -154,7 +154,7 @@ private fun SearchResults(
                 name = it.name,
                 title = it.title,
                 onSpeakerClicked = {
-                    navController.navigate(Navigation.Speaker(it.id, it.name))
+                    navController.navigateTo(Navigation.Speaker(it.id, it.name))
                 },
             )
         }
@@ -170,7 +170,7 @@ private fun SearchResults(
         ) { organizations ->
             item {
                 OrganizationRow(organizations, onOrganizationPressed = {
-                    navController.navigate(Navigation.Organization(it.id))
+                    navController.navigateTo(Navigation.Organization(it.id))
                 })
             }
         }

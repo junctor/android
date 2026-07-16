@@ -43,6 +43,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
     private var merchTaxStatement: String? = null
 
     private var observeJob: Job? = null
+    private var hasLoadError = false
 
     init {
         observe()
@@ -52,17 +53,20 @@ class ProductsViewModel : ViewModel(), KoinComponent {
      * Re-subscribe to merch data after an error.
      */
     fun retry() {
+        hasLoadError = false
         observe()
     }
 
     private fun observe() {
         observeJob?.cancel()
+        hasLoadError = false
         _state.value = ProductsScreenState.Loading
         observeJob = viewModelScope.launch {
             launch {
                 repository.conference
                     .catch { emitError("conference", it) }
                     .collect {
+                        if (hasLoadError) return@collect
                         if (it.id != conference) {
                             loadProductSelections(it)
                         }
@@ -79,6 +83,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
                 repository.products
                     .catch { emitError("products", it) }
                     .collect {
+                        if (hasLoadError) return@collect
                         products.clear()
                         products.addAll(it.sortedByDescending { product -> product.inStock })
                         updateSummary()
@@ -88,6 +93,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
                 repository.variants
                     .catch { emitError("variants", it) }
                     .collect {
+                        if (hasLoadError) return@collect
                         productVariantTags.clear()
                         productVariantTags.addAll(it)
                         if (products.isNotEmpty()) {
@@ -100,6 +106,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     private fun emitError(source: String, throwable: Throwable) {
         Timber.e(throwable, "Failed to load merch $source")
+        hasLoadError = true
         _state.value = ProductsScreenState.Error
     }
 
@@ -193,6 +200,8 @@ class ProductsViewModel : ViewModel(), KoinComponent {
                 product.variants.find { it.id == selection.variant } ?: return@mapNotNull null
             return@mapNotNull ProductSelection(product, variant, selection.quantity)
         }
+
+        if (hasLoadError) return
 
         val state = ProductsState(
             groups = groupProducts(filteredProducts),

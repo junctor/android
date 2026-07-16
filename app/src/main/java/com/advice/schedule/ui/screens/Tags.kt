@@ -8,7 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.ui.ScheduleFilter
 import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
@@ -30,7 +30,7 @@ fun Tag(context: AppCompatActivity, navController: NavHostController, id: Long?,
             navController.onBackPressed()
         },
         onEventClick = {
-            navController.navigate(
+            navController.navigateTo(
                 Navigation.Event(
                     it.conference,
                     it.content.id.toString(),
@@ -64,7 +64,7 @@ fun Tags(
             navController.onBackPressed()
         },
         onEventClick = {
-            navController.navigate(
+            navController.navigateTo(
                 Navigation.Event(
                     it.conference,
                     it.content.id.toString(),

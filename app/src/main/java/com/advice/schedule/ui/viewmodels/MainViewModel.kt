@@ -107,7 +107,12 @@ class MainViewModel : ViewModel(), KoinComponent {
         )
     }
 
+    private var hasStarted = false
+
     fun onAppStart(context: MainActivity) {
+        if (hasStarted) return
+        hasStarted = true
+
         // Only showing the prompt once per version.
         if (storage.updateVersion != BuildConfig.VERSION_CODE) {
             appManager.checkForUpdate(context, MainActivity.REQUEST_CODE_UPDATE)

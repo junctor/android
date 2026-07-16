@@ -174,31 +174,45 @@ object TimeUtil {
     fun getScheduleDateStamp(
         context: Context,
         location: LocationSchedule,
+        timezone: String,
     ): String {
-        // todo: replace - this is only for DEF CON
-        val zoneId = getZoneId(context, "America/Los_Angeles")
+        val zoneId = getZoneId(context, timezone)
+        return formatter("EEEE, MMMM d").format(location.start.atZone(zoneId))
+    }
 
-        // If the schedule is on the same day, we don't need to show the date twice.
-//        if (isSameDay(location.start, location.end)) {
+    fun getScheduleDateStamp(
+        location: LocationSchedule,
+        timezone: String,
+        forceTimeZone: Boolean = true,
+    ): String {
+        val zoneId = getZoneId(forceTimeZone, timezone)
         return formatter("EEEE, MMMM d").format(location.start.atZone(zoneId))
     }
 
     fun getScheduleTimestamp(
         context: Context,
         location: LocationSchedule,
+        timezone: String,
     ): String {
-        // todo: replace - this is only for DEF CON
-        val zoneId = getZoneId(context, "America/Los_Angeles")
-
         val is24HourFormat = android.text.format.DateFormat
             .is24HourFormat(context)
+        return getScheduleTimestamp(location, timezone, is24HourFormat)
+    }
 
-        val s = if (is24HourFormat) {
+    fun getScheduleTimestamp(
+        location: LocationSchedule,
+        timezone: String,
+        is24HourFormat: Boolean,
+        forceTimeZone: Boolean = true,
+    ): String {
+        val zoneId = getZoneId(forceTimeZone, timezone)
+
+        val pattern = if (is24HourFormat) {
             "HH:mm"
         } else {
             "h:mm a"
         }
-        val timeFormat = formatter(s)
+        val timeFormat = formatter(pattern)
 
         return location.status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } + ": " + timeFormat.format(
             location.start.atZone(

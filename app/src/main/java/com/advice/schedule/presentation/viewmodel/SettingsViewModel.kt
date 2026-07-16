@@ -39,7 +39,6 @@ class SettingsViewModel : ViewModel(), KoinComponent {
                     timeZone = it.timezone,
                     version = it.version,
                     enableEasterEggs = it.enableEasterEggs,
-                    showTwitterHandle = it.showTwitterHandle,
                     preferences = preferences,
                 )
             }

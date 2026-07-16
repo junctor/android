@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import com.advice.organizations.ui.screens.OrganizationScreenState
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
-import com.advice.schedule.navigation.navigate
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.OrganizationViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
@@ -25,7 +25,7 @@ internal fun Organizations(navController: NavHostController, label: String?, id:
             navController.onBackPressed()
         },
         onOrganizationPressed = {
-            navController.navigate(Navigation.Organization(it.id))
+            navController.navigateTo(Navigation.Organization(it.id))
         },
     )
 }
@@ -54,6 +54,6 @@ internal fun Organization(
             (context as MainActivity).openLink(it)
         },
         onScheduleClicked = { id, label ->
-            navController.navigate(Navigation.Schedule(label, listOf(id)))
+            navController.navigateTo(Navigation.Schedule(label, listOf(id)))
         })
 }

@@ -50,6 +50,7 @@ import java.time.Instant
 @Composable
 fun LocationsScreen(
     containers: List<LocationRow>,
+    timezone: String,
     onToggleClicked: (LocationRow) -> Unit,
     onScheduleClicked: (LocationRow) -> Unit,
     onBackPressed: () -> Unit,
@@ -71,7 +72,7 @@ fun LocationsScreen(
         sheetContent = {
             val row = location
             if (row != null) {
-                ScheduleBottomSheet(context, row) {
+                ScheduleBottomSheet(context, row, timezone) {
                     onScheduleClicked(row)
                     location = null
                 }
@@ -120,6 +121,7 @@ fun LocationsScreen(
 private fun ScheduleBottomSheet(
     context: Context,
     row: LocationRow,
+    timezone: String,
     onScheduleClicked: () -> Unit,
 ) {
     Column(
@@ -134,8 +136,8 @@ private fun ScheduleBottomSheet(
         )
         for (schedule in row.schedule) {
             LocationRow(
-                date = TimeUtil.getScheduleDateStamp(context, schedule),
-                time = TimeUtil.getScheduleTimestamp(context, schedule),
+                date = TimeUtil.getScheduleDateStamp(context, schedule, timezone),
+                time = TimeUtil.getScheduleTimestamp(context, schedule, timezone),
             )
         }
         OutlinedButton(onClick = onScheduleClicked, Modifier.fillMaxWidth()) {
@@ -180,7 +182,7 @@ private fun LocationsScreenViewPreview(
     @PreviewParameter(LocationRowProvider::class) location: LocationRow,
 ) {
     ScheduleTheme {
-        LocationsScreen(listOf(location), {
+        LocationsScreen(listOf(location), "America/Los_Angeles", {
         }, {}, {})
     }
 }
@@ -199,7 +201,7 @@ private fun BottomSheetPreview() {
         schedule = listOf(LocationSchedule(Instant.now(), Instant.now(), "test", "open")),
     )
     ScheduleTheme {
-        ScheduleBottomSheet(context, row) {
+        ScheduleBottomSheet(context, row, "America/Los_Angeles") {
         }
     }
 }

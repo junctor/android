@@ -49,7 +49,6 @@ class HomeViewModel : ViewModel(), KoinComponent {
                         val isUpdateAvailable = appManager.isUpdateAvailable()
                         _state.value = it.copy(
                             isUpdateAvailable = isUpdateAvailable,
-                            wifi = if (analytics.isWifiEnabled()) it.wifi else emptyList(),
                         )
                         if (countdownJob == null) {
                             startCountdown(it.conference)
