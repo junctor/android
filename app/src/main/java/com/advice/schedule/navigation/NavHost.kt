@@ -2,6 +2,7 @@ package com.advice.schedule.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.screens.Contents
 import com.advice.schedule.ui.screens.Document
@@ -28,106 +29,77 @@ import com.advice.schedule.ui.screens.Tags
 import com.advice.schedule.ui.screens.Wifi
 
 @Composable
-internal fun NavigationManager.setRoutes(
-    context: MainActivity,
-    navController: NavHostController
+fun NavigationManager.SetRoutes(
+    activity: MainActivity,
+    navController: NavHostController,
 ) {
-    set(navController, startDestination = Navigation.Home) {
-        // Home
+    NavHost(navController = navController, startDestination = Navigation.Home.route()) {
         register(Navigation.Home) {
-            Home(context, navController)
+            Home(activity, navController)
         }
-        // Maps
         register(Navigation.Maps) {
             Maps(navController)
         }
-        // News
         register(Navigation.News()) {
             News(navController, it.label)
         }
-        // Search
         register(Navigation.Search) {
             Search(navController)
         }
-        // Locations
         register(Navigation.Locations()) {
             Locations(navController)
         }
-        register(Navigation.Location()) {
-            Location(context, navController, it.id, it.label)
-        }
-
-        // Schedule
-        register(Navigation.Schedule()) {
-            Tags(context, navController, it.ids, it.label)
-        }
-        // Events
         register(Navigation.Event()) {
-            Event(context, navController, it.conference, it.id, it.session)
+            Event(activity, navController, it.conference, it.id, it.session)
         }
-        // Content
         register(Navigation.Content()) {
-            Contents(context, navController, it.label)
+            Contents(activity, navController, it.label)
         }
-        // Tags
+        register(Navigation.Location()) {
+            Location(activity, navController, it.id, it.label)
+        }
         register(Navigation.Tag()) {
-            Tag(context, navController, it.id, it.label)
+            Tag(activity, navController, it.id, it.label)
         }
-
+        register(Navigation.Schedule()) {
+            Tags(activity, navController, it.ids, it.label)
+        }
+        register(Navigation.Speaker()) {
+            Speaker(navController, it.id, it.name, activity::openLink)
+        }
         register(Navigation.Settings) {
             Settings(navController)
         }
-
         register(Navigation.Wifi()) {
             Wifi(navController, it.id)
         }
-
         register(Navigation.Menu()) {
             Menu(navController, it.label, it.id)
         }
-
         register(Navigation.Document()) {
             Document(navController, it.id)
         }
-
         register(Navigation.FAQ()) {
             FAQ(navController)
         }
-
-        // Organizations
         register(Navigation.Organizations()) {
             Organizations(navController, it.label, it.id)
         }
-
         register(Navigation.Organization()) {
             Organization(navController, it.id)
         }
-
-        // People / Speakers
         register(Navigation.People()) {
             Speakers(navController, it.label)
         }
-
-        register(Navigation.Speaker()) {
-            Speaker(navController, it.id, it.name) { url ->
-                (navController.context as MainActivity).openLink(url)
-            }
-        }
-
-        // Merch
         register(Navigation.Products()) {
-            Products(context, navController, it.label)
+            Products(activity, navController, it.label)
         }
-
         register(Navigation.Product()) {
-            Product(context, navController, it.id)
+            Product(activity, navController, it.id)
         }
-
         register(Navigation.ProductsSummary) {
-            ProductsSummary(context, navController)
+            ProductsSummary(activity, navController)
         }
-
-        // Feedback
         register(Navigation.Feedback()) {
             Feedback(navController, it.id, it.content)
         }

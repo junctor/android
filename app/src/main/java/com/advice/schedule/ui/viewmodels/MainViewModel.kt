@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.network.NetworkResponse
-import com.advice.core.utils.Response
 import com.advice.core.utils.Storage
 import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
@@ -108,24 +107,6 @@ class MainViewModel : ViewModel(), KoinComponent {
         )
     }
 
-    fun onPermissionResult(granted: Boolean) {
-        if (granted) {
-            analytics.logEvent(
-                "permission_granted", bundleOf(
-                    "permission" to "POST_NOTIFICATIONS"
-                )
-            )
-            Timber.i("Permission granted")
-        } else {
-            analytics.logEvent(
-                "permission_denied", bundleOf(
-                    "permission" to "POST_NOTIFICATIONS"
-                )
-            )
-            Timber.i("Permission denied")
-        }
-    }
-
     fun onAppStart(context: MainActivity) {
         // Only showing the prompt once per version.
         if (storage.updateVersion != BuildConfig.VERSION_CODE) {
@@ -188,9 +169,12 @@ class MainViewModel : ViewModel(), KoinComponent {
             ?.replace("//", "/") ?: return
 
         args?.keySet()?.forEach {
-            val value = args.get(it)
-            if (value != null && value is String) {
-                route = route.replace("{${it}}", value)
+            if (route.contains("{$it}")) {
+                @Suppress("DEPRECATION")
+                val value = args.get(it)?.toString()
+                if (value != null) {
+                    route = route.replace("{$it}", value)
+                }
             }
         }
 

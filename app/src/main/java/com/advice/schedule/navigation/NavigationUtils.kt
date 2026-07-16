@@ -30,13 +30,6 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
             copy(label = label)
         }
 
-        is Navigation.ContentDetails -> {
-            val conference =
-                backStackEntry.arguments?.getString("conference") ?: error("conference is required")
-            val id = backStackEntry.arguments?.getString("id") ?: error("id is required")
-            copy(conference = conference, id = id)
-        }
-
         is Navigation.Document -> {
             val id =
                 backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
