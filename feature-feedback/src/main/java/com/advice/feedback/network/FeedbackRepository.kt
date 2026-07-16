@@ -60,12 +60,13 @@ class FeedbackRepository(
             val request = Request.Builder().url(url).post(body).build()
 
             return@withContext try {
-                val response = Network.client.newCall(request).execute()
-                Timber.d("Feedback submitted: %s", response.isSuccessful)
-                if (response.isSuccessful) {
-                    NetworkResponse.Success
-                } else {
-                    NetworkResponse.Error(Exception(response.message))
+                Network.client.newCall(request).execute().use { response ->
+                    Timber.d("Feedback submitted: %s", response.isSuccessful)
+                    if (response.isSuccessful) {
+                        NetworkResponse.Success
+                    } else {
+                        NetworkResponse.Error(Exception(response.message))
+                    }
                 }
             } catch (ex: Exception) {
                 Timber.e(ex, "Failed to submit feedback")

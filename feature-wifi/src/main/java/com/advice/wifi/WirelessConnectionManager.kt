@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 import timber.log.Timber
+import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.security.cert.CertificateFactory
@@ -278,8 +279,9 @@ class WirelessConnectionManager(
 
         val it = certificates.first()
         val certFactory = CertificateFactory.getInstance("X.509")
-        val inputStream: InputStream = downloadCertificate(it.url)
-        return certFactory.generateCertificate(inputStream) as X509Certificate
+        return downloadCertificate(it.url).use { inputStream ->
+            certFactory.generateCertificate(inputStream) as X509Certificate
+        }
     }
 
     private suspend fun downloadCertificate(urlString: String): InputStream =
@@ -289,16 +291,17 @@ class WirelessConnectionManager(
 
             Timber.d("Downloading certificate from $urlString")
 
-            val response = client.newCall(request).execute()
+            client.newCall(request).execute().use { response ->
+                Timber.d("Response: $response")
 
-            Timber.d("Response: $response")
+                if (!response.isSuccessful) {
+                    val message = "Unexpected code $response"
+                    Timber.e(message)
+                    throw IOException(message)
+                }
 
-            if (!response.isSuccessful) {
-                val message = "Unexpected code $response"
-                Timber.e(message)
-                throw IOException(message)
+                // Buffer the body so the response (and connection) can be closed before returning.
+                ByteArrayInputStream(response.body.bytes())
             }
-
-            response.body.byteStream()
         }
 }

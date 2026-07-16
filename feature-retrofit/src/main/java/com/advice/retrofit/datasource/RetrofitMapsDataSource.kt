@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 import timber.log.Timber
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -36,10 +37,11 @@ class RetrofitMapsDataSource(
                     val file = File(filesDir, it.filename)
                     if (!file.exists()) {
                         try {
-                            val inputStream = downloadFile(it.url)
-                            Files.copy(
-                                inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING
-                            )
+                            downloadFile(it.url).use { inputStream ->
+                                Files.copy(
+                                    inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING
+                                )
+                            }
                         } catch (ex: Exception) {
                             Timber.e("Could not download map: ${ex.message}")
                         }
@@ -61,17 +63,18 @@ class RetrofitMapsDataSource(
 
         Timber.d("Downloading map from url: $url")
 
-        val response = client.newCall(request).execute()
+        client.newCall(request).execute().use { response ->
+            Timber.d("Response: $response")
 
-        Timber.d("Response: $response")
+            if (!response.isSuccessful) {
+                val message = "Unexpected code $response"
+                Timber.e(message)
+                throw IOException(message)
+            }
 
-        if (!response.isSuccessful) {
-            val message = "Unexpected code $response"
-            Timber.e(message)
-            throw IOException(message)
+            // Buffer the body so the response (and connection) can be closed before returning.
+            ByteArrayInputStream(response.body.bytes())
         }
-
-        response.body.byteStream()
     }
 
     override fun get(): Flow<FlowResult<Maps>> = _mapsFlow
