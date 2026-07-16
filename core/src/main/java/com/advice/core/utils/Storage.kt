@@ -169,7 +169,7 @@ class Storage(
     }
 
     fun removeCachedFeedbackRequest(request: CachedFeedbackRequest) {
-        val cache = getCachedFeedbackRequest().toMutableList().remove(request)
+        val cache = getCachedFeedbackRequest().filter { it != request }
 
         preferences.edit { putString("cached_feedback_requests", gson.toJson(cache)) }
     }
