@@ -10,9 +10,18 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
 
 object TimeUtil {
+    private val formatterCache = HashMap<String, DateTimeFormatter>()
+    private val zoneIdCache = HashMap<Pair<Boolean, String>, ZoneId?>()
+
+    private fun formatter(pattern: String): DateTimeFormatter =
+        formatterCache.getOrPut(pattern) {
+            DateTimeFormatter.ofPattern(pattern)
+        }
+
     private fun getZoneId(
         context: Context,
         timezone: String,
@@ -28,20 +37,22 @@ object TimeUtil {
         forceTimeZone: Boolean,
         timeZone: String,
     ): ZoneId? {
-        if (forceTimeZone) {
-            try {
-                return ZoneId.of(timeZone)
-            } catch (ex: Exception) {
-                Timber.e("Error getting zone id for \"$timeZone\".")
+        return zoneIdCache.getOrPut(forceTimeZone to timeZone) {
+            if (forceTimeZone) {
+                try {
+                    return@getOrPut ZoneId.of(timeZone)
+                } catch (ex: Exception) {
+                    Timber.e("Error getting zone id for \"$timeZone\".")
+                }
             }
-        }
 
-        // forcing to Paris
-        if (BuildConfig.DEBUG) {
-            return ZoneId.of("Europe/Paris")
-        }
+            // forcing to Paris
+            if (BuildConfig.DEBUG) {
+                return@getOrPut ZoneId.of("Europe/Paris")
+            }
 
-        return ZoneId.of(TimeZone.getDefault().id)
+            ZoneId.of(TimeZone.getDefault().id)
+        }
     }
 
     fun getDateStamp(
@@ -50,9 +61,8 @@ object TimeUtil {
     ): String {
         val zoneId = getZoneId(forceTimeZone, session.timeZone)
 
-        val formatter = DateTimeFormatter.ofPattern("MMMM d")
         val localDateTime = session.start.atZone(zoneId)
-        return formatter.format(localDateTime)
+        return formatter("MMMM d").format(localDateTime)
     }
 
     fun getEventDateStamp(
@@ -64,14 +74,14 @@ object TimeUtil {
 
         val zoneId = getZoneId(context, session.timeZone)
 
-        val suffixFormat = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy")
+        val suffixFormat = formatter("EEE, MMM d, yyyy")
 
         // If the event is on the same day, we don't need to show the date twice.
         if (isSameDay(session.start, session.end)) {
             return suffixFormat.format(session.start.atZone(zoneId))
         }
 
-        val prefixFormat = DateTimeFormatter.ofPattern("EEE, MMM d")
+        val prefixFormat = formatter("EEE, MMM d")
         // Show the date range.
         return prefixFormat.format(session.start.atZone(zoneId)) + " - " + suffixFormat.format(
             session.end.atZone(
@@ -96,7 +106,7 @@ object TimeUtil {
             "h:mm a"
         }
 
-        val timeFormat = DateTimeFormatter.ofPattern(pattern)
+        val timeFormat = formatter(pattern)
 
         // If the start time and end time are the same, we don't need to show the end time.
         if (session.start == session.end) {
@@ -124,10 +134,8 @@ object TimeUtil {
             "h:mm a"
         }
 
-        val dayFormat = DateTimeFormatter.ofPattern("EEEE, MMMM d")
-
-        val prefix = dayFormat.format(session.start.atZone(zoneId))
-        val timeFormat = DateTimeFormatter.ofPattern(s)
+        val prefix = formatter("EEEE, MMMM d").format(session.start.atZone(zoneId))
+        val timeFormat = formatter(s)
         return prefix + " - " + timeFormat.format(session.start.atZone(zoneId)) + " to " + timeFormat.format(
             session.end.atZone(zoneId),
         )
@@ -146,9 +154,8 @@ object TimeUtil {
         } else {
             "h:mm a"
         }
-        val formatter = DateTimeFormatter.ofPattern(pattern)
         val localDateTime = session.start.atZone(zoneId)
-        return formatter.format(localDateTime)
+        return formatter(pattern).format(localDateTime)
     }
 
     fun getConferenceDateRange(
@@ -157,8 +164,8 @@ object TimeUtil {
     ): String {
         val zoneId = getZoneId(context, conference.timezone)
 
-        val startFormat = DateTimeFormatter.ofPattern("MMMM d")
-        val endFormat = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+        val startFormat = formatter("MMMM d")
+        val endFormat = formatter("MMMM d, yyyy")
         return "${startFormat.format(conference.start.atZone(zoneId))} - ${
             endFormat.format(conference.end.atZone(zoneId))
         }"
@@ -171,10 +178,9 @@ object TimeUtil {
         // todo: replace - this is only for DEF CON
         val zoneId = getZoneId(context, "America/Los_Angeles")
 
-        val dayFormat = DateTimeFormatter.ofPattern("EEEE, MMMM d")
         // If the schedule is on the same day, we don't need to show the date twice.
 //        if (isSameDay(location.start, location.end)) {
-        return dayFormat.format(location.start.atZone(zoneId))
+        return formatter("EEEE, MMMM d").format(location.start.atZone(zoneId))
     }
 
     fun getScheduleTimestamp(
@@ -192,9 +198,9 @@ object TimeUtil {
         } else {
             "h:mm a"
         }
-        val timeFormat = DateTimeFormatter.ofPattern(s)
+        val timeFormat = formatter(s)
 
-        return location.status.capitalize() + ": " + timeFormat.format(
+        return location.status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } + ": " + timeFormat.format(
             location.start.atZone(
                 zoneId,
             ),
@@ -204,8 +210,7 @@ object TimeUtil {
     }
 
     fun getNewsTimestamp(date: Date): String {
-        val format = DateTimeFormatter.ofPattern("MMMM d, yyyy")
-        return format.format(date.toInstant().atZone(ZoneId.systemDefault()))
+        return formatter("MMMM d, yyyy").format(date.toInstant().atZone(ZoneId.systemDefault()))
     }
 
     private fun isSameDay(
