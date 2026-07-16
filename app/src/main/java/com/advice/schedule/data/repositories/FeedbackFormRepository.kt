@@ -4,7 +4,7 @@ import com.advice.core.local.feedback.FeedbackForm
 import com.advice.data.sources.FeedbackDataSource
 import kotlinx.coroutines.flow.first
 
-class FeedbackRepository(
+class FeedbackFormRepository(
     private val feedbackDataSource: FeedbackDataSource,
 ) {
     suspend fun getFeedbackForm(id: Long): FeedbackForm? {

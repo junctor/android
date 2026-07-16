@@ -28,6 +28,7 @@ import com.advice.data.sources.VendorsDataSource
 import com.advice.data.sources.VillagesDataSource
 import com.advice.data.sources.WiFiNetworksDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
+import com.advice.feedback.network.FeedbackSubmissionRepository
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseContentDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
@@ -56,7 +57,7 @@ import com.advice.reminder.ReminderManager
 import com.advice.retrofit.datasource.RetrofitMapsDataSource
 import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.data.repositories.FAQRepository
-import com.advice.schedule.data.repositories.FeedbackRepository
+import com.advice.schedule.data.repositories.FeedbackFormRepository
 import com.advice.schedule.data.repositories.FiltersRepository
 import com.advice.schedule.data.repositories.HomeRepository
 import com.advice.schedule.data.repositories.InformationRepository
@@ -170,7 +171,7 @@ val appModule = module {
     single { TagsRepository(get()) }
     single { SearchRepository(get(), get(), get(), get(), get(), get()) }
     single { MenuRepository(get()) }
-    single { FeedbackRepository(get()) }
+    single { FeedbackFormRepository(get()) }
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
     single<BookmarkedElementDataSource>(named("tags")) { InMemoryBookmarkedDataSourceImpl() }
@@ -225,12 +226,10 @@ val appModule = module {
     single<ProductCart> { ProductCart() }
 
     // Feedback
-    single<com.advice.feedback.network.FeedbackRepository> {
-        com.advice.feedback.network.FeedbackRepository(
-            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-            get()
-        )
-    }
+    single { FeedbackSubmissionRepository(
+        "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+        get()
+    ) }
 
     single { WifiNetworkRepository(get()) }
     single<WiFiNetworksDataSource> { FirebaseWifiNetworksDataSource(get(), get()) }

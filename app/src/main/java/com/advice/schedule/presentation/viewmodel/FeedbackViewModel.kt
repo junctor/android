@@ -8,7 +8,8 @@ import com.advice.core.network.NetworkResponse
 import com.advice.core.utils.ToastData
 import com.advice.core.utils.ToastManager
 import com.advice.feedback.ui.screens.FeedbackState
-import com.advice.schedule.data.repositories.FeedbackRepository
+import com.advice.feedback.network.FeedbackSubmissionRepository
+import com.advice.schedule.data.repositories.FeedbackFormRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -17,8 +18,8 @@ import org.koin.core.component.inject
 
 class FeedbackViewModel : ViewModel(), KoinComponent {
 
-    private val repository by inject<FeedbackRepository>()
-    private val feedbackRepository by inject<com.advice.feedback.network.FeedbackRepository>()
+    private val formRepository by inject<FeedbackFormRepository>()
+    private val submissionRepository by inject<FeedbackSubmissionRepository>()
     private val toastManager by inject<ToastManager>()
 
     private val _state = MutableStateFlow<FeedbackState>(FeedbackState.Loading)
@@ -27,7 +28,7 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
     fun fetchFeedbackForm(id: Long) {
         _state.value = FeedbackState.Loading
         viewModelScope.launch {
-            val form = repository.getFeedbackForm(id)
+            val form = formRepository.getFeedbackForm(id)
             if (form != null) {
                 _state.value = FeedbackState.Content(form)
             } else {
@@ -73,7 +74,7 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
         _state.value = state.copy(isLoading = true)
 
         viewModelScope.launch {
-            when (val response = feedbackRepository.submitFeedback(content, state.feedback)) {
+            when (val response = submissionRepository.submitFeedback(content, state.feedback)) {
                 NetworkResponse.Success -> {
                     _state.value = state.copy(
                         isLoading = false,

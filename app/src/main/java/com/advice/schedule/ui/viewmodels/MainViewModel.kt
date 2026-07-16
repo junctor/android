@@ -12,7 +12,7 @@ import com.advice.core.utils.Storage
 import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
 import com.advice.documents.data.repositories.DocumentsRepository
-import com.advice.feedback.network.FeedbackRepository
+import com.advice.feedback.network.FeedbackSubmissionRepository
 import com.advice.firebase.extensions.document_cache_reads
 import com.advice.firebase.extensions.document_reads
 import com.advice.firebase.extensions.listeners_count
@@ -35,7 +35,7 @@ class MainViewModel : ViewModel(), KoinComponent {
     private val analytics by inject<AnalyticsProvider>()
     private val storage by inject<Storage>()
     private val documentRepository by inject<DocumentsRepository>()
-    private val feedbackRepository by inject<FeedbackRepository>()
+    private val feedbackRepository by inject<FeedbackSubmissionRepository>()
     private val toastManager by inject<ToastManager>()
 
     private val _state = MutableStateFlow(MainViewState())

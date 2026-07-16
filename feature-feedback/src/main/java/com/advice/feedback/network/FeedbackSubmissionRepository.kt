@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class FeedbackRepository(
+class FeedbackSubmissionRepository(
     private val version: String,
     private val storage: Storage,
 ) {
