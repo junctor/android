@@ -27,5 +27,5 @@ data class WirelessNetwork(
     val tlsClientCertificateSupport: String?,
     val tlsMaximumVersion: String?,
     val tlsMinimumVersion: String?,
-    val tlsPreferredVersion: String?
+    val tlsPreferredVersion: String?,
 )

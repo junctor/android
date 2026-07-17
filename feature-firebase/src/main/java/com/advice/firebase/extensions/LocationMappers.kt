@@ -31,10 +31,12 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
 
 fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? =
     try {
-        val start = runCatching { OffsetDateTime.parse(begin).toInstant() }
-            .getOrElse { LocalDateTime.parse(begin).atZone(ZoneId.systemDefault()).toInstant() }
-        val end = runCatching { OffsetDateTime.parse(end).toInstant() }
-            .getOrElse { LocalDateTime.parse(end).atZone(ZoneId.systemDefault()).toInstant() }
+        val start =
+            runCatching { OffsetDateTime.parse(begin).toInstant() }
+                .getOrElse { LocalDateTime.parse(begin).atZone(ZoneId.systemDefault()).toInstant() }
+        val end =
+            runCatching { OffsetDateTime.parse(end).toInstant() }
+                .getOrElse { LocalDateTime.parse(end).atZone(ZoneId.systemDefault()).toInstant() }
         LocationSchedule(
             start,
             end,

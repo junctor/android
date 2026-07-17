@@ -1,9 +1,11 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.audience.AudiencePolicy
 import com.advice.core.local.Organization
-import com.advice.core.local.canView
 import com.advice.data.session.UserSession
 import com.advice.data.sources.OrganizationsDataSource
+import com.advice.firebase.extensions.audienceLabel
+import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toObjectOrNull
@@ -28,42 +30,65 @@ import timber.log.Timber
 class FirebaseOrganizationDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
+    private val audiencePolicy: AudiencePolicy,
 ) : OrganizationsDataSource {
-    private val organizations = userSession.getConference().flatMapMerge { conference ->
-        val snapshotFlow = firestore.collection("conferences")
-            .document(conference.code)
-            .collection("organizations")
-            .snapshotFlowLegacy()
-            .closeOnConferenceChange(userSession.getConference())
+    private val organizations =
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                val snapshotFlow =
+                    firestore
+                        .collection("conferences")
+                        .document(conference.code)
+                        .collection("organizations")
+                        .snapshotFlowLegacy()
+                        .closeOnConferenceChange(userSession.getConference())
 
-        combine(snapshotFlow, userSession.user) { querySnapshot, user ->
-            querySnapshot.toObjectsOrEmpty(FirebaseOrganization::class.java)
-                .filter { user?.canView(it.visibleAgeMin, it) != false }
-                .mapNotNull { it.toOrganization() }
-                .sortedBy { it.name }
-        }.onStart { emit(emptyList()) }
-    }.shareIn(
-        CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.Lazily,
-        replay = 1,
-    )
+                combine(snapshotFlow, userSession.audienceContext) { querySnapshot, context ->
+                    querySnapshot
+                        .toObjectsOrEmpty(FirebaseOrganization::class.java)
+                        .filter {
+                            audiencePolicy.canView(
+                                it.audienceRestriction,
+                                context,
+                                it.audienceLabel,
+                            )
+                        }
+                        .mapNotNull { it.toOrganization() }
+                        .sortedBy { it.name }
+                }.onStart { emit(emptyList()) }
+            }.shareIn(
+                CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
 
-    override fun get(): Flow<List<Organization>> {
-        return organizations
-    }
+    override fun get(): Flow<List<Organization>> = organizations
 
     override suspend fun get(id: Long): Organization? {
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = try {
-            firestore.document("conferences/${conference.code}/organizations/$id")
-                .get(Source.CACHE)
-                .await()
-        } catch (ex: Exception) {
-            Timber.e(ex, "Failed to get organization with id: $id")
+        val snapshot =
+            try {
+                firestore
+                    .document("conferences/${conference.code}/organizations/$id")
+                    .get(Source.CACHE)
+                    .await()
+            } catch (ex: Exception) {
+                Timber.e(ex, "Failed to get organization with id: $id")
+                return null
+            }
+
+        val firebaseOrganization =
+            snapshot.toObjectOrNull(FirebaseOrganization::class.java) ?: return null
+        if (!audiencePolicy.canView(
+                firebaseOrganization.audienceRestriction,
+                userSession.currentAudienceContext,
+                firebaseOrganization.audienceLabel,
+            )
+        ) {
             return null
         }
-
-        return snapshot.toObjectOrNull(FirebaseOrganization::class.java)?.toOrganization()
+        return firebaseOrganization.toOrganization()
     }
 }

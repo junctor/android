@@ -2,19 +2,18 @@ package com.advice.core.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.network.CachedFeedbackRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
-import androidx.core.content.edit
 
 class Storage(
     context: Context,
     private val gson: Gson,
     val versionCode: Int,
 ) {
-
     companion object {
         const val KEY_PREFERENCES = "preferences"
 
@@ -86,59 +85,69 @@ class Storage(
         get() {
             var uuid = preferences.getString(USER_UUID, null)
             if (uuid == null) {
-                uuid = java.util.UUID.randomUUID().toString()
+                uuid =
+                    java.util.UUID
+                        .randomUUID()
+                        .toString()
                 preferences.edit { putString(USER_UUID, uuid) }
             }
             return uuid
         }
 
-    fun markNewsAsRead(code: String?, id: Int) {
-        if (code == null)
+    fun markNewsAsRead(
+        code: String?,
+        id: Int,
+    ) {
+        if (code == null) {
             return
+        }
         preferences.edit { putInt("$LATEST_NEWS_READ-$code", id) }
     }
 
-    fun hasReadNews(code: String?, id: Int): Boolean {
-        if (code == null)
+    fun hasReadNews(
+        code: String?,
+        id: Int,
+    ): Boolean {
+        if (code == null) {
             return false
+        }
         return preferences.getInt("$LATEST_NEWS_READ-$code", -1) == id
     }
 
-    fun dismissMerchInformation(key: String) {
-        return preferences.edit(commit = true) { putBoolean("merch_information_$key", true) }
-    }
+    fun dismissMerchInformation(key: String) = preferences.edit(commit = true) { putBoolean("merch_information_$key", true) }
 
-    fun hasSeenMerchInformation(key: String): Boolean {
-        return preferences.getBoolean("merch_information_$key", false)
-    }
+    fun hasSeenMerchInformation(key: String): Boolean = preferences.getBoolean("merch_information_$key", false)
 
     fun dismissNotificationPopup() {
         preferences.edit { putBoolean("notification_popup", true) }
     }
 
-    fun hasSeenNotificationPopup(): Boolean {
-        return preferences.getBoolean("notification_popup", false)
-    }
+    fun hasSeenNotificationPopup(): Boolean = preferences.getBoolean("notification_popup", false)
 
-    fun setContentUpdatedTimestamp(id: Long, timestamp: Long) {
+    fun setContentUpdatedTimestamp(
+        id: Long,
+        timestamp: Long,
+    ) {
         preferences.edit { putLong("content_updated_timestamp_$id", timestamp) }
     }
 
-    fun getContentUpdatedTimestamp(id: Long): Long {
-        return preferences.getLong("content_updated_timestamp_$id", 0)
-    }
+    fun getContentUpdatedTimestamp(id: Long): Long = preferences.getLong("content_updated_timestamp_$id", 0)
 
-    fun setSelectedProducts(id: Long, list: List<ProductVariantSelection>) {
+    fun setSelectedProducts(
+        id: Long,
+        list: List<ProductVariantSelection>,
+    ) {
         preferences.edit { putString("merch_products_selection_$id", gson.toJson(list)) }
     }
 
     fun getSelectedProducts(id: Long): List<ProductVariantSelection> {
         val json = preferences.getString("merch_products_selection_$id", null) ?: return emptyList()
         try {
-            val list = gson.fromJson<List<ProductVariantSelection>>(
-                json,
-                object : TypeToken<List<ProductVariantSelection>>() {}.type
-            )
+            val list =
+                gson.fromJson<List<ProductVariantSelection>>(
+                    json,
+                    object : TypeToken<List<ProductVariantSelection>>() {}.type,
+                )
             return list
         } catch (ex: Exception) {
             Timber.e("Could not convert stored merch products selection to product variant selection")
@@ -156,10 +165,11 @@ class Storage(
     fun getCachedFeedbackRequest(): List<CachedFeedbackRequest> {
         val json = preferences.getString("cached_feedback_requests", null) ?: return emptyList()
         try {
-            val list = gson.fromJson<List<CachedFeedbackRequest>>(
-                json,
-                object : TypeToken<List<CachedFeedbackRequest>>() {}.type
-            )
+            val list =
+                gson.fromJson<List<CachedFeedbackRequest>>(
+                    json,
+                    object : TypeToken<List<CachedFeedbackRequest>>() {}.type,
+                )
             return list
         } catch (ex: Exception) {
             Timber.e("Could not convert stored cached feedback request to list")

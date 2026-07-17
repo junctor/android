@@ -30,62 +30,68 @@ class FirebaseWifiNetworksDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
 ) : WiFiNetworksDataSource {
-
-    private val wifiNetworks = userSession.getConference().flatMapMerge { conference ->
-        firestore.collection("conferences/${conference.code}/wifi_networks")
-            .snapshotFlowLegacy()
-            .closeOnConferenceChange(userSession.getConference())
-            .map { snapshot ->
-                snapshot.toObjectsOrEmpty(FirebaseWiFiNetwork::class.java).map { network ->
-                    val certificates = network.certs?.mapNotNull { id ->
-                        getCertificate(id)
-                    }
-                    network.toWiFiNetwork(certificates)
-                }
-            }
-            .onStart { emit(emptyList()) }
-    }.shareIn(
-        CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.Lazily,
-        replay = 1,
-    )
+    private val wifiNetworks =
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                firestore
+                    .collection("conferences/${conference.code}/wifi_networks")
+                    .snapshotFlowLegacy()
+                    .closeOnConferenceChange(userSession.getConference())
+                    .map { snapshot ->
+                        snapshot.toObjectsOrEmpty(FirebaseWiFiNetwork::class.java).map { network ->
+                            val certificates =
+                                network.certs?.mapNotNull { id ->
+                                    getCertificate(id)
+                                }
+                            network.toWiFiNetwork(certificates)
+                        }
+                    }.onStart { emit(emptyList()) }
+            }.shareIn(
+                CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
 
     private suspend fun getCertificate(id: Long?): WifiCertificate? {
         if (id == null) return null
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = try {
-            firestore.document("conferences/${conference.code}/networking_certificates/$id")
-                .get()
-                .await()
-        } catch (ex: Exception) {
-            Timber.e(ex, "Error getting certificate")
-            return null
-        }
+        val snapshot =
+            try {
+                firestore
+                    .document("conferences/${conference.code}/networking_certificates/$id")
+                    .get()
+                    .await()
+            } catch (ex: Exception) {
+                Timber.e(ex, "Error getting certificate")
+                return null
+            }
 
         return snapshot.toObjectOrNull(FirebaseWifiCertificate::class.java)?.toWiFiNetwork()
     }
 
-    override fun get(): Flow<List<WirelessNetwork>> {
-        return wifiNetworks
-    }
+    override fun get(): Flow<List<WirelessNetwork>> = wifiNetworks
 
     override suspend fun get(id: Long): WirelessNetwork? {
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = try {
-            firestore.document("conferences/${conference.code}/wifi_networks/$id")
-                .get(Source.CACHE)
-                .await()
-        } catch (ex: Exception) {
-            Timber.e(ex, "Failed to get network with id: $id")
-            return null
-        }
+        val snapshot =
+            try {
+                firestore
+                    .document("conferences/${conference.code}/wifi_networks/$id")
+                    .get(Source.CACHE)
+                    .await()
+            } catch (ex: Exception) {
+                Timber.e(ex, "Failed to get network with id: $id")
+                return null
+            }
 
         val firebase = snapshot.toObjectOrNull(FirebaseWiFiNetwork::class.java) ?: return null
-        val certificates = firebase.certs?.mapNotNull { id ->
-            getCertificate(id)
-        }
+        val certificates =
+            firebase.certs?.mapNotNull { id ->
+                getCertificate(id)
+            }
 
         return firebase.toWiFiNetwork(certificates)
     }

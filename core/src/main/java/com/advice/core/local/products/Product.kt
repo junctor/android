@@ -20,7 +20,6 @@ data class Product(
 //    val selectedOption: ProductVariant? = null,
     val stockStatusOverride: StockStatus? = null,
 ) : Parcelable {
-
     val inStock: Boolean
         get() = stockStatus != StockStatus.OUT_OF_STOCK
 
@@ -30,10 +29,11 @@ data class Product(
                 return StockStatus.OUT_OF_STOCK
             }
             if (variants.all {
-                    it.stockStatus in listOf(
-                        StockStatus.LOW_STOCK,
-                        StockStatus.OUT_OF_STOCK,
-                    )
+                    it.stockStatus in
+                        listOf(
+                            StockStatus.LOW_STOCK,
+                            StockStatus.OUT_OF_STOCK,
+                        )
                 }
             ) {
                 return StockStatus.LOW_STOCK

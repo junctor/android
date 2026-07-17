@@ -26,19 +26,21 @@ class FirebaseFAQDataSource(
     private val userSession: UserSession,
 ) : FAQDataSource {
     private val faqs: Flow<FlowResult<List<FAQ>>> =
-        userSession.getConference().flatMapMerge { conference ->
-            firestore.collection("conferences/${conference.code}/faqs")
-                .snapshotFlow()
-                .closeOnConferenceChange(userSession.getConference())
-                .mapSnapshot {
-                    it.toObjectsOrEmpty(FirebaseFAQ::class.java).map { it.toFAQ() }
-                }
-                .onStart { emit(FlowResult.Loading) }
-        }.shareIn(
-            CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Lazily,
-            replay = 1,
-        )
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                firestore
+                    .collection("conferences/${conference.code}/faqs")
+                    .snapshotFlow()
+                    .closeOnConferenceChange(userSession.getConference())
+                    .mapSnapshot {
+                        it.toObjectsOrEmpty(FirebaseFAQ::class.java).map { it.toFAQ() }
+                    }.onStart { emit(FlowResult.Loading) }
+            }.shareIn(
+                CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
 
     override fun get(): Flow<FlowResult<List<FAQ>>> = faqs
 }

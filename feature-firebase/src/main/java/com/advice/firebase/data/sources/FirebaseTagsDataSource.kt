@@ -29,27 +29,27 @@ class FirebaseTagsDataSource(
     private val firestore: FirebaseFirestore,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
 ) : TagsDataSource {
-
     private val tagTypes: StateFlow<List<TagType>> =
-        userSession.getConference().flatMapMerge { conference ->
-            firestore
-                .collection("conferences")
-                .document(conference.code)
-                .collection("tagtypes")
-                .snapshotFlowLegacy()
-                .closeOnConferenceChange(userSession.getConference())
-                .map { querySnapshot ->
-                    querySnapshot
-                        .toObjectsOrEmpty(FirebaseTagType::class.java)
-                        .sortedBy { it.sortOrder }
-                        .mapNotNull { it.toTagType() }
-                }
-                .onStart { emit(emptyList()) }
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList(),
-        )
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                firestore
+                    .collection("conferences")
+                    .document(conference.code)
+                    .collection("tagtypes")
+                    .snapshotFlowLegacy()
+                    .closeOnConferenceChange(userSession.getConference())
+                    .map { querySnapshot ->
+                        querySnapshot
+                            .toObjectsOrEmpty(FirebaseTagType::class.java)
+                            .sortedBy { it.sortOrder }
+                            .mapNotNull { it.toTagType() }
+                    }.onStart { emit(emptyList()) }
+            }.stateIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList(),
+            )
 
     override fun get(): Flow<List<TagType>> =
         combine(tagTypes, bookmarkedEventsDataSource.get()) { tags, bookmarks ->
@@ -71,8 +71,7 @@ class FirebaseTagsDataSource(
                                         { it.sortOrder },
                                         { it.label },
                                     ),
-                                )
-                                .map { tag ->
+                                ).map { tag ->
                                     tag.copy(isSelected = tag.id.toString() in selectedIds)
                                 },
                     )

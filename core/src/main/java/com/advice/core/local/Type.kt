@@ -11,9 +11,8 @@ data class Type(
     private val _color: String,
     val description: String,
     val actions: List<Action>,
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
 ) : Parcelable {
-
     val color: String
         get() = if (isVillage || isWorkshop) "#FFFFFF" else _color
 

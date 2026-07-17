@@ -10,9 +10,8 @@ data class Tag(
     val description: String,
     val color: String?,
     val sortOrder: Int,
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
 ) : Parcelable {
-
     companion object {
         val bookmark = Tag(-1, "Bookmarks", "", color = "#FF0066", -1)
     }

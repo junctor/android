@@ -16,9 +16,8 @@ class FirebaseVillagesDataSource(
             organizations.filter { village == null || it.tags.contains(village.id) }
         }
 
-    private fun List<TagType>.findTagByLabel(
-        label: String
-    ) = find { it.label == "Organization Type" }?.tags?.find {
-        it.label == label
-    }
+    private fun List<TagType>.findTagByLabel(label: String) =
+        find { it.label == "Organization Type" }?.tags?.find {
+            it.label == label
+        }
 }

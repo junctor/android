@@ -69,8 +69,9 @@ object TimeUtil {
         context: Context,
         session: Session?,
     ): String {
-        if (session == null)
+        if (session == null) {
             return ""
+        }
 
         val zoneId = getZoneId(context, session.timeZone)
 
@@ -83,28 +84,32 @@ object TimeUtil {
 
         val prefixFormat = formatter("EEE, MMM d")
         // Show the date range.
-        return prefixFormat.format(session.start.atZone(zoneId)) + " - " + suffixFormat.format(
-            session.end.atZone(
-                zoneId,
-            ),
-        )
+        return prefixFormat.format(session.start.atZone(zoneId)) + " - " +
+            suffixFormat.format(
+                session.end.atZone(
+                    zoneId,
+                ),
+            )
     }
 
     fun getEventTimeStamp(
         context: Context,
         session: Session?,
     ): String {
-        if (session == null)
+        if (session == null) {
             return ""
+        }
 
         val zoneId = getZoneId(context, session.timeZone)
-        val is24HourFormat = android.text.format.DateFormat
-            .is24HourFormat(context)
-        val pattern = if (is24HourFormat) {
-            "HH:mm"
-        } else {
-            "h:mm a"
-        }
+        val is24HourFormat =
+            android.text.format.DateFormat
+                .is24HourFormat(context)
+        val pattern =
+            if (is24HourFormat) {
+                "HH:mm"
+            } else {
+                "h:mm a"
+            }
 
         val timeFormat = formatter(pattern)
 
@@ -113,11 +118,12 @@ object TimeUtil {
             return timeFormat.format(session.start.atZone(zoneId))
         }
 
-        return timeFormat.format(session.start.atZone(zoneId)) + " - " + timeFormat.format(
-            session.end.atZone(
-                zoneId,
-            ),
-        )
+        return timeFormat.format(session.start.atZone(zoneId)) + " - " +
+            timeFormat.format(
+                session.end.atZone(
+                    zoneId,
+                ),
+            )
     }
 
     fun getDateTimeStamp(
@@ -125,20 +131,23 @@ object TimeUtil {
         session: Session,
     ): String {
         val zoneId = getZoneId(context, session.timeZone)
-        val is24HourFormat = android.text.format.DateFormat
-            .is24HourFormat(context)
+        val is24HourFormat =
+            android.text.format.DateFormat
+                .is24HourFormat(context)
 
-        val s = if (is24HourFormat) {
-            "HH:mm"
-        } else {
-            "h:mm a"
-        }
+        val s =
+            if (is24HourFormat) {
+                "HH:mm"
+            } else {
+                "h:mm a"
+            }
 
         val prefix = formatter("EEEE, MMMM d").format(session.start.atZone(zoneId))
         val timeFormat = formatter(s)
-        return prefix + " - " + timeFormat.format(session.start.atZone(zoneId)) + " to " + timeFormat.format(
-            session.end.atZone(zoneId),
-        )
+        return prefix + " - " + timeFormat.format(session.start.atZone(zoneId)) + " to " +
+            timeFormat.format(
+                session.end.atZone(zoneId),
+            )
     }
 
     fun getTimeStamp(
@@ -146,14 +155,16 @@ object TimeUtil {
         session: Session,
     ): String {
         val zoneId = getZoneId(context, session.timeZone)
-        val is24HourFormat = android.text.format.DateFormat
-            .is24HourFormat(context)
+        val is24HourFormat =
+            android.text.format.DateFormat
+                .is24HourFormat(context)
 
-        val pattern = if (is24HourFormat) {
-            "HH:mm"
-        } else {
-            "h:mm a"
-        }
+        val pattern =
+            if (is24HourFormat) {
+                "HH:mm"
+            } else {
+                "h:mm a"
+            }
         val localDateTime = session.start.atZone(zoneId)
         return formatter(pattern).format(localDateTime)
     }
@@ -194,8 +205,9 @@ object TimeUtil {
         location: LocationSchedule,
         timezone: String,
     ): String {
-        val is24HourFormat = android.text.format.DateFormat
-            .is24HourFormat(context)
+        val is24HourFormat =
+            android.text.format.DateFormat
+                .is24HourFormat(context)
         return getScheduleTimestamp(location, timezone, is24HourFormat)
     }
 
@@ -207,25 +219,26 @@ object TimeUtil {
     ): String {
         val zoneId = getZoneId(forceTimeZone, timezone)
 
-        val pattern = if (is24HourFormat) {
-            "HH:mm"
-        } else {
-            "h:mm a"
-        }
+        val pattern =
+            if (is24HourFormat) {
+                "HH:mm"
+            } else {
+                "h:mm a"
+            }
         val timeFormat = formatter(pattern)
 
-        return location.status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } + ": " + timeFormat.format(
-            location.start.atZone(
-                zoneId,
-            ),
-        ) + " to " + timeFormat.format(
-            location.end.atZone(zoneId),
-        )
+        return location.status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } + ": " +
+            timeFormat.format(
+                location.start.atZone(
+                    zoneId,
+                ),
+            ) + " to " +
+            timeFormat.format(
+                location.end.atZone(zoneId),
+            )
     }
 
-    fun getNewsTimestamp(date: Date): String {
-        return formatter("MMMM d, yyyy").format(date.toInstant().atZone(ZoneId.systemDefault()))
-    }
+    fun getNewsTimestamp(date: Date): String = formatter("MMMM d, yyyy").format(date.toInstant().atZone(ZoneId.systemDefault()))
 
     private fun isSameDay(
         instant1: Instant,

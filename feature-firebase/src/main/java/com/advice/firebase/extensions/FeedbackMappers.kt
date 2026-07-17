@@ -24,19 +24,22 @@ fun FirebaseFeedbackForm.toFeedbackForm(): FeedbackForm? =
 
 fun FirebaseFeedbackItem.toFeedbackItem(): FeedbackItem? =
     try {
-        val type = when (type) {
-            "display_only" -> FeedbackType.DisplayOnly
-            "select_one" -> FeedbackType.SelectOne(
-                options.sortedBy { it.sortOrder }.map { FeedbackOption(it.id, it.captionText) }
-            )
+        val type =
+            when (type) {
+                "display_only" -> FeedbackType.DisplayOnly
+                "select_one" ->
+                    FeedbackType.SelectOne(
+                        options.sortedBy { it.sortOrder }.map { FeedbackOption(it.id, it.captionText) },
+                    )
 
-            "multi_select" -> FeedbackType.MultiSelect(
-                options.sortedBy { it.sortOrder }.map { FeedbackOption(it.id, it.captionText) }
-            )
+                "multi_select" ->
+                    FeedbackType.MultiSelect(
+                        options.sortedBy { it.sortOrder }.map { FeedbackOption(it.id, it.captionText) },
+                    )
 
-            "text" -> FeedbackType.TextBox("")
-            else -> error("Unknown feedback type: $type")
-        }
+                "text" -> FeedbackType.TextBox("")
+                else -> error("Unknown feedback type: $type")
+            }
         FeedbackItem(
             id = id,
             caption = captionText,

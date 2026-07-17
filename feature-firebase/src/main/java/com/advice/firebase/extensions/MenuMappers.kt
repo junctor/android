@@ -95,11 +95,12 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
                     description,
                 )
 
-            "search" -> MenuItem.Search(
-                googleMaterialsymbol,
-                titleText,
-                description,
-            )
+            "search" ->
+                MenuItem.Search(
+                    googleMaterialsymbol,
+                    titleText,
+                    description,
+                )
 
             else -> error("Unknown menu item function: $titleText, $function")
         }

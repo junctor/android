@@ -106,7 +106,7 @@ data class FirebaseConference(
     var merchHelpDocId: Long? = null,
     @get:PropertyName("emergency_document_id")
     @set:PropertyName("emergency_document_id")
-    var emergencyDocumentId: Long ? = null,
+    var emergencyDocumentId: Long? = null,
     @get:PropertyName("timezone")
     @set:PropertyName("timezone")
     var timezone: String = "",

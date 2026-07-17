@@ -1,5 +1,7 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.audience.AudienceContext
+import com.advice.core.audience.AudiencePolicy
 import com.advice.core.local.Bookmark
 import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceContent
@@ -9,8 +11,6 @@ import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Speaker
 import com.advice.core.local.TagType
-import com.advice.core.local.User
-import com.advice.core.local.canView
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
@@ -19,6 +19,8 @@ import com.advice.data.sources.FeedbackDataSource
 import com.advice.data.sources.LocationsDataSource
 import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
+import com.advice.firebase.extensions.audienceLabel
+import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toContents
@@ -48,33 +50,34 @@ class FirebaseContentDataSource(
     locationsDataSource: LocationsDataSource,
     feedbackDataSource: FeedbackDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
+    private val audiencePolicy: AudiencePolicy,
 ) : ContentDataSource {
-
     @OptIn(ExperimentalCoroutinesApi::class)
     private val content: StateFlow<List<FirebaseContent>> =
-        userSession.getConference().flatMapMerge { conference ->
-            firestore
-                .collection("conferences")
-                .document(conference.code)
-                .collection("content")
-                .snapshotFlowLegacy()
-                .closeOnConferenceChange(userSession.getConference())
-                .map { querySnapshot ->
-                    querySnapshot
-                        .toObjectsOrEmpty(FirebaseContent::class.java)
-                        .filter { (!it.hidden || userSession.isDeveloper) }
-                }
-                .onStart { emit(emptyList()) }
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList(),
-        )
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                firestore
+                    .collection("conferences")
+                    .document(conference.code)
+                    .collection("content")
+                    .snapshotFlowLegacy()
+                    .closeOnConferenceChange(userSession.getConference())
+                    .map { querySnapshot ->
+                        querySnapshot
+                            .toObjectsOrEmpty(FirebaseContent::class.java)
+                            .filter { (!it.hidden || userSession.isDeveloper) }
+                    }.onStart { emit(emptyList()) }
+            }.stateIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList(),
+            )
 
     private val _conferenceContent =
         combine(
             userSession.getConference(),
-            userSession.user,
+            userSession.audienceContext,
             tagsDataSource.get(),
             speakersDataSource.get(),
             combine(
@@ -85,21 +88,18 @@ class FirebaseContentDataSource(
             ) { locations, feedbackforms, firebaseContent, bookmarks ->
                 AdditionalData(locations, feedbackforms, firebaseContent, bookmarks)
             },
-        ) { conference, user, tags, speakers, additional ->
-            if (user == null) {
-                return@combine ConferenceContent(emptyList())
-            }
-
-            val content = getConferenceContent(
-                conference = conference,
-                user = user,
-                tags = tags,
-                speakers = speakers,
-                locations = additional.locations,
-                feedbackforms = additional.feedbackforms,
-                firebaseContent = additional.firebaseContent,
-                bookmarks = additional.bookmarks,
-            )
+        ) { conference, context, tags, speakers, additional ->
+            val content =
+                getConferenceContent(
+                    conference = conference,
+                    context = context,
+                    tags = tags,
+                    speakers = speakers,
+                    locations = additional.locations,
+                    feedbackforms = additional.feedbackforms,
+                    firebaseContent = additional.firebaseContent,
+                    bookmarks = additional.bookmarks,
+                )
 
             ConferenceContent(
                 content = content ?: emptyList(),
@@ -119,32 +119,38 @@ class FirebaseContentDataSource(
 
     private fun getConferenceContent(
         conference: Conference,
-        user: User,
+        context: AudienceContext,
         tags: List<TagType>,
         speakers: List<Speaker>,
         locations: List<Location>,
         feedbackforms: List<FeedbackForm>,
         firebaseContent: List<FirebaseContent>,
-        bookmarks: List<Bookmark>
+        bookmarks: List<Bookmark>,
     ): List<Content>? {
         // Return null if any of the required data is empty.
         if (tags.isEmpty() || locations.isEmpty() || firebaseContent.isEmpty()) {
             return null
         }
 
-        val content = firebaseContent.mapNotNull { firebaseItem ->
-            if (!user.canView(firebaseItem.visibleAgeMin, firebaseItem)) {
-                return@mapNotNull null
+        val content =
+            firebaseContent.mapNotNull { firebaseItem ->
+                if (!audiencePolicy.canView(
+                        firebaseItem.audienceRestriction,
+                        context,
+                        firebaseItem.audienceLabel,
+                    )
+                ) {
+                    return@mapNotNull null
+                }
+                firebaseItem.toContents(
+                    code = conference.code,
+                    tags = tags,
+                    speakers = speakers,
+                    bookmarkedEvents = bookmarks,
+                    locations = locations.flatten(),
+                    feedbackforms = feedbackforms,
+                )
             }
-            firebaseItem.toContents(
-                code = conference.code,
-                tags = tags,
-                speakers = speakers,
-                bookmarkedEvents = bookmarks,
-                locations = locations.flatten(),
-                feedbackforms = feedbackforms,
-            )
-        }
         return content
     }
 
@@ -158,19 +164,23 @@ class FirebaseContentDataSource(
         bookmarkedEventsDataSource.bookmark(session, isBookmarked = !session.isBookmarked)
     }
 
-    override suspend fun isBookmarked(content: Content): Boolean {
-        return bookmarkedEventsDataSource.isBookmarked(content)
-    }
+    override suspend fun isBookmarked(content: Content): Boolean = bookmarkedEventsDataSource.isBookmarked(content)
 
-    override suspend fun isBookmarked(session: Session): Boolean {
-        return bookmarkedEventsDataSource.isBookmarked(session)
-    }
+    override suspend fun isBookmarked(session: Session): Boolean = bookmarkedEventsDataSource.isBookmarked(session)
 
-    override suspend fun getContent(conference: String, contentId: Long): Content? {
-        return _conferenceContent.first().content.find { it.conference == conference && it.id == contentId }
-    }
+    override suspend fun getContent(
+        conference: String,
+        contentId: Long,
+    ): Content? =
+        _conferenceContent.first().content.find {
+            it.conference == conference && it.id == contentId
+        }
 
-    override suspend fun getEvent(conference: String, contentId: Long, sessionId: Long): Event? {
+    override suspend fun getEvent(
+        conference: String,
+        contentId: Long,
+        sessionId: Long,
+    ): Event? {
         val content = getContent(conference, contentId)
 
         if (content == null) {
@@ -186,12 +196,10 @@ class FirebaseContentDataSource(
 
         return Event(content, session)
     }
-
 }
 
 // todo: this needs to be recursive.
-private fun List<Location>.flatten(): List<Location> {
-    return flatMap { location ->
+private fun List<Location>.flatten(): List<Location> =
+    flatMap { location ->
         listOf(location) + location.children.flatten()
     }
-}

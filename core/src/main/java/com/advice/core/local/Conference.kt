@@ -22,52 +22,51 @@ data class Conference(
     var isSelected: Boolean = false,
     val media: ConferenceMediaEntry? = null,
 ) : Parcelable {
-
     val hasFinished: Boolean
         get() = end.compareTo(Instant.now()) == -1
 
-    fun squareLogo(darkTheme: Boolean): String? {
-        return media?.let {
+    fun squareLogo(darkTheme: Boolean): String? =
+        media?.let {
             if (darkTheme) {
                 it.dark?.squareLogo
             } else {
                 it.light?.squareLogo
             }
         }
-    }
 
     companion object {
-        val Zero = Conference(
-            id = -1,
-            name = "TEST CON 2026",
-            tagline = "Welcome to TEST CON - largest conference in the world",
-            code = "TEST2026",
-            homeMenuId = null,
-            merchInformation = null,
-            maps = ArrayList(),
-            kickoffDate = Instant.now(),
-            start = Instant.now(),
-            end = Instant.now(),
-            timezone = "America/Los_Angeles",
-            flags = emptyMap(),
-            emergencyDocumentId = 123,
-            isSelected = false,
-            media =
-                ConferenceMediaEntry(
-                    dark =
-                        ConferenceMediaImages(
-                            null,
-                            null,
-                            "https://info.defcon.org/blobs/dc34/dc-34-logo.webp",
-                        ),
-                    light =
-                        ConferenceMediaImages(
-                            null,
-                            null,
-                            "https://info.defcon.org/blobs/dc34/dc-34-logo.webp",
-                        ),
-                ),
-        )
+        val Zero =
+            Conference(
+                id = -1,
+                name = "TEST CON 2026",
+                tagline = "Welcome to TEST CON - largest conference in the world",
+                code = "TEST2026",
+                homeMenuId = null,
+                merchInformation = null,
+                maps = ArrayList(),
+                kickoffDate = Instant.now(),
+                start = Instant.now(),
+                end = Instant.now(),
+                timezone = "America/Los_Angeles",
+                flags = emptyMap(),
+                emergencyDocumentId = 123,
+                isSelected = false,
+                media =
+                    ConferenceMediaEntry(
+                        dark =
+                            ConferenceMediaImages(
+                                null,
+                                null,
+                                "https://info.defcon.org/blobs/dc34/dc-34-logo.webp",
+                            ),
+                        light =
+                            ConferenceMediaImages(
+                                null,
+                                null,
+                                "https://info.defcon.org/blobs/dc34/dc-34-logo.webp",
+                            ),
+                    ),
+            )
     }
 }
 
@@ -81,5 +80,5 @@ data class ConferenceMediaEntry(
 data class ConferenceMediaImages(
     val bannerBackground: String?,
     val bannerLogo: String?,
-    val squareLogo: String?
+    val squareLogo: String?,
 ) : Parcelable

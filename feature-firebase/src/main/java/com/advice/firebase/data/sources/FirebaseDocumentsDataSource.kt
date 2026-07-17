@@ -1,9 +1,11 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.audience.AudiencePolicy
 import com.advice.core.local.Document
-import com.advice.core.local.canView
 import com.advice.data.session.UserSession
 import com.advice.data.sources.DocumentsDataSource
+import com.advice.firebase.extensions.audienceLabel
+import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toDocument
@@ -27,39 +29,62 @@ import timber.log.Timber
 class FirebaseDocumentsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
+    private val audiencePolicy: AudiencePolicy,
 ) : DocumentsDataSource {
-
-    private val documents = userSession.getConference().flatMapMerge { conference ->
-        val snapshotFlow = firestore.collection("conferences")
-            .document(conference.code)
-            .collection("documents")
-            .snapshotFlowLegacy()
-            .closeOnConferenceChange(userSession.getConference())
-        combine(snapshotFlow, userSession.user) { querySnapshot, user ->
-            querySnapshot.toObjectsOrEmpty(FirebaseDocument::class.java)
-                .filter { user?.canView(it.visibleAgeMin, it) != false }
-                .mapNotNull { it.toDocument() }
-        }.onStart { emit(emptyList()) }
-    }.shareIn(
-        CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.Lazily,
-        replay = 1,
-    )
+    private val documents =
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                val snapshotFlow =
+                    firestore
+                        .collection("conferences")
+                        .document(conference.code)
+                        .collection("documents")
+                        .snapshotFlowLegacy()
+                        .closeOnConferenceChange(userSession.getConference())
+                combine(snapshotFlow, userSession.audienceContext) { querySnapshot, context ->
+                    querySnapshot
+                        .toObjectsOrEmpty(FirebaseDocument::class.java)
+                        .filter {
+                            audiencePolicy.canView(
+                                it.audienceRestriction,
+                                context,
+                                it.audienceLabel,
+                            )
+                        }
+                        .mapNotNull { it.toDocument() }
+                }.onStart { emit(emptyList()) }
+            }.shareIn(
+                CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
 
     override fun get(): Flow<List<Document>> = documents
 
     override suspend fun get(id: Long): Document? {
         val conference = userSession.currentConference ?: return null
 
-        val snapshot = try {
-            firestore.document("conferences/${conference.code}/documents/$id")
-                .get()
-                .await()
-        } catch (ex: Exception) {
-            Timber.e(ex, "Failed to get document with id: $id")
+        val snapshot =
+            try {
+                firestore
+                    .document("conferences/${conference.code}/documents/$id")
+                    .get()
+                    .await()
+            } catch (ex: Exception) {
+                Timber.e(ex, "Failed to get document with id: $id")
+                return null
+            }
+
+        val firebaseDocument = snapshot.toObjectOrNull(FirebaseDocument::class.java) ?: return null
+        if (!audiencePolicy.canView(
+                firebaseDocument.audienceRestriction,
+                userSession.currentAudienceContext,
+                firebaseDocument.audienceLabel,
+            )
+        ) {
             return null
         }
-
-        return snapshot.toObjectOrNull(FirebaseDocument::class.java)?.toDocument()
+        return firebaseDocument.toDocument()
     }
 }

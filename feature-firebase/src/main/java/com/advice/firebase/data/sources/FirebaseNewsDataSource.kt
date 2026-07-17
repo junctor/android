@@ -25,24 +25,28 @@ class FirebaseNewsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
 ) : NewsDataSource {
-    private val articles: StateFlow<List<NewsArticle>> = userSession.getConference().flatMapMerge { conference ->
-        firestore.collection("conferences")
-            .document(conference.code)
-            .collection("articles")
-            .snapshotFlowLegacy()
-            .closeOnConferenceChange(userSession.getConference())
-            .map { querySnapshot ->
-                querySnapshot.toObjectsOrEmpty(FirebaseArticle::class.java)
-                    .filter { !it.hidden || userSession.isDeveloper }
-                    .sortedByDescending { it.updatedAt }
-                    .mapNotNull { it.toArticle() }
-            }
-            .onStart { emit(emptyList()) }
-    }.stateIn(
-        scope = CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = emptyList(),
-    )
+    private val articles: StateFlow<List<NewsArticle>> =
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                firestore
+                    .collection("conferences")
+                    .document(conference.code)
+                    .collection("articles")
+                    .snapshotFlowLegacy()
+                    .closeOnConferenceChange(userSession.getConference())
+                    .map { querySnapshot ->
+                        querySnapshot
+                            .toObjectsOrEmpty(FirebaseArticle::class.java)
+                            .filter { !it.hidden || userSession.isDeveloper }
+                            .sortedByDescending { it.updatedAt }
+                            .mapNotNull { it.toArticle() }
+                    }.onStart { emit(emptyList()) }
+            }.stateIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList(),
+            )
 
     override fun get(): Flow<List<NewsArticle>> = articles
 }

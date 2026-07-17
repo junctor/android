@@ -11,16 +11,16 @@ import com.advice.firebase.models.FirebaseConference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 
-
 class FirebaseConferencesDataSource(
     firestore: FirebaseFirestore,
 ) : ConferencesDataSource {
-
     private val conferences: Flow<FlowResult<List<Conference>>> =
-        firestore.collection("conferences")
+        firestore
+            .collection("conferences")
             .snapshotFlow()
-            .mapSnapshot {snapshot ->
-                snapshot.toObjectsOrEmpty(FirebaseConference::class.java)
+            .mapSnapshot { snapshot ->
+                snapshot
+                    .toObjectsOrEmpty(FirebaseConference::class.java)
                     .mapNotNull { it.toConference() }
                     .sortedWith(compareBy({ it.hasFinished }, { it.start }))
             }

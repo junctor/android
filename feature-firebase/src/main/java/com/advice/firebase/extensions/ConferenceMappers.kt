@@ -34,10 +34,11 @@ fun FirebaseConference.toConference(): Conference? =
                 "enable_wifi" to enableWifi,
             ),
             emergencyDocumentId,
-            media = ConferenceMediaEntry(
-                dark = media["dark"]?.toMediaImages(),
-                light = media["light"]?.toMediaImages(),
-            )
+            media =
+                ConferenceMediaEntry(
+                    dark = media["dark"]?.toMediaImages(),
+                    light = media["light"]?.toMediaImages(),
+                ),
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Conference: ${ex.message}")

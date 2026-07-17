@@ -1,8 +1,8 @@
 package com.advice.firebase.models.wifi
 
 import com.advice.core.local.wifi.EapSubject
-import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.core.local.wifi.WifiCertificate
+import com.advice.core.local.wifi.WirelessNetwork
 import com.google.firebase.firestore.PropertyName
 
 data class FirebaseWiFiNetwork(
@@ -26,7 +26,7 @@ data class FirebaseWiFiNetwork(
     var disableAssociationMacRandomization: String = "N",
     @get:PropertyName("disable_captive_network_detection")
     @set:PropertyName("disable_captive_network_detection")
-    var disableCaptiveNetworkDetection: String= "N",
+    var disableCaptiveNetworkDetection: String = "N",
     @get:PropertyName("eap_method")
     @set:PropertyName("eap_method")
     var eapMethod: String? = null,
@@ -92,8 +92,8 @@ data class FirebaseWiFiNetwork(
     var tlsPreferredVersion: String? = null,
 )
 
-fun FirebaseWiFiNetwork.toWiFiNetwork(certificates: List<WifiCertificate>?): WirelessNetwork {
-    return WirelessNetwork(
+fun FirebaseWiFiNetwork.toWiFiNetwork(certificates: List<WifiCertificate>?): WirelessNetwork =
+    WirelessNetwork(
         anonymousIdentity = this.anonymousIdentity,
         autoJoin = this.autoJoin,
         certs = certificates,
@@ -120,6 +120,5 @@ fun FirebaseWiFiNetwork.toWiFiNetwork(certificates: List<WifiCertificate>?): Wir
         tlsClientCertificateSupport = this.tlsClientCertificateSupport,
         tlsMaximumVersion = this.tlsMaximumVersion,
         tlsMinimumVersion = this.tlsMinimumVersion,
-        tlsPreferredVersion = this.tlsPreferredVersion
+        tlsPreferredVersion = this.tlsPreferredVersion,
     )
-}

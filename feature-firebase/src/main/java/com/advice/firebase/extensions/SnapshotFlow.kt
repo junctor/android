@@ -36,11 +36,8 @@ fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
     }
 }
 
-
-fun <T : Any> Flow<SnapshotResult>.mapSnapshot(
-    block: (QuerySnapshot) -> T
-): Flow<FlowResult<T>> {
-    return map {
+fun <T : Any> Flow<SnapshotResult>.mapSnapshot(block: (QuerySnapshot) -> T): Flow<FlowResult<T>> =
+    map {
         when (it) {
             is SnapshotResult.Loading -> {
                 FlowResult.Loading
@@ -56,4 +53,3 @@ fun <T : Any> Flow<SnapshotResult>.mapSnapshot(
             }
         }
     }
-}

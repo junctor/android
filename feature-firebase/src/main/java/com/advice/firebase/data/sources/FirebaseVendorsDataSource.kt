@@ -16,9 +16,8 @@ class FirebaseVendorsDataSource(
             organizations.filter { vendor == null || it.tags.contains(vendor.id) }
         }
 
-    private fun List<TagType>.findTagByLabel(
-        label: String
-    ) = find { it.label == "Organization Type" }?.tags?.find {
-        it.label == label
-    }
+    private fun List<TagType>.findTagByLabel(label: String) =
+        find { it.label == "Organization Type" }?.tags?.find {
+            it.label == label
+        }
 }

@@ -43,19 +43,20 @@ internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference
     val path = this.toString()
     return callbackFlow {
         var currentConference: Conference? = null
-        val collector = launch {
-            conferenceFlow.collect { newConference ->
-                // Assuming Conference has a proper equals() method
-                if (newConference != currentConference) {
-                    if (currentConference == null) {
-                        currentConference = newConference
-                    } else {
-                        Timber.d("Closing snapshot listener for path: $path, conference changed.")
-                        close()
+        val collector =
+            launch {
+                conferenceFlow.collect { newConference ->
+                    // Assuming Conference has a proper equals() method
+                    if (newConference != currentConference) {
+                        if (currentConference == null) {
+                            currentConference = newConference
+                        } else {
+                            Timber.d("Closing snapshot listener for path: $path, conference changed.")
+                            close()
+                        }
                     }
                 }
             }
-        }
 
         collect { value ->
             trySend(value)
@@ -68,12 +69,14 @@ internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference
     }
 }
 
-
 fun logSnapshotClosure(path: String) {
     Timber.d("Snapshot listener for path: $path closed. $listeners_count active listeners.")
 }
 
-internal fun logFailure(path: String, error: FirebaseFirestoreException) {
+internal fun logFailure(
+    path: String,
+    error: FirebaseFirestoreException,
+) {
     val crashlytics = FirebaseCrashlytics.getInstance()
     Timber.e("Failed to get snapshot for path: $path, ${error.message}")
     if (error.code != FirebaseFirestoreException.Code.UNAVAILABLE) {
@@ -82,14 +85,18 @@ internal fun logFailure(path: String, error: FirebaseFirestoreException) {
     }
 }
 
-internal fun logSnapshot(path: String?, value: QuerySnapshot) {
+internal fun logSnapshot(
+    path: String?,
+    value: QuerySnapshot,
+) {
     Timber.d("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
     if (!value.metadata.isFromCache) {
         document_reads += value.size()
         Timber.e("$listeners_count active snapshot listeners, document reads: $document_reads(+${value.size()}) path: $path")
     } else {
         document_cache_reads += value.size()
-        Timber.i("CACHE: $listeners_count active snapshot listeners, document reads: $document_cache_reads(+0) path: $path (From Cache: ${value.size()})")
+        Timber.i(
+            "CACHE: $listeners_count active snapshot listeners, document reads: $document_cache_reads(+0) path: $path (From Cache: ${value.size()})",
+        )
     }
 }
-

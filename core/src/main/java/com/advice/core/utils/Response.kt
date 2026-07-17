@@ -1,10 +1,13 @@
 package com.advice.core.utils
 
 sealed class Response<out T : Any> {
-
     data object Loading : Response<Nothing>()
 
-    data class Success<T : Any>(val data: T) : Response<T>()
+    data class Success<T : Any>(
+        val data: T,
+    ) : Response<T>()
 
-    data class Error(val exception: Exception) : Response<Nothing>()
+    data class Error(
+        val exception: Exception,
+    ) : Response<Nothing>()
 }

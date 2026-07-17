@@ -26,20 +26,23 @@ class FirebaseFeedbackDataSource(
 ) : FeedbackDataSource {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val feedback: StateFlow<List<FeedbackForm>> =
-        userSession.getConference().flatMapMerge { conference ->
-            firestore.collection("conferences/${conference.code}/feedbackforms")
-                .snapshotFlowLegacy()
-                .closeOnConferenceChange(userSession.getConference())
-                .map { snapshot ->
-                    snapshot.toObjectsOrEmpty(FirebaseFeedbackForm::class.java)
-                        .mapNotNull { it.toFeedbackForm() }
-                }
-                .onStart { emit(emptyList()) }
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList(),
-        )
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                firestore
+                    .collection("conferences/${conference.code}/feedbackforms")
+                    .snapshotFlowLegacy()
+                    .closeOnConferenceChange(userSession.getConference())
+                    .map { snapshot ->
+                        snapshot
+                            .toObjectsOrEmpty(FirebaseFeedbackForm::class.java)
+                            .mapNotNull { it.toFeedbackForm() }
+                    }.onStart { emit(emptyList()) }
+            }.stateIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList(),
+            )
 
     override fun get(): Flow<List<FeedbackForm>> = feedback
 }

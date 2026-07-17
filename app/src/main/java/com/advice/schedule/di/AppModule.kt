@@ -4,6 +4,8 @@ import android.content.Context.WIFI_SERVICE
 import android.net.wifi.WifiManager
 import androidx.work.WorkManager
 import com.advice.analytics.core.AnalyticsProvider
+import com.advice.core.audience.AudiencePolicy
+import com.advice.core.audience.FailOpenAudiencePolicy
 import com.advice.core.utils.NotificationHelper
 import com.advice.core.utils.Storage
 import com.advice.core.utils.ToastManager
@@ -184,6 +186,7 @@ val appModule = module {
     single<UserSession> { FirebaseUserSession(
         get(), get(), get(), get(), get()
     ) }
+    single<AudiencePolicy> { FailOpenAudiencePolicy() }
     single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<ContentDataSource> {
@@ -195,6 +198,7 @@ val appModule = module {
             get<LocationsDataSource>(),
             get(),
             get(named("events")),
+            get(),
         )
     }
     single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
@@ -207,16 +211,16 @@ val appModule = module {
         )
     }
 
-    single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get()) }
-    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get(), get()) }
+    single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get(), get()) }
+    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get(), get(), get()) }
 
     // Organizations
-    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get()) }
+    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get(), get()) }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<VillagesDataSource> { FirebaseVillagesDataSource(get(), get()) }
 
     // Documents
-    single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get()) }
+    single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get(), get()) }
 
     single<MenuDataSource> { FirebaseMenuDataSource(get(), get()) }
 

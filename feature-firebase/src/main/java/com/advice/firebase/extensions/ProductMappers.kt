@@ -14,17 +14,20 @@ import timber.log.Timber
 fun FirebaseProduct.toMerch(tagTypes: List<TagType>): Product? =
     try {
         val defaultTags = listOf(Tag(1, "Other", "", "", -1))
-        val productTags = tagIds.mapNotNull { id ->
-            tagTypes.flatMap { it.tags }.find { it.id == id }
-        }
+        val productTags =
+            tagIds.mapNotNull { id ->
+                tagTypes.flatMap { it.tags }.find { it.id == id }
+            }
         Product(
             id = id,
             code = code,
             sortOrder = sortOrder,
             label = title,
             baseCost = priceMin,
-            variants = variants.sortedWith(compareBy({ it.stockStatus }, { it.sortOrder }))
-                .mapNotNull { it.toMerchOption() },
+            variants =
+                variants
+                    .sortedWith(compareBy({ it.stockStatus }, { it.sortOrder }))
+                    .mapNotNull { it.toMerchOption() },
             media = media.sortedBy { it.sortOrder }.mapNotNull { it.toProductMedia() },
             tags = productTags.ifEmpty { defaultTags },
         )

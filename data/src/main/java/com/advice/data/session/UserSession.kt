@@ -1,18 +1,18 @@
 package com.advice.data.session
 
+import com.advice.core.audience.AudienceContext
 import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
-import com.advice.core.local.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserSession {
 
-    var user: Flow<User?>
+    var audienceContext: Flow<AudienceContext>
 
     var isDeveloper: Boolean
 
     // current state
-    val currentUser: User?
+    val currentAudienceContext: AudienceContext
 
     val currentConference: Conference?
 

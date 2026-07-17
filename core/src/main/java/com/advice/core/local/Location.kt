@@ -43,9 +43,10 @@ data class Location(
         val now = Instant.now()
 
         val status =
-            schedule?.firstOrNull {
-                it.start.compareTo(now) == -1 && it.end.compareTo(now) == 1
-            }?.status ?: defaultStatus
+            schedule
+                ?.firstOrNull {
+                    it.start.compareTo(now) == -1 && it.end.compareTo(now) == 1
+                }?.status ?: defaultStatus
 
         return when (status) {
             "open" -> LocationStatus.Open

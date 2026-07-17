@@ -14,15 +14,19 @@ sealed class FeedbackType : Parcelable {
     data object DisplayOnly : FeedbackType()
 
     @Parcelize
-    data class SelectOne(val options: List<FeedbackOption>, val selection: Long? = null) :
-        FeedbackType()
+    data class SelectOne(
+        val options: List<FeedbackOption>,
+        val selection: Long? = null,
+    ) : FeedbackType()
 
     @Parcelize
     data class MultiSelect(
         val options: List<FeedbackOption>,
-        val selections: List<Long> = emptyList()
+        val selections: List<Long> = emptyList(),
     ) : FeedbackType()
 
     @Parcelize
-    data class TextBox(val value: String) : FeedbackType()
+    data class TextBox(
+        val value: String,
+    ) : FeedbackType()
 }

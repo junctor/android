@@ -1,12 +1,14 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.audience.AudiencePolicy
 import com.advice.core.local.Conference
 import com.advice.core.local.TagType
-import com.advice.core.local.canView
 import com.advice.core.local.products.Product
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ProductsDataSource
 import com.advice.data.sources.TagsDataSource
+import com.advice.firebase.extensions.audienceLabel
+import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
 import com.advice.firebase.extensions.snapshotFlowLegacy
 import com.advice.firebase.extensions.toMerch
@@ -29,52 +31,59 @@ class FirebaseProductsDataSource(
     private val userSession: UserSession,
     private val tagsDataSource: TagsDataSource,
     private val firestore: FirebaseFirestore,
+    private val audiencePolicy: AudiencePolicy,
 ) : ProductsDataSource {
-
     private val products: Flow<List<Product>> =
-        userSession.getConference().flatMapMerge { conference ->
-            combine(
-                collectionReference(conference),
-                tagsDataSource.get(),
-                userSession.user
-            ) { products, tags, user ->
-                products
-                    .filter { user?.canView(it.visibleAgeMin, it) != false }
-                    .mapNotNull { it.toMerch(tags) }
-            }
-        }.shareIn(
-            CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Lazily,
-            replay = 1,
-        )
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                combine(
+                    collectionReference(conference),
+                    tagsDataSource.get(),
+                    userSession.audienceContext,
+                ) { products, tags, context ->
+                    products
+                        .filter {
+                            audiencePolicy.canView(
+                                it.audienceRestriction,
+                                context,
+                                it.audienceLabel,
+                            )
+                        }
+                        .mapNotNull { it.toMerch(tags) }
+                }
+            }.shareIn(
+                CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
 
     private val variants: Flow<List<TagType>> =
-        tagsDataSource.get().map { tags ->
-            val variants = tags.find { it.category == "merch-variant" } ?: return@map emptyList()
-            listOf(variants)
-        }.shareIn(
-            CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Lazily,
-            replay = 1,
-        )
+        tagsDataSource
+            .get()
+            .map { tags ->
+                val variants = tags.find { it.category == "merch-variant" } ?: return@map emptyList()
+                listOf(variants)
+            }.shareIn(
+                CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
 
     private fun collectionReference(conference: Conference): Flow<List<FirebaseProduct>> =
-        firestore.collection("conferences")
+        firestore
+            .collection("conferences")
             .document(conference.code)
             .collection("products")
             .snapshotFlowLegacy()
             .closeOnConferenceChange(userSession.getConference())
             .map { querySnapshot ->
-                querySnapshot.toObjectsOrEmpty(FirebaseProduct::class.java)
+                querySnapshot
+                    .toObjectsOrEmpty(FirebaseProduct::class.java)
                     .sortedBy { it.sortOrder }
-            }
-            .onStart { emit(emptyList()) }
+            }.onStart { emit(emptyList()) }
 
-    override fun get(): Flow<List<Product>> {
-        return products
-    }
+    override fun get(): Flow<List<Product>> = products
 
-    override fun getProductVariantsTags(): Flow<List<TagType>> {
-        return variants
-    }
+    override fun getProductVariantsTags(): Flow<List<TagType>> = variants
 }

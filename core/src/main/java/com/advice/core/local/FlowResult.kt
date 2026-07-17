@@ -2,13 +2,18 @@ package com.advice.core.local
 
 sealed class FlowResult<out T : Any> {
     data object Loading : FlowResult<Nothing>()
-    data class Success<T : Any>(val value: T) : FlowResult<T>()
-    data class Failure(val error: Exception) : FlowResult<Nothing>()
 
-    fun toResultOrNull(): T? {
-        return when (this) {
+    data class Success<T : Any>(
+        val value: T,
+    ) : FlowResult<T>()
+
+    data class Failure(
+        val error: Exception,
+    ) : FlowResult<Nothing>()
+
+    fun toResultOrNull(): T? =
+        when (this) {
             is Success -> value
             else -> null
         }
-    }
 }

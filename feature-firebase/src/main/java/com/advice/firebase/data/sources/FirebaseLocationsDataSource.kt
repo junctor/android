@@ -25,27 +25,29 @@ class FirebaseLocationsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
 ) : LocationsDataSource {
-
     // todo: rewrite this to no turn a recursive function into a loop
     private val locations: StateFlow<List<Location>> =
-        userSession.getConference().flatMapMerge { conference ->
-            firestore.collection("conferences")
-                .document(conference.code)
-                .collection("locations")
-                .snapshotFlowLegacy()
-                .closeOnConferenceChange(userSession.getConference())
-                .map { querySnapshot ->
-                    val locations =
-                        querySnapshot.toObjectsOrEmpty(FirebaseLocation::class.java)
-                            .sortedBy { it.hierExtentLeft }
-                    getChildrenNodes(locations)
-                }
-                .onStart { emit(emptyList()) }
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList(),
-        )
+        userSession
+            .getConference()
+            .flatMapMerge { conference ->
+                firestore
+                    .collection("conferences")
+                    .document(conference.code)
+                    .collection("locations")
+                    .snapshotFlowLegacy()
+                    .closeOnConferenceChange(userSession.getConference())
+                    .map { querySnapshot ->
+                        val locations =
+                            querySnapshot
+                                .toObjectsOrEmpty(FirebaseLocation::class.java)
+                                .sortedBy { it.hierExtentLeft }
+                        getChildrenNodes(locations)
+                    }.onStart { emit(emptyList()) }
+            }.stateIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList(),
+            )
 
     override fun get(): Flow<List<Location>> = locations
 

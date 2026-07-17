@@ -11,14 +11,14 @@ data class FeedbackForm(
     val items: List<FeedbackItem>,
     val endpoint: String,
 ) : Parcelable {
-
     val hasUserData: Boolean
-        get() = items.any {
-            when (it.type) {
-                FeedbackType.DisplayOnly -> false
-                is FeedbackType.MultiSelect -> it.type.selections.isNotEmpty()
-                is FeedbackType.SelectOne -> it.type.selection != null
-                is FeedbackType.TextBox -> it.type.value.isNotBlank()
+        get() =
+            items.any {
+                when (it.type) {
+                    FeedbackType.DisplayOnly -> false
+                    is FeedbackType.MultiSelect -> it.type.selections.isNotEmpty()
+                    is FeedbackType.SelectOne -> it.type.selection != null
+                    is FeedbackType.TextBox -> it.type.value.isNotBlank()
+                }
             }
-        }
 }

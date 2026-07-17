@@ -26,7 +26,6 @@ data class Event(
     val content: Content,
     val session: Session,
 ) : Parcelable {
-
     val id: Long
         get() = session.id
 
@@ -74,7 +73,6 @@ data class Content(
     val feedback: ContentFeedbackForm? = null,
     val relatedContentIds: List<Long> = emptyList(),
 ) : Parcelable {
-
     val feedbackAvailable: Boolean
         get() = feedback?.isEnabled ?: false
 }

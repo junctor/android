@@ -12,13 +12,13 @@ import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 
 object Network {
-
     val client: OkHttpClient
 
     init {
-        val trustManagerFactory = TrustManagerFactory.getInstance(
-            TrustManagerFactory.getDefaultAlgorithm()
-        )
+        val trustManagerFactory =
+            TrustManagerFactory.getInstance(
+                TrustManagerFactory.getDefaultAlgorithm(),
+            )
         trustManagerFactory.init(null as KeyStore?)
         val trustManagers = trustManagerFactory.trustManagers
         check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
@@ -31,20 +31,21 @@ object Network {
 
         val sslSocketFactory: SSLSocketFactory = sslContext.socketFactory
 
-        val connectionSpec = ConnectionSpec.Builder(ConnectionSpec.RESTRICTED_TLS)
-            .tlsVersions(TlsVersion.TLS_1_3)
-            .cipherSuites(
-                CipherSuite.TLS_AES_256_GCM_SHA384,
-                CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
-                CipherSuite.TLS_AES_128_GCM_SHA256
-            )
-            .build()
+        val connectionSpec =
+            ConnectionSpec
+                .Builder(ConnectionSpec.RESTRICTED_TLS)
+                .tlsVersions(TlsVersion.TLS_1_3)
+                .cipherSuites(
+                    CipherSuite.TLS_AES_256_GCM_SHA384,
+                    CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
+                    CipherSuite.TLS_AES_128_GCM_SHA256,
+                ).build()
 
-        client = OkHttpClient.Builder()
-            .sslSocketFactory(sslSocketFactory, trustManager)
-            .connectionSpecs(listOf(connectionSpec))
-            .build()
+        client =
+            OkHttpClient
+                .Builder()
+                .sslSocketFactory(sslSocketFactory, trustManager)
+                .connectionSpecs(listOf(connectionSpec))
+                .build()
     }
 }
-
-

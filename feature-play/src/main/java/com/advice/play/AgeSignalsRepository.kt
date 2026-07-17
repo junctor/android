@@ -2,8 +2,8 @@
 
 package com.advice.play
 
-import com.advice.core.local.AgeSignalsInfo
-import com.advice.core.local.AgeStatus
+import com.advice.core.audience.AudienceContext
+import com.advice.core.audience.AudienceStatus
 import com.google.android.play.agesignals.AgeSignalsException
 import com.google.android.play.agesignals.AgeSignalsManager
 import com.google.android.play.agesignals.AgeSignalsRequest
@@ -22,7 +22,7 @@ class AgeSignalsRepository(
     private val crashlytics: FirebaseCrashlytics,
 ) {
 
-    suspend fun get(maxRetries: Int = 3): AgeSignalsInfo {
+    suspend fun get(maxRetries: Int = 3): AudienceContext {
         var lastException: Exception? = null
         repeat(maxRetries) { attempt ->
             try {
@@ -46,7 +46,7 @@ class AgeSignalsRepository(
             crashlytics.recordException(it)
         }
 
-        return AgeSignalsInfo(null, null)
+        return AudienceContext.Unavailable
     }
 
     private fun isRetryable(errorCode: Int): Boolean {
@@ -63,15 +63,15 @@ class AgeSignalsRepository(
         }
     }
 
-    private suspend fun fetchAgeSignals(): AgeSignalsInfo = suspendCancellableCoroutine { continuation ->
+    private suspend fun fetchAgeSignals(): AudienceContext = suspendCancellableCoroutine { continuation ->
         try {
             manager.checkAgeSignals(AgeSignalsRequest.builder().build())
                 .addOnSuccessListener { result ->
                     Timber.d("ageSignalsResult: $result")
                     continuation.resume(
-                        AgeSignalsInfo(
-                            result.ageLower(),
-                            AgeStatus.getByValue(result.userStatus())
+                        AudienceContext.Resolved(
+                            lowerAge = result.ageLower(),
+                            status = AudienceStatus.getByValue(result.userStatus()),
                         )
                     )
                 }

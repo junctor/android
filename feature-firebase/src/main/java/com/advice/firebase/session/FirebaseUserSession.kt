@@ -1,8 +1,8 @@
 package com.advice.firebase.session
 
+import com.advice.core.audience.AudienceContext
 import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
-import com.advice.core.local.User
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
@@ -26,8 +26,8 @@ class FirebaseUserSession(
     conferencesDataSource: ConferencesDataSource,
     private val preferences: Storage,
 ) : UserSession {
-    private val _user = MutableStateFlow<User?>(null)
-    override var user: Flow<User?> = _user
+    private val _audienceContext = MutableStateFlow<AudienceContext>(AudienceContext.Unresolved)
+    override var audienceContext: Flow<AudienceContext> = _audienceContext
 
     private val _conference = MutableStateFlow<Conference?>(null)
     private val _conferenceFlow: MutableStateFlow<FlowResult<Conference>> =
@@ -39,29 +39,31 @@ class FirebaseUserSession(
         CoroutineScope(Job()).launch {
             _conferenceFlow.value = FlowResult.Loading
             conferencesDataSource.get().collect {
-                _conference.value = when (it) {
-                    is FlowResult.Failure -> {
-                        _conferenceFlow.value = FlowResult.Failure(it.error)
-                        null
-                    }
-
-                    FlowResult.Loading -> {
-                        _conferenceFlow.value = FlowResult.Loading
-                        null
-                    }
-
-                    is FlowResult.Success -> {
-                        val previousConference = _conferenceFlow.value.toResultOrNull()
-
-                        val activeConference = getActiveConference(previousConference, it.value)
-                        _conferenceFlow.value = if (activeConference != null) {
-                            FlowResult.Success(activeConference)
-                        } else {
-                            FlowResult.Failure(Exception("Could not load conference"))
+                _conference.value =
+                    when (it) {
+                        is FlowResult.Failure -> {
+                            _conferenceFlow.value = FlowResult.Failure(it.error)
+                            null
                         }
-                        activeConference
+
+                        FlowResult.Loading -> {
+                            _conferenceFlow.value = FlowResult.Loading
+                            null
+                        }
+
+                        is FlowResult.Success -> {
+                            val previousConference = _conferenceFlow.value.toResultOrNull()
+
+                            val activeConference = getActiveConference(previousConference, it.value)
+                            _conferenceFlow.value =
+                                if (activeConference != null) {
+                                    FlowResult.Success(activeConference)
+                                } else {
+                                    FlowResult.Failure(Exception("Could not load conference"))
+                                }
+                            activeConference
+                        }
                     }
-                }
             }
         }
 
@@ -71,21 +73,22 @@ class FirebaseUserSession(
                 val user = it.user
                 if (user != null) {
                     Timber.d("User uid: ${user.uid}")
-                    _user.value =
-                        User(id = user.uid, ageInfo = ageSignals.get())
+                    _audienceContext.value = ageSignals.get()
                 } else {
                     crashlytics.log("user cannot be signed in")
                     Timber.e("User could not be signed in")
+                    _audienceContext.value = AudienceContext.Unavailable
                 }
             } catch (ex: Exception) {
                 Timber.e(ex, "Could not sign in anonymously")
+                _audienceContext.value = AudienceContext.Unavailable
             }
         }
     }
 
     private fun getActiveConference(
         previous: Conference?,
-        conferences: List<Conference>
+        conferences: List<Conference>,
     ): Conference? {
         // if we were already looking at a Conference, load the new data for the current Conference
         if (previous != null) {
@@ -119,12 +122,17 @@ class FirebaseUserSession(
         val list = conferences.sortedBy { it.start }
 
         // Grabbing the latest DEFCON and setting it as the active conference if it's not complete yet.
-        val latestDefcon = list
-            .filter { "DEFCON" in it.code }
-            .maxBy {
-                val regex = Regex("DEFCON(\\d{2})").find(it.code)
-                regex?.groups?.firstOrNull()?.value?.toIntOrNull() ?: -1
-            }
+        val latestDefcon =
+            list
+                .filter { "DEFCON" in it.code }
+                .maxBy {
+                    val regex = Regex("DEFCON(\\d{2})").find(it.code)
+                    regex
+                        ?.groups
+                        ?.firstOrNull()
+                        ?.value
+                        ?.toIntOrNull() ?: -1
+                }
 
         if (!latestDefcon.hasFinished) {
             return latestDefcon
@@ -133,13 +141,9 @@ class FirebaseUserSession(
         return list.firstOrNull { !it.hasFinished } ?: conferences.lastOrNull()
     }
 
-    override fun getConference(): Flow<Conference> {
-        return _conference.filterNotNull().distinctUntilChanged()
-    }
+    override fun getConference(): Flow<Conference> = _conference.filterNotNull().distinctUntilChanged()
 
-    override fun getConferenceFlow(): Flow<FlowResult<Conference>> {
-        return _conferenceFlow
-    }
+    override fun getConferenceFlow(): Flow<FlowResult<Conference>> = _conferenceFlow
 
     override fun setConference(conference: Conference) {
         preferences.preferredConference = conference.id
@@ -150,6 +154,6 @@ class FirebaseUserSession(
     override val currentConference: Conference?
         get() = _conference.value
 
-    override val currentUser: User?
-        get() = _user.value
+    override val currentAudienceContext: AudienceContext
+        get() = _audienceContext.value
 }

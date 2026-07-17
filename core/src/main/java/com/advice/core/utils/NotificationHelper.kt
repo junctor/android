@@ -18,41 +18,46 @@ import com.advice.core.local.Event
 import com.shortstack.core.R
 
 @SuppressLint("MissingPermission")
-class NotificationHelper(private val context: Context) {
-
+class NotificationHelper(
+    private val context: Context,
+) {
     private val manager = NotificationManagerCompat.from(context)
 
     init {
-        val channel = NotificationChannel(
-            CHANNEL_UPDATES,
-            "Schedule Updates",
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "Notifications about changes within the events"
-            enableLights(true)
-            lightColor = Color.MAGENTA
-        }
+        val channel =
+            NotificationChannel(
+                CHANNEL_UPDATES,
+                "Schedule Updates",
+                NotificationManager.IMPORTANCE_DEFAULT,
+            ).apply {
+                description = "Notifications about changes within the events"
+                enableLights(true)
+                lightColor = Color.MAGENTA
+            }
 
         manager.createNotificationChannel(channel)
     }
 
-    private fun getStartingSoonNotification(event: Event): Notification = notification {
-        setContentTitle(event.title)
-        setContentText(context.getString(R.string.notification_text, event.session.location.name))
-        setContentIntent(getPendingIntent(event))
-    }
+    private fun getStartingSoonNotification(event: Event): Notification =
+        notification {
+            setContentTitle(event.title)
+            setContentText(context.getString(R.string.notification_text, event.session.location.name))
+            setContentIntent(getPendingIntent(event))
+        }
 
-    private fun getUpdatedNotification(event: Event): Notification = notification {
-        setContentTitle(event.title)
-        setContentText("Heads up, session details has been updated!")
-        setContentIntent(getPendingIntent(event))
-    }
+    private fun getUpdatedNotification(event: Event): Notification =
+        notification {
+            setContentTitle(event.title)
+            setContentText("Heads up, session details has been updated!")
+            setContentIntent(getPendingIntent(event))
+        }
 
-    private fun getFeedbackReminderNotification(event: Event): Notification = notification {
-        setContentTitle(event.title)
-        setContentText("Enjoying the session? Leave us feedback!")
-        setContentIntent(getPendingIntent(event))
-    }
+    private fun getFeedbackReminderNotification(event: Event): Notification =
+        notification {
+            setContentTitle(event.title)
+            setContentText("Enjoying the session? Leave us feedback!")
+            setContentIntent(getPendingIntent(event))
+        }
 
     private fun getDocumentNotification(document: Document): Notification =
         notification {
@@ -61,30 +66,32 @@ class NotificationHelper(private val context: Context) {
             setContentIntent(getPendingIntent(document.id))
         }
 
-    private fun notification(block: NotificationCompat.Builder.() -> Unit): Notification {
-        return NotificationCompat.Builder(context, CHANNEL_UPDATES).apply {
-            setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            setVibrate(longArrayOf(0, 250, 500, 250))
-            setLights(Color.MAGENTA, 3000, 1000)
-            setSmallIcon(R.drawable.ic_notification)
-            color = ContextCompat.getColor(context, R.color.colorPrimary)
-            setAutoCancel(true)
-            block()
-        }.build()
-    }
+    private fun notification(block: NotificationCompat.Builder.() -> Unit): Notification =
+        NotificationCompat
+            .Builder(context, CHANNEL_UPDATES)
+            .apply {
+                setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                setVibrate(longArrayOf(0, 250, 500, 250))
+                setLights(Color.MAGENTA, 3000, 1000)
+                setSmallIcon(R.drawable.ic_notification)
+                color = ContextCompat.getColor(context, R.color.colorPrimary)
+                setAutoCancel(true)
+                block()
+            }.build()
 
     private fun getPendingIntent(event: Event): PendingIntent {
         val deepLink =
             "https://hackertracker.app/event?c=${event.conference}&e=${event.eventId}".toUri()
 
-        val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
-            setPackage("com.shortstack.hackertracker")
-        }
+        val intent =
+            Intent(Intent.ACTION_VIEW, deepLink).apply {
+                setPackage("com.shortstack.hackertracker")
+            }
         return PendingIntent.getActivity(
             context,
             0,
             intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
     }
 
@@ -92,14 +99,15 @@ class NotificationHelper(private val context: Context) {
         val deepLink =
             "https://hackertracker.app/document?id=$documentId".toUri()
 
-        val intent = Intent(Intent.ACTION_VIEW, deepLink).apply {
-            setPackage("com.shortstack.hackertracker")
-        }
+        val intent =
+            Intent(Intent.ACTION_VIEW, deepLink).apply {
+                setPackage("com.shortstack.hackertracker")
+            }
         return PendingIntent.getActivity(
             context,
             0,
             intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
     }
 
@@ -118,7 +126,7 @@ class NotificationHelper(private val context: Context) {
     fun notifyEmergency(document: Document) {
         manager.notify(
             911 + document.id.toInt(),
-            getDocumentNotification(document)
+            getDocumentNotification(document),
         )
     }
 
