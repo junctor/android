@@ -12,7 +12,6 @@ import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.location.FirebaseLocation
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,6 +23,7 @@ import kotlinx.coroutines.flow.stateIn
 class FirebaseLocationsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
+    private val applicationScope: CoroutineScope,
 ) : LocationsDataSource {
     // todo: rewrite this to no turn a recursive function into a loop
     private val locations: StateFlow<List<Location>> =
@@ -45,7 +45,7 @@ class FirebaseLocationsDataSource(
                     }
                     .unwrapList("Failed to load locations")
             }.stateIn(
-                scope = CoroutineScope(Dispatchers.IO),
+                scope = applicationScope,
                 started = SharingStarted.Eagerly,
                 initialValue = emptyList(),
             )

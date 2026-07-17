@@ -2,7 +2,6 @@ package com.advice.schedule.ui.viewmodels
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
@@ -136,17 +135,19 @@ class MainViewModel : ViewModel(), KoinComponent {
 
     fun onLinkOpen(url: String) {
         Timber.i("Opening link: $url")
-        analytics.logEvent("open_link", bundleOf("url" to url))
+        analytics.logEvent("open_link", Bundle().apply {
+            putString("url", url)
+        })
     }
 
     fun onPause() {
         with(analytics) {
             logEvent(
-                "session_document_read", bundleOf(
-                    "total_document_reads" to document_reads,
-                    "total_document_cache_reads" to document_cache_reads,
-                    "total_listeners_count" to listeners_count,
-                )
+                "session_document_read", Bundle().apply {
+                    putInt("total_document_reads", document_reads)
+                    putInt("total_document_cache_reads", document_cache_reads)
+                    putInt("total_listeners_count", listeners_count)
+                }
             )
             document_reads = 0
             document_cache_reads = 0
@@ -156,9 +157,9 @@ class MainViewModel : ViewModel(), KoinComponent {
 
     fun onPermissionRequest() {
         analytics.logEvent(
-            "request_permission", bundleOf(
-                "permission" to "POST_NOTIFICATIONS"
-            )
+            "request_permission", Bundle().apply {
+                putString("permission", "POST_NOTIFICATIONS")
+            }
         )
     }
 

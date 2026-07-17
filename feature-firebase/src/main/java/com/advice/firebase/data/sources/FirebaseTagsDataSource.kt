@@ -14,7 +14,6 @@ import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.FirebaseTagType
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,6 +27,7 @@ class FirebaseTagsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
+    private val applicationScope: CoroutineScope,
 ) : TagsDataSource {
     private val tagTypes: StateFlow<List<TagType>> =
         userSession
@@ -47,7 +47,7 @@ class FirebaseTagsDataSource(
                     }
                     .unwrapList("Failed to load tags")
             }.stateIn(
-                scope = CoroutineScope(Dispatchers.IO),
+                scope = applicationScope,
                 started = SharingStarted.Eagerly,
                 initialValue = emptyList(),
             )

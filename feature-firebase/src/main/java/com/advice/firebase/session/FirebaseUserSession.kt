@@ -10,7 +10,6 @@ import com.advice.play.AgeSignalsRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -25,6 +24,7 @@ class FirebaseUserSession(
     private val crashlytics: FirebaseCrashlytics,
     conferencesDataSource: ConferencesDataSource,
     private val preferences: Storage,
+    private val applicationScope: CoroutineScope,
 ) : UserSession {
     private val _audienceContext = MutableStateFlow<AudienceContext>(AudienceContext.Unresolved)
     override var audienceContext: Flow<AudienceContext> = _audienceContext
@@ -36,7 +36,7 @@ class FirebaseUserSession(
     override var isDeveloper: Boolean = false
 
     init {
-        CoroutineScope(Job()).launch {
+        applicationScope.launch {
             _conferenceFlow.value = FlowResult.Loading
             conferencesDataSource.get().collect {
                 _conference.value =
@@ -67,7 +67,7 @@ class FirebaseUserSession(
             }
         }
 
-        CoroutineScope(Job()).launch {
+        applicationScope.launch {
             try {
                 val it = auth.signInAnonymously().await()
                 val user = it.user

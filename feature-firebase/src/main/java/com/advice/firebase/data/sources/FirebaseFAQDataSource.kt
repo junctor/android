@@ -12,7 +12,6 @@ import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.FirebaseFAQ
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,6 +23,7 @@ import kotlinx.coroutines.flow.shareIn
 class FirebaseFAQDataSource(
     private val firestore: FirebaseFirestore,
     private val userSession: UserSession,
+    private val applicationScope: CoroutineScope,
 ) : FAQDataSource {
     private val faqs: Flow<FlowResult<List<FAQ>>> =
         userSession
@@ -37,7 +37,7 @@ class FirebaseFAQDataSource(
                         it.toObjectsOrEmpty(FirebaseFAQ::class.java).map { it.toFAQ() }
                     }.onStart { emit(FlowResult.Loading) }
             }.shareIn(
-                CoroutineScope(Dispatchers.IO),
+                applicationScope,
                 started = SharingStarted.Lazily,
                 replay = 1,
             )

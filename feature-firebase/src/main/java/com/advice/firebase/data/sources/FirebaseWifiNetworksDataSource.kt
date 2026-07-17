@@ -15,7 +15,6 @@ import com.advice.firebase.models.wifi.toWiFiNetwork
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,6 +28,7 @@ import timber.log.Timber
 class FirebaseWifiNetworksDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
+    private val applicationScope: CoroutineScope,
 ) : WiFiNetworksDataSource {
     private val wifiNetworks =
         userSession
@@ -60,7 +60,7 @@ class FirebaseWifiNetworksDataSource(
                         }
                     }
             }.shareIn(
-                CoroutineScope(Dispatchers.IO),
+                applicationScope,
                 started = SharingStarted.Lazily,
                 replay = 1,
             )

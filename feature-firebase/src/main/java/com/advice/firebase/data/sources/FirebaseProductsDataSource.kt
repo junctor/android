@@ -18,7 +18,6 @@ import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.products.FirebaseProduct
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,6 +32,7 @@ class FirebaseProductsDataSource(
     private val tagsDataSource: TagsDataSource,
     private val firestore: FirebaseFirestore,
     private val audiencePolicy: AudiencePolicy,
+    private val applicationScope: CoroutineScope,
 ) : ProductsDataSource {
     private val products: Flow<List<Product>> =
         userSession
@@ -54,7 +54,7 @@ class FirebaseProductsDataSource(
                         .mapNotNull { it.toMerch(tags) }
                 }
             }.shareIn(
-                CoroutineScope(Dispatchers.IO),
+                applicationScope,
                 started = SharingStarted.Lazily,
                 replay = 1,
             )
@@ -66,7 +66,7 @@ class FirebaseProductsDataSource(
                 val variants = tags.find { it.category == "merch-variant" } ?: return@map emptyList()
                 listOf(variants)
             }.shareIn(
-                CoroutineScope(Dispatchers.IO),
+                applicationScope,
                 started = SharingStarted.Lazily,
                 replay = 1,
             )

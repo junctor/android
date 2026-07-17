@@ -30,7 +30,6 @@ import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.FirebaseContent
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -51,6 +50,7 @@ class FirebaseContentDataSource(
     feedbackDataSource: FeedbackDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
     private val audiencePolicy: AudiencePolicy,
+    private val applicationScope: CoroutineScope,
 ) : ContentDataSource {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val content: StateFlow<List<FirebaseContent>> =
@@ -70,7 +70,7 @@ class FirebaseContentDataSource(
                     }
                     .unwrapList("Failed to load content")
             }.stateIn(
-                scope = CoroutineScope(Dispatchers.IO),
+                scope = applicationScope,
                 started = SharingStarted.Eagerly,
                 initialValue = emptyList(),
             )
@@ -106,7 +106,7 @@ class FirebaseContentDataSource(
                 content = content ?: emptyList(),
             )
         }.shareIn(
-            scope = CoroutineScope(Dispatchers.IO),
+            scope = applicationScope,
             started = SharingStarted.Lazily,
             replay = 1,
         )

@@ -99,13 +99,27 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.shortstack.hackertracker.BuildConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.onClose
+import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+const val APPLICATION_SCOPE = "applicationScope"
 
 val appModule = module {
+
+    single(named(APPLICATION_SCOPE)) {
+        CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    } withOptions {
+        onClose { it?.cancel() }
+    }
 
     single { Storage(get(), get(), BuildConfig.VERSION_CODE) }
 
@@ -183,11 +197,20 @@ val appModule = module {
         )
     }
 
-    single<UserSession> { FirebaseUserSession(
-        get(), get(), get(), get(), get()
-    ) }
+    single<UserSession> {
+        FirebaseUserSession(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(named(APPLICATION_SCOPE)),
+        )
+    }
     single<AudiencePolicy> { FailOpenAudiencePolicy() }
-    single<NewsDataSource> { FirebaseNewsDataSource(get(), get()) }
+    single<NewsDataSource> {
+        FirebaseNewsDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+    }
     single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
     single<ContentDataSource> {
         FirebaseContentDataSource(
@@ -199,32 +222,54 @@ val appModule = module {
             get(),
             get(named("events")),
             get(),
+            get(named(APPLICATION_SCOPE)),
         )
     }
-    single<TagsDataSource> { FirebaseTagsDataSource(get(), get(), get(named("tags"))) }
-    single<FAQDataSource> { FirebaseFAQDataSource(get(), get()) }
-    single<LocationsDataSource> { FirebaseLocationsDataSource(get(), get()) }
-    single<MapsDataSource> {
+    single<TagsDataSource> {
+        FirebaseTagsDataSource(get(), get(), get(named("tags")), get(named(APPLICATION_SCOPE)))
+    }
+    single<FAQDataSource> {
+        FirebaseFAQDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+    }
+    single<LocationsDataSource> {
+        FirebaseLocationsDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+    }
+    single {
         RetrofitMapsDataSource(
             get(),
             androidContext().applicationContext.getExternalFilesDir(null),
         )
+    } withOptions {
+        bind<MapsDataSource>()
+        onClose { it?.close() }
     }
 
-    single<SpeakersDataSource> { FirebaseSpeakersDataSource(get(), get(), get()) }
-    single<ProductsDataSource> { FirebaseProductsDataSource(get(), get(), get(), get()) }
+    single<SpeakersDataSource> {
+        FirebaseSpeakersDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
+    }
+    single<ProductsDataSource> {
+        FirebaseProductsDataSource(get(), get(), get(), get(), get(named(APPLICATION_SCOPE)))
+    }
 
     // Organizations
-    single<OrganizationsDataSource> { FirebaseOrganizationDataSource(get(), get(), get()) }
+    single<OrganizationsDataSource> {
+        FirebaseOrganizationDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
+    }
     single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
     single<VillagesDataSource> { FirebaseVillagesDataSource(get(), get()) }
 
     // Documents
-    single<DocumentsDataSource> { FirebaseDocumentsDataSource(get(), get(), get()) }
+    single<DocumentsDataSource> {
+        FirebaseDocumentsDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
+    }
 
-    single<MenuDataSource> { FirebaseMenuDataSource(get(), get()) }
+    single<MenuDataSource> {
+        FirebaseMenuDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+    }
 
-    single<FeedbackDataSource> { FirebaseFeedbackDataSource(get(), get()) }
+    single<FeedbackDataSource> {
+        FirebaseFeedbackDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+    }
 
     // Products
     single<ProductCart> { ProductCart() }
@@ -236,7 +281,9 @@ val appModule = module {
     ) }
 
     single { WifiNetworkRepository(get()) }
-    single<WiFiNetworksDataSource> { FirebaseWifiNetworksDataSource(get(), get()) }
+    single<WiFiNetworksDataSource> {
+        FirebaseWifiNetworksDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+    }
 
     // WiFi
     single<WirelessConnectionManager> {

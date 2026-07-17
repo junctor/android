@@ -16,7 +16,6 @@ import com.advice.firebase.models.organization.FirebaseOrganization
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,6 +30,7 @@ class FirebaseOrganizationDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
     private val audiencePolicy: AudiencePolicy,
+    private val applicationScope: CoroutineScope,
 ) : OrganizationsDataSource {
     private val organizations =
         userSession
@@ -68,7 +68,7 @@ class FirebaseOrganizationDataSource(
                     }
                 }
             }.shareIn(
-                CoroutineScope(Dispatchers.IO),
+                applicationScope,
                 started = SharingStarted.Lazily,
                 replay = 1,
             )
