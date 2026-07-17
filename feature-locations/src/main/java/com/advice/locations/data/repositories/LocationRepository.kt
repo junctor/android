@@ -2,6 +2,7 @@ package com.advice.locations.data.repositories
 
 import com.advice.core.local.Location
 import com.advice.core.local.LocationRow
+import com.advice.core.local.flatten
 import com.advice.data.sources.LocationsDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -17,17 +18,15 @@ class LocationRepository(
     ) { locations, expandedIds ->
         val roots = locations.filter { it.parent == 0L }
         if (expandedIds.isEmpty()) {
-            val temp = roots.flatMap {
-                flatten(it)
-            }
+            val temp = roots.flatMap { it.flatten() }
 
             expanded.value = temp.map { it.id }
         }
 
         val updated = roots.flatMap {
-            val flatten = flatten(it)
-            flatten.map { location ->
-                val isVisible = isVisible(location, expandedIds, flatten)
+            val flattened = it.flatten()
+            flattened.map { location ->
+                val isVisible = isVisible(location, expandedIds, flattened)
                 location.copy(isVisible = isVisible, isExpanded = location.id in expandedIds)
             }
         }
@@ -61,17 +60,6 @@ class LocationRepository(
         }
 
         return (location.allParents(locations) { id in expandedIds } && location.parent in expandedIds)
-    }
-
-    private fun flatten(root: Location): List<Location> {
-        val temp = mutableListOf<Location>()
-
-        temp.add(root)
-        for (location in root.children) {
-            temp.addAll(flatten(location))
-        }
-
-        return temp
     }
 
     private fun Location.allParents(

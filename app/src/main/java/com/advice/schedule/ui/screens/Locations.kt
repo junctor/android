@@ -31,7 +31,6 @@ internal fun Locations(navController: NavHostController) {
             viewModel.toggle(it)
         },
         onScheduleClicked = {
-            // todo: this should URL encode the title
             navController.navigateTo(Navigation.Location(it.id, it.title))
         },
         onBackPressed = {

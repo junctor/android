@@ -19,7 +19,7 @@ import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.ContentViewModel
-import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
+import com.advice.schedule.presentation.viewmodel.EventViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ContentListScreen
@@ -58,8 +58,7 @@ fun Event(
     id: String?,
     session: String?
 ) {
-    // todo: this should be another ViewModel
-    val viewModel = viewModel<ScheduleViewModel>(context)
+    val viewModel = viewModel<EventViewModel>(context)
     LaunchedEffect("$conference/$id") {
         viewModel.getEvent(
             conference,
@@ -121,12 +120,8 @@ private fun Content(
             navController.navigateTo(Navigation.Tag(it.id, it.label))
         },
         onLocationClicked = { location ->
-            // todo: move this logic into the Navigation class.
-            val label = location.shortName?.replace(
-                "/", "\\"
-            ) ?: ""
             navController.navigateTo(
-                Navigation.Location(location.id, label)
+                Navigation.Location(location.id, location.shortName.orEmpty())
             )
         },
         onSessionClicked = {

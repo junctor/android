@@ -65,6 +65,7 @@ import com.advice.schedule.data.repositories.HomeRepository
 import com.advice.schedule.data.repositories.InformationRepository
 import com.advice.schedule.data.repositories.MapRepository
 import com.advice.schedule.data.repositories.MenuRepository
+import com.advice.schedule.data.repositories.NewsRepository
 import com.advice.schedule.data.repositories.OrganizationsRepository
 import com.advice.schedule.data.repositories.ScheduleRepository
 import com.advice.schedule.data.repositories.SearchRepository
@@ -75,6 +76,7 @@ import com.advice.schedule.data.repositories.TagsRepository
 import com.advice.schedule.data.repositories.WifiNetworkRepository
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.presentation.viewmodel.ConferenceViewModel
+import com.advice.schedule.presentation.viewmodel.EventViewModel
 import com.advice.schedule.presentation.viewmodel.FAQViewModel
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
@@ -104,9 +106,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.onClose
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -165,6 +167,7 @@ val appModule = module {
 
     // repo
     single { ScheduleRepository(get(), get(), get(), get(named("tags"))) }
+    single { NewsRepository(get()) }
     single { HomeRepository(get(), get(), get(), get(), get(), get(), get()) }
     single { SpeakersRepository(get()) }
     single { ContentRepository(get(), get(), get(), get()) }
@@ -300,6 +303,7 @@ val appModule = module {
 
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel() }
+    viewModel { EventViewModel() }
     viewModel { SpeakerViewModel() }
     viewModel { SpeakersViewModel() }
     viewModel { MapsViewModel() }

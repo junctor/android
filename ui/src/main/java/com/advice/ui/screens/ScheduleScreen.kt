@@ -108,7 +108,7 @@ fun ScheduleScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(label?.replace("\\", "/") ?: "Schedule")
+                    Text(label ?: "Schedule")
                 },
                 navigationIcon = {
                     BackButton(onBackPress)

@@ -12,6 +12,7 @@ import com.advice.core.local.Session
 import com.advice.core.local.Speaker
 import com.advice.core.local.TagType
 import com.advice.core.local.feedback.FeedbackForm
+import com.advice.core.local.flattenTree
 import com.advice.data.session.UserSession
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.data.sources.ContentDataSource
@@ -148,7 +149,7 @@ class FirebaseContentDataSource(
                     tags = tags,
                     speakers = speakers,
                     bookmarkedEvents = bookmarks,
-                    locations = locations.flatten(),
+                    locations = locations.flattenTree(),
                     feedbackforms = feedbackforms,
                 )
             }
@@ -198,9 +199,3 @@ class FirebaseContentDataSource(
         return Event(content, session)
     }
 }
-
-// todo: this needs to be recursive.
-private fun List<Location>.flatten(): List<Location> =
-    flatMap { location ->
-        listOf(location) + location.children.flatten()
-    }

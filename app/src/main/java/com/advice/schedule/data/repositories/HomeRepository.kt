@@ -11,14 +11,13 @@ import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
-import com.advice.data.sources.NewsDataSource
 import kotlinx.coroutines.flow.combine
 
 class HomeRepository(
     private val userSession: UserSession,
     conferencesDataSource: ConferencesDataSource,
     menuRepository: MenuRepository,
-    newsRepository: NewsDataSource,
+    newsRepository: NewsRepository,
     networkRepository: WifiNetworkRepository,
     private val storage: Storage,
     private val analyticsProvider: AnalyticsProvider,

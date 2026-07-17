@@ -1,5 +1,7 @@
 package com.advice.schedule.navigation
 
+import android.net.Uri
+
 sealed class Navigation {
     data object Home : Navigation() {
         override fun route(): String = "home"
@@ -31,7 +33,7 @@ sealed class Navigation {
 
     data class Location(val id: Long = 0, val label: String = "") : Navigation() {
         override fun route(): String = "location/{id}/{label}"
-        override fun destination(): String = "location/$id/$label"
+        override fun destination(): String = "location/$id/${Uri.encode(label)}"
     }
 
     data class Tag(val id: Long = 0, val label: String = "") : Navigation() {

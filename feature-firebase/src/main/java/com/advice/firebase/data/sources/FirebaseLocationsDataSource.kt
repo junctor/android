@@ -25,7 +25,6 @@ class FirebaseLocationsDataSource(
     private val firestore: FirebaseFirestore,
     private val applicationScope: CoroutineScope,
 ) : LocationsDataSource {
-    // todo: rewrite this to no turn a recursive function into a loop
     private val locations: StateFlow<List<Location>> =
         userSession
             .getConference()
@@ -41,7 +40,7 @@ class FirebaseLocationsDataSource(
                             querySnapshot
                                 .toObjectsOrEmpty(FirebaseLocation::class.java)
                                 .sortedBy { it.hierExtentLeft }
-                        getChildrenNodes(locations)
+                        buildLocationTree(locations)
                     }
                     .unwrapList("Failed to load locations")
             }.stateIn(
@@ -52,14 +51,22 @@ class FirebaseLocationsDataSource(
 
     override fun get(): Flow<List<Location>> = locations
 
-    private fun getChildrenNodes(
-        locations: List<FirebaseLocation>,
-        parent: Long = 0,
-    ): List<Location> {
-        val nodes = locations.filter { it.parentId == parent }
-        return nodes.mapNotNull {
-            val children = getChildrenNodes(locations, it.id)
-            it.toLocation(children)
+    /**
+     * Builds a location tree iteratively by constructing deepest nodes first so each
+     * parent's children are already available when it is mapped.
+     */
+    private fun buildLocationTree(locations: List<FirebaseLocation>): List<Location> {
+        val byParent = locations.groupBy { it.parentId }
+        val built = HashMap<Long, Location>(locations.size)
+
+        for (firebaseLocation in locations.sortedByDescending { it.hierDepth }) {
+            val children = byParent[firebaseLocation.id]
+                .orEmpty()
+                .mapNotNull { built[it.id] }
+            val location = firebaseLocation.toLocation(children) ?: continue
+            built[firebaseLocation.id] = location
         }
+
+        return byParent[0L].orEmpty().mapNotNull { built[it.id] }
     }
 }

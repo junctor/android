@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 
@@ -25,11 +25,12 @@ class FirebaseMenuDataSource(
     private val firestore: FirebaseFirestore,
     private val applicationScope: CoroutineScope,
 ) : MenuDataSource {
-    // todo: investigate a better way to return an init state when the conference has changed.
     private val menus: Flow<FlowResult<List<Menu>>> =
         userSession
             .getConference()
-            .flatMapMerge { conference ->
+            .flatMapLatest { conference ->
+                // Emit Loading immediately on conference change so UI does not keep
+                // showing the previous conference's menus while the new snapshot loads.
                 firestore
                     .collection("conferences/${conference.code}/menus")
                     .snapshotFlow()
