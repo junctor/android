@@ -4,8 +4,9 @@ import com.advice.core.local.wifi.WifiCertificate
 import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.data.session.UserSession
 import com.advice.data.sources.WiFiNetworksDataSource
+import com.advice.firebase.extensions.SnapshotResult
 import com.advice.firebase.extensions.closeOnConferenceChange
-import com.advice.firebase.extensions.snapshotFlowLegacy
+import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.models.wifi.FirebaseWiFiNetwork
@@ -18,9 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -33,20 +33,32 @@ class FirebaseWifiNetworksDataSource(
     private val wifiNetworks =
         userSession
             .getConference()
-            .flatMapMerge { conference ->
+            .flatMapLatest { conference ->
                 firestore
                     .collection("conferences/${conference.code}/wifi_networks")
-                    .snapshotFlowLegacy()
+                    .snapshotFlow()
                     .closeOnConferenceChange(userSession.getConference())
-                    .map { snapshot ->
-                        snapshot.toObjectsOrEmpty(FirebaseWiFiNetwork::class.java).map { network ->
-                            val certificates =
-                                network.certs?.mapNotNull { id ->
-                                    getCertificate(id)
-                                }
-                            network.toWiFiNetwork(certificates)
+                    .map { snapshotResult ->
+                        when (snapshotResult) {
+                            SnapshotResult.Loading -> emptyList()
+                            is SnapshotResult.Failure -> {
+                                Timber.e(snapshotResult.error, "Failed to load wifi networks")
+                                emptyList()
+                            }
+
+                            is SnapshotResult.Success -> {
+                                snapshotResult.snapshot
+                                    .toObjectsOrEmpty(FirebaseWiFiNetwork::class.java)
+                                    .map { network ->
+                                        val certificates =
+                                            network.certs?.mapNotNull { id ->
+                                                getCertificate(id)
+                                            }
+                                        network.toWiFiNetwork(certificates)
+                                    }
+                            }
                         }
-                    }.onStart { emit(emptyList()) }
+                    }
             }.shareIn(
                 CoroutineScope(Dispatchers.IO),
                 started = SharingStarted.Lazily,

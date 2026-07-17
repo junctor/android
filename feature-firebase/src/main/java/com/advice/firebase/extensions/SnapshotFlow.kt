@@ -7,6 +7,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
     val path = this.path
@@ -50,6 +51,22 @@ fun <T : Any> Flow<SnapshotResult>.mapSnapshot(block: (QuerySnapshot) -> T): Flo
             is SnapshotResult.Success -> {
                 val value = block(it.snapshot)
                 FlowResult.Success(value)
+            }
+        }
+    }
+
+/**
+ * Keeps List-returning datasource interfaces: Loading/Failure become empty lists
+ * (matching prior silent-empty behavior from snapshotFlowLegacy).
+ */
+fun <T> Flow<FlowResult<List<T>>>.unwrapList(logMessage: String): Flow<List<T>> =
+    map { result ->
+        when (result) {
+            is FlowResult.Success -> result.value
+            FlowResult.Loading -> emptyList()
+            is FlowResult.Failure -> {
+                Timber.e(result.error, logMessage)
+                emptyList()
             }
         }
     }

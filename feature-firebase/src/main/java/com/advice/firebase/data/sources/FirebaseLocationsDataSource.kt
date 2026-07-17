@@ -4,9 +4,11 @@ import com.advice.core.local.Location
 import com.advice.data.session.UserSession
 import com.advice.data.sources.LocationsDataSource
 import com.advice.firebase.extensions.closeOnConferenceChange
-import com.advice.firebase.extensions.snapshotFlowLegacy
+import com.advice.firebase.extensions.mapSnapshot
+import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toLocation
 import com.advice.firebase.extensions.toObjectsOrEmpty
+import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.location.FirebaseLocation
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -15,9 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -29,20 +29,21 @@ class FirebaseLocationsDataSource(
     private val locations: StateFlow<List<Location>> =
         userSession
             .getConference()
-            .flatMapMerge { conference ->
+            .flatMapLatest { conference ->
                 firestore
                     .collection("conferences")
                     .document(conference.code)
                     .collection("locations")
-                    .snapshotFlowLegacy()
+                    .snapshotFlow()
                     .closeOnConferenceChange(userSession.getConference())
-                    .map { querySnapshot ->
+                    .mapSnapshot { querySnapshot ->
                         val locations =
                             querySnapshot
                                 .toObjectsOrEmpty(FirebaseLocation::class.java)
                                 .sortedBy { it.hierExtentLeft }
                         getChildrenNodes(locations)
-                    }.onStart { emit(emptyList()) }
+                    }
+                    .unwrapList("Failed to load locations")
             }.stateIn(
                 scope = CoroutineScope(Dispatchers.IO),
                 started = SharingStarted.Eagerly,

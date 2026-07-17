@@ -41,7 +41,7 @@ object TimeUtil {
             if (forceTimeZone) {
                 try {
                     return@getOrPut ZoneId.of(timeZone)
-                } catch (ex: Exception) {
+                } catch (_: Exception) {
                     Timber.e("Error getting zone id for \"$timeZone\".")
                 }
             }

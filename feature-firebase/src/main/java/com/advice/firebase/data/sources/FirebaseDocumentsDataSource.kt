@@ -4,10 +4,11 @@ import com.advice.core.audience.AudiencePolicy
 import com.advice.core.local.Document
 import com.advice.data.session.UserSession
 import com.advice.data.sources.DocumentsDataSource
+import com.advice.firebase.extensions.SnapshotResult
 import com.advice.firebase.extensions.audienceLabel
 import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
-import com.advice.firebase.extensions.snapshotFlowLegacy
+import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toDocument
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
@@ -19,8 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -34,26 +34,36 @@ class FirebaseDocumentsDataSource(
     private val documents =
         userSession
             .getConference()
-            .flatMapMerge { conference ->
+            .flatMapLatest { conference ->
                 val snapshotFlow =
                     firestore
                         .collection("conferences")
                         .document(conference.code)
                         .collection("documents")
-                        .snapshotFlowLegacy()
+                        .snapshotFlow()
                         .closeOnConferenceChange(userSession.getConference())
-                combine(snapshotFlow, userSession.audienceContext) { querySnapshot, context ->
-                    querySnapshot
-                        .toObjectsOrEmpty(FirebaseDocument::class.java)
-                        .filter {
-                            audiencePolicy.canView(
-                                it.audienceRestriction,
-                                context,
-                                it.audienceLabel,
-                            )
+                combine(snapshotFlow, userSession.audienceContext) { snapshotResult, context ->
+                    when (snapshotResult) {
+                        SnapshotResult.Loading -> emptyList()
+                        is SnapshotResult.Failure -> {
+                            Timber.e(snapshotResult.error, "Failed to load documents")
+                            emptyList()
                         }
-                        .mapNotNull { it.toDocument() }
-                }.onStart { emit(emptyList()) }
+
+                        is SnapshotResult.Success -> {
+                            snapshotResult.snapshot
+                                .toObjectsOrEmpty(FirebaseDocument::class.java)
+                                .filter {
+                                    audiencePolicy.canView(
+                                        it.audienceRestriction,
+                                        context,
+                                        it.audienceLabel,
+                                    )
+                                }
+                                .mapNotNull { it.toDocument() }
+                        }
+                    }
+                }
             }.shareIn(
                 CoroutineScope(Dispatchers.IO),
                 started = SharingStarted.Lazily,

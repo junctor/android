@@ -22,9 +22,11 @@ import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.audienceLabel
 import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
-import com.advice.firebase.extensions.snapshotFlowLegacy
+import com.advice.firebase.extensions.mapSnapshot
+import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toContents
 import com.advice.firebase.extensions.toObjectsOrEmpty
+import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.FirebaseContent
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -35,9 +37,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
@@ -56,18 +56,19 @@ class FirebaseContentDataSource(
     private val content: StateFlow<List<FirebaseContent>> =
         userSession
             .getConference()
-            .flatMapMerge { conference ->
+            .flatMapLatest { conference ->
                 firestore
                     .collection("conferences")
                     .document(conference.code)
                     .collection("content")
-                    .snapshotFlowLegacy()
+                    .snapshotFlow()
                     .closeOnConferenceChange(userSession.getConference())
-                    .map { querySnapshot ->
+                    .mapSnapshot { querySnapshot ->
                         querySnapshot
                             .toObjectsOrEmpty(FirebaseContent::class.java)
                             .filter { (!it.hidden || userSession.isDeveloper) }
-                    }.onStart { emit(emptyList()) }
+                    }
+                    .unwrapList("Failed to load content")
             }.stateIn(
                 scope = CoroutineScope(Dispatchers.IO),
                 started = SharingStarted.Eagerly,

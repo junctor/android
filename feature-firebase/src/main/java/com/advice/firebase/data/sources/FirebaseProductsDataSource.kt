@@ -10,9 +10,11 @@ import com.advice.data.sources.TagsDataSource
 import com.advice.firebase.extensions.audienceLabel
 import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
-import com.advice.firebase.extensions.snapshotFlowLegacy
+import com.advice.firebase.extensions.mapSnapshot
+import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toMerch
 import com.advice.firebase.extensions.toObjectsOrEmpty
+import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.products.FirebaseProduct
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -21,9 +23,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -36,7 +37,7 @@ class FirebaseProductsDataSource(
     private val products: Flow<List<Product>> =
         userSession
             .getConference()
-            .flatMapMerge { conference ->
+            .flatMapLatest { conference ->
                 combine(
                     collectionReference(conference),
                     tagsDataSource.get(),
@@ -75,13 +76,14 @@ class FirebaseProductsDataSource(
             .collection("conferences")
             .document(conference.code)
             .collection("products")
-            .snapshotFlowLegacy()
+            .snapshotFlow()
             .closeOnConferenceChange(userSession.getConference())
-            .map { querySnapshot ->
+            .mapSnapshot { querySnapshot ->
                 querySnapshot
                     .toObjectsOrEmpty(FirebaseProduct::class.java)
                     .sortedBy { it.sortOrder }
-            }.onStart { emit(emptyList()) }
+            }
+            .unwrapList("Failed to load products")
 
     override fun get(): Flow<List<Product>> = products
 

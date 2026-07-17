@@ -4,10 +4,11 @@ import com.advice.core.audience.AudiencePolicy
 import com.advice.core.local.Organization
 import com.advice.data.session.UserSession
 import com.advice.data.sources.OrganizationsDataSource
+import com.advice.firebase.extensions.SnapshotResult
 import com.advice.firebase.extensions.audienceLabel
 import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
-import com.advice.firebase.extensions.snapshotFlowLegacy
+import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toOrganization
@@ -20,8 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -35,28 +35,38 @@ class FirebaseOrganizationDataSource(
     private val organizations =
         userSession
             .getConference()
-            .flatMapMerge { conference ->
+            .flatMapLatest { conference ->
                 val snapshotFlow =
                     firestore
                         .collection("conferences")
                         .document(conference.code)
                         .collection("organizations")
-                        .snapshotFlowLegacy()
+                        .snapshotFlow()
                         .closeOnConferenceChange(userSession.getConference())
 
-                combine(snapshotFlow, userSession.audienceContext) { querySnapshot, context ->
-                    querySnapshot
-                        .toObjectsOrEmpty(FirebaseOrganization::class.java)
-                        .filter {
-                            audiencePolicy.canView(
-                                it.audienceRestriction,
-                                context,
-                                it.audienceLabel,
-                            )
+                combine(snapshotFlow, userSession.audienceContext) { snapshotResult, context ->
+                    when (snapshotResult) {
+                        SnapshotResult.Loading -> emptyList()
+                        is SnapshotResult.Failure -> {
+                            Timber.e(snapshotResult.error, "Failed to load organizations")
+                            emptyList()
                         }
-                        .mapNotNull { it.toOrganization() }
-                        .sortedBy { it.name }
-                }.onStart { emit(emptyList()) }
+
+                        is SnapshotResult.Success -> {
+                            snapshotResult.snapshot
+                                .toObjectsOrEmpty(FirebaseOrganization::class.java)
+                                .filter {
+                                    audiencePolicy.canView(
+                                        it.audienceRestriction,
+                                        context,
+                                        it.audienceLabel,
+                                    )
+                                }
+                                .mapNotNull { it.toOrganization() }
+                                .sortedBy { it.name }
+                        }
+                    }
+                }
             }.shareIn(
                 CoroutineScope(Dispatchers.IO),
                 started = SharingStarted.Lazily,

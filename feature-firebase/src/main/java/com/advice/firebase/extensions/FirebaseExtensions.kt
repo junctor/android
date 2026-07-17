@@ -2,7 +2,6 @@ package com.advice.firebase.extensions
 
 import com.advice.core.local.Conference
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.channels.awaitClose
@@ -14,30 +13,6 @@ import timber.log.Timber
 var document_reads = 0
 var document_cache_reads = 0
 var listeners_count = 0
-
-fun CollectionReference.snapshotFlowLegacy(): Flow<QuerySnapshot> {
-    val path = this.path
-    return callbackFlow {
-        listeners_count++
-        val listenerRegistration =
-            addSnapshotListener { value, error ->
-                if (error != null) {
-                    logFailure(path, error)
-                    close()
-                    return@addSnapshotListener
-                }
-                if (value != null) {
-                    logSnapshot(path, value)
-                    trySend(value)
-                }
-            }
-        awaitClose {
-            listeners_count--
-            logSnapshotClosure(path)
-            listenerRegistration.remove()
-        }
-    }
-}
 
 internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference>): Flow<T> {
     val path = this.toString()

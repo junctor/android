@@ -4,10 +4,11 @@ import com.advice.core.audience.AudiencePolicy
 import com.advice.core.local.Speaker
 import com.advice.data.session.UserSession
 import com.advice.data.sources.SpeakersDataSource
+import com.advice.firebase.extensions.SnapshotResult
 import com.advice.firebase.extensions.audienceLabel
 import com.advice.firebase.extensions.audienceRestriction
 import com.advice.firebase.extensions.closeOnConferenceChange
-import com.advice.firebase.extensions.snapshotFlowLegacy
+import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toObjectOrNull
 import com.advice.firebase.extensions.toObjectsOrEmpty
 import com.advice.firebase.extensions.toSpeaker
@@ -20,8 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -36,28 +36,38 @@ class FirebaseSpeakersDataSource(
     private val speakers: StateFlow<List<Speaker>> =
         userSession
             .getConference()
-            .flatMapMerge { conference ->
+            .flatMapLatest { conference ->
                 val snapshotFlow =
                     firestore
                         .collection("conferences")
                         .document(conference.code)
                         .collection("speakers")
-                        .snapshotFlowLegacy()
+                        .snapshotFlow()
                         .closeOnConferenceChange(userSession.getConference())
 
-                combine(snapshotFlow, userSession.audienceContext) { querySnapshot, context ->
-                    querySnapshot
-                        .toObjectsOrEmpty(FirebaseSpeaker::class.java)
-                        .filter {
-                            (!it.hidden || userSession.isDeveloper) &&
-                                audiencePolicy.canView(
-                                    it.audienceRestriction,
-                                    context,
-                                    it.audienceLabel,
-                                )
-                        }.mapNotNull { it.toSpeaker() }
-                        .sortedBy { it.name.lowercase(Locale.getDefault()) }
-                }.onStart { emit(emptyList()) }
+                combine(snapshotFlow, userSession.audienceContext) { snapshotResult, context ->
+                    when (snapshotResult) {
+                        SnapshotResult.Loading -> emptyList()
+                        is SnapshotResult.Failure -> {
+                            Timber.e(snapshotResult.error, "Failed to load speakers")
+                            emptyList()
+                        }
+
+                        is SnapshotResult.Success -> {
+                            snapshotResult.snapshot
+                                .toObjectsOrEmpty(FirebaseSpeaker::class.java)
+                                .filter {
+                                    (!it.hidden || userSession.isDeveloper) &&
+                                        audiencePolicy.canView(
+                                            it.audienceRestriction,
+                                            context,
+                                            it.audienceLabel,
+                                        )
+                                }.mapNotNull { it.toSpeaker() }
+                                .sortedBy { it.name.lowercase(Locale.getDefault()) }
+                        }
+                    }
+                }
             }.stateIn(
                 scope = CoroutineScope(Dispatchers.IO),
                 started = SharingStarted.Lazily,
