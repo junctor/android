@@ -20,7 +20,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
@@ -246,9 +245,9 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
             FirebaseAnalytics.getInstance(this).logEvent(
                 "open_deep_link",
-                bundleOf(
-                    "uri" to uri.toString()
-                )
+                Bundle().apply {
+                    putString("uri", uri.toString())
+                }
             )
         } catch (ex: Exception) {
             Timber.e(ex, "Could not navigate to deep link: $uri")
