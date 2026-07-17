@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     private fun navigateDeepLink(controller: NavHostController, uri: Uri) {
         try {
             val destination = getDestination(uri) ?: return
-            controller.navigate(destination)
+            controller.navigateTo(destination)
 
             FirebaseAnalytics.getInstance(this).logEvent(
                 "open_deep_link",
@@ -256,14 +256,23 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     }
 
     private fun getDestination(uri: Uri): Navigation? {
-        val conference = uri.getQueryParameter("c") ?: return null
-        val event = uri.getQueryParameter("e") ?: return null
-        val (content, session) = if (event.contains(":")) {
-            event.split(":")
-        } else {
-            listOf(event, "")
+        return when (uri.lastPathSegment) {
+            "document" -> {
+                val id = uri.getQueryParameter("id")?.toLongOrNull() ?: return null
+                Navigation.Document(id)
+            }
+
+            else -> {
+                val conference = uri.getQueryParameter("c") ?: return null
+                val event = uri.getQueryParameter("e") ?: return null
+                val (content, session) = if (event.contains(":")) {
+                    event.split(":")
+                } else {
+                    listOf(event, "")
+                }
+                Navigation.Event(conference, content, session)
+            }
         }
-        return Navigation.Event(conference, content, session)
     }
 
     fun openLink(url: String) {
