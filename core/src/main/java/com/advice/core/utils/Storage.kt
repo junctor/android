@@ -26,6 +26,7 @@ class Storage(
         const val FORCE_TIME_ZONE_KEY = "force_time_zone"
         const val SHOW_SCHEDULE_BY_DEFAULT = "show_schedule_by_default"
         const val USER_ANALYTICS_KEY = "user_analytics"
+        const val USER_CRASHLYTICS_KEY = "user_crashlytics"
 
         const val LATEST_NEWS_READ = "latest_news_read"
     }
@@ -37,6 +38,12 @@ class Storage(
         get() = preferences.getBoolean(USER_ANALYTICS_KEY, false)
         set(value) {
             preferences.edit { putBoolean(USER_ANALYTICS_KEY, value) }
+        }
+
+    var allowCrashlytics: Boolean
+        get() = preferences.getBoolean(USER_CRASHLYTICS_KEY, false)
+        set(value) {
+            preferences.edit { putBoolean(USER_CRASHLYTICS_KEY, value) }
         }
 
     var showFilters: Boolean

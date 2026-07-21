@@ -90,7 +90,11 @@ Feature isolation varies: some modules own repository + ViewModel + UI (`feature
 - JDK 17
 - `minSdk` 26 / `targetSdk` 36
 
-Place `app/google-services.json` for Firebase before building.
+Firebase config is not checked in. Copy the example and replace placeholders with values from the [Firebase console](https://console.firebase.google.com/) (Project settings → Your apps):
+
+```bash
+cp app/google-services.json.example app/google-services.json
+```
 
 ## Build
 

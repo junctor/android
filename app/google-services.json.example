@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "552364409858",
-    "project_id": "junctor-hackertracker",
-    "storage_bucket": "junctor-hackertracker.appspot.com"
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "project_id": "YOUR_PROJECT_ID",
+    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:552364409858:android:caaae830217626c60d131b",
+        "mobilesdk_app_id": "1:YOUR_PROJECT_NUMBER:android:YOUR_APP_ID",
         "android_client_info": {
           "package_name": "com.shortstack.hackertracker"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCDm4Cp-1l7zg4HKKZYQcOdNZFbPMSaSZ4"
+          "current_key": "YOUR_API_KEY"
         }
       ],
       "services": {

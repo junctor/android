@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.advice.ui.R
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.ButtonPreference
 import com.advice.ui.components.SwitchPreference
@@ -52,6 +54,7 @@ fun SettingScreen(
     onPreferenceChange: (String, Boolean) -> Unit,
     onThemeChange: (String) -> Unit,
     onVersionClick: (Int) -> Unit,
+    onPrivacyPolicyClick: () -> Unit,
     onBackPress: () -> Unit,
 ) {
     Scaffold(topBar = {
@@ -64,6 +67,7 @@ fun SettingScreen(
             onPreferenceChange,
             onThemeChange,
             onVersionClick,
+            onPrivacyPolicyClick,
             Modifier.padding(it),
         )
     }
@@ -75,6 +79,7 @@ private fun SettingsScreenContent(
     onPreferenceChange: (String, Boolean) -> Unit,
     onThemeChange: (String) -> Unit,
     onVersionClick: (Int) -> Unit,
+    onPrivacyPolicyClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val enableEasterEggs by remember { mutableStateOf(state.enableEasterEggs) }
@@ -94,6 +99,13 @@ private fun SettingsScreenContent(
                 onPreferenceChange(preference.key, it)
             }
         }
+        Text(
+            text = stringResource(R.string.privacy_policy_title),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onPrivacyPolicyClick)
+                .padding(16.dp),
+        )
         DeveloperSection()
         VersionNumber(state.version, enableEasterEggs, onVersionClick)
     }
@@ -151,6 +163,7 @@ private fun SettingScreenViewDarkPreview(
             onPreferenceChange = { _, _ -> },
             onThemeChange = {},
             onVersionClick = {},
+            onPrivacyPolicyClick = {},
             onBackPress = {},
         )
     }

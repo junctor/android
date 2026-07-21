@@ -34,7 +34,14 @@ sealed class Preferences(
 
     data object AllowAnalytics : Preferences(
         key = "allow_analytics",
-        title = "Send anonymous usage statistic",
+        title = "Send anonymous usage statistics",
+        summary = "Off by default",
+    )
+
+    data object AllowCrashlytics : Preferences(
+        key = "allow_crashlytics",
+        title = "Send crash reports",
+        summary = "Off by default",
     )
 
     data object EasterEggs : Preferences(
@@ -49,6 +56,7 @@ sealed class Preferences(
             ShowSchedule,
             FabShown,
             AllowAnalytics,
+            AllowCrashlytics,
             EasterEggs,
         )
     }

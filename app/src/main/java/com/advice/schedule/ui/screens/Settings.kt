@@ -10,6 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.advice.schedule.extensions.navGraphViewModel
+import com.advice.schedule.navigation.Navigation
+import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.ui.activity.MainActivity
@@ -45,5 +47,9 @@ fun Settings(navController: NavHostController) {
                 toast?.show()
             }
         },
-        onBackPress = { navController.onBackPressed() })
+        onPrivacyPolicyClick = {
+            navController.navigateTo(Navigation.PrivacyPolicy)
+        },
+        onBackPress = { navController.onBackPressed() },
+    )
 }

@@ -17,6 +17,7 @@ import com.advice.schedule.ui.screens.Menu
 import com.advice.schedule.ui.screens.News
 import com.advice.schedule.ui.screens.Organization
 import com.advice.schedule.ui.screens.Organizations
+import com.advice.schedule.ui.screens.PrivacyPolicy
 import com.advice.schedule.ui.screens.Product
 import com.advice.schedule.ui.screens.Products
 import com.advice.schedule.ui.screens.ProductsSummary
@@ -69,6 +70,9 @@ fun NavigationManager.SetRoutes(
         }
         register(Navigation.Settings) {
             Settings(navController)
+        }
+        register(Navigation.PrivacyPolicy) {
+            PrivacyPolicy(navController)
         }
         register(Navigation.Wifi()) {
             Wifi(navController, it.id)

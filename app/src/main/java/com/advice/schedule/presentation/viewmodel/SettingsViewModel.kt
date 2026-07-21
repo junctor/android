@@ -32,6 +32,7 @@ class SettingsViewModel : ViewModel(), KoinComponent {
                     Preferences.ShowSchedule.toPreference(it.showSchedule),
                     Preferences.FabShown.toPreference(it.showFilterButton),
                     Preferences.AllowAnalytics.toPreference(it.enableAnalytics),
+                    Preferences.AllowCrashlytics.toPreference(it.enableCrashlytics),
                     Preferences.EasterEggs.toPreference(it.enableEasterEggs),
                 )
 

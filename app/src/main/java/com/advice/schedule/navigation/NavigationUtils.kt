@@ -143,6 +143,10 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
             Navigation.Settings
         }
 
+        Navigation.PrivacyPolicy -> {
+            Navigation.PrivacyPolicy
+        }
+
         is Navigation.Speaker -> {
             val id =
                 backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")

@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.advice.analytics.core.AnalyticsProvider
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.SetRoutes
@@ -34,7 +35,6 @@ import com.advice.schedule.ui.viewmodels.MainViewState
 import com.advice.ui.components.notifications.NotificationsPopup
 import com.advice.ui.components.notifications.PopupContainer
 import com.advice.ui.theme.ScheduleTheme
-import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
@@ -42,6 +42,7 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity(), KoinComponent {
 
     private val navigation by inject<NavigationManager>()
+    private val analytics by inject<AnalyticsProvider>()
     private val mainViewModel: MainViewModel by viewModels()
 
     /**
@@ -187,9 +188,9 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     /**
      * Runtime grants needed for the Wi-Fi join path on this API level.
-     * [android.provider.Settings.ACTION_WIFI_ADD_NETWORKS] and
-     * [android.net.wifi.WifiManager.addNetworkSuggestions] do not require location,
-     * NEARBY_WIFI_DEVICES, or ACCESS_WIFI_STATE at runtime.
+     * On API 29+, [android.provider.Settings.ACTION_WIFI_ADD_NETWORKS] and
+     * [android.net.wifi.WifiManager.addNetworkSuggestions] do not require location.
+     * On API 28 and below, fine location is required to read configured networks.
      */
     fun hasWirelessPermissions(): Boolean {
         return requiredWirelessPermissions().all { hasPermission(it) }
@@ -203,8 +204,11 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     }
 
     private fun requiredWirelessPermissions(): Array<String> {
-        // No dangerous runtime permissions are required for the current join APIs.
-        return emptyArray()
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            emptyArray()
+        }
     }
 
     /**
@@ -243,7 +247,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             val destination = getDestination(uri) ?: return
             controller.navigateTo(destination)
 
-            FirebaseAnalytics.getInstance(this).logEvent(
+            analytics.logEvent(
                 "open_deep_link",
                 Bundle().apply {
                     putString("uri", uri.toString())

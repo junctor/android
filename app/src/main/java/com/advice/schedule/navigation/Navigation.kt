@@ -63,6 +63,10 @@ sealed class Navigation {
         override fun route(): String = "settings"
     }
 
+    data object PrivacyPolicy : Navigation() {
+        override fun route(): String = "privacy"
+    }
+
     data class Wifi(val id: Long = 0, val label: String = "") : Navigation() {
         override fun route(): String = "wifi/{id}/{label}"
         override fun destination(): String = "wifi/$id/$label"

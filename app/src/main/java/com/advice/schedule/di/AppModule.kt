@@ -179,6 +179,7 @@ val appModule = module {
             get(),
             get(),
             "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+            androidContext(),
         )
     }
     single { MapRepository(get()) }

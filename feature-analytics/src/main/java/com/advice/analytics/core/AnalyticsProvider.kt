@@ -26,6 +26,7 @@ class AnalyticsProvider(
     private var isChickenEnabled: Boolean = false
 
     init {
+        analytics.setAnalyticsCollectionEnabled(storage.allowAnalytics)
         remoteConfig.setConfigSettingsAsync(remoteConfigSettings {
             // One hour per sync
             minimumFetchIntervalInSeconds = 3600
