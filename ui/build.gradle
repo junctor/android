@@ -54,8 +54,6 @@ dependencies {
     implementation(libs.compose.richtext.common)
     implementation(libs.compose.richtext.material)
 
-    implementation(libs.android.pdf.viewer)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

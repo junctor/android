@@ -4,37 +4,31 @@ import android.app.Activity
 import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +36,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.advice.core.local.MapFile
@@ -50,9 +45,10 @@ import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.states.MapsScreenState
 import com.advice.ui.theme.ScheduleTheme
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
+
+private val MapBarColor = Color.Black
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,23 +57,21 @@ fun MapsScreen(
     onBackPress: () -> Unit,
     onMapChange: (String) -> Unit,
 ) {
-    var showSheet by remember { mutableStateOf(false) }
-    val bottomSheetState = rememberModalBottomSheetState()
-    val coroutineScope = rememberCoroutineScope()
     val view = LocalView.current
 
     DisposableEffect(view) {
-        val window = generateSequence(view.context) { (it as? ContextWrapper)?.baseContext }
-            .filterIsInstance<Activity>()
-            .firstOrNull()
-            ?.window
-            ?: return@DisposableEffect onDispose {}
+        val window =
+            generateSequence(view.context) { (it as? ContextWrapper)?.baseContext }
+                .filterIsInstance<Activity>()
+                .firstOrNull()
+                ?.window
+                ?: return@DisposableEffect onDispose {}
 
         val previousStatusBarColor = window.statusBarColor
         val previousNavigationBarColor = window.navigationBarColor
-        val scrim = Color.Black.copy(alpha = 0.40f).toArgb()
-        window.statusBarColor = scrim
-        window.navigationBarColor = scrim
+        val barColor = MapBarColor.toArgb()
+        window.statusBarColor = barColor
+        window.navigationBarColor = barColor
 
         onDispose {
             window.statusBarColor = previousStatusBarColor
@@ -91,16 +85,15 @@ fun MapsScreen(
                 title = {
                     if (state is MapsScreenState.Success) {
                         Text(
-                            state.file.name, color = Color.White,
+                            state.file.name,
+                            color = Color.White,
                         )
                     }
-
                 },
                 actions = {
                     IconButton(
                         onClick = onBackPress,
-                        colors =
-                        IconButtonDefaults.iconButtonColors(),
+                        colors = IconButtonDefaults.iconButtonColors(),
                     ) {
                         Icon(
                             Icons.Default.Close,
@@ -110,32 +103,29 @@ fun MapsScreen(
                     }
                 },
                 colors =
-                TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Black.copy(alpha = 0.40f),
-                    navigationIconContentColor = Color.Black,
-                ),
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MapBarColor,
+                        navigationIconContentColor = Color.White,
+                    ),
             )
         },
-        floatingActionButton = {
-            if (state is MapsScreenState.Success) {
-                if (state.maps.size > 1) {
-                    FloatingActionButton(shape = CircleShape, onClick = {
-                        showSheet = true
-                    }) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.List,
-                            "List",
-                            tint = Color.White,
-                        )
-                    }
-                }
+        bottomBar = {
+            if (state is MapsScreenState.Success && state.maps.size > 1) {
+                MapsBottomBar(
+                    maps = state.maps.map { it.name },
+                    selected = state.file.name,
+                    onMapClick = onMapChange,
+                )
             }
         },
-    ) {
+    ) { innerPadding ->
+        // Bars are opaque, so the map sits between them rather than under them.
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(Color.White),
         ) {
             when (state) {
                 MapsScreenState.Loading -> {
@@ -153,38 +143,60 @@ fun MapsScreen(
                     Timber.d("Showing file: ${file.file}")
                     PdfDisplay(
                         file.file,
-                        Modifier
-                            .padding(it)
-                            .fillMaxSize(),
+                        Modifier.fillMaxSize(),
                     )
                 }
             }
         }
     }
+}
 
-    if (showSheet) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                showSheet = false
-            },
-            sheetState = bottomSheetState,
-            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) {
-            if (state is MapsScreenState.Success) {
-                MapsBottomSheet(
-                    files = state.maps.map { it.name },
-                    onMapClick = {
-                        coroutineScope.launch {
-                            bottomSheetState.hide()
-                        }.invokeOnCompletion {
-                            if (!bottomSheetState.isVisible) {
-                                showSheet = false
-                            }
-                        }
-                        onMapChange(it)
-                    },
-                    modifier = Modifier.navigationBarsPadding(),
+@Composable
+private fun MapsBottomBar(
+    maps: List<String>,
+    selected: String,
+    onMapClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val scrollState = rememberScrollState()
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(MapBarColor)
+                .navigationBarsPadding()
+                .horizontalScroll(scrollState)
+                .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        maps.forEach { name ->
+            val isSelected = name == selected
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.clickable { onMapClick(name) },
+            ) {
+                Text(
+                    text = name.uppercase(),
+                    color = if (isSelected) Color.White else Color.White.copy(alpha = 0.65f),
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 14.dp),
+                )
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(3.dp)
+                            .background(
+                                if (isSelected) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    Color.Transparent
+                                },
+                            ),
                 )
             }
         }
@@ -192,39 +204,14 @@ fun MapsScreen(
 }
 
 @Composable
-private fun MapsBottomSheet(
-    files: List<String>,
-    onMapClick: (String) -> Unit,
+private fun EmptyScreen(
+    message: String,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier =
-        modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-    ) {
-        files.forEach {
-            Text(
-                it,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier =
-                Modifier
-                    .clickable {
-                        onMapClick(it)
-                    }
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            )
-        }
-    }
-}
-
-@Composable
-private fun EmptyScreen(message: String, modifier: Modifier = Modifier) {
     Box(
         modifier
             .padding(16.dp)
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         Text(
             message,
@@ -235,7 +222,6 @@ private fun EmptyScreen(message: String, modifier: Modifier = Modifier) {
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.Center),
         )
-
     }
 }
 
@@ -246,10 +232,17 @@ private fun MapsScreenPreview() {
         Surface {
             val file = MapFile("Map", File("/"))
             MapsScreen(
-                state = MapsScreenState.Success(
-                    file = file,
-                    maps = listOf(file)
-                ),
+                state =
+                    MapsScreenState.Success(
+                        file = file,
+                        maps =
+                            listOf(
+                                file,
+                                MapFile("Floor 1", File("/")),
+                                MapFile("Floor 2", File("/")),
+                                MapFile("Village", File("/")),
+                            ),
+                    ),
                 onMapChange = {},
                 onBackPress = {},
             )
