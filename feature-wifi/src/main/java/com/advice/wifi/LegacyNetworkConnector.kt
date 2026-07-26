@@ -7,10 +7,12 @@ import com.advice.core.local.wifi.WirelessNetwork
 import timber.log.Timber
 
 /**
- * Enable an enterprise network using the old API.
+ * Enable an enterprise network using the pre-Q Wi-Fi configuration APIs.
  *
- * This is used on Android 9 and below. Open and WPA Personal networks are rejected upstream.
+ * Used only when [android.os.Build.VERSION.SDK_INT] < Q (API 26–28; see
+ * [WirelessConnectionManager.prepareJoin]). Remove this path when minSdk ≥ 29.
  */
+@Suppress("DEPRECATION") // WifiConfiguration / addNetwork / enableNetwork / saveConfiguration — API < 29 only
 fun enableNetwork(
     wifiManager: WifiManager,
     wirelessNetwork: WirelessNetwork,

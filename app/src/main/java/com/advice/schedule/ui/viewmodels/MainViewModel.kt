@@ -1,7 +1,10 @@
 package com.advice.schedule.ui.viewmodels
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
@@ -16,7 +19,6 @@ import com.advice.firebase.extensions.documentCacheReads
 import com.advice.firebase.extensions.documentReads
 import com.advice.firebase.extensions.listenersCount
 import com.advice.play.AppManager
-import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DragAnchors
 import com.google.firebase.messaging.FirebaseMessaging
 import com.shortstack.hackertracker.BuildConfig
@@ -112,13 +114,16 @@ class MainViewModel :
 
     private var hasStarted = false
 
-    fun onAppStart(context: MainActivity) {
+    fun onAppStart(
+        context: Context,
+        appUpdateLauncher: ActivityResultLauncher<IntentSenderRequest>,
+    ) {
         if (hasStarted) return
         hasStarted = true
 
         // Only showing the prompt once per version.
         if (storage.updateVersion != BuildConfig.VERSION_CODE) {
-            appManager.checkForUpdate(context, MainActivity.REQUEST_CODE_UPDATE)
+            appManager.checkForUpdate(appUpdateLauncher)
         }
         val format =
             if (android.text.format.DateFormat
@@ -192,8 +197,7 @@ class MainViewModel :
 
         args?.keySet()?.forEach {
             if (route.contains("{$it}")) {
-                @Suppress("DEPRECATION")
-                val value = args.get(it)?.toString()
+                val value = args.stringValue(it)
                 if (value != null) {
                     route = route.replace("{$it}", value)
                 }
@@ -203,4 +207,29 @@ class MainViewModel :
         Timber.i("navigating to: $route")
         analytics.onDestinationChanged(route)
     }
+}
+
+private fun Bundle.stringValue(key: String): String? {
+    if (!containsKey(key)) return null
+    getString(key)?.let { return it }
+
+    // Dual-default checks: typed getters return the default for missing/wrong types.
+    val intA = getInt(key, Int.MIN_VALUE)
+    val intB = getInt(key, Int.MAX_VALUE)
+    if (intA == intB) return intA.toString()
+
+    val longA = getLong(key, Long.MIN_VALUE)
+    val longB = getLong(key, Long.MAX_VALUE)
+    if (longA == longB) return longA.toString()
+
+    val floatA = getFloat(key, Float.NEGATIVE_INFINITY)
+    val floatB = getFloat(key, Float.POSITIVE_INFINITY)
+    if (floatA == floatB) return floatA.toString()
+
+    val doubleA = getDouble(key, Double.NEGATIVE_INFINITY)
+    val doubleB = getDouble(key, Double.POSITIVE_INFINITY)
+    if (doubleA == doubleB) return doubleA.toString()
+
+    // Remaining nav-arg keys with containsKey true are typically booleans.
+    return getBoolean(key).toString()
 }

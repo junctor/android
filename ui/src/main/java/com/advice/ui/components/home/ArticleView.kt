@@ -19,13 +19,13 @@ import com.advice.core.utils.TimeUtil
 import com.advice.ui.components.Paragraph
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import java.util.Date
+import java.time.Instant
 
 @Composable
 fun ArticleView(
     title: String,
     text: String,
-    date: Date?,
+    date: Instant?,
     onDismiss: (() -> Unit)? = null,
 ) {
     HomeCard {
@@ -73,7 +73,7 @@ private fun ArticleViewPreview() {
         ArticleView(
             title = "DEFCON 28",
             text = "Welcome to DEFCON 28!",
-            date = Date(),
+            date = Instant.now(),
             onDismiss = {},
         )
     }

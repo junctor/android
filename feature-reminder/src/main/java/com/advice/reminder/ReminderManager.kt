@@ -7,7 +7,6 @@ import androidx.work.workDataOf
 import com.advice.core.local.Content
 import com.advice.core.local.Session
 import timber.log.Timber
-import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class ReminderManager(
@@ -51,9 +50,9 @@ class ReminderManager(
         session: Session,
     ) {
         val start = session.start
-        val now = Date()
+        val now = System.currentTimeMillis()
 
-        val delay = start.toEpochMilli() - now.time - TWENTY_MINUTES_BEFORE
+        val delay = start.toEpochMilli() - now - TWENTY_MINUTES_BEFORE
 
         if (delay < 0) {
             Timber.e("ReminderManager: Delay is negative: $delay - ignoring reminder")
@@ -85,7 +84,7 @@ class ReminderManager(
     ) {
         if (content.feedback != null) {
             val enable = content.feedback?.enable ?: return
-            val delay = enable.toEpochMilli() - Date().time - TWENTY_MINUTES_BEFORE
+            val delay = enable.toEpochMilli() - System.currentTimeMillis() - TWENTY_MINUTES_BEFORE
             if (delay < 0) {
                 Timber.e("ReminderManager: Feedback delay is negative: $delay.")
                 return

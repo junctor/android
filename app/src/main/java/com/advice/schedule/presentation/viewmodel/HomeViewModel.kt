@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.Date
 import kotlin.time.Duration.Companion.milliseconds
 
 class HomeViewModel :
@@ -78,12 +77,12 @@ class HomeViewModel :
     }
 
     private fun startCountdown(conference: Conference) {
-        var remainder = conference.kickoffDate.toEpochMilli() - Date().time
+        var remainder = conference.kickoffDate.toEpochMilli() - System.currentTimeMillis()
         if (remainder > 0L) {
             countdownJob =
                 viewModelScope.launch {
                     while (remainder > 0L) {
-                        remainder = conference.kickoffDate.toEpochMilli() - Date().time
+                        remainder = conference.kickoffDate.toEpochMilli() - System.currentTimeMillis()
                         countdown.value = remainder.coerceAtLeast(0L)
                         delay(COUNTDOWN_DELAY.milliseconds)
                     }

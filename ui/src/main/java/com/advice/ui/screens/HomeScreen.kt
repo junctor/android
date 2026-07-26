@@ -40,7 +40,6 @@ import com.advice.ui.components.home.HomeCard
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.topRoundedCornerShape
-import java.util.Date
 
 @Composable
 fun HomeScreen(
@@ -224,7 +223,7 @@ private fun HomeScreenViewPreview() {
             onNavigationClick = {},
             onDismissNews = {},
             countdownContent = {
-                CountdownView(Date().time / 1000L)
+                CountdownView(System.currentTimeMillis() / 1000L)
             },
         )
     }

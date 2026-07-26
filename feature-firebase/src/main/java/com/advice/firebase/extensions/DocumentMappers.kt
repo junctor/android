@@ -24,7 +24,7 @@ fun FirebaseArticle.toArticle(): NewsArticle? =
             id,
             name,
             text,
-            updatedAt?.toDate(),
+            updatedAt?.toDate()?.toInstant(),
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to Article: ${ex.message}")

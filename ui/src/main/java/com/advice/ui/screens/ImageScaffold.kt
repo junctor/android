@@ -1,7 +1,5 @@
 package com.advice.ui.screens
 
-import android.app.Activity
-import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,18 +15,16 @@ import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import coil.request.ImageRequest
 import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.utils.TemporarySystemBarScrims
 
 @Composable
 fun ImageScaffold(
@@ -45,28 +41,8 @@ fun ImageScaffold(
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     content: @Composable () -> Unit,
 ) {
-    val view = LocalView.current
-
     if (url != null) {
-        DisposableEffect(view) {
-            val window =
-                generateSequence(view.context) { (it as? ContextWrapper)?.baseContext }
-                    .filterIsInstance<Activity>()
-                    .firstOrNull()
-                    ?.window
-                    ?: return@DisposableEffect onDispose {}
-
-            val previousStatusBarColor = window.statusBarColor
-            val previousNavigationBarColor = window.navigationBarColor
-            val scrim = Color.Black.copy(alpha = 0.40f).toArgb()
-            window.statusBarColor = scrim
-            window.navigationBarColor = scrim
-
-            onDispose {
-                window.statusBarColor = previousStatusBarColor
-                window.navigationBarColor = previousNavigationBarColor
-            }
-        }
+        TemporarySystemBarScrims(Color.Black.copy(alpha = 0.40f))
     }
 
     Scaffold(

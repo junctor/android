@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
+    implementation(libs.androidx.activity.compose)
 
     implementation(libs.google.play.update)
     implementation(libs.google.play.update.ktx)

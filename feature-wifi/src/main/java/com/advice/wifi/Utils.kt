@@ -10,6 +10,7 @@ import java.security.cert.X509Certificate
 import java.util.Locale
 
 @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+@Suppress("DEPRECATION") // WifiConfiguration / configuredNetworks / isWifiEnabled setter — API < 29 only; remove when minSdk ≥ 29
 fun WifiManager.existingWirelessConfig(ssid: String): WifiConfiguration? {
     isWifiEnabled = true
 

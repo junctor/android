@@ -1,15 +1,18 @@
 package com.advice.play
 
-import android.app.Activity
 import android.content.Context
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.coroutines.suspendCancellableCoroutine
+
 class AppManager(context: Context) {
 
     private val appUpdateManager = AppUpdateManagerFactory.create(context)
+
     suspend fun isUpdateAvailable(): Boolean {
         if (BuildConfig.DEBUG) {
             return false
@@ -33,7 +36,7 @@ class AppManager(context: Context) {
         }
     }
 
-    fun checkForUpdate(activity: Activity, requestCode: Int) {
+    fun checkForUpdate(activityResultLauncher: ActivityResultLauncher<IntentSenderRequest>) {
         if (BuildConfig.DEBUG) {
             return
         }
@@ -45,9 +48,8 @@ class AppManager(context: Context) {
                 ) {
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
-                        activity,
+                        activityResultLauncher,
                         AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build(),
-                        requestCode
                     )
                 }
             }

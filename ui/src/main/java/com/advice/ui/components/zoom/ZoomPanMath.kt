@@ -16,7 +16,7 @@ internal const val NATIVE_ZOOM_HEADROOM = 2f
 
 /**
  * Returns the offset that keeps the content point under [centroid] fixed after scaling
- * from [oldScale] to [newScale], given [transformOrigin] = (0, 0):
+ * from [oldScale] to [newScale], given transformOrigin = (0, 0):
  * `screen = content * scale + offset`.
  */
 internal fun zoomAround(
@@ -58,7 +58,7 @@ internal fun clampOffset(
 }
 
 /**
- * Lower/upper bounds for [offset] at the given [scale], suitable for
+ * Lower/upper bounds for offset at the given [scale], suitable for
  * [androidx.compose.animation.core.Animatable.updateBounds].
  */
 internal fun offsetBounds(
@@ -105,7 +105,7 @@ internal fun derivedMaxZoom(
 }
 
 /**
- * Size of [content] fitted inside [viewport] while preserving aspect ratio (letterboxed).
+ * Size of content fitted inside [viewport] while preserving aspect ratio (letterboxed).
  */
 internal fun fitContentSize(
     viewport: Size,

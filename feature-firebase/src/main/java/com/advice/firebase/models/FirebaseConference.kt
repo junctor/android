@@ -4,7 +4,6 @@ import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
 import kotlinx.parcelize.Parcelize
-import java.util.Date
 
 @Parcelize
 data class FirebaseConference(
@@ -38,7 +37,7 @@ data class FirebaseConference(
     var endDate: String = "",
     @get:PropertyName("end_timestamp")
     @set:PropertyName("end_timestamp")
-    var endTimestamp: Timestamp = Timestamp(Date()),
+    var endTimestamp: Timestamp = Timestamp.now(),
     @get:PropertyName("end_timestamp_str")
     @set:PropertyName("end_timestamp_str")
     var endTimestampStr: String = "",
@@ -59,7 +58,7 @@ data class FirebaseConference(
     var id: Long = 0,
     @get:PropertyName("kickoff_timestamp")
     @set:PropertyName("kickoff_timestamp")
-    var kickoffTimestamp: Timestamp = Timestamp(Date()),
+    var kickoffTimestamp: Timestamp = Timestamp.now(),
     @get:PropertyName("kickoff_timestamp_str")
     @set:PropertyName("kickoff_timestamp_str")
     var kickoffTimestampStr: String = "",
@@ -90,7 +89,7 @@ data class FirebaseConference(
     var startDate: String = "",
     @get:PropertyName("start_timestamp")
     @set:PropertyName("start_timestamp")
-    var startTimestamp: Timestamp = Timestamp(Date()),
+    var startTimestamp: Timestamp = Timestamp.now(),
     @get:PropertyName("start_timestamp_str")
     @set:PropertyName("start_timestamp_str")
     var startTimestampStr: String = "",

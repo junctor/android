@@ -33,7 +33,7 @@ class FailOpenAudiencePolicy : AudiencePolicy {
                 "FailOpenAudiencePolicy.canView: Blocked item: title=%s, minAge=%d, status=%s, lowerAge=%d",
                 label,
                 minAge,
-                (context as? AudienceContext.Resolved)?.status,
+                context.status,
                 lowerAge,
             )
         }

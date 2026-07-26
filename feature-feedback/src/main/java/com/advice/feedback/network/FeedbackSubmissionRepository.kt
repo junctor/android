@@ -17,8 +17,8 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class FeedbackSubmissionRepository(
@@ -30,8 +30,10 @@ class FeedbackSubmissionRepository(
         feedback: FeedbackForm,
     ): NetworkResponse =
         withContext(Dispatchers.IO) {
-            val date = Date()
-            val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US).format(date)
+            val timestamp =
+                OffsetDateTime.now().format(
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US),
+                )
 
             val request =
                 FeedbackRequest(

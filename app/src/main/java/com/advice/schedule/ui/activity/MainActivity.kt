@@ -39,6 +39,7 @@ import org.koin.core.component.inject
 import timber.log.Timber
 import android.graphics.Color as AndroidColor
 
+
 class MainActivity :
     AppCompatActivity(),
     KoinComponent {
@@ -67,6 +68,15 @@ class MainActivity :
             ActivityResultContracts.RequestMultiplePermissions(),
         ) { /* join APIs do not require follow-up beyond grant state */ }
 
+    private val appUpdateLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult(),
+        ) { result ->
+            if (result.resultCode != RESULT_OK) {
+                mainViewModel.onAppUpdateRequest(result.resultCode)
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
@@ -75,7 +85,7 @@ class MainActivity :
         )
 
         pendingDeepLink = intent.data
-        mainViewModel.onAppStart(this)
+        mainViewModel.onAppStart(this, appUpdateLauncher)
 
         setContent {
             val navController = rememberNavController()
@@ -147,19 +157,6 @@ class MainActivity :
         args: Bundle?,
     ) {
         mainViewModel.onDestinationChanged(navDestination, args)
-    }
-
-    @Deprecated("This is deprecated in favor of registerForActivityResult")
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?,
-    ) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_CODE_UPDATE && resultCode != RESULT_OK) {
-            mainViewModel.onAppUpdateRequest(resultCode)
-        }
     }
 
     /**
@@ -303,9 +300,5 @@ class MainActivity :
             Timber.e(ex)
         }
         super.onPause()
-    }
-
-    companion object {
-        internal const val REQUEST_CODE_UPDATE = 9003
     }
 }

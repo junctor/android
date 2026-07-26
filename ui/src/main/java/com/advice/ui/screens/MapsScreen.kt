@@ -1,7 +1,5 @@
 package com.advice.ui.screens
 
-import android.app.Activity
-import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -28,12 +26,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,6 +40,7 @@ import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.states.MapsScreenState
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.utils.TemporarySystemBarScrims
 import timber.log.Timber
 import java.io.File
 
@@ -57,27 +53,7 @@ fun MapsScreen(
     onBackPress: () -> Unit,
     onMapChange: (String) -> Unit,
 ) {
-    val view = LocalView.current
-
-    DisposableEffect(view) {
-        val window =
-            generateSequence(view.context) { (it as? ContextWrapper)?.baseContext }
-                .filterIsInstance<Activity>()
-                .firstOrNull()
-                ?.window
-                ?: return@DisposableEffect onDispose {}
-
-        val previousStatusBarColor = window.statusBarColor
-        val previousNavigationBarColor = window.navigationBarColor
-        val barColor = MapBarColor.toArgb()
-        window.statusBarColor = barColor
-        window.navigationBarColor = barColor
-
-        onDispose {
-            window.statusBarColor = previousStatusBarColor
-            window.navigationBarColor = previousNavigationBarColor
-        }
-    }
+    TemporarySystemBarScrims(MapBarColor)
 
     Scaffold(
         topBar = {

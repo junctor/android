@@ -41,7 +41,7 @@ class WirelessConnectionManager(
      * Prepares a Wi-Fi join for the current platform:
      * - API 30+: returns an [Settings.ACTION_WIFI_ADD_NETWORKS] intent
      * - API 29: calls [WifiManager.addNetworkSuggestions]
-     * - API 28 and below: uses the legacy [enableNetwork] path
+     * - API 28 and below: uses the legacy [enableNetwork] path (remove when minSdk ≥ 29)
      */
     suspend fun prepareJoin(
         wirelessNetwork: WirelessNetwork,
@@ -231,6 +231,7 @@ class WirelessConnectionManager(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && wirelessNetwork.isWpa3Enterprise()) {
             builder.setWpa3EnterpriseStandardModeConfig(enterpriseConfig)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && wirelessNetwork.isWpa3Enterprise()) {
+            // setWpa3EnterpriseConfig is deprecated on API 31+; keep for R-only (API 30).
             @Suppress("DEPRECATION")
             builder.setWpa3EnterpriseConfig(enterpriseConfig)
         } else {
