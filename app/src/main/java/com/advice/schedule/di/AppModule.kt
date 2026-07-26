@@ -115,209 +115,216 @@ import org.koin.dsl.module
 
 const val APPLICATION_SCOPE = "applicationScope"
 
-val appModule = module {
+val appModule =
+    module {
 
-    single(named(APPLICATION_SCOPE)) {
-        CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    } withOptions {
-        onClose { it?.cancel() }
-    }
-
-    single { Storage(get(), get(), BuildConfig.VERSION_CODE) }
-
-    single {
-        GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
-    }
-
-    single { FirebaseCrashlytics.getInstance() }
-    single {
-        val cacheSize: Long = 250 * 1024 * 1024 // 250 MB
-
-        val cacheSettings = PersistentCacheSettings.newBuilder()
-            .setSizeBytes(cacheSize)
-            .build()
-
-        val settings = FirebaseFirestoreSettings.Builder()
-            .setLocalCacheSettings(cacheSettings)
-            .build()
-
-        FirebaseFirestore.getInstance().apply {
-            firestoreSettings = settings
+        single(named(APPLICATION_SCOPE)) {
+            CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        } withOptions {
+            onClose { it?.cancel() }
         }
-    }
-    single { FirebaseAuth.getInstance() }
-    single { FirebaseStorage.getInstance() }
-    single { FirebaseAnalytics.getInstance(androidContext()) }
 
-    // work manager
-    single { WorkManager.getInstance(androidContext()) }
+        single { Storage(get(), get(), BuildConfig.VERSION_CODE) }
 
-    // update manager
-    single { AppManager(androidContext()) }
+        single {
+            GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
+        }
 
-    single { AnalyticsProvider(get(), BuildConfig.VERSION_CODE) }
+        single { FirebaseCrashlytics.getInstance() }
+        single {
+            val cacheSize: Long = 250 * 1024 * 1024 // 250 MB
 
-    // reminder
-    single { NotificationHelper(get()) }
-    single { ToastManager() }
-    single { ReminderManager(get()) }
+            val cacheSettings =
+                PersistentCacheSettings
+                    .newBuilder()
+                    .setSizeBytes(cacheSize)
+                    .build()
 
-    // navigation
-    single { NavigationManager() }
+            val settings =
+                FirebaseFirestoreSettings
+                    .Builder()
+                    .setLocalCacheSettings(cacheSettings)
+                    .build()
 
-    // repo
-    single { ScheduleRepository(get(), get(), get(), get(named("tags"))) }
-    single { NewsRepository(get()) }
-    single { HomeRepository(get(), get(), get(), get(), get(), get(), get()) }
-    single { SpeakersRepository(get()) }
-    single { ContentRepository(get(), get(), get(), get()) }
-    single { SpeakerRepository(get(), get()) }
-    single { FiltersRepository(get(), get(named("tags"))) }
-    single { FAQRepository(get()) }
-    single {
-        SettingsRepository(
-            get(),
-            get(),
-            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-            androidContext(),
-        )
-    }
-    single { MapRepository(get()) }
-    single { LocationRepository(get()) }
-    single { OrganizationsRepository(get()) }
-    single { InformationRepository(get(), get(), get(), get()) }
-    single { ProductsRepository(get(), get()) }
-    single { DocumentsRepository(get()) }
-    single { TagsRepository(get()) }
-    single { SearchRepository(get(), get(), get(), get(), get(), get()) }
-    single { MenuRepository(get()) }
-    single { FeedbackFormRepository(get()) }
+            FirebaseFirestore.getInstance().apply {
+                firestoreSettings = settings
+            }
+        }
+        single { FirebaseAuth.getInstance() }
+        single { FirebaseStorage.getInstance() }
+        single { FirebaseAnalytics.getInstance(androidContext()) }
+
+        // work manager
+        single { WorkManager.getInstance(androidContext()) }
+
+        // update manager
+        single { AppManager(androidContext()) }
+
+        single { AnalyticsProvider(get(), BuildConfig.VERSION_CODE) }
+
+        // reminder
+        single { NotificationHelper(get()) }
+        single { ToastManager() }
+        single { ReminderManager(get()) }
+
+        // navigation
+        single { NavigationManager() }
+
+        // repo
+        single { ScheduleRepository(get(), get(), get(), get(named("tags"))) }
+        single { NewsRepository(get()) }
+        single { HomeRepository(get(), get(), get(), get(), get(), get(), get()) }
+        single { SpeakersRepository(get()) }
+        single { ContentRepository(get(), get(), get(), get()) }
+        single { SpeakerRepository(get(), get()) }
+        single { FiltersRepository(get(), get(named("tags"))) }
+        single { FAQRepository(get()) }
+        single {
+            SettingsRepository(
+                get(),
+                get(),
+                "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                androidContext(),
+            )
+        }
+        single { MapRepository(get()) }
+        single { LocationRepository(get()) }
+        single { OrganizationsRepository(get()) }
+        single { InformationRepository(get(), get(), get(), get()) }
+        single { ProductsRepository(get(), get()) }
+        single { DocumentsRepository(get()) }
+        single { TagsRepository(get()) }
+        single { SearchRepository(get(), get(), get(), get(), get(), get()) }
+        single { MenuRepository(get()) }
+        single { FeedbackFormRepository(get()) }
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }
-    single<BookmarkedElementDataSource>(named("tags")) { InMemoryBookmarkedDataSourceImpl() }
-    single<BookmarkedElementDataSource>(named("events")) {
-        SharedPreferencesBookmarkDataSource(
-            androidContext(),
-        )
-    }
+        single<BookmarkedElementDataSource>(named("tags")) { InMemoryBookmarkedDataSourceImpl() }
+        single<BookmarkedElementDataSource>(named("events")) {
+            SharedPreferencesBookmarkDataSource(
+                androidContext(),
+            )
+        }
 
-    single<UserSession> {
-        FirebaseUserSession(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(named(APPLICATION_SCOPE)),
-        )
-    }
-    single<AudiencePolicy> { FailOpenAudiencePolicy() }
-    single<NewsDataSource> {
-        FirebaseNewsDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-    single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
-    single<ContentDataSource> {
-        FirebaseContentDataSource(
-            get(),
-            get(),
-            get(),
-            get(),
-            get<LocationsDataSource>(),
-            get(),
-            get(named("events")),
-            get(),
-            get(named(APPLICATION_SCOPE)),
-        )
-    }
-    single<TagsDataSource> {
-        FirebaseTagsDataSource(get(), get(), get(named("tags")), get(named(APPLICATION_SCOPE)))
-    }
-    single<FAQDataSource> {
-        FirebaseFAQDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-    single<LocationsDataSource> {
-        FirebaseLocationsDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-    single {
-        RetrofitMapsDataSource(
-            get(),
-            androidContext().applicationContext.getExternalFilesDir(null),
-        )
-    } withOptions {
-        bind<MapsDataSource>()
-        onClose { it?.close() }
-    }
+        single<UserSession> {
+            FirebaseUserSession(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(named(APPLICATION_SCOPE)),
+            )
+        }
+        single<AudiencePolicy> { FailOpenAudiencePolicy() }
+        single<NewsDataSource> {
+            FirebaseNewsDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+        single<ConferencesDataSource> { FirebaseConferencesDataSource(get()) }
+        single<ContentDataSource> {
+            FirebaseContentDataSource(
+                get(),
+                get(),
+                get(),
+                get(),
+                get<LocationsDataSource>(),
+                get(),
+                get(named("events")),
+                get(),
+                get(named(APPLICATION_SCOPE)),
+            )
+        }
+        single<TagsDataSource> {
+            FirebaseTagsDataSource(get(), get(), get(named("tags")), get(named(APPLICATION_SCOPE)))
+        }
+        single<FAQDataSource> {
+            FirebaseFAQDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+        single<LocationsDataSource> {
+            FirebaseLocationsDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+        single {
+            RetrofitMapsDataSource(
+                get(),
+                androidContext().applicationContext.getExternalFilesDir(null),
+            )
+        } withOptions {
+            bind<MapsDataSource>()
+            onClose { it?.close() }
+        }
 
-    single<SpeakersDataSource> {
-        FirebaseSpeakersDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
+        single<SpeakersDataSource> {
+            FirebaseSpeakersDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+        single<ProductsDataSource> {
+            FirebaseProductsDataSource(get(), get(), get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+
+        // Organizations
+        single<OrganizationsDataSource> {
+            FirebaseOrganizationDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+        single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
+        single<VillagesDataSource> { FirebaseVillagesDataSource(get(), get()) }
+
+        // Documents
+        single<DocumentsDataSource> {
+            FirebaseDocumentsDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+
+        single<MenuDataSource> {
+            FirebaseMenuDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+
+        single<FeedbackDataSource> {
+            FirebaseFeedbackDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+
+        // Products
+        single<ProductCart> { ProductCart() }
+
+        // Feedback
+        single {
+            FeedbackSubmissionRepository(
+                "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                get(),
+            )
+        }
+
+        single { WifiNetworkRepository(get()) }
+        single<WiFiNetworksDataSource> {
+            FirebaseWifiNetworksDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
+        }
+
+        // WiFi
+        single<WirelessConnectionManager> {
+            WirelessConnectionManager(
+                androidContext().resources,
+                androidContext().getSystemService(WIFI_SERVICE) as WifiManager,
+            )
+        }
+
+        single<AgeSignalsManager> {
+            createAgeSignalsManager(androidContext())
+        }
+        single { AgeSignalsRepository(get(), get()) }
+
+        viewModel { HomeViewModel() }
+        viewModel { ScheduleViewModel() }
+        viewModel { EventViewModel() }
+        viewModel { SpeakerViewModel() }
+        viewModel { SpeakersViewModel() }
+        viewModel { MapsViewModel() }
+        viewModel { InformationViewModel() }
+        viewModel { LocationsViewModel() }
+        viewModel { OrganizationsViewModel() }
+        viewModel { FAQViewModel() }
+        viewModel { SettingsViewModel() }
+        viewModel { FiltersViewModel() }
+        viewModel { ConferenceViewModel() }
+        viewModel { SearchViewModel() }
+
+        viewModel { ProductsViewModel() }
+
+        viewModel { WifiViewModel() }
     }
-    single<ProductsDataSource> {
-        FirebaseProductsDataSource(get(), get(), get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-
-    // Organizations
-    single<OrganizationsDataSource> {
-        FirebaseOrganizationDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-    single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
-    single<VillagesDataSource> { FirebaseVillagesDataSource(get(), get()) }
-
-    // Documents
-    single<DocumentsDataSource> {
-        FirebaseDocumentsDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-
-    single<MenuDataSource> {
-        FirebaseMenuDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-
-    single<FeedbackDataSource> {
-        FirebaseFeedbackDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-
-    // Products
-    single<ProductCart> { ProductCart() }
-
-    // Feedback
-    single { FeedbackSubmissionRepository(
-        "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-        get()
-    ) }
-
-    single { WifiNetworkRepository(get()) }
-    single<WiFiNetworksDataSource> {
-        FirebaseWifiNetworksDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
-    }
-
-    // WiFi
-    single<WirelessConnectionManager> {
-        WirelessConnectionManager(
-            androidContext().resources,
-            androidContext().getSystemService(WIFI_SERVICE) as WifiManager,
-        )
-    }
-
-    single<AgeSignalsManager> {
-        createAgeSignalsManager(androidContext())
-    }
-    single { AgeSignalsRepository(get(), get()) }
-
-    viewModel { HomeViewModel() }
-    viewModel { ScheduleViewModel() }
-    viewModel { EventViewModel() }
-    viewModel { SpeakerViewModel() }
-    viewModel { SpeakersViewModel() }
-    viewModel { MapsViewModel() }
-    viewModel { InformationViewModel() }
-    viewModel { LocationsViewModel() }
-    viewModel { OrganizationsViewModel() }
-    viewModel { FAQViewModel() }
-    viewModel { SettingsViewModel() }
-    viewModel { FiltersViewModel() }
-    viewModel { ConferenceViewModel() }
-    viewModel { SearchViewModel() }
-
-    viewModel { ProductsViewModel() }
-
-    viewModel { WifiViewModel() }
-}

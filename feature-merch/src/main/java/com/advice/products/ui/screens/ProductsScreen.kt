@@ -72,7 +72,7 @@ fun ProductsScreen(
                 actions = {
                     if (state is ProductsScreenState.Success && state.data.merchDocument != null) {
                         IconButton(
-                            onClick = onLearnMore
+                            onClick = onLearnMore,
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Info,
@@ -89,7 +89,7 @@ fun ProductsScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
             )
         },
     ) {
@@ -124,10 +124,11 @@ fun ProductsScreen(
                             LabelButton(
                                 label = "View List ($itemCount)",
                                 onClick = onSummaryClicked,
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .padding(16.dp)
-                                    .fillMaxWidth(),
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .padding(16.dp)
+                                        .fillMaxWidth(),
                             )
                         }
 
@@ -167,7 +168,7 @@ fun ProductsScreenContent(
                 onDismiss = {
                     onDismiss(dismissibleInformation)
                 },
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier.padding(vertical = 4.dp),
             )
         }
 
@@ -198,9 +199,10 @@ fun ProductsScreenContent(
 private fun SectionHeader(label: String) {
     Text(
         text = label,
-        modifier = Modifier
-            .padding(top = 24.dp)
-            .padding(horizontal = 4.dp, vertical = 8.dp),
+        modifier =
+            Modifier
+                .padding(top = 24.dp)
+                .padding(horizontal = 4.dp, vertical = 8.dp),
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
     )
@@ -208,7 +210,9 @@ private fun SectionHeader(label: String) {
 
 @PreviewLightDark
 @Composable
-private fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun ProductsScreenPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         ProductsScreen(
             label = "Merch",
@@ -218,7 +222,7 @@ private fun ProductsScreenPreview(@PreviewParameter(ProductsProvider::class) sta
             onLearnMore = {},
             onDismiss = {},
             onTagClicked = {},
-            onBackPressed = {}
+            onBackPressed = {},
         )
     }
 }
@@ -235,7 +239,7 @@ private fun ProductsScreenLoadingPreview() {
             onLearnMore = {},
             onDismiss = {},
             onTagClicked = {},
-            onBackPressed = {}
+            onBackPressed = {},
         )
     }
 }
@@ -252,7 +256,7 @@ private fun ProductsScreenError() {
             onLearnMore = {},
             onDismiss = {},
             onTagClicked = {},
-            onBackPressed = {}
+            onBackPressed = {},
         )
     }
 }

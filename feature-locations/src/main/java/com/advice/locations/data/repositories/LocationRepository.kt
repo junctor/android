@@ -12,37 +12,39 @@ class LocationRepository(
 ) {
     private val expanded = MutableStateFlow(emptyList<Long>())
 
-    val locations = combine(
-        locationsDataSource.get(),
-        expanded,
-    ) { locations, expandedIds ->
-        val roots = locations.filter { it.parent == 0L }
-        if (expandedIds.isEmpty()) {
-            val temp = roots.flatMap { it.flatten() }
+    val locations =
+        combine(
+            locationsDataSource.get(),
+            expanded,
+        ) { locations, expandedIds ->
+            val roots = locations.filter { it.parent == 0L }
+            if (expandedIds.isEmpty()) {
+                val temp = roots.flatMap { it.flatten() }
 
-            expanded.value = temp.map { it.id }
-        }
+                expanded.value = temp.map { it.id }
+            }
 
-        val updated = roots.flatMap {
-            val flattened = it.flatten()
-            flattened.map { location ->
-                val isVisible = isVisible(location, expandedIds, flattened)
-                location.copy(isVisible = isVisible, isExpanded = location.id in expandedIds)
+            val updated =
+                roots.flatMap {
+                    val flattened = it.flatten()
+                    flattened.map { location ->
+                        val isVisible = isVisible(location, expandedIds, flattened)
+                        location.copy(isVisible = isVisible, isExpanded = location.id in expandedIds)
+                    }
+                }
+
+            return@combine updated.filter { it.isVisible }.map {
+                LocationRow(
+                    id = it.id,
+                    title = it.shortName ?: it.name,
+                    status = it.status,
+                    depth = it.depth,
+                    hasChildren = it.hasChildren,
+                    isExpanded = it.isExpanded,
+                    schedule = it.schedule ?: emptyList(),
+                )
             }
         }
-
-        return@combine updated.filter { it.isVisible }.map {
-            LocationRow(
-                id = it.id,
-                title = it.shortName ?: it.name,
-                status = it.status,
-                depth = it.depth,
-                hasChildren = it.hasChildren,
-                isExpanded = it.isExpanded,
-                schedule = it.schedule ?: emptyList(),
-            )
-        }
-    }
 
     private fun isVisible(
         location: Location,

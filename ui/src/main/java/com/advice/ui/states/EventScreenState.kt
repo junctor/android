@@ -12,5 +12,7 @@ sealed class EventScreenState {
         val relatedContent: List<Content> = emptyList(),
     ) : EventScreenState()
 
-    data class Error(val message: String) : EventScreenState()
+    data class Error(
+        val message: String,
+    ) : EventScreenState()
 }

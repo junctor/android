@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface OrganizationsDataSource {
     fun get(): Flow<List<Organization>>
+
     suspend fun get(id: Long): Organization?
 }

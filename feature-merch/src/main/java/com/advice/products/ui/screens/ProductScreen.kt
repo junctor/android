@@ -86,8 +86,7 @@ fun ProductScreen(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
             )
         },
-
-        ) {
+    ) {
         Product(
             product = product,
             taxStatement = taxStatement,
@@ -119,7 +118,6 @@ fun ProductScreen(
     }
 }
 
-
 @Composable
 fun Product(
     product: Product,
@@ -144,9 +142,10 @@ fun Product(
         Column {
             // Product Info
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(product.label, fontWeight = FontWeight.SemiBold)
@@ -167,10 +166,12 @@ fun Product(
             if (product.requiresSelection) {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                 ProductRow(
-                    label = "Variant", modifier = Modifier.clickable(onClick = onExpandBottomSheet)
+                    label = "Variant",
+                    modifier = Modifier.clickable(onClick = onExpandBottomSheet),
                 ) {
-                    val label = selection?.label
-                        ?: stringResource(com.advice.products.R.string.select_variant)
+                    val label =
+                        selection?.label
+                            ?: stringResource(com.advice.products.R.string.select_variant)
                     Text(label, modifier = Modifier.padding(end = 16.dp))
                 }
             }
@@ -223,14 +224,15 @@ private fun FooterButton(
     selection: ProductVariant?,
     product: Product,
     onAddClicked: (ProductVariantSelection) -> Unit,
-    quantity: Int
+    quantity: Int,
 ) {
     val enabled = !product.requiresSelection || selection != null
-    val label = if (enabled) {
-        stringResource(com.advice.products.R.string.add_to_cart)
-    } else {
-        stringResource(com.advice.products.R.string.add_to_cart_disabled)
-    }
+    val label =
+        if (enabled) {
+            stringResource(com.advice.products.R.string.add_to_cart)
+        } else {
+            stringResource(com.advice.products.R.string.add_to_cart_disabled)
+        }
 
     LabelButton(
         label = label,
@@ -245,9 +247,10 @@ private fun FooterButton(
                 )
             }
         },
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
         enabled = enabled,
     )
 }

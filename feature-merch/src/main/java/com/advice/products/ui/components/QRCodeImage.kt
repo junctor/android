@@ -13,14 +13,17 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-internal fun QRCodeImage(json: String, modifier: Modifier = Modifier) {
+internal fun QRCodeImage(
+    json: String,
+    modifier: Modifier = Modifier,
+) {
     val bitmap by remember(json) {
         mutableStateOf(generateQRCode(json))
     }
     Image(
         bitmap = bitmap.asImageBitmap(),
         contentDescription = "QR Code",
-        modifier = modifier
+        modifier = modifier,
     )
 }
 

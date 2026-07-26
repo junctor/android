@@ -33,13 +33,13 @@ fun QuantityAdjuster(
     Row(
         modifier
             .background(iconButtonBackgroundColor, roundedCornerShape),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         val canDecrement = enabled && (canDelete || quantity > 1)
         QualityButton(
             onQuantityChanged = { onQuantityChanged(quantity - 1) },
             quantity = quantity,
-            enabled = canDecrement
+            enabled = canDecrement,
         ) {
             Icon(
                 painter = painterResource(id = if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
@@ -52,7 +52,7 @@ fun QuantityAdjuster(
             Modifier.defaultMinSize(minWidth = 24.dp),
             color = iconButtonForegroundColor,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
         QualityButton(
             onQuantityChanged = { onQuantityChanged(quantity + 1) },
@@ -73,17 +73,19 @@ private fun QualityButton(
     onQuantityChanged: (Int) -> Unit,
     quantity: Int,
     enabled: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .size(32.dp)
-            .clickable(enabled = enabled) { onQuantityChanged(quantity) },
+        modifier =
+            Modifier
+                .size(32.dp)
+                .clickable(enabled = enabled) { onQuantityChanged(quantity) },
     ) {
         Box(
-            modifier = Modifier
-                .size(14.dp)
-                .align(Alignment.Center)
+            modifier =
+                Modifier
+                    .size(14.dp)
+                    .align(Alignment.Center),
         ) {
             content()
         }
@@ -134,4 +136,3 @@ private fun QuantityViewDisabledDeletePreview() {
         }
     }
 }
-

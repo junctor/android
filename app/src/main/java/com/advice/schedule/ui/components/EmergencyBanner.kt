@@ -16,9 +16,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Document
 
-
 @Composable
-fun EmergencyBanner(document: Document, onClick: () -> Unit) {
+fun EmergencyBanner(
+    document: Document,
+    onClick: () -> Unit,
+) {
     Surface(
         shape = RoundedCornerShape(0.dp),
         color = MaterialTheme.colorScheme.errorContainer,
@@ -36,8 +38,9 @@ fun EmergencyBanner(document: Document, onClick: () -> Unit) {
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             )
 
             Text(
@@ -45,8 +48,9 @@ fun EmergencyBanner(document: Document, onClick: () -> Unit) {
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             )
         }
     }

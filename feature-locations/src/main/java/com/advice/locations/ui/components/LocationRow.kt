@@ -18,10 +18,10 @@ internal fun LocationRow(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-
+        modifier =
+            modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
     ) {
         Text(date, fontWeight = FontWeight.Black)
         Text(time)

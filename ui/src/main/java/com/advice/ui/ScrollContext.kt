@@ -33,17 +33,17 @@ fun rememberDaySelectorScrollState(
     listState: LazyListState,
     headerIndices: List<Int>,
 ): DaySelectorScrollState {
-    val initial = remember(headerIndices) {
-        computeDayRange(listState, headerIndices)
-    }
+    val initial =
+        remember(headerIndices) {
+            computeDayRange(listState, headerIndices)
+        }
     var highlight by remember(headerIndices) { mutableStateOf(initial) }
     var settled by remember(headerIndices) { mutableStateOf(initial) }
 
     LaunchedEffect(listState, headerIndices) {
         snapshotFlow {
             listState.isScrollInProgress to computeDayRange(listState, headerIndices)
-        }
-            .distinctUntilChanged()
+        }.distinctUntilChanged()
             .collect { (isScrolling, range) ->
                 highlight = range
                 if (!isScrolling) {

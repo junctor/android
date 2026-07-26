@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface DocumentsDataSource {
     fun get(): Flow<List<Document>>
+
     suspend fun get(id: Long): Document?
 }

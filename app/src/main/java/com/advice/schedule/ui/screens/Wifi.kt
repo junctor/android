@@ -20,7 +20,10 @@ import com.advice.schedule.ui.activity.MainActivity
 import com.advice.wifi.ui.screens.WifiScreen
 
 @Composable
-internal fun Wifi(navController: NavHostController, id: Long) {
+internal fun Wifi(
+    navController: NavHostController,
+    id: Long,
+) {
     val context = LocalContext.current
 
     val viewModel = viewModel<WifiViewModel>()
@@ -28,11 +31,12 @@ internal fun Wifi(navController: NavHostController, id: Long) {
         viewModel.get(id)
     }
 
-    val addNetworksLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { activityResult ->
-        viewModel.onAddNetworksResult(activityResult.resultCode)
-    }
+    val addNetworksLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+        ) { activityResult ->
+            viewModel.onAddNetworksResult(activityResult.resultCode)
+        }
 
     val state = viewModel.state.collectAsState().value
     var showLocationRationale by remember { mutableStateOf(false) }
@@ -85,6 +89,6 @@ internal fun Wifi(navController: NavHostController, id: Long) {
         },
         onForceLocalCert = { forceLocal ->
             viewModel.forceLocalCert(forceLocal)
-        }
+        },
     )
 }

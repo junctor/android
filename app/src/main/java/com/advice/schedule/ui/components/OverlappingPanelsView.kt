@@ -67,34 +67,36 @@ fun OverlappingPanelsView(
 
     val dragState =
         rememberSaveable(
-            saver = AnchoredDraggableState.Saver(
-                confirmValueChange = { anchor ->
-                    onPanelChangedListener?.invoke(anchor)
-                    true
-                }
-            )
+            saver =
+                AnchoredDraggableState.Saver(
+                    confirmValueChange = { anchor ->
+                        onPanelChangedListener?.invoke(anchor)
+                        true
+                    },
+                ),
         ) {
             AnchoredDraggableState(
                 initialValue = DragAnchors.Start,
                 confirmValueChange = { anchor ->
                     onPanelChangedListener?.invoke(anchor)
                     true
-                }
+                },
             )
         }
 
-    val flingBehavior = AnchoredDraggableDefaults.flingBehavior(
-        state = dragState,
-        positionalThreshold = { distance: Float -> distance * 0.5f },
-        animationSpec = tween(),
-    )
+    val flingBehavior =
+        AnchoredDraggableDefaults.flingBehavior(
+            state = dragState,
+            positionalThreshold = { distance: Float -> distance * 0.5f },
+            animationSpec = tween(),
+        )
 
     dragState.updateAnchors(
         DraggableAnchors {
             DragAnchors.Start at size.width - gutterSize
             DragAnchors.Center at 0f
             DragAnchors.End at -size.width + gutterSize
-        }
+        },
     )
 
     LaunchedEffect(currentAnchor, isComposableReady.value) {
@@ -115,18 +117,17 @@ fun OverlappingPanelsView(
             .anchoredDraggable(
                 state = dragState,
                 orientation = Orientation.Horizontal,
-                flingBehavior = flingBehavior
-            )
-            .onSizeChanged { newSize ->
+                flingBehavior = flingBehavior,
+            ).onSizeChanged { newSize ->
                 size = newSize
-            }
+            },
     ) {
         // The left panel
         if (dragState.requireOffset() > 0) {
             Box(
                 Modifier
                     .systemBarsPadding()
-                    .padding(start = GUTTER_PADDING.dp, end = (GUTTER_SIZE + GUTTER_PADDING).dp)
+                    .padding(start = GUTTER_PADDING.dp, end = (GUTTER_SIZE + GUTTER_PADDING).dp),
             ) {
                 leftPanel()
             }
@@ -137,7 +138,7 @@ fun OverlappingPanelsView(
             Box(
                 Modifier
                     .systemBarsPadding()
-                    .padding(start = (GUTTER_SIZE + GUTTER_PADDING).dp, end = GUTTER_PADDING.dp)
+                    .padding(start = (GUTTER_SIZE + GUTTER_PADDING).dp, end = GUTTER_PADDING.dp),
             ) {
                 rightPanel()
             }
@@ -151,28 +152,29 @@ fun OverlappingPanelsView(
                         dragState
                             .requireOffset()
                             .roundToInt(),
-                        0
+                        0,
                     )
-                }
-                .alpha(1.0f)
+                }.alpha(1.0f),
         ) {
             mainPanel()
         }
 
         if (currentAnchor != DragAnchors.Center) {
-            val alignment = when (currentAnchor) {
-                DragAnchors.Start -> Alignment.CenterEnd
-                DragAnchors.Center -> Alignment.Center
-                DragAnchors.End -> Alignment.CenterStart
-            }
+            val alignment =
+                when (currentAnchor) {
+                    DragAnchors.Start -> Alignment.CenterEnd
+                    DragAnchors.Center -> Alignment.Center
+                    DragAnchors.End -> Alignment.CenterStart
+                }
             Box(
-                modifier = Modifier
-                    .width(GUTTER_SIZE.dp)
-                    .fillMaxHeight()
-                    .align(alignment)
-                    .clickable {
-                        onPanelChangedListener?.invoke(DragAnchors.Center)
-                    }
+                modifier =
+                    Modifier
+                        .width(GUTTER_SIZE.dp)
+                        .fillMaxHeight()
+                        .align(alignment)
+                        .clickable {
+                            onPanelChangedListener?.invoke(DragAnchors.Center)
+                        },
             )
         }
     }
@@ -188,23 +190,23 @@ private fun OverlappingPanelsViewStartPreview() {
                 Box(
                     Modifier
                         .background(Color.Blue)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
             },
             rightPanel = {
                 Box(
                     Modifier
                         .background(Color.Red)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
             },
             mainPanel = {
                 Box(
                     Modifier
                         .background(Color.Green)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
-            }
+            },
         )
     }
 }
@@ -219,23 +221,23 @@ private fun OverlappingPanelsViewCenterPreview() {
                 Box(
                     Modifier
                         .background(Color.Blue)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
             },
             rightPanel = {
                 Box(
                     Modifier
                         .background(Color.Red)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
             },
             mainPanel = {
                 Box(
                     Modifier
                         .background(Color.Green)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
-            }
+            },
         )
     }
 }
@@ -250,23 +252,23 @@ private fun OverlappingPanelsViewEndPreview() {
                 Box(
                     Modifier
                         .background(Color.Blue)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
             },
             rightPanel = {
                 Box(
                     Modifier
                         .background(Color.Red)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
             },
             mainPanel = {
                 Box(
                     Modifier
                         .background(Color.Green)
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
-            }
+            },
         )
     }
 }

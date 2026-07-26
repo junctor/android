@@ -22,11 +22,12 @@ internal fun VariantsBottomSheet(
     selection: ProductVariant?,
     onVariantSelected: (ProductVariant) -> Unit,
     onDismiss: () -> Unit,
-    canAdd: Boolean
+    canAdd: Boolean,
 ) {
-    val state = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-    )
+    val state =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,

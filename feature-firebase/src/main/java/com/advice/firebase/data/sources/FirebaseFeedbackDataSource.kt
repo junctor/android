@@ -37,8 +37,7 @@ class FirebaseFeedbackDataSource(
                         snapshot
                             .toObjectsOrEmpty(FirebaseFeedbackForm::class.java)
                             .mapNotNull { it.toFeedbackForm() }
-                    }
-                    .unwrapList("Failed to load feedback forms")
+                    }.unwrapList("Failed to load feedback forms")
             }.stateIn(
                 scope = applicationScope,
                 started = SharingStarted.Eagerly,

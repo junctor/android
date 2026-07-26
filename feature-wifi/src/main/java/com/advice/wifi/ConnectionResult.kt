@@ -13,17 +13,20 @@ sealed class ConnectionResult {
     /** Network suggestion removed successfully. */
     data object Removed : ConnectionResult()
 
-    data class Error(val message: String) : ConnectionResult()
+    data class Error(
+        val message: String,
+    ) : ConnectionResult()
 
-    fun displayMessage(): String = when (this) {
-        Suggested ->
-            "Network credentials saved. Android will connect when this network is in range."
-        SavedViaSettings ->
-            "Network saved. Android will connect when this network is in range."
-        Cancelled ->
-            "Save cancelled. No network credentials were added."
-        Removed ->
-            "Network credentials removed."
-        is Error -> message
-    }
+    fun displayMessage(): String =
+        when (this) {
+            Suggested ->
+                "Network credentials saved. Android will connect when this network is in range."
+            SavedViaSettings ->
+                "Network saved. Android will connect when this network is in range."
+            Cancelled ->
+                "Save cancelled. No network credentials were added."
+            Removed ->
+                "Network credentials removed."
+            is Error -> message
+        }
 }

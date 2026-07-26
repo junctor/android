@@ -31,15 +31,15 @@ fun DocumentScreen(
                 title = { Text(document.title) },
                 navigationIcon = {
                     BackButton(onBackPressed)
-                }
+                },
             )
-        }
+        },
     ) {
         Column(
             Modifier
                 .padding(it)
                 .padding(horizontal = 8.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             Paragraph(document.description)
             Spacer(Modifier.height(64.dp))
@@ -52,12 +52,13 @@ fun DocumentScreen(
 private fun SupportScreenViewPreview() {
     ScheduleTheme {
         DocumentScreen(
-            document = Document(
-                -1L,
-                "Code of Conduct",
-                "If you need support, please call us 555-555-0000"
-            ),
-            onBackPressed = {}
+            document =
+                Document(
+                    -1L,
+                    "Code of Conduct",
+                    "If you need support, please call us 555-555-0000",
+                ),
+            onBackPressed = {},
         )
     }
 }

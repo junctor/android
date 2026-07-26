@@ -65,9 +65,10 @@ private fun FAQScreenContent(
     modifier: Modifier = Modifier,
 ) {
     var query by remember { mutableStateOf("") }
-    val filtered = remember(faqs, query) {
-        filterFaqs(faqs, query)
-    }
+    val filtered =
+        remember(faqs, query) {
+            filterFaqs(faqs, query)
+        }
 
     Column(modifier) {
         LazyColumn {
@@ -93,7 +94,10 @@ private fun FAQScreenContent(
     }
 }
 
-internal fun filterFaqs(faqs: List<FAQ>, query: String): List<FAQ> {
+internal fun filterFaqs(
+    faqs: List<FAQ>,
+    query: String,
+): List<FAQ> {
     if (query.length < 2) return faqs
     val needle = query.lowercase()
     return faqs.filter {

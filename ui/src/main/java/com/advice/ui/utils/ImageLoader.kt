@@ -4,9 +4,8 @@ import android.content.Context
 import coil.ImageLoader
 import com.advice.core.network.Network
 
-fun Context.getImageLoader(): ImageLoader {
-    return ImageLoader(this)
+fun Context.getImageLoader(): ImageLoader =
+    ImageLoader(this)
         .newBuilder()
         .okHttpClient(Network.client)
         .build()
-}

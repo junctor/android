@@ -12,8 +12,8 @@ import timber.log.Timber
 class ReminderWorker(
     context: Context,
     params: WorkerParameters,
-) : CoroutineWorker(context, params), KoinComponent {
-
+) : CoroutineWorker(context, params),
+    KoinComponent {
     private val eventsDataSource by inject<ContentDataSource>()
     private val notificationHelper by inject<NotificationHelper>()
 
@@ -44,7 +44,6 @@ class ReminderWorker(
             Timber.e("Could not find the target event.")
             return Result.failure()
         }
-
 
         when (action) {
             // Remind the user the event is starting soon

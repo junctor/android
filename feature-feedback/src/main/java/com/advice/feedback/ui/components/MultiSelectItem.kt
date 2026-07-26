@@ -30,11 +30,12 @@ fun MultiSelectItem(
         options.forEach {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(checked = it.id in choices, onCheckedChange = { isChecked ->
-                    choices = if (isChecked) {
-                        choices + it.id
-                    } else {
-                        choices - it.id
-                    }
+                    choices =
+                        if (isChecked) {
+                            choices + it.id
+                        } else {
+                            choices - it.id
+                        }
                     onSelectOption(it.id)
                 })
                 Text(it.value)
@@ -49,11 +50,12 @@ private fun MultiSelectItemPreview() {
     ScheduleTheme {
         MultiSelectItem(
             caption = "Select one item",
-            options = listOf(
-                FeedbackOption(1, "Option 1"),
-                FeedbackOption(2, "Option 2"),
-                FeedbackOption(3, "Option 3")
-            ),
+            options =
+                listOf(
+                    FeedbackOption(1, "Option 1"),
+                    FeedbackOption(2, "Option 2"),
+                    FeedbackOption(3, "Option 3"),
+                ),
             onSelectOption = {},
         )
     }

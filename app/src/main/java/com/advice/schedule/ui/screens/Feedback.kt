@@ -39,7 +39,11 @@ import com.advice.ui.screens.ErrorScreen
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun Feedback(navController: NavController, id: Long, content: Long) {
+fun Feedback(
+    navController: NavController,
+    id: Long,
+    content: Long,
+) {
     val viewModel = viewModel<FeedbackViewModel>()
     LaunchedEffect("$id/$content") {
         viewModel.fetchFeedbackForm(id)
@@ -47,7 +51,7 @@ fun Feedback(navController: NavController, id: Long, content: Long) {
     when (val state = viewModel.state.collectAsState(initial = FeedbackState.Loading).value) {
         is FeedbackState.Error -> {
             ErrorScreen(
-                message = state.exception.message ?: "Could not load feedback form"
+                message = state.exception.message ?: "Could not load feedback form",
             ) {
                 navController.onBackPressed()
             }
@@ -92,7 +96,7 @@ private fun FeedbackScreen(
     onDiscardPressed: () -> Unit,
     onCancelDiscardPressed: () -> Unit,
     onValueChanged: (FeedbackItem, String) -> Unit,
-    onSubmitContent: () -> Unit
+    onSubmitContent: () -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -120,11 +124,12 @@ private fun FeedbackScreen(
 
                 if (state.isLoading) {
                     ProgressSpinner(
-                        modifier = Modifier.background(
-                            MaterialTheme.colorScheme.background.copy(
-                                alpha = 0.5f
-                            )
-                        )
+                        modifier =
+                            Modifier.background(
+                                MaterialTheme.colorScheme.background.copy(
+                                    alpha = 0.5f,
+                                ),
+                            ),
                     )
                 }
 
@@ -197,10 +202,11 @@ private fun LoadingFeedbackScreenPreview(
 ) {
     ScheduleTheme {
         FeedbackScreen(
-            state = FeedbackState.Content(
-                feedback = feedback,
-                isLoading = true,
-            ),
+            state =
+                FeedbackState.Content(
+                    feedback = feedback,
+                    isLoading = true,
+                ),
             onBackPressed = { },
             onDiscardPressed = { },
             onCancelDiscardPressed = {},
@@ -217,10 +223,11 @@ private fun DiscardingFeedbackScreenPreview(
 ) {
     ScheduleTheme {
         FeedbackScreen(
-            state = FeedbackState.Content(
-                feedback = feedback,
-                showingDiscardPopup = true,
-            ),
+            state =
+                FeedbackState.Content(
+                    feedback = feedback,
+                    showingDiscardPopup = true,
+                ),
             onBackPressed = { },
             onDiscardPressed = { },
             onCancelDiscardPressed = {},
@@ -237,11 +244,12 @@ private fun ErrorMessageFeedbackScreenPreview(
 ) {
     ScheduleTheme {
         FeedbackScreen(
-            state = FeedbackState.Content(
-                feedback = feedback,
-                isComplete = true,
-                errorMessage = "404: url is not defined",
-            ),
+            state =
+                FeedbackState.Content(
+                    feedback = feedback,
+                    isComplete = true,
+                    errorMessage = "404: url is not defined",
+                ),
             onBackPressed = { },
             onDiscardPressed = { },
             onCancelDiscardPressed = {},
@@ -258,10 +266,11 @@ private fun CompletedFeedbackScreenPreview(
 ) {
     ScheduleTheme {
         FeedbackScreen(
-            state = FeedbackState.Content(
-                feedback = feedback,
-                isComplete = true,
-            ),
+            state =
+                FeedbackState.Content(
+                    feedback = feedback,
+                    isComplete = true,
+                ),
             onBackPressed = { },
             onDiscardPressed = { },
             onCancelDiscardPressed = {},

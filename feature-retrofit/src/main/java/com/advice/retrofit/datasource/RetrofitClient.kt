@@ -12,38 +12,38 @@ data class Article(
 )
 
 data class ApiResponse<DocumentType>(
-    val documents: List<Document<DocumentType>>
+    val documents: List<Document<DocumentType>>,
 )
 
 data class Document<DocumentType>(
     val name: String,
-    val fields: DocumentType
+    val fields: DocumentType,
 )
 
 data class StringValue(
-    val stringValue: String
+    val stringValue: String,
 )
 
 interface RetrofitService {
-
     @GET("{conference}/articles")
-    suspend fun getArticles(@Path("conference") conference: String): ApiResponse<Article>
+    suspend fun getArticles(
+        @Path("conference") conference: String,
+    ): ApiResponse<Article>
 }
 
 class RetrofitClient {
-
     private val service: RetrofitService
 
     init {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://firestore.googleapis.com/v1/projects/hackertest-5a202/databases/(default)/documents/conferences/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofit =
+            Retrofit
+                .Builder()
+                .baseUrl("https://firestore.googleapis.com/v1/projects/hackertest-5a202/databases/(default)/documents/conferences/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
         service = retrofit.create(RetrofitService::class.java)
     }
 
-    suspend fun get(conference: String): ApiResponse<Article> {
-        return service.getArticles(conference)
-    }
+    suspend fun get(conference: String): ApiResponse<Article> = service.getArticles(conference)
 }

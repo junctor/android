@@ -41,8 +41,7 @@ class FirebaseNewsDataSource(
                             .filter { !it.hidden || userSession.isDeveloper }
                             .sortedByDescending { it.updatedAt }
                             .mapNotNull { it.toArticle() }
-                    }
-                    .unwrapList("Failed to load news articles")
+                    }.unwrapList("Failed to load news articles")
             }.stateIn(
                 scope = applicationScope,
                 started = SharingStarted.Eagerly,

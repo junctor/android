@@ -8,8 +8,12 @@ import com.advice.products.ui.components.DismissibleInformation
 
 sealed class ProductsScreenState {
     data object Loading : ProductsScreenState()
+
     data object Error : ProductsScreenState()
-    data class Success(val data: ProductsState) : ProductsScreenState()
+
+    data class Success(
+        val data: ProductsState,
+    ) : ProductsScreenState()
 }
 
 data class ProductsState(

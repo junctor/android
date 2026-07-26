@@ -2,7 +2,6 @@ package com.advice.schedule.ui.activity
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color as AndroidColor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -38,9 +37,11 @@ import com.advice.ui.theme.ScheduleTheme
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
+import android.graphics.Color as AndroidColor
 
-class MainActivity : AppCompatActivity(), KoinComponent {
-
+class MainActivity :
+    AppCompatActivity(),
+    KoinComponent {
     private val navigation by inject<NavigationManager>()
     private val analytics by inject<AnalyticsProvider>()
     private val mainViewModel: MainViewModel by viewModels()
@@ -56,13 +57,15 @@ class MainActivity : AppCompatActivity(), KoinComponent {
      * Grant/deny is intentionally unused: the notification popup is dismissed and marked seen
      * before the system dialog returns, and no further product behavior depends on the result.
      */
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { /* no-op: popup already dismissed/marked seen */ }
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { /* no-op: popup already dismissed/marked seen */ }
 
-    private val requestWirelessPermissionsLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { /* join APIs do not require follow-up beyond grant state */ }
+    private val requestWirelessPermissionsLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { /* join APIs do not require follow-up beyond grant state */ }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,7 +102,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
                 Column(
                     Modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 ) {
                     // Emergency banner that pushes content down
                     if (state.emergencyDocument != null) {
@@ -111,7 +114,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                     // Main screen content
                     navigation.SetRoutes(
                         this@MainActivity,
-                        navController = navController
+                        navController = navController,
                     )
                 }
 
@@ -141,13 +144,17 @@ class MainActivity : AppCompatActivity(), KoinComponent {
      */
     private fun onDestinationChanged(
         navDestination: NavDestination,
-        args: Bundle?
+        args: Bundle?,
     ) {
         mainViewModel.onDestinationChanged(navDestination, args)
     }
 
     @Deprecated("This is deprecated in favor of registerForActivityResult")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_UPDATE && resultCode != RESULT_OK) {
@@ -167,24 +174,24 @@ class MainActivity : AppCompatActivity(), KoinComponent {
     }
 
     private fun requestNotificationPermission() {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            android.Manifest.permission.POST_NOTIFICATIONS
-        } else {
-            return
-        }
+        val permission =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                android.Manifest.permission.POST_NOTIFICATIONS
+            } else {
+                return
+            }
         if (!hasPermission(permission)) {
             mainViewModel.onPermissionRequest()
             requestPermissionLauncher.launch(permission)
         }
     }
 
-    private fun hasNotificationPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private fun hasNotificationPermission(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             hasPermission(android.Manifest.permission.POST_NOTIFICATIONS)
         } else {
             true
         }
-    }
 
     /**
      * Runtime grants needed for the Wi-Fi join path on this API level.
@@ -192,9 +199,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
      * [android.net.wifi.WifiManager.addNetworkSuggestions] do not require location.
      * On API 28 and below, fine location is required to read configured networks.
      */
-    fun hasWirelessPermissions(): Boolean {
-        return requiredWirelessPermissions().all { hasPermission(it) }
-    }
+    fun hasWirelessPermissions(): Boolean = requiredWirelessPermissions().all { hasPermission(it) }
 
     fun requestWirelessPermissions() {
         val missing = requiredWirelessPermissions().filterNot { hasPermission(it) }
@@ -203,23 +208,21 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         }
     }
 
-    private fun requiredWirelessPermissions(): Array<String> {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+    private fun requiredWirelessPermissions(): Array<String> =
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
             emptyArray()
         }
-    }
 
     /**
      * Returns true if the permission is granted.
      */
-    private fun hasPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(
+    private fun hasPermission(permission: String): Boolean =
+        ContextCompat.checkSelfPermission(
             this,
-            permission
+            permission,
         ) == PackageManager.PERMISSION_GRANTED
-    }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -242,7 +245,10 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         navigateDeepLink(controller, uri)
     }
 
-    private fun navigateDeepLink(controller: NavHostController, uri: Uri) {
+    private fun navigateDeepLink(
+        controller: NavHostController,
+        uri: Uri,
+    ) {
         try {
             val destination = getDestination(uri) ?: return
             controller.navigateTo(destination)
@@ -251,7 +257,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                 "open_deep_link",
                 Bundle().apply {
                     putString("uri", uri.toString())
-                }
+                },
             )
         } catch (ex: Exception) {
             Timber.e(ex, "Could not navigate to deep link: $uri")
@@ -268,11 +274,12 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             else -> {
                 val conference = uri.getQueryParameter("c") ?: return null
                 val event = uri.getQueryParameter("e") ?: return null
-                val (content, session) = if (event.contains(":")) {
-                    event.split(":")
-                } else {
-                    listOf(event, "")
-                }
+                val (content, session) =
+                    if (event.contains(":")) {
+                        event.split(":")
+                    } else {
+                        listOf(event, "")
+                    }
                 Navigation.Event(conference, content, session)
             }
         }

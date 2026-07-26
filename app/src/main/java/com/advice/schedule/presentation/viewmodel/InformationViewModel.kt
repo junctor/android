@@ -7,21 +7,23 @@ import kotlinx.coroutines.flow.combine
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class InformationViewModel : ViewModel(), KoinComponent {
-
+class InformationViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<InformationRepository>()
 
-    val state = combine(
-        repository.conference,
-        repository.documents,
-        repository.villages,
-        repository.vendors,
-    ) { conference, documents, villages, vendors ->
-        InformationState(
-            documents = documents,
-            hasWifi = conference.code.contains("DEFCON") || conference.code.contains("TEST"),
-            hasVillages = villages.isNotEmpty(),
-            hasVendors = vendors.isNotEmpty(),
-        )
-    }
+    val state =
+        combine(
+            repository.conference,
+            repository.documents,
+            repository.villages,
+            repository.vendors,
+        ) { conference, documents, villages, vendors ->
+            InformationState(
+                documents = documents,
+                hasWifi = conference.code.contains("DEFCON") || conference.code.contains("TEST"),
+                hasVillages = villages.isNotEmpty(),
+                hasVendors = vendors.isNotEmpty(),
+            )
+        }
 }

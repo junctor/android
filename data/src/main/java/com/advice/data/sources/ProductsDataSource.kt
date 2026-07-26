@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductsDataSource {
     fun get(): Flow<List<Product>>
+
     fun getProductVariantsTags(): Flow<List<TagType>>
 }

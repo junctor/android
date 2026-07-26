@@ -7,5 +7,6 @@ class DocumentsRepository(
     private val documentsDataSource: DocumentsDataSource,
 ) {
     val documents = documentsDataSource.get()
+
     suspend fun get(id: Long): Document? = documentsDataSource.get(id)
 }

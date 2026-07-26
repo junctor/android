@@ -41,8 +41,7 @@ class FirebaseLocationsDataSource(
                                 .toObjectsOrEmpty(FirebaseLocation::class.java)
                                 .sortedBy { it.hierExtentLeft }
                         buildLocationTree(locations)
-                    }
-                    .unwrapList("Failed to load locations")
+                    }.unwrapList("Failed to load locations")
             }.stateIn(
                 scope = applicationScope,
                 started = SharingStarted.Eagerly,
@@ -60,9 +59,10 @@ class FirebaseLocationsDataSource(
         val built = HashMap<Long, Location>(locations.size)
 
         for (firebaseLocation in locations.sortedByDescending { it.hierDepth }) {
-            val children = byParent[firebaseLocation.id]
-                .orEmpty()
-                .mapNotNull { built[it.id] }
+            val children =
+                byParent[firebaseLocation.id]
+                    .orEmpty()
+                    .mapNotNull { built[it.id] }
             val location = firebaseLocation.toLocation(children) ?: continue
             built[firebaseLocation.id] = location
         }

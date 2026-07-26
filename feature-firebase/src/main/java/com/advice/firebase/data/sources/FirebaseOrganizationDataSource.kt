@@ -61,8 +61,7 @@ class FirebaseOrganizationDataSource(
                                         context,
                                         it.audienceLabel,
                                     )
-                                }
-                                .mapNotNull { it.toOrganization() }
+                                }.mapNotNull { it.toOrganization() }
                                 .sortedBy { it.name }
                         }
                     }

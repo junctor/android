@@ -23,10 +23,14 @@ import java.security.cert.X509Certificate
 
 sealed class JoinPreparation {
     /** API 30+: launch the system add-networks dialog with this intent. */
-    data class LaunchAddNetworks(val intent: Intent) : JoinPreparation()
+    data class LaunchAddNetworks(
+        val intent: Intent,
+    ) : JoinPreparation()
 
     /** Join finished inline (API 29 suggestions or legacy enableNetwork). */
-    data class Completed(val result: ConnectionResult) : JoinPreparation()
+    data class Completed(
+        val result: ConnectionResult,
+    ) : JoinPreparation()
 }
 
 class WirelessConnectionManager(
@@ -50,15 +54,16 @@ class WirelessConnectionManager(
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             return JoinPreparation.Completed(
-                joinLegacy(wirelessNetwork, forceLocalCert)
+                joinLegacy(wirelessNetwork, forceLocalCert),
             )
         }
 
-        val suggestion = buildNetworkSuggestion(wirelessNetwork, forceLocalCert).getOrElse { error ->
-            return JoinPreparation.Completed(
-                ConnectionResult.Error(error.message ?: "Unable to build Wi-Fi configuration")
-            )
-        }
+        val suggestion =
+            buildNetworkSuggestion(wirelessNetwork, forceLocalCert).getOrElse { error ->
+                return JoinPreparation.Completed(
+                    ConnectionResult.Error(error.message ?: "Unable to build Wi-Fi configuration"),
+                )
+            }
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             JoinPreparation.LaunchAddNetworks(createAddNetworksIntent(suggestion))
@@ -76,25 +81,27 @@ class WirelessConnectionManager(
             return ConnectionResult.Error(error)
         }
 
-        val certificate = try {
-            if (forceLocalCert) {
-                wirelessNetwork.getLocalCertificate()
-            } else {
-                wirelessNetwork.getCertificate()
+        val certificate =
+            try {
+                if (forceLocalCert) {
+                    wirelessNetwork.getLocalCertificate()
+                } else {
+                    wirelessNetwork.getCertificate()
+                }
+            } catch (ex: Exception) {
+                val message = "Error loading certificate: ${ex.message}"
+                Timber.e(ex, message)
+                return ConnectionResult.Error(message)
             }
-        } catch (ex: Exception) {
-            val message = "Error loading certificate: ${ex.message}"
-            Timber.e(ex, message)
-            return ConnectionResult.Error(message)
-        }
 
-        val enterpriseConfig = try {
-            wirelessNetwork.toWifiEnterpriseConfig(certificate)
-        } catch (ex: Exception) {
-            val message = "Error applying enterprise settings: ${ex.message}"
-            Timber.e(ex, message)
-            return ConnectionResult.Error(message)
-        }
+        val enterpriseConfig =
+            try {
+                wirelessNetwork.toWifiEnterpriseConfig(certificate)
+            } catch (ex: Exception) {
+                val message = "Error applying enterprise settings: ${ex.message}"
+                Timber.e(ex, message)
+                return ConnectionResult.Error(message)
+            }
 
         return enableNetwork(wifiManager, wirelessNetwork, enterpriseConfig)
     }
@@ -116,25 +123,27 @@ class WirelessConnectionManager(
             return Result.failure(IllegalStateException(error))
         }
 
-        val certificate = try {
-            if (forceLocalCert) {
-                wirelessNetwork.getLocalCertificate()
-            } else {
-                wirelessNetwork.getCertificate()
+        val certificate =
+            try {
+                if (forceLocalCert) {
+                    wirelessNetwork.getLocalCertificate()
+                } else {
+                    wirelessNetwork.getCertificate()
+                }
+            } catch (ex: Exception) {
+                val message = "Error loading certificate: ${ex.message}"
+                Timber.e(ex, message)
+                return Result.failure(IllegalStateException(message))
             }
-        } catch (ex: Exception) {
-            val message = "Error loading certificate: ${ex.message}"
-            Timber.e(ex, message)
-            return Result.failure(IllegalStateException(message))
-        }
 
-        val enterpriseConfig = try {
-            wirelessNetwork.toWifiEnterpriseConfig(certificate)
-        } catch (ex: Exception) {
-            val message = "Error applying enterprise settings: ${ex.message}"
-            Timber.e(ex, message)
-            return Result.failure(IllegalStateException(message))
-        }
+        val enterpriseConfig =
+            try {
+                wirelessNetwork.toWifiEnterpriseConfig(certificate)
+            } catch (ex: Exception) {
+                val message = "Error applying enterprise settings: ${ex.message}"
+                Timber.e(ex, message)
+                return Result.failure(IllegalStateException(message))
+            }
 
         enterpriseConfig.validateForSuggestion()?.let { error ->
             Timber.e(error)
@@ -155,8 +164,8 @@ class WirelessConnectionManager(
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun addNetworkSuggestion(suggestion: WifiNetworkSuggestion): ConnectionResult {
-        return try {
+    private fun addNetworkSuggestion(suggestion: WifiNetworkSuggestion): ConnectionResult =
+        try {
             val result = wifiManager.addNetworkSuggestions(listOf(suggestion))
             Timber.d("Network suggestion added: $result")
             suggestionStatusResult(result, removing = false)
@@ -165,35 +174,36 @@ class WirelessConnectionManager(
             Timber.e(ex, message)
             ConnectionResult.Error(message)
         }
-    }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    fun createAddNetworksIntent(suggestion: WifiNetworkSuggestion): Intent {
-        return Intent(Settings.ACTION_WIFI_ADD_NETWORKS).apply {
+    fun createAddNetworksIntent(suggestion: WifiNetworkSuggestion): Intent =
+        Intent(Settings.ACTION_WIFI_ADD_NETWORKS).apply {
             putParcelableArrayListExtra(
                 Settings.EXTRA_WIFI_NETWORK_LIST,
                 arrayListOf(suggestion),
             )
         }
-    }
 
-    private fun suggestionStatusResult(result: Int, removing: Boolean): ConnectionResult {
-        return if (result == STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+    private fun suggestionStatusResult(
+        result: Int,
+        removing: Boolean,
+    ): ConnectionResult =
+        if (result == STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
             if (removing) ConnectionResult.Removed else ConnectionResult.Suggested
         } else {
             val action = if (removing) "removing" else "adding"
             ConnectionResult.Error("Error in $action network suggestion ($result)")
         }
-    }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     suspend fun removeNetworkSuggestion(
         wirelessNetwork: WirelessNetwork,
         forceLocalCert: Boolean = false,
     ): ConnectionResult {
-        val suggestion = buildNetworkSuggestion(wirelessNetwork, forceLocalCert).getOrElse { error ->
-            return ConnectionResult.Error(error.message ?: "Unable to build Wi-Fi configuration")
-        }
+        val suggestion =
+            buildNetworkSuggestion(wirelessNetwork, forceLocalCert).getOrElse { error ->
+                return ConnectionResult.Error(error.message ?: "Unable to build Wi-Fi configuration")
+            }
 
         return try {
             val result = wifiManager.removeNetworkSuggestions(listOf(suggestion))
@@ -210,9 +220,11 @@ class WirelessConnectionManager(
         wirelessNetwork: WirelessNetwork,
         enterpriseConfig: WifiEnterpriseConfig,
     ): WifiNetworkSuggestion {
-        val builder = WifiNetworkSuggestion.Builder()
-            .setSsid(wirelessNetwork.ssid)
-            .setIsHiddenSsid(wirelessNetwork.isSsidHidden.toBooleanFlag())
+        val builder =
+            WifiNetworkSuggestion
+                .Builder()
+                .setSsid(wirelessNetwork.ssid)
+                .setIsHiddenSsid(wirelessNetwork.isSsidHidden.toBooleanFlag())
 
         applyMacRandomization(builder, wirelessNetwork)
 

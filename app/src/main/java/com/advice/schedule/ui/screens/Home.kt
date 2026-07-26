@@ -33,14 +33,17 @@ import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.advice.schedule.ui.viewmodels.MainViewState
+import com.advice.ui.components.home.CountdownView
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
-import com.advice.ui.components.home.CountdownView
 
 @Composable
-internal fun Home(context: AppCompatActivity, navController: NavHostController) {
+internal fun Home(
+    context: AppCompatActivity,
+    navController: NavHostController,
+) {
     val mainViewModel = viewModel<MainViewModel>()
     val viewState by mainViewModel.state.collectAsState(MainViewState())
 
@@ -48,9 +51,10 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
     val filtersViewModel = viewModel<FiltersViewModel>(context)
     val scheduleViewModel = viewModel<ScheduleViewModel>(context)
 
-    val scheduleScreenState = remember {
-        scheduleViewModel.getState()
-    }.collectAsState(initial = ScheduleScreenState.Loading).value
+    val scheduleScreenState =
+        remember {
+            scheduleViewModel.getState()
+        }.collectAsState(initial = ScheduleScreenState.Loading).value
 
     val homeState = homeViewModel.getHomeState().collectAsState(initial = HomeState.Loading).value
     val filtersScreenState =
@@ -110,8 +114,8 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                         Navigation.Event(
                             it.conference,
                             it.content.id.toString(),
-                            it.id.toString()
-                        )
+                            it.id.toString(),
+                        ),
                     )
                 },
                 onBookmarkClick = { event, isBookmarked ->
@@ -127,15 +131,17 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
             isShown = viewState.isShown,
         ) {
             Row(
-                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 IconButton(onClick = {
                     mainViewModel.setAnchor(DragAnchors.Center)
                 }) {
                     Icon(
                         painterResource(
-                            id = com.advice.ui.R.drawable.baseline_event_note_24
-                        ), contentDescription = "schedule"
+                            id = com.advice.ui.R.drawable.baseline_event_note_24,
+                        ),
+                        contentDescription = "schedule",
                     )
                 }
                 IconButton(onClick = {
@@ -143,8 +149,9 @@ internal fun Home(context: AppCompatActivity, navController: NavHostController) 
                 }) {
                     Icon(
                         painterResource(
-                            id = com.advice.ui.R.drawable.baseline_map_24
-                        ), contentDescription = "Maps"
+                            id = com.advice.ui.R.drawable.baseline_map_24,
+                        ),
+                        contentDescription = "Maps",
                     )
                 }
                 IconButton(onClick = { navController.navigateTo(Navigation.Search) }) {

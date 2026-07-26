@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-
-class MapsViewModel : ViewModel(), KoinComponent {
-
+class MapsViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<MapRepository>()
 
     private val _state = MutableStateFlow<MapsScreenState>(MapsScreenState.Loading)
@@ -23,8 +23,9 @@ class MapsViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             repository.maps.collect { result ->
                 when (result) {
-                    is FlowResult.Failure -> _state.value =
-                        MapsScreenState.Error("Error loading maps")
+                    is FlowResult.Failure ->
+                        _state.value =
+                            MapsScreenState.Error("Error loading maps")
 
                     FlowResult.Loading -> _state.value = MapsScreenState.Loading
                     is FlowResult.Success -> {

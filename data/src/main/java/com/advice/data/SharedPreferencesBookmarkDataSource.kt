@@ -17,7 +17,6 @@ import timber.log.Timber
 class SharedPreferencesBookmarkDataSource(
     context: Context,
 ) : BookmarkedElementDataSource {
-
     private val prefs: SharedPreferences =
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
@@ -47,22 +46,22 @@ class SharedPreferencesBookmarkDataSource(
         callbackFlow {
             trySend(getBookmarks()).isSuccess
 
-            val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-                trySend(getBookmarks()).isSuccess
-            }
+            val listener =
+                SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+                    trySend(getBookmarks()).isSuccess
+                }
 
             prefs.registerOnSharedPreferenceChangeListener(listener)
 
             awaitClose { prefs.unregisterOnSharedPreferenceChangeListener(listener) }
         }
 
-    private fun getBookmarks(): List<Bookmark> {
-        return prefs.all.mapNotNull { it.toBookmark() }
-    }
+    private fun getBookmarks(): List<Bookmark> = prefs.all.mapNotNull { it.toBookmark() }
 
     private fun Map.Entry<String, Any?>.toBookmark(): Bookmark? {
-        if (!key.contains(":"))
+        if (!key.contains(":")) {
             return null
+        }
 
         val (type, id) = key.split(":")
 
@@ -77,19 +76,31 @@ class SharedPreferencesBookmarkDataSource(
         }
     }
 
-    override suspend fun bookmark(content: Content, isBookmarked: Boolean) {
+    override suspend fun bookmark(
+        content: Content,
+        isBookmarked: Boolean,
+    ) {
         bookmark(id = "content:${content.id}", isBookmarked)
     }
 
-    override suspend fun bookmark(session: Session, isBookmarked: Boolean) {
+    override suspend fun bookmark(
+        session: Session,
+        isBookmarked: Boolean,
+    ) {
         bookmark(id = "session:${session.id}", isBookmarked)
     }
 
-    override suspend fun bookmark(tag: Tag, isBookmarked: Boolean) {
+    override suspend fun bookmark(
+        tag: Tag,
+        isBookmarked: Boolean,
+    ) {
         bookmark(id = "tag:${tag.id}", isBookmarked)
     }
 
-    private suspend fun bookmark(id: String, isBookmarked: Boolean) {
+    private suspend fun bookmark(
+        id: String,
+        isBookmarked: Boolean,
+    ) {
         withContext(Dispatchers.IO) {
             prefs.edit {
                 if (isBookmarked) {
@@ -102,23 +113,16 @@ class SharedPreferencesBookmarkDataSource(
         }
     }
 
-    override suspend fun isBookmarked(content: Content): Boolean {
-        return isBookmarked("content:${content.id}")
-    }
+    override suspend fun isBookmarked(content: Content): Boolean = isBookmarked("content:${content.id}")
 
-    override suspend fun isBookmarked(session: Session): Boolean {
-        return isBookmarked("session:${session.id}")
-    }
+    override suspend fun isBookmarked(session: Session): Boolean = isBookmarked("session:${session.id}")
 
-    override suspend fun isBookmarked(tag: Tag): Boolean {
-        return isBookmarked("tag:${tag.id}")
-    }
+    override suspend fun isBookmarked(tag: Tag): Boolean = isBookmarked("tag:${tag.id}")
 
-    private suspend fun isBookmarked(id: String): Boolean {
-        return withContext(Dispatchers.IO) {
+    private suspend fun isBookmarked(id: String): Boolean =
+        withContext(Dispatchers.IO) {
             prefs.contains(id)
         }
-    }
 
     override suspend fun clear() {
         withContext(Dispatchers.IO) {

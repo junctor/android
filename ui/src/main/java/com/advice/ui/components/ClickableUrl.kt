@@ -28,16 +28,17 @@ fun ClickableUrl(
     Surface(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
         shape = roundedCornerShape,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 0.dp, vertical = 4.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 0.dp, vertical = 4.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
-            Modifier
-                .clickable(enabled = enabled, onClick = onClick)
-                .padding(16.dp),
+                Modifier
+                    .clickable(enabled = enabled, onClick = onClick)
+                    .padding(16.dp),
         ) {
             Column(Modifier.fillMaxWidth()) {
                 Text(label)

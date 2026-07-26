@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.shareIn
 class OrganizationsRepository(
     private val organizationsDataSource: OrganizationsDataSource,
 ) {
-
     val organizations: Flow<List<Organization>> =
         organizationsDataSource.get().shareIn(
             scope = CoroutineScope(Dispatchers.Default),

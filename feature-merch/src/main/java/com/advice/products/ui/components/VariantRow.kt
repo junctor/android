@@ -38,14 +38,14 @@ internal fun VariantRow(
         Modifier
             .defaultMinSize(minHeight = 42.dp)
             .clickable(enabled = inStock, onClick = onSelect)
-
             .padding(start = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
-            modifier = Modifier
-                .weight(1f)
-                .alpha(if (inStock) 1.0f else 0.50f),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .alpha(if (inStock) 1.0f else 0.50f),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(

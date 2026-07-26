@@ -42,8 +42,7 @@ fun InformationCard(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shape = roundedCornerShape,
-            )
-            .padding(start = 16.dp)
+            ).padding(start = 16.dp)
             .padding(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -55,7 +54,7 @@ fun InformationCard(
             Text(
                 text = information.text,
                 modifier = Modifier.weight(1f),
-                fontWeight = FontWeight.Black
+                fontWeight = FontWeight.Black,
             )
             IconButton(onClick = onDismiss) {
                 Icon(Icons.Default.Close, contentDescription = "Close")
@@ -64,7 +63,7 @@ fun InformationCard(
         if (information.document != null) {
             Button(
                 onClick = onLearnMore,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
             ) {
                 Text("Learn More", color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
@@ -78,21 +77,23 @@ private fun InformationCardPreview() {
     ScheduleTheme {
         Column {
             InformationCard(
-                information = DismissibleInformation(
-                    key = "key",
-                    text = "This message has a document for more details.",
-                    document = 1,
-                ),
+                information =
+                    DismissibleInformation(
+                        key = "key",
+                        text = "This message has a document for more details.",
+                        document = 1,
+                    ),
                 onLearnMore = {},
                 onDismiss = {},
                 modifier = Modifier.padding(16.dp),
             )
             InformationCard(
-                information = DismissibleInformation(
-                    key = "key",
-                    text = "Information message without a document for more details.",
-                    document = null,
-                ),
+                information =
+                    DismissibleInformation(
+                        key = "key",
+                        text = "Information message without a document for more details.",
+                        document = null,
+                    ),
                 onLearnMore = {},
                 onDismiss = {},
                 modifier = Modifier.padding(16.dp),

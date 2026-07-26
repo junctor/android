@@ -14,9 +14,10 @@ import com.advice.ui.theme.ScheduleTheme
 fun NoDetailsView(text: String = "No further information available.") {
     Text(
         text = text,
-        modifier = Modifier
-            .padding(vertical = 42.dp, horizontal = 16.dp)
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .padding(vertical = 42.dp, horizontal = 16.dp)
+                .fillMaxWidth(),
         textAlign = TextAlign.Center,
     )
 }

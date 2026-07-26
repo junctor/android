@@ -9,7 +9,7 @@ sealed class Preferences(
     val title: String,
     val summary: String? = null,
     val summaryOn: String? = null,
-    val summaryOff: String? = null
+    val summaryOff: String? = null,
 ) {
     data object ConferenceTimeZone : Preferences(
         key = "force_time_zone",
@@ -51,37 +51,38 @@ sealed class Preferences(
     )
 
     companion object {
-        val entries = listOf(
-            ConferenceTimeZone,
-            ShowSchedule,
-            FabShown,
-            AllowAnalytics,
-            AllowCrashlytics,
-            EasterEggs,
-        )
+        val entries =
+            listOf(
+                ConferenceTimeZone,
+                ShowSchedule,
+                FabShown,
+                AllowAnalytics,
+                AllowCrashlytics,
+                EasterEggs,
+            )
     }
 }
 
 class SettingsScreenViewStateProvider : PreviewParameterProvider<SettingsScreenViewState> {
     override val values: Sequence<SettingsScreenViewState>
         get() {
-            val preferences = Preferences.entries.map {
-                SettingsScreenPreference(
-                    key = it.key,
-                    title = it.title,
-                    summary = it.summary,
-                    summaryOn = it.summaryOn,
-                    summaryOff = it.summaryOff,
-                    isChecked = false,
-                )
-            }
+            val preferences =
+                Preferences.entries.map {
+                    SettingsScreenPreference(
+                        key = it.key,
+                        title = it.title,
+                        summary = it.summary,
+                        summaryOn = it.summaryOn,
+                        summaryOff = it.summaryOff,
+                        isChecked = false,
+                    )
+                }
 
-            val state = SettingsScreenViewState(
-                enableEasterEggs = true,
-                preferences = preferences,
-            )
+            val state =
+                SettingsScreenViewState(
+                    enableEasterEggs = true,
+                    preferences = preferences,
+                )
             return listOf(state).asSequence()
         }
-
-
 }

@@ -22,7 +22,10 @@ import java.util.EnumMap
  *
  * https://github.com/junctor/ht-qrcode/
  */
-fun List<ProductSelection>.toStringData(conference: Long?, versionCode: Int): String? {
+fun List<ProductSelection>.toStringData(
+    conference: Long?,
+    versionCode: Int,
+): String? {
     try {
         if (isEmpty()) {
             return null
@@ -51,7 +54,10 @@ fun List<ProductSelection>.toStringData(conference: Long?, versionCode: Int): St
     }
 }
 
-fun List<ProductVariantSelection>.toStringData(conference: Long, versionCode: Int): String {
+fun List<ProductVariantSelection>.toStringData(
+    conference: Long,
+    versionCode: Int,
+): String {
     // Version 1 of the compat encoding scheme
     val version = 1
     // A is for Android 🤖
@@ -60,7 +66,7 @@ fun List<ProductVariantSelection>.toStringData(conference: Long, versionCode: In
     val txn = ""
     // mapping each product to "<id>:<quantity>/"
     val items = joinToString(";") { "${it.variant}:${it.quantity}" }
-    val compact = "$version:${conference}:${platform}:$items"
+    val compact = "$version:$conference:$platform:$items"
     if (txn.isNotEmpty()) {
         return "$compact:$txn"
     }

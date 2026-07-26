@@ -34,39 +34,43 @@ internal fun OrganizationCard(
         color = Color.Transparent,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         shape = RoundedCornerShape(8.dp),
-        modifier = modifier
-            .padding(horizontal = 4.dp, vertical = 4.dp)
-            .clickable {
-                onClick()
-            }
+        modifier =
+            modifier
+                .padding(horizontal = 4.dp, vertical = 4.dp)
+                .clickable {
+                    onClick()
+                },
     ) {
         Column {
             Box(
-                modifier = Modifier
-                    .background(Color.Black)
-                    .fillMaxWidth()
-                    .aspectRatio(1.333f)
-                    .clip(RoundedCornerShape(12.dp))
+                modifier =
+                    Modifier
+                        .background(Color.Black)
+                        .fillMaxWidth()
+                        .aspectRatio(1.333f)
+                        .clip(RoundedCornerShape(12.dp)),
             ) {
                 Image(
                     model = media,
                     contentDescription = "logo",
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
                     contentScale = ContentScale.Fit,
                 )
             }
 
             Column(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
             ) {
                 Text(
                     title + "\n",
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2
+                    maxLines = 2,
                 )
             }
         }

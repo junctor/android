@@ -101,10 +101,11 @@ private fun SettingsScreenContent(
         }
         Text(
             text = stringResource(R.string.privacy_policy_title),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onPrivacyPolicyClick)
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onPrivacyPolicyClick)
+                    .padding(16.dp),
         )
         DeveloperSection()
         VersionNumber(state.version, enableEasterEggs, onVersionClick)
@@ -122,32 +123,32 @@ private fun VersionNumber(
     Text(
         "Version $version",
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .clickable(enabled = enableEasterEggs) {
-                countdown--
-                onVersionClick(countdown)
-            }
-            .padding(16.dp),
+            Modifier
+                .fillMaxWidth()
+                .clickable(enabled = enableEasterEggs) {
+                    countdown--
+                    onVersionClick(countdown)
+                }.padding(16.dp),
         textAlign = TextAlign.Center,
     )
 }
 
 @Composable
 private fun DeveloperSection() {
-    val text = buildAnnotatedString {
-        append("Android client is built with ♥ by ")
-        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-            append("advice")
+    val text =
+        buildAnnotatedString {
+            append("Android client is built with ♥ by ")
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                append("advice")
+            }
         }
-    }
 
     Text(
         text,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
         textAlign = TextAlign.Center,
     )
 }

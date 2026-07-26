@@ -59,8 +59,7 @@ class FirebaseDocumentsDataSource(
                                         context,
                                         it.audienceLabel,
                                     )
-                                }
-                                .mapNotNull { it.toDocument() }
+                                }.mapNotNull { it.toDocument() }
                         }
                     }
                 }

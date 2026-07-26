@@ -52,8 +52,7 @@ fun ButtonPreference(onPreferenceChange: (String) -> Unit) {
         Modifier
             .clickable {
                 dialogOpen = true
-            }
-            .fillMaxWidth()
+            }.fillMaxWidth()
             .height(IntrinsicSize.Min)
             .padding(16.dp),
     ) {

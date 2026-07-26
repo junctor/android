@@ -12,11 +12,14 @@ class LocationRowProvider : PreviewParameterProvider<LocationRow> {
         val containers =
             listOf(
                 LocationRow(
-                    0, "Casino", LocationStatus.Open, 0,
+                    0,
+                    "Casino",
+                    LocationStatus.Open,
+                    0,
                     hasChildren = true,
                     isExpanded = true,
                     schedule = emptyList(),
-                )
+                ),
             )
     }
 }

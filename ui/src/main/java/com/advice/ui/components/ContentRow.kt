@@ -30,11 +30,11 @@ fun ContentRow(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .clickable {
-                onContentPressed()
-            }
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .clickable {
+                    onContentPressed()
+                }.fillMaxWidth(),
     ) {
         CategoryDash(color = tagUi.firstOrNull()?.color, height = 52.dp)
         Spacer(modifier = Modifier.width(24.dp))
@@ -59,20 +59,22 @@ fun ContentRow(
 @PreviewLightDark
 @Composable
 private fun ContentRowPreview() {
-    val beginnerFriendly = Tag(
-        id = 1,
-        label = "Beginner Friendly",
-        description = "",
-        color = "#ABCABC",
-        sortOrder = -1,
-    )
-    val talk = Tag(
-        id = 2,
-        label = "Talk",
-        description = "",
-        color = "#FF1212",
-        sortOrder = -1,
-    )
+    val beginnerFriendly =
+        Tag(
+            id = 1,
+            label = "Beginner Friendly",
+            description = "",
+            color = "#ABCABC",
+            sortOrder = -1,
+        )
+    val talk =
+        Tag(
+            id = 2,
+            label = "Talk",
+            description = "",
+            color = "#FF1212",
+            sortOrder = -1,
+        )
     Column {
         ContentRow(
             title = "DEF CON 101",

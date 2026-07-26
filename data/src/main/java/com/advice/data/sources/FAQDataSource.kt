@@ -5,6 +5,5 @@ import com.advice.core.local.FlowResult
 import kotlinx.coroutines.flow.Flow
 
 interface FAQDataSource {
-
     fun get(): Flow<FlowResult<List<FAQ>>>
 }

@@ -15,14 +15,18 @@ import com.advice.ui.theme.HotPink
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun ProductVariantTag(text: String, inStock: Boolean = true) {
-    val label = when (text) {
-        "Extra-Small" -> "XS"
-        "Small" -> "S"
-        "Medium" -> "M"
-        "Large" -> "L"
-        else -> text
-    }
+fun ProductVariantTag(
+    text: String,
+    inStock: Boolean = true,
+) {
+    val label =
+        when (text) {
+            "Extra-Small" -> "XS"
+            "Small" -> "S"
+            "Medium" -> "M"
+            "Large" -> "L"
+            else -> text
+        }
 
     Text(
         label,

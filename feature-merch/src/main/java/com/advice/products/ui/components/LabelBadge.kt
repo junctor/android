@@ -11,9 +11,7 @@ import androidx.compose.ui.unit.sp
 import com.advice.ui.theme.roundedCornerShape
 
 @Composable
-internal fun PriceLabel(
-    text: String,
-) {
+internal fun PriceLabel(text: String) {
     LabelBadge(
         text = text,
         backgroundColor = Color.Black.copy(alpha = 0.5f),
@@ -29,9 +27,10 @@ internal fun LabelBadge(
 ) {
     Text(
         text = text,
-        modifier = modifier
-            .background(backgroundColor, shape = roundedCornerShape)
-            .padding(horizontal = 8.dp, vertical = 0.dp),
+        modifier =
+            modifier
+                .background(backgroundColor, shape = roundedCornerShape)
+                .padding(horizontal = 8.dp, vertical = 0.dp),
         color = color,
         fontSize = 12.sp,
     )

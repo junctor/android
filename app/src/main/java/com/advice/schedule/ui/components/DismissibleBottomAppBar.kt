@@ -38,8 +38,9 @@ fun DismissibleBottomAppBar(
     )
 
     BottomAppBar(
-        modifier = modifier
-            .offset(y = animatedOffsetY.dp),
+        modifier =
+            modifier
+                .offset(y = animatedOffsetY.dp),
         containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 0.dp,
     ) {
@@ -54,22 +55,22 @@ private fun DismissibleBottomAppBarPreview() {
         DismissibleBottomAppBar(isShown = true) {
             Row(
                 Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
                         painterResource(
-                            id = com.advice.ui.R.drawable.baseline_event_note_24
+                            id = com.advice.ui.R.drawable.baseline_event_note_24,
                         ),
-                        contentDescription = "schedule"
+                        contentDescription = "schedule",
                     )
                 }
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
                         painterResource(
-                            id = com.advice.ui.R.drawable.baseline_map_24
+                            id = com.advice.ui.R.drawable.baseline_map_24,
                         ),
-                        contentDescription = "map"
+                        contentDescription = "map",
                     )
                 }
                 IconButton(onClick = { }) {

@@ -15,13 +15,14 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class ScheduleViewModel : ViewModel(), KoinComponent {
-
+class ScheduleViewModel :
+    ViewModel(),
+    KoinComponent {
     private val storage by inject<Storage>()
     private val repository by inject<ScheduleRepository>()
 
-    fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> {
-        return repository.getSchedule(filter).map { result ->
+    fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> =
+        repository.getSchedule(filter).map { result ->
             when (result) {
                 ScheduleResult.Loading -> {
                     ScheduleScreenState.Loading
@@ -32,19 +33,22 @@ class ScheduleViewModel : ViewModel(), KoinComponent {
                 }
 
                 is ScheduleResult.Success -> {
-                    val days = result.events.groupBy {
-                        TimeUtil.getDateStamp(
-                            it.session,
-                            storage.forceTimeZone
-                        )
-                    }
+                    val days =
+                        result.events.groupBy {
+                            TimeUtil.getDateStamp(
+                                it.session,
+                                storage.forceTimeZone,
+                            )
+                        }
                     ScheduleScreenState.Success(filter, days, storage.showFilters)
                 }
             }
         }
-    }
 
-    fun bookmark(event: Event, isBookmarked: Boolean) {
+    fun bookmark(
+        event: Event,
+        isBookmarked: Boolean,
+    ) {
         viewModelScope.launch {
             repository.bookmark(event.content, event.session, isBookmarked)
         }

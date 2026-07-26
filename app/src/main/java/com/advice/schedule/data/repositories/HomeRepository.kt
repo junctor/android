@@ -22,46 +22,47 @@ class HomeRepository(
     private val storage: Storage,
     private val analyticsProvider: AnalyticsProvider,
 ) {
-    val contents = combine(
-        userSession.getConference(),
-        conferencesDataSource.get(),
-        menuRepository.get(),
-        newsRepository.get(),
-        networkRepository.get(),
-    ) { conference, conferences, menu, news, wifi ->
-        val latest = news.firstOrNull().takeUnless {
-            it == null || storage.hasReadNews(conference.code, it.id)
-        }
-        val list = when (conferences) {
-            is FlowResult.Failure -> return@combine HomeState.Error(conferences.error)
-            FlowResult.Loading -> return@combine HomeState.Loading
-            is FlowResult.Success -> conferences.value
+    val contents =
+        combine(
+            userSession.getConference(),
+            conferencesDataSource.get(),
+            menuRepository.get(),
+            newsRepository.get(),
+            networkRepository.get(),
+        ) { conference, conferences, menu, news, wifi ->
+            val latest =
+                news.firstOrNull().takeUnless {
+                    it == null || storage.hasReadNews(conference.code, it.id)
+                }
+            val list =
+                when (conferences) {
+                    is FlowResult.Failure -> return@combine HomeState.Error(conferences.error)
+                    FlowResult.Loading -> return@combine HomeState.Loading
+                    is FlowResult.Success -> conferences.value
+                }
+
+            HomeState.Loaded(
+                conferences = list,
+                conference = conference,
+                menu = getMenu(menu, conference, wifi),
+                news = latest,
+                hasChicken = hasChicken(conference),
+            )
         }
 
-        HomeState.Loaded(
-            conferences = list,
-            conference = conference,
-            menu = getMenu(menu, conference, wifi),
-            news = latest,
-            hasChicken = hasChicken(conference),
-        )
-    }
-
-    private fun hasChicken(conference: Conference): Boolean {
-        return conference.code == "DEFCON33" && storage.easterEggs && analyticsProvider.isChickenEnabled()
-    }
+    private fun hasChicken(conference: Conference): Boolean =
+        conference.code == "DEFCON33" && storage.easterEggs && analyticsProvider.isChickenEnabled()
 
     private fun getMenu(
         menu: FlowResult<List<Menu>>,
         conference: Conference,
         wifi: List<WirelessNetwork>,
-    ): Menu {
-        return when (menu) {
+    ): Menu =
+        when (menu) {
             is FlowResult.Failure -> Menu.ERROR
             FlowResult.Loading -> Menu.LOADING
             is FlowResult.Success -> menu(menu, conference, wifi)
         }
-    }
 
     private fun menu(
         result: FlowResult.Success<List<Menu>>,
@@ -73,13 +74,14 @@ class HomeRepository(
         if (!analyticsProvider.isWifiEnabled() || wifi.isEmpty()) {
             return menu
         }
-        val wifiItems = wifi.map { network ->
-            MenuItem.Wifi(
-                label = "WiFi",
-                description = "Connect to the ${network.titleText}",
-                id = network.id,
-            )
-        }
+        val wifiItems =
+            wifi.map { network ->
+                MenuItem.Wifi(
+                    label = "WiFi",
+                    description = "Connect to the ${network.titleText}",
+                    id = network.id,
+                )
+            }
         return menu.copy(items = menu.items + wifiItems)
     }
 

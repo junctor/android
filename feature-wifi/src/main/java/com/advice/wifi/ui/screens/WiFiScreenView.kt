@@ -38,7 +38,7 @@ fun WifiScreen(
             },
             navigationIcon = {
                 BackButton(onBackPressed)
-            }
+            },
         )
     }) {
         WifiScreenContent(
@@ -68,15 +68,18 @@ fun WifiScreenContent(
             Column(
                 modifier
                     .padding(horizontal = 16.dp),
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp),
+                verticalArrangement =
+                    androidx.compose.foundation.layout.Arrangement
+                        .spacedBy(16.dp),
             ) {
-
                 Text(state.wirelessNetwork.ssid)
 
-                if (state.wirelessNetwork.titleText.isNotBlank())
+                if (state.wirelessNetwork.titleText.isNotBlank()) {
                     Text(state.wirelessNetwork.titleText)
-                if (state.wirelessNetwork.descriptionText.isNotBlank())
+                }
+                if (state.wirelessNetwork.descriptionText.isNotBlank()) {
                     Text(state.wirelessNetwork.descriptionText)
+                }
 
                 val certs = state.wirelessNetwork.certs ?: emptyList()
                 for (cert in certs) {
@@ -100,7 +103,7 @@ fun WifiScreenContent(
 
                 Text(
                     "Saving credentials does not connect immediately. " +
-                        "Android connects when this network is in range."
+                        "Android connects when this network is in range.",
                 )
 
                 Button(
@@ -132,39 +135,42 @@ fun WifiScreenContent(
 private fun WifiScreenViewPreview() {
     ScheduleTheme {
         WifiScreen(
-            state = WiFiScreenViewState.Loaded(
-                wirelessNetwork = WirelessNetwork(
-                    "anonymousIdentity",
-                    autoJoin = "N",
-                    certs = listOf(
-                        WifiCertificate(1, "Cert 1", "https://cert1.com"),
-                    ),
-                    descriptionText = "Description",
-                    disableAssociationMacRandomization = "N",
-                    disableCaptiveNetworkDetection = "N",
-                    eapMethod = "PEAP",
-                    eapSubjects = emptyList(),
-                    enableIpv6 = "N",
-                    id = 1,
-                    identity = "identity",
-                    isIdentityUserEditable = "N",
-                    isSsidHidden = "N",
-                    networkType = "WPA2-Enterprise",
-                    passphrase = null,
-                    password = "password",
-                    phase2Method = "MSCHAPV2",
-                    priority = 1,
-                    restrictFastLaneQosMarking = "N",
-                    sortOrder = 1,
-                    ssid = "ssid",
-                    titleText = "Title",
-                    tlsClientCertificateRequired = "N",
-                    tlsClientCertificateSupport = "N",
-                    tlsMaximumVersion = "tlsMaximumVersion",
-                    tlsMinimumVersion = "tlsMinimumVersion",
-                    tlsPreferredVersion = "tlsPreferredVersion",
+            state =
+                WiFiScreenViewState.Loaded(
+                    wirelessNetwork =
+                        WirelessNetwork(
+                            "anonymousIdentity",
+                            autoJoin = "N",
+                            certs =
+                                listOf(
+                                    WifiCertificate(1, "Cert 1", "https://cert1.com"),
+                                ),
+                            descriptionText = "Description",
+                            disableAssociationMacRandomization = "N",
+                            disableCaptiveNetworkDetection = "N",
+                            eapMethod = "PEAP",
+                            eapSubjects = emptyList(),
+                            enableIpv6 = "N",
+                            id = 1,
+                            identity = "identity",
+                            isIdentityUserEditable = "N",
+                            isSsidHidden = "N",
+                            networkType = "WPA2-Enterprise",
+                            passphrase = null,
+                            password = "password",
+                            phase2Method = "MSCHAPV2",
+                            priority = 1,
+                            restrictFastLaneQosMarking = "N",
+                            sortOrder = 1,
+                            ssid = "ssid",
+                            titleText = "Title",
+                            tlsClientCertificateRequired = "N",
+                            tlsClientCertificateSupport = "N",
+                            tlsMaximumVersion = "tlsMaximumVersion",
+                            tlsMinimumVersion = "tlsMinimumVersion",
+                            tlsPreferredVersion = "tlsPreferredVersion",
+                        ),
                 ),
-            ),
             onBackPressed = {},
             onConnectPressed = {},
             onDisconnectPressed = {},

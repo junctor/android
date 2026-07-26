@@ -130,7 +130,7 @@ private fun TopBar(
     session: Session?,
     alpha: Animatable<Float, AnimationVector1D>,
     onBackPressed: () -> Unit,
-    onBookmark: (Content, Session?, Boolean) -> Unit
+    onBookmark: (Content, Session?, Boolean) -> Unit,
 ) {
     val title = content.title
     val isBookmarked = session?.isBookmarked ?: content.isBookmarked
@@ -158,9 +158,10 @@ private fun TopBar(
                 contentColor = Color.White,
             )
         },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = getContainerColour(content).copy(alpha = alpha.value),
-        ),
+        colors =
+            TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = getContainerColour(content).copy(alpha = alpha.value),
+            ),
     )
 }
 
@@ -180,11 +181,12 @@ private fun HeaderSection(
     onTagClicked: (Tag) -> Unit,
     onLocationClicked: (Location) -> Unit,
 ) {
-    val color = if (categories.isEmpty()) {
-        Color.Black
-    } else {
-        parseColor(categories.first().color)
-    }
+    val color =
+        if (categories.isEmpty()) {
+            Color.Black
+        } else {
+            parseColor(categories.first().color)
+        }
     Column(
         Modifier
             .fillMaxWidth()
@@ -208,7 +210,7 @@ private fun HeaderSection(
                 style = MaterialTheme.typography.headlineLarge,
             )
 
-            if(categories.isNotEmpty()) {
+            if (categories.isNotEmpty()) {
                 Box(Modifier.padding(vertical = 8.dp)) {
                     CategoryView(
                         tag = categories.first(),
@@ -408,7 +410,6 @@ private fun EventScreenContent(
             }
         }
 
-
         Spacer(modifier = Modifier.height(64.dp))
     }
 }
@@ -417,7 +418,7 @@ private fun EventScreenContent(
 private fun SessionRow(
     session: Session,
     onSessionClicked: (Session) -> Unit,
-    onBookmark: (Boolean) -> Unit
+    onBookmark: (Boolean) -> Unit,
 ) {
     Row {
         val date = TimeUtil.getEventDateStamp(LocalContext.current, session)
@@ -429,7 +430,7 @@ private fun SessionRow(
             modifier = Modifier.weight(1f),
             onClick = {
                 onSessionClicked(session)
-            }
+            },
         )
         BookmarkButton(
             isBookmarked = session.isBookmarked,

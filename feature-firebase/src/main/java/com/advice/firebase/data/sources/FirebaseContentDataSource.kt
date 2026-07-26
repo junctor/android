@@ -68,15 +68,14 @@ class FirebaseContentDataSource(
                         querySnapshot
                             .toObjectsOrEmpty(FirebaseContent::class.java)
                             .filter { (!it.hidden || userSession.isDeveloper) }
-                    }
-                    .unwrapList("Failed to load content")
+                    }.unwrapList("Failed to load content")
             }.stateIn(
                 scope = applicationScope,
                 started = SharingStarted.Eagerly,
                 initialValue = emptyList(),
             )
 
-    private val _conferenceContent =
+    private val conferenceContent =
         combine(
             userSession.getConference(),
             userSession.audienceContext,
@@ -156,7 +155,7 @@ class FirebaseContentDataSource(
         return content
     }
 
-    override fun get(): Flow<ConferenceContent> = _conferenceContent
+    override fun get(): Flow<ConferenceContent> = conferenceContent
 
     override suspend fun bookmark(content: Content) {
         bookmarkedEventsDataSource.bookmark(content, isBookmarked = !content.isBookmarked)
@@ -174,7 +173,7 @@ class FirebaseContentDataSource(
         conference: String,
         contentId: Long,
     ): Content? =
-        _conferenceContent.first().content.find {
+        conferenceContent.first().content.find {
             it.conference == conference && it.id == contentId
         }
 

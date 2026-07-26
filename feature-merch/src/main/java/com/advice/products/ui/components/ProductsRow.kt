@@ -32,7 +32,9 @@ internal fun ProductsRow(
 
 @PreviewLightDark
 @Composable
-private fun ProductsRowPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun ProductsRowPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         Surface {
             Column {

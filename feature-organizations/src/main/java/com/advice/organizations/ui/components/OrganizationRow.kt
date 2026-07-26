@@ -20,7 +20,7 @@ fun OrganizationRow(
             OrganizationCard(
                 organization.name,
                 organization.media.firstOrNull()?.url,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 onOrganizationPressed(organization)
             }

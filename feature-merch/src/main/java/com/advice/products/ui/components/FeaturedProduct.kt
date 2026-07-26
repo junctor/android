@@ -46,9 +46,10 @@ fun FeaturedProducts(
     onProductClicked: (Product) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val state = rememberPagerState {
-        products.size
-    }
+    val state =
+        rememberPagerState {
+            products.size
+        }
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -99,9 +100,10 @@ private fun FeaturedProduct(
     onProductClicked: (Product) -> Unit,
 ) {
     Column(
-        modifier = Modifier.clickable {
-            onProductClicked(product)
-        },
+        modifier =
+            Modifier.clickable {
+                onProductClicked(product)
+            },
     ) {
         Box(
             Modifier

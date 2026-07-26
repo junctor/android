@@ -112,15 +112,15 @@ private fun ProductsSummaryContent(
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
             ) {
                 Text("Nothing in your list", fontSize = 32.sp)
                 Text("Add some items to generate a QR code", fontSize = 12.sp)
             }
         } else {
-
             for (merch in list) {
                 EditableProduct(merch, onQuantityChanged = {
                     onQuantityChanged(merch.id, it, merch.variant.id)

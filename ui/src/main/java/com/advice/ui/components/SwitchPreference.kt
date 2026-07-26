@@ -41,8 +41,7 @@ fun SwitchPreference(
             .clickable {
                 checked = !checked
                 onPreferenceChanged(checked)
-            }
-            .fillMaxWidth()
+            }.fillMaxWidth()
             .height(IntrinsicSize.Min)
             .padding(16.dp),
     ) {
@@ -69,10 +68,11 @@ fun SwitchPreference(
                 checked = it
                 onPreferenceChanged(it)
             },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                uncheckedThumbColor = Color.White,
-            ),
+            colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    uncheckedThumbColor = Color.White,
+                ),
         )
     }
 }

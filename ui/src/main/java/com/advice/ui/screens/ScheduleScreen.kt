@@ -77,12 +77,14 @@ fun ScheduleScreen(
         floatingActionButton = {
             if (state is ScheduleScreenState.Success && state.showFab) {
                 FloatingActionButton(
-                    shape = CircleShape, onClick = onFabClick,
+                    shape = CircleShape,
+                    onClick = onFabClick,
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = Color.White,
                 ) {
                     Icon(
-                        painterResource(R.drawable.baseline_filter_list_24), "Filter Schedule",
+                        painterResource(R.drawable.baseline_filter_list_24),
+                        "Filter Schedule",
                     )
                 }
             }
@@ -188,10 +190,11 @@ private fun ScheduleScreenContent(
             }
         }
 
-    val daySelectorState = rememberDaySelectorScrollState(
-        listState = listState,
-        headerIndices = headerIndices,
-    )
+    val daySelectorState =
+        rememberDaySelectorScrollState(
+            listState = listState,
+            headerIndices = headerIndices,
+        )
 
     val scheduleDays =
         remember(days, context) {
@@ -256,31 +259,32 @@ private fun ScheduleScreenContent(
             }
         }
     } else {
-        val message = when (filter) {
-            ScheduleFilter.Default -> {
-                "Try adjusting your filters"
-            }
+        val message =
+            when (filter) {
+                ScheduleFilter.Default -> {
+                    "Try adjusting your filters"
+                }
 
-            is ScheduleFilter.Location -> {
-                "No events found in this location"
-            }
+                is ScheduleFilter.Location -> {
+                    "No events found in this location"
+                }
 
-            is ScheduleFilter.Tag -> {
-                if (filter.id == Tag.bookmark.id) {
-                    "Bookmark events to see them here"
-                } else {
-                    "No events found with selected tag"
+                is ScheduleFilter.Tag -> {
+                    if (filter.id == Tag.bookmark.id) {
+                        "Bookmark events to see them here"
+                    } else {
+                        "No events found with selected tag"
+                    }
+                }
+
+                is ScheduleFilter.Tags -> {
+                    if (filter.ids?.contains(Tag.bookmark.id) == true) {
+                        "Bookmark events to see them here"
+                    } else {
+                        "No events found with selected tags"
+                    }
                 }
             }
-
-            is ScheduleFilter.Tags -> {
-                if (filter.ids?.contains(Tag.bookmark.id) == true) {
-                    "Bookmark events to see them here"
-                } else {
-                    "No events found with selected tags"
-                }
-            }
-        }
         EmptyMessage(
             message = message,
             title = "No events found",
@@ -290,7 +294,9 @@ private fun ScheduleScreenContent(
 
 @PreviewLightDark
 @Composable
-private fun ScheduleScreenPreview(@PreviewParameter(FakeEventProvider::class) event: Event) {
+private fun ScheduleScreenPreview(
+    @PreviewParameter(FakeEventProvider::class) event: Event,
+) {
     ScheduleTheme {
         val state =
             ScheduleScreenState.Success(
@@ -307,7 +313,9 @@ private fun ScheduleScreenPreview(@PreviewParameter(FakeEventProvider::class) ev
 
 @PreviewLightDark
 @Composable
-private fun ScheduleScreenEmptyPreview(@PreviewParameter(FakeEventProvider::class) @Suppress("UNUSED_PARAMETER") event: Event) {
+private fun ScheduleScreenEmptyPreview(
+    @PreviewParameter(FakeEventProvider::class) @Suppress("UNUSED_PARAMETER") event: Event,
+) {
     ScheduleTheme {
         val state =
             ScheduleScreenState.Success(

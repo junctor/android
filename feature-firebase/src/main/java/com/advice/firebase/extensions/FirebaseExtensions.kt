@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-var document_reads = 0
-var document_cache_reads = 0
-var listeners_count = 0
+var documentReads = 0
+var documentCacheReads = 0
+var listenersCount = 0
 
 internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference>): Flow<T> {
     val path = this.toString()
@@ -45,7 +45,7 @@ internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference
 }
 
 fun logSnapshotClosure(path: String) {
-    Timber.d("Snapshot listener for path: $path closed. $listeners_count active listeners.")
+    Timber.d("Snapshot listener for path: $path closed. $listenersCount active listeners.")
 }
 
 internal fun logFailure(
@@ -66,12 +66,12 @@ internal fun logSnapshot(
 ) {
     Timber.d("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
     if (!value.metadata.isFromCache) {
-        document_reads += value.size()
-        Timber.e("$listeners_count active snapshot listeners, document reads: $document_reads(+${value.size()}) path: $path")
+        documentReads += value.size()
+        Timber.e("$listenersCount active snapshot listeners, document reads: $documentReads(+${value.size()}) path: $path")
     } else {
-        document_cache_reads += value.size()
+        documentCacheReads += value.size()
         Timber.i(
-            "CACHE: $listeners_count active snapshot listeners, document reads: $document_cache_reads(+0) path: $path (From Cache: ${value.size()})",
+            "CACHE: $listenersCount active snapshot listeners, document reads: $documentCacheReads(+0) path: $path (From Cache: ${value.size()})",
         )
     }
 }

@@ -15,13 +15,18 @@ import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
 
-
 @Composable
-fun Tag(context: AppCompatActivity, navController: NavHostController, id: Long?, label: String?) {
+fun Tag(
+    context: AppCompatActivity,
+    navController: NavHostController,
+    id: Long?,
+    label: String?,
+) {
     val viewModel = viewModel<ScheduleViewModel>(context)
-    val state = remember {
-        viewModel.getState(ScheduleFilter.Tag(id, label))
-    }.collectAsState(initial = ScheduleScreenState.Loading).value
+    val state =
+        remember {
+            viewModel.getState(ScheduleFilter.Tag(id, label))
+        }.collectAsState(initial = ScheduleScreenState.Loading).value
 
     ScheduleScreen(
         state = state,
@@ -34,8 +39,8 @@ fun Tag(context: AppCompatActivity, navController: NavHostController, id: Long?,
                 Navigation.Event(
                     it.conference,
                     it.content.id.toString(),
-                    it.id.toString()
-                )
+                    it.id.toString(),
+                ),
             )
         },
         onBookmarkClick = { event, isBookmarked ->
@@ -50,12 +55,13 @@ fun Tags(
     context: AppCompatActivity,
     navController: NavHostController,
     ids: List<Long>?,
-    label: String?
+    label: String?,
 ) {
     val viewModel = viewModel<ScheduleViewModel>(context)
-    val state = remember {
-        viewModel.getState(ScheduleFilter.Tags(ids))
-    }.collectAsState(initial = ScheduleScreenState.Loading).value
+    val state =
+        remember {
+            viewModel.getState(ScheduleFilter.Tags(ids))
+        }.collectAsState(initial = ScheduleScreenState.Loading).value
 
     ScheduleScreen(
         state = state,
@@ -68,8 +74,8 @@ fun Tags(
                 Navigation.Event(
                     it.conference,
                     it.content.id.toString(),
-                    it.id.toString()
-                )
+                    it.id.toString(),
+                ),
             )
         },
         onBookmarkClick = { event, isBookmarked ->

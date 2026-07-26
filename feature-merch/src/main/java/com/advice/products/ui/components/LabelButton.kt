@@ -44,9 +44,10 @@ private fun LabelButtonPreview() {
             LabelButton(
                 label = "Label",
                 onClick = {},
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
             )
         }
     }

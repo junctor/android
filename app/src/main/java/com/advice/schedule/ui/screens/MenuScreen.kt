@@ -53,22 +53,23 @@ fun MenuScreen(
                     ) {
                         menu.items.forEach { menuItem ->
                             Surface(
-                                border = BorderStroke(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.onSurface.copy(0.15f),
-                                ),
+                                border =
+                                    BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.onSurface.copy(0.15f),
+                                    ),
                                 shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 0.dp, vertical = 4.dp),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 0.dp, vertical = 4.dp),
                             ) {
                                 Row(
                                     Modifier
                                         .fillMaxWidth()
                                         .clickable {
                                             onNavigationClick(menuItem)
-                                        }
-                                        .padding(16.dp),
+                                        }.padding(16.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 ) {

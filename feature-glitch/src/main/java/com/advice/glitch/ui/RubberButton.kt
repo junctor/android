@@ -22,30 +22,29 @@ fun SoundButton() {
     Image(
         painter = painterResource(id = R.drawable.chicken),
         contentDescription = "rubber chicken lmao",
-        modifier = Modifier
-            .clip(RoundedCornerShape(50f))
-            .clickable {
-                // todo: maybe don't - setVolume(audioManager)
-                playRandomChickenNoise(context)
-            }
+        modifier =
+            Modifier
+                .clip(RoundedCornerShape(50f))
+                .clickable {
+                    // todo: maybe don't - setVolume(audioManager)
+                    playRandomChickenNoise(context)
+                },
     )
 }
 
-private fun playRandomChickenNoise(
-    context: Context
-) {
-    val sounds = listOf(
-        R.raw.rubber_1,
-        R.raw.rubber_2,
-        R.raw.rubber_3,
-        R.raw.rubber_4,
-        R.raw.rubber_5
-    )
+private fun playRandomChickenNoise(context: Context) {
+    val sounds =
+        listOf(
+            R.raw.rubber_1,
+            R.raw.rubber_2,
+            R.raw.rubber_3,
+            R.raw.rubber_4,
+            R.raw.rubber_5,
+        )
     val randomSound = sounds[Random().nextInt(sounds.size)]
     val mediaPlayer = MediaPlayer.create(context, randomSound)
     mediaPlayer.start()
 }
-
 
 @PreviewLightDark
 @Composable

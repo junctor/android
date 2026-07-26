@@ -30,9 +30,8 @@ fun createTag(
     isSelected: Boolean = false,
 ): Tag = Tag(-1, label, "", color, -1, isSelected)
 
-
-fun String.toResource(): Int? {
-    return when (this) {
+fun String.toResource(): Int? =
+    when (this) {
         "balance" -> R.drawable.baseline_balance_24
         "calendar_month" -> R.drawable.baseline_calendar_month_24
         "description" -> R.drawable.outline_description_24
@@ -60,4 +59,3 @@ fun String.toResource(): Int? {
         "wifi" -> R.drawable.baseline_wifi_24
         else -> null
     }
-}

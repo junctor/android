@@ -15,7 +15,11 @@ import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
 import com.advice.schedule.ui.activity.MainActivity
 
 @Composable
-internal fun Organizations(navController: NavHostController, label: String?, id: Long?) {
+internal fun Organizations(
+    navController: NavHostController,
+    label: String?,
+    id: Long?,
+) {
     val viewModel = navController.navGraphViewModel<OrganizationsViewModel>()
     val state = viewModel.getState(id!!).collectAsState(initial = null).value
     com.advice.organizations.ui.screens.OrganizationsScreen(
@@ -29,7 +33,6 @@ internal fun Organizations(navController: NavHostController, label: String?, id:
         },
     )
 }
-
 
 @Composable
 internal fun Organization(
@@ -55,5 +58,6 @@ internal fun Organization(
         },
         onScheduleClicked = { id, label ->
             navController.navigateTo(Navigation.Schedule(label, listOf(id)))
-        })
+        },
+    )
 }

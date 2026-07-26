@@ -62,15 +62,16 @@ fun enableNetwork(
     currentConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA)
     currentConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN)
 
-    val result = if (existing == null) {
-        val networkId = wifiManager.addNetwork(currentConfig)
-        Timber.e("Network ID: $networkId")
-        wifiManager.enableNetwork(networkId, false)
-    } else {
-        Timber.e("Existing Network ID: ${existing.networkId}")
-        wifiManager.updateNetwork(currentConfig)
-        wifiManager.enableNetwork(currentConfig.networkId, false)
-    }
+    val result =
+        if (existing == null) {
+            val networkId = wifiManager.addNetwork(currentConfig)
+            Timber.e("Network ID: $networkId")
+            wifiManager.enableNetwork(networkId, false)
+        } else {
+            Timber.e("Existing Network ID: ${existing.networkId}")
+            wifiManager.updateNetwork(currentConfig)
+            wifiManager.enableNetwork(currentConfig.networkId, false)
+        }
     wifiManager.saveConfiguration()
     Timber.e("Enable network result: $result")
 

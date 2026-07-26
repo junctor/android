@@ -37,10 +37,11 @@ fun DiscardPopup(
     onCancel: () -> Unit = {},
 ) {
     Box(
-        modifier = modifier
-            .width(300.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(MaterialTheme.colorScheme.surface),
+        modifier =
+            modifier
+                .width(300.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -49,7 +50,7 @@ fun DiscardPopup(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 16.dp)
+                modifier = Modifier.padding(start = 16.dp),
             ) {
                 Text(
                     text = "Discard Feedback",
@@ -63,7 +64,8 @@ fun DiscardPopup(
                     onClick = onCancel,
                 ) {
                     Icon(
-                        Icons.Default.Close, "Dismiss",
+                        Icons.Default.Close,
+                        "Dismiss",
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
@@ -74,7 +76,7 @@ fun DiscardPopup(
             Column(
                 Modifier
                     .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             ) {
                 Text(
                     text = "Are you sure you wish to discard your feedback?",
@@ -92,14 +94,16 @@ fun DiscardPopup(
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = onCancel,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, MaterialTheme.colorScheme.onSurface, roundedCornerShape),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, MaterialTheme.colorScheme.onSurface, roundedCornerShape),
                     shape = roundedCornerShape,
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        containerColor = MaterialTheme.colorScheme.surface,
-                    ),
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
                 ) {
                     Text("Cancel")
                 }

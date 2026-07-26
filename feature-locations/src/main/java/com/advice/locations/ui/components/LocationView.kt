@@ -40,27 +40,29 @@ internal fun Location(
     depth: Int,
     onScheduleClicked: () -> Unit,
 ) {
-    val colour = when (status) {
-        LocationStatus.Closed -> Color.Red
-        LocationStatus.Mixed -> Color.Yellow
-        LocationStatus.Open -> Color.Green
-        LocationStatus.Unknown -> Color.Gray
-    }
+    val colour =
+        when (status) {
+            LocationStatus.Closed -> Color.Red
+            LocationStatus.Mixed -> Color.Yellow
+            LocationStatus.Open -> Color.Green
+            LocationStatus.Unknown -> Color.Gray
+        }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .clickable {
-                onScheduleClicked()
-            }
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier =
+            Modifier
+                .clickable {
+                    onScheduleClicked()
+                }.padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         Spacer(modifier = Modifier.width((16 * depth).dp))
         Box(
-            modifier = Modifier
-                .size(12.dp)
-                .clip(CircleShape)
-                .background(colour)
+            modifier =
+                Modifier
+                    .size(12.dp)
+                    .clip(CircleShape)
+                    .background(colour),
         )
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -92,7 +94,7 @@ private fun LocationPreview(
             LocationStatus.Open,
             hasChildren = true,
             isExpanded = true,
-            location.depth
+            location.depth,
         ) {}
     }
 }

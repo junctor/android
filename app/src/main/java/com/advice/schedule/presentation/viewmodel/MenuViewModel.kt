@@ -13,12 +13,17 @@ import org.koin.core.component.inject
 
 sealed class MenuScreenState {
     object Loading : MenuScreenState()
+
     object Error : MenuScreenState()
-    data class Success(val menu: List<Menu>) : MenuScreenState()
+
+    data class Success(
+        val menu: List<Menu>,
+    ) : MenuScreenState()
 }
 
-class MenuViewModel : ViewModel(), KoinComponent {
-
+class MenuViewModel :
+    ViewModel(),
+    KoinComponent {
     private val menuRepository by inject<MenuRepository>()
 
     private val _state = MutableStateFlow<MenuScreenState>(MenuScreenState.Loading)
@@ -27,11 +32,12 @@ class MenuViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             menuRepository.get().collect {
-                _state.value = when (it) {
-                    is FlowResult.Failure -> MenuScreenState.Error
-                    FlowResult.Loading -> MenuScreenState.Loading
-                    is FlowResult.Success -> MenuScreenState.Success(it.value)
-                }
+                _state.value =
+                    when (it) {
+                        is FlowResult.Failure -> MenuScreenState.Error
+                        FlowResult.Loading -> MenuScreenState.Loading
+                        is FlowResult.Success -> MenuScreenState.Success(it.value)
+                    }
             }
         }
     }

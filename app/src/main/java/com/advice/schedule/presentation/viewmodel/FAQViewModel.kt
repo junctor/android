@@ -13,12 +13,19 @@ import org.koin.core.component.inject
 
 sealed class FAQScreenState {
     object Loading : FAQScreenState()
-    data class Error(val error: Exception) : FAQScreenState()
-    data class Success(val faqs: List<FAQ>) : FAQScreenState()
+
+    data class Error(
+        val error: Exception,
+    ) : FAQScreenState()
+
+    data class Success(
+        val faqs: List<FAQ>,
+    ) : FAQScreenState()
 }
 
-class FAQViewModel : ViewModel(), KoinComponent {
-
+class FAQViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<FAQRepository>()
 
     private val _state = MutableStateFlow<FAQScreenState>(FAQScreenState.Loading)
@@ -27,11 +34,12 @@ class FAQViewModel : ViewModel(), KoinComponent {
     init {
         viewModelScope.launch {
             repository.faqs.collect {
-                _state.value = when (it) {
-                    FlowResult.Loading -> FAQScreenState.Loading
-                    is FlowResult.Failure -> FAQScreenState.Error(it.error)
-                    is FlowResult.Success -> FAQScreenState.Success(it.value)
-                }
+                _state.value =
+                    when (it) {
+                        FlowResult.Loading -> FAQScreenState.Loading
+                        is FlowResult.Failure -> FAQScreenState.Error(it.error)
+                        is FlowResult.Success -> FAQScreenState.Success(it.value)
+                    }
             }
         }
     }

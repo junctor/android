@@ -24,8 +24,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-class ProductsViewModel : ViewModel(), KoinComponent {
-
+class ProductsViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<ProductsRepository>()
     private val storage by inject<Storage>()
     private val cart by inject<ProductCart>()
@@ -61,50 +62,54 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         observeJob?.cancel()
         hasLoadError = false
         _state.value = ProductsScreenState.Loading
-        observeJob = viewModelScope.launch {
-            launch {
-                repository.conference
-                    .catch { emitError("conference", it) }
-                    .collect {
-                        if (hasLoadError) return@collect
-                        if (it.id != conference) {
-                            loadProductSelections(it)
-                        }
+        observeJob =
+            viewModelScope.launch {
+                launch {
+                    repository.conference
+                        .catch { emitError("conference", it) }
+                        .collect {
+                            if (hasLoadError) return@collect
+                            if (it.id != conference) {
+                                loadProductSelections(it)
+                            }
 
-                        conference = it.id
-                        canAdd = it.flags["enable_merch_cart"] ?: false
-                        merchDocument = it.merchInformation?.merchHelpDocId
-                        merchMandatoryAcknowledgement =
-                            it.merchInformation?.merchMandatoryAcknowledgement
-                        merchTaxStatement = it.merchInformation?.merchTaxStatement
-                    }
-            }
-            launch {
-                repository.products
-                    .catch { emitError("products", it) }
-                    .collect {
-                        if (hasLoadError) return@collect
-                        products.clear()
-                        products.addAll(it.sortedByDescending { product -> product.inStock })
-                        updateSummary()
-                    }
-            }
-            launch {
-                repository.variants
-                    .catch { emitError("variants", it) }
-                    .collect {
-                        if (hasLoadError) return@collect
-                        productVariantTags.clear()
-                        productVariantTags.addAll(it)
-                        if (products.isNotEmpty()) {
+                            conference = it.id
+                            canAdd = it.flags["enable_merch_cart"] ?: false
+                            merchDocument = it.merchInformation?.merchHelpDocId
+                            merchMandatoryAcknowledgement =
+                                it.merchInformation?.merchMandatoryAcknowledgement
+                            merchTaxStatement = it.merchInformation?.merchTaxStatement
+                        }
+                }
+                launch {
+                    repository.products
+                        .catch { emitError("products", it) }
+                        .collect {
+                            if (hasLoadError) return@collect
+                            products.clear()
+                            products.addAll(it.sortedByDescending { product -> product.inStock })
                             updateSummary()
                         }
-                    }
+                }
+                launch {
+                    repository.variants
+                        .catch { emitError("variants", it) }
+                        .collect {
+                            if (hasLoadError) return@collect
+                            productVariantTags.clear()
+                            productVariantTags.addAll(it)
+                            if (products.isNotEmpty()) {
+                                updateSummary()
+                            }
+                        }
+                }
             }
-        }
     }
 
-    private fun emitError(source: String, throwable: Throwable) {
+    private fun emitError(
+        source: String,
+        throwable: Throwable,
+    ) {
         Timber.e(throwable, "Failed to load merch $source")
         hasLoadError = true
         _state.value = ProductsScreenState.Error
@@ -143,7 +148,11 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         updateState(selections = selections)
     }
 
-    fun setQuantity(id: Long, quantity: Int, variant: Long?) {
+    fun setQuantity(
+        id: Long,
+        quantity: Int,
+        variant: Long?,
+    ) {
         viewModelScope.launch {
             cart.setQuantity(id, quantity, variant)
             updateSummary()
@@ -157,16 +166,18 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
     fun onTagClicked(tag: Tag) {
         viewModelScope.launch {
-            val tagTypes = productVariantTags.map { type ->
-                val tags = type.tags.map { productTag ->
-                    if (productTag.id == tag.id) {
-                        productTag.copy(isSelected = !productTag.isSelected)
-                    } else {
-                        productTag
-                    }
+            val tagTypes =
+                productVariantTags.map { type ->
+                    val tags =
+                        type.tags.map { productTag ->
+                            if (productTag.id == tag.id) {
+                                productTag.copy(isSelected = !productTag.isSelected)
+                            } else {
+                                productTag
+                            }
+                        }
+                    type.copy(tags = tags)
                 }
-                type.copy(tags = tags)
-            }
             productVariantTags.clear()
             productVariantTags.addAll(tagTypes)
 
@@ -194,26 +205,28 @@ class ProductsViewModel : ViewModel(), KoinComponent {
 
         val filteredProducts: List<Product> = getFilteredProducts(products, filter)
 
-        val cart = selections.mapNotNull { selection ->
-            val product = products.find { it.id == selection.id } ?: return@mapNotNull null
-            val variant =
-                product.variants.find { it.id == selection.variant } ?: return@mapNotNull null
-            return@mapNotNull ProductSelection(product, variant, selection.quantity)
-        }
+        val cart =
+            selections.mapNotNull { selection ->
+                val product = products.find { it.id == selection.id } ?: return@mapNotNull null
+                val variant =
+                    product.variants.find { it.id == selection.variant } ?: return@mapNotNull null
+                return@mapNotNull ProductSelection(product, variant, selection.quantity)
+            }
 
         if (hasLoadError) return
 
-        val state = ProductsState(
-            groups = groupProducts(filteredProducts),
-            productVariantTagTypes = productVariantTags,
-            informationList = getInformationList(),
-            merchDocument = merchDocument,
-            merchMandatoryAcknowledgement = merchMandatoryAcknowledgement,
-            merchTaxStatement = merchTaxStatement,
-            canAdd = canAdd,
-            cart = cart,
-            data = cart.toStringData(conference = conference, versionCode = storage.versionCode),
-        )
+        val state =
+            ProductsState(
+                groups = groupProducts(filteredProducts),
+                productVariantTagTypes = productVariantTags,
+                informationList = getInformationList(),
+                merchDocument = merchDocument,
+                merchMandatoryAcknowledgement = merchMandatoryAcknowledgement,
+                merchTaxStatement = merchTaxStatement,
+                canAdd = canAdd,
+                cart = cart,
+                data = cart.toStringData(conference = conference, versionCode = storage.versionCode),
+            )
 
         _state.tryEmit(ProductsScreenState.Success(state))
     }
@@ -222,37 +235,43 @@ class ProductsViewModel : ViewModel(), KoinComponent {
         val outOfStockGroup = Tag(-1, "Out of Stock", "", "", 1000)
         val availableInOtherSizes = Tag(-2, "Available in other sizes", "", "", 100)
         val defaultGroup = Tag(-3, "Other", "", "", 99)
-        return products.groupBy {
-            return@groupBy when {
-                it.stockStatusOverride == StockStatus.OUT_OF_STOCK && it.stockStatus == StockStatus.IN_STOCK -> availableInOtherSizes
-                !it.inStock -> outOfStockGroup
-                it.tags.isNotEmpty() -> it.tags.first()
-                else -> defaultGroup
-            }
-        }.toSortedMap(compareBy { it.sortOrder })
+        return products
+            .groupBy {
+                return@groupBy when {
+                    it.stockStatusOverride == StockStatus.OUT_OF_STOCK && it.stockStatus == StockStatus.IN_STOCK -> availableInOtherSizes
+                    !it.inStock -> outOfStockGroup
+                    it.tags.isNotEmpty() -> it.tags.first()
+                    else -> defaultGroup
+                }
+            }.toSortedMap(compareBy { it.sortOrder })
     }
 
-    private fun getFilteredProducts(products: List<Product>, filter: List<Tag>): List<Product> {
+    private fun getFilteredProducts(
+        products: List<Product>,
+        filter: List<Tag>,
+    ): List<Product> {
         if (filter.isEmpty()) {
             return products
         }
 
-        return products.map { product ->
-            // If there is no variants - return the product as is
-            if (!product.requiresSelection) {
-                return@map product
-            }
-            // Check the variants if they're in stock
-            val inStock = product.variants.any { variant ->
-                filter.any { it.id in variant.tags && variant.stockStatus == StockStatus.IN_STOCK }
-            }
-            // Override the stock status with our preference
-            if (inStock) {
-                product.copy(stockStatusOverride = StockStatus.IN_STOCK)
-            } else {
-                product.copy(stockStatusOverride = StockStatus.OUT_OF_STOCK)
-            }
-        }.sortedWith(compareBy({ it.stockStatus }, { it.sortOrder }))
+        return products
+            .map { product ->
+                // If there is no variants - return the product as is
+                if (!product.requiresSelection) {
+                    return@map product
+                }
+                // Check the variants if they're in stock
+                val inStock =
+                    product.variants.any { variant ->
+                        filter.any { it.id in variant.tags && variant.stockStatus == StockStatus.IN_STOCK }
+                    }
+                // Override the stock status with our preference
+                if (inStock) {
+                    product.copy(stockStatusOverride = StockStatus.IN_STOCK)
+                } else {
+                    product.copy(stockStatusOverride = StockStatus.OUT_OF_STOCK)
+                }
+            }.sortedWith(compareBy({ it.stockStatus }, { it.sortOrder }))
     }
 
     private fun getInformationList(): MutableList<DismissibleInformation> {
@@ -265,7 +284,7 @@ class ProductsViewModel : ViewModel(), KoinComponent {
                     key = "mandatory_acknowledgement",
                     text = text,
                     document = null,
-                )
+                ),
             )
         }
         return list

@@ -144,8 +144,8 @@ private fun SearchResults(
                         Navigation.Event(
                             it.conference,
                             it.content.id.toString(),
-                            it.id.toString()
-                        )
+                            it.id.toString(),
+                        ),
                     )
                 },
             )
@@ -189,8 +189,9 @@ private fun PlaceholderImage() {
         Image(
             painter = painterResource(id = R.drawable.logo_glitch),
             contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.Center),
+            modifier =
+                Modifier
+                    .align(Alignment.Center),
         )
     }
 }
@@ -207,7 +208,7 @@ private fun SearchScreenPreview() {
         SearchScreen(
             navController = rememberNavController(),
             conference =
-            Conference.Zero,
+                Conference.Zero,
             state = SearchState.Idle,
             onQueryChanged = {},
         )

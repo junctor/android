@@ -9,9 +9,10 @@ import kotlinx.coroutines.flow.shareIn
 class TagsRepository(
     tagsDataSource: TagsDataSource,
 ) {
-    val tags = tagsDataSource.get().shareIn(
-        scope = CoroutineScope(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        replay = 1,
-    )
+    val tags =
+        tagsDataSource.get().shareIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            replay = 1,
+        )
 }

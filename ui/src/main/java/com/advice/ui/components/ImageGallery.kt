@@ -26,7 +26,10 @@ import com.advice.ui.theme.ScheduleTheme
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun ImageGallery(urls: List<String>, aspectRatio: Float = 0.90909f) {
+fun ImageGallery(
+    urls: List<String>,
+    aspectRatio: Float = 0.90909f,
+) {
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -35,11 +38,12 @@ fun ImageGallery(urls: List<String>, aspectRatio: Float = 0.90909f) {
 
         val containerHeight = with(LocalDensity.current) { (maxWidth - 16.dp * aspectRatio).toPx() }
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(aspectRatio)
-                .height(with(LocalDensity.current) { containerHeight.toDp() })
-                .horizontalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(aspectRatio)
+                    .height(with(LocalDensity.current) { containerHeight.toDp() })
+                    .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Spacer(modifier = Modifier.width(8.dp))
@@ -47,10 +51,11 @@ fun ImageGallery(urls: List<String>, aspectRatio: Float = 0.90909f) {
                 Image(
                     model = image,
                     contentDescription = "image",
-                    modifier = Modifier
-                        .width(with(LocalDensity.current) { imageWidth.toDp() })
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.Black),
+                    modifier =
+                        Modifier
+                            .width(with(LocalDensity.current) { imageWidth.toDp() })
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.Black),
                     contentScale = ContentScale.Fit,
                 )
             }
@@ -67,7 +72,7 @@ private fun ImageGalleryPreview() {
             ImageGallery(
                 listOf(
                     "https://via.placeholder.com/150",
-                )
+                ),
             )
         }
     }
@@ -97,7 +102,7 @@ private fun ImageGalleryMultiplePreview() {
                 listOf(
                     "https://via.placeholder.com/150",
                     "https://via.placeholder.com/150",
-                )
+                ),
             )
         }
     }

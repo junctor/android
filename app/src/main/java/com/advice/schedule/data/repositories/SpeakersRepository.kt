@@ -11,13 +11,14 @@ import kotlinx.coroutines.flow.shareIn
 class SpeakersRepository(
     private val speakersDataSource: SpeakersDataSource,
 ) {
-    val speakers: Flow<List<Speaker>> = speakersDataSource
-        .get()
-        .shareIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            replay = 1,
-        )
+    val speakers: Flow<List<Speaker>> =
+        speakersDataSource
+            .get()
+            .shareIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Eagerly,
+                replay = 1,
+            )
 
     suspend fun get(id: Long): Speaker? = speakersDataSource.get(id)
 }

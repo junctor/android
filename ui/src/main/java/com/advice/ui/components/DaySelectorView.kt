@@ -131,8 +131,9 @@ fun DaySelectorView(
                                 color,
                                 size =
                                     Size(
-                                        width = (endPosition.value - startPosition.value)
-                                            .coerceAtLeast(0f),
+                                        width =
+                                            (endPosition.value - startPosition.value)
+                                                .coerceAtLeast(0f),
                                         height = size.height - (verticalPadding * 2),
                                     ),
                                 cornerRadius = CornerRadius(60f),
@@ -157,11 +158,12 @@ fun DaySelectorView(
                     Text(
                         day,
                         modifier = Modifier.padding(horizontal = 12.dp),
-                        color = if (index in safeStart..safeEnd) {
-                            MaterialTheme.colorScheme.onPrimary
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        },
+                        color =
+                            if (index in safeStart..safeEnd) {
+                                MaterialTheme.colorScheme.onPrimary
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            },
                     )
                 }
             }

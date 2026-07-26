@@ -14,15 +14,20 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-class EventViewModel : ViewModel(), KoinComponent {
-
+class EventViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<ScheduleRepository>()
     private val contentRepository by inject<ContentRepository>()
 
     private val _state = MutableStateFlow<EventScreenState>(EventScreenState.Loading)
     val state: StateFlow<EventScreenState> = _state
 
-    fun getEvent(conference: String?, id: Long?, session: Long?) {
+    fun getEvent(
+        conference: String?,
+        id: Long?,
+        session: Long?,
+    ) {
         viewModelScope.launch {
             val value = _state.value
             if (value !is EventScreenState.Success ||
@@ -55,9 +60,10 @@ class EventViewModel : ViewModel(), KoinComponent {
             return
         }
 
-        val relatedContent = content.relatedContentIds.mapNotNull {
-            contentRepository.getContent(conference, it)
-        }
+        val relatedContent =
+            content.relatedContentIds.mapNotNull {
+                contentRepository.getContent(conference, it)
+            }
 
         _state.value =
             EventScreenState.Success(
@@ -72,7 +78,11 @@ class EventViewModel : ViewModel(), KoinComponent {
         loadEvent(event.content.conference, event.content.id, event.session?.id)
     }
 
-    fun bookmark(content: Content, session: Session?, isBookmarked: Boolean) {
+    fun bookmark(
+        content: Content,
+        session: Session?,
+        isBookmarked: Boolean,
+    ) {
         viewModelScope.launch {
             repository.bookmark(content, session, isBookmarked)
             refreshEvent()

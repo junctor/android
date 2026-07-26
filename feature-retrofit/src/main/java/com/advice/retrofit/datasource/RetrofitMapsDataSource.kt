@@ -29,60 +29,69 @@ import java.nio.file.StandardCopyOption
 class RetrofitMapsDataSource(
     userSession: UserSession,
     private val filesDir: File?,
-) : MapsDataSource, Closeable {
+) : MapsDataSource,
+    Closeable {
     private val sharingScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val _mapsFlow: Flow<FlowResult<Maps>> = userSession.getConferenceFlow().map { state ->
-        when (state) {
-            FlowResult.Loading -> FlowResult.Loading
-            is FlowResult.Failure -> FlowResult.Failure(state.error)
-            is FlowResult.Success -> {
-                val conference = state.value
-                val list = conference.maps.map {
-                    val file = File(filesDir, it.filename)
-                    if (!file.exists()) {
-                        try {
-                            downloadFile(it.url).use { inputStream ->
-                                Files.copy(
-                                    inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING
-                                )
+    private val mapsFlow: Flow<FlowResult<Maps>> =
+        userSession
+            .getConferenceFlow()
+            .map { state ->
+                when (state) {
+                    FlowResult.Loading -> FlowResult.Loading
+                    is FlowResult.Failure -> FlowResult.Failure(state.error)
+                    is FlowResult.Success -> {
+                        val conference = state.value
+                        val list =
+                            conference.maps.map {
+                                val file = File(filesDir, it.filename)
+                                if (!file.exists()) {
+                                    try {
+                                        downloadFile(it.url).use { inputStream ->
+                                            Files.copy(
+                                                inputStream,
+                                                file.toPath(),
+                                                StandardCopyOption.REPLACE_EXISTING,
+                                            )
+                                        }
+                                    } catch (ex: Exception) {
+                                        Timber.e("Could not download map: ${ex.message}")
+                                    }
+                                }
+                                MapFile(it.name, file)
                             }
-                        } catch (ex: Exception) {
-                            Timber.e("Could not download map: ${ex.message}")
-                        }
+                        FlowResult.Success(Maps(conference, list))
                     }
-                    MapFile(it.name, file)
                 }
-                FlowResult.Success(Maps(conference, list))
+            }.distinctUntilChanged()
+            .shareIn(
+                sharingScope,
+                started = SharingStarted.Lazily,
+                replay = 1,
+            )
+
+    private suspend fun downloadFile(url: String): InputStream =
+        withContext(Dispatchers.IO) {
+            val client = Network.client
+            val request = Request.Builder().url(url).build()
+
+            Timber.d("Downloading map from url: $url")
+
+            client.newCall(request).execute().use { response ->
+                Timber.d("Response: $response")
+
+                if (!response.isSuccessful) {
+                    val message = "Unexpected code $response"
+                    Timber.e(message)
+                    throw IOException(message)
+                }
+
+                // Buffer the body so the response (and connection) can be closed before returning.
+                ByteArrayInputStream(response.body.bytes())
             }
         }
-    }.distinctUntilChanged().shareIn(
-        sharingScope,
-        started = SharingStarted.Lazily,
-        replay = 1,
-    )
 
-    private suspend fun downloadFile(url: String): InputStream = withContext(Dispatchers.IO) {
-        val client = Network.client
-        val request = Request.Builder().url(url).build()
-
-        Timber.d("Downloading map from url: $url")
-
-        client.newCall(request).execute().use { response ->
-            Timber.d("Response: $response")
-
-            if (!response.isSuccessful) {
-                val message = "Unexpected code $response"
-                Timber.e(message)
-                throw IOException(message)
-            }
-
-            // Buffer the body so the response (and connection) can be closed before returning.
-            ByteArrayInputStream(response.body.bytes())
-        }
-    }
-
-    override fun get(): Flow<FlowResult<Maps>> = _mapsFlow
+    override fun get(): Flow<FlowResult<Maps>> = mapsFlow
 
     override fun close() {
         sharingScope.cancel()

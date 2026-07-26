@@ -17,9 +17,10 @@ import com.advice.ui.theme.ScheduleTheme
 internal fun LegalLabel(text: String) {
     Text(
         text = text,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
         fontSize = 14.sp,
         fontWeight = FontWeight.SemiBold,
         textAlign = TextAlign.Center,

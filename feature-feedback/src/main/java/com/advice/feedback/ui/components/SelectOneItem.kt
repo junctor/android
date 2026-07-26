@@ -35,12 +35,12 @@ fun SelectOneItem(
             // Vertical layout
             options.forEach {
                 Row(
-                    modifier = Modifier
-                        .clickable {
-                            choice = it.id
-                            onSelectOption(it.id)
-                        }
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .clickable {
+                                choice = it.id
+                                onSelectOption(it.id)
+                            }.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     RadioButton(
@@ -60,12 +60,12 @@ fun SelectOneItem(
             Row(Modifier.fillMaxWidth()) {
                 options.forEach {
                     Column(
-                        modifier = Modifier
-                            .clickable {
-                                choice = it.id
-                                onSelectOption(it.id)
-                            }
-                            .weight(1f),
+                        modifier =
+                            Modifier
+                                .clickable {
+                                    choice = it.id
+                                    onSelectOption(it.id)
+                                }.weight(1f),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
@@ -94,11 +94,12 @@ private fun SelectOneItemPreview() {
     ScheduleTheme {
         SelectOneItem(
             caption = "Select one item",
-            options = listOf(
-                FeedbackOption(1, "Option 1"),
-                FeedbackOption(2, "Option 2"),
-                FeedbackOption(3, "Option 3")
-            ),
+            options =
+                listOf(
+                    FeedbackOption(1, "Option 1"),
+                    FeedbackOption(2, "Option 2"),
+                    FeedbackOption(3, "Option 3"),
+                ),
             onSelectOption = {},
         )
     }
@@ -110,12 +111,13 @@ private fun SelectOneItemVerticalPreview() {
     ScheduleTheme {
         SelectOneItem(
             caption = "Select one item",
-            options = listOf(
-                FeedbackOption(1, "Option 1"),
-                FeedbackOption(2, "Option 2"),
-                FeedbackOption(3, "Option 3"),
-                FeedbackOption(4, "Option 4"),
-            ),
+            options =
+                listOf(
+                    FeedbackOption(1, "Option 1"),
+                    FeedbackOption(2, "Option 2"),
+                    FeedbackOption(3, "Option 3"),
+                    FeedbackOption(4, "Option 4"),
+                ),
             onSelectOption = {},
         )
     }

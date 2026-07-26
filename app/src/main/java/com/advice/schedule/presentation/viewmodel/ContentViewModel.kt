@@ -30,7 +30,10 @@ class ContentViewModel :
         }
     }
 
-    fun bookmark(content: Content, isBookmarked: Boolean) {
+    fun bookmark(
+        content: Content,
+        isBookmarked: Boolean,
+    ) {
         viewModelScope.launch {
             // Bookmarking content that has sessions
             if (content.sessions.isNotEmpty()) {

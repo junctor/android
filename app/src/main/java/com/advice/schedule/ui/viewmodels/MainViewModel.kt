@@ -12,9 +12,9 @@ import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.feedback.network.FeedbackSubmissionRepository
-import com.advice.firebase.extensions.document_cache_reads
-import com.advice.firebase.extensions.document_reads
-import com.advice.firebase.extensions.listeners_count
+import com.advice.firebase.extensions.documentCacheReads
+import com.advice.firebase.extensions.documentReads
+import com.advice.firebase.extensions.listenersCount
 import com.advice.play.AppManager
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DragAnchors
@@ -27,8 +27,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-class MainViewModel : ViewModel(), KoinComponent {
-
+class MainViewModel :
+    ViewModel(),
+    KoinComponent {
     private val userSession by inject<UserSession>()
     private val appManager by inject<AppManager>()
     private val analytics by inject<AnalyticsProvider>()
@@ -70,40 +71,43 @@ class MainViewModel : ViewModel(), KoinComponent {
             // Any time the current Conference changes, update the emergency document id
             userSession.getConference().collect {
                 val emergencyDocumentId = it.emergencyDocumentId
-                val document = if (emergencyDocumentId != null) {
-                    documentRepository.get(emergencyDocumentId)
-                } else {
-                    null
-                }
-                _state.value = _state.value.copy(
-                    emergencyDocument = document
-                )
+                val document =
+                    if (emergencyDocumentId != null) {
+                        documentRepository.get(emergencyDocumentId)
+                    } else {
+                        null
+                    }
+                _state.value =
+                    _state.value.copy(
+                        emergencyDocument = document,
+                    )
             }
         }
     }
 
     fun setAnchor(anchor: DragAnchors) {
-        _state.value = _state.value.copy(
-            currentAnchor = anchor,
-            isShown = anchor == DragAnchors.Start,
-        )
+        _state.value =
+            _state.value.copy(
+                currentAnchor = anchor,
+                isShown = anchor == DragAnchors.Start,
+            )
     }
 
-    fun hasSeenNotificationPopup(): Boolean {
-        return storage.hasSeenNotificationPopup()
-    }
+    fun hasSeenNotificationPopup(): Boolean = storage.hasSeenNotificationPopup()
 
     fun showPermissionDialog() {
-        _state.value = _state.value.copy(
-            permissionDialog = true,
-        )
+        _state.value =
+            _state.value.copy(
+                permissionDialog = true,
+            )
     }
 
     fun dismissPermissionDialog() {
         storage.dismissNotificationPopup()
-        _state.value = _state.value.copy(
-            permissionDialog = false,
-        )
+        _state.value =
+            _state.value.copy(
+                permissionDialog = false,
+            )
     }
 
     private var hasStarted = false
@@ -116,11 +120,14 @@ class MainViewModel : ViewModel(), KoinComponent {
         if (storage.updateVersion != BuildConfig.VERSION_CODE) {
             appManager.checkForUpdate(context, MainActivity.REQUEST_CODE_UPDATE)
         }
-        val format = if (android.text.format.DateFormat.is24HourFormat(context)) {
-            "24h"
-        } else {
-            "12h"
-        }
+        val format =
+            if (android.text.format.DateFormat
+                    .is24HourFormat(context)
+            ) {
+                "24h"
+            } else {
+                "12h"
+            }
         analytics.setUserProperty("time_format", format)
 
         viewModelScope.launch {
@@ -135,31 +142,36 @@ class MainViewModel : ViewModel(), KoinComponent {
 
     fun onLinkOpen(url: String) {
         Timber.i("Opening link: $url")
-        analytics.logEvent("open_link", Bundle().apply {
-            putString("url", url)
-        })
+        analytics.logEvent(
+            "open_link",
+            Bundle().apply {
+                putString("url", url)
+            },
+        )
     }
 
     fun onPause() {
         with(analytics) {
             logEvent(
-                "session_document_read", Bundle().apply {
-                    putInt("total_document_reads", document_reads)
-                    putInt("total_document_cache_reads", document_cache_reads)
-                    putInt("total_listeners_count", listeners_count)
-                }
+                "session_document_read",
+                Bundle().apply {
+                    putInt("total_document_reads", documentReads)
+                    putInt("total_document_cache_reads", documentCacheReads)
+                    putInt("total_listeners_count", listenersCount)
+                },
             )
-            document_reads = 0
-            document_cache_reads = 0
-            listeners_count = 0
+            documentReads = 0
+            documentCacheReads = 0
+            listenersCount = 0
         }
     }
 
     fun onPermissionRequest() {
         analytics.logEvent(
-            "request_permission", Bundle().apply {
+            "request_permission",
+            Bundle().apply {
                 putString("permission", "POST_NOTIFICATIONS")
-            }
+            },
         )
     }
 
@@ -169,10 +181,14 @@ class MainViewModel : ViewModel(), KoinComponent {
         storage.updateVersion = BuildConfig.VERSION_CODE
     }
 
-    fun onDestinationChanged(navDestination: NavDestination, args: Bundle?) {
-        var route = navDestination.route
-            ?.replace("/{label}", "")
-            ?.replace("//", "/") ?: return
+    fun onDestinationChanged(
+        navDestination: NavDestination,
+        args: Bundle?,
+    ) {
+        var route =
+            navDestination.route
+                ?.replace("/{label}", "")
+                ?.replace("//", "/") ?: return
 
         args?.keySet()?.forEach {
             if (route.contains("{$it}")) {

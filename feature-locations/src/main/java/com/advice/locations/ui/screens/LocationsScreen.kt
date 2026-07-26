@@ -57,12 +57,14 @@ fun LocationsScreen(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Hidden,
-            skipHiddenState = false,
-        ),
-    )
+    val scaffoldState =
+        rememberBottomSheetScaffoldState(
+            bottomSheetState =
+                rememberStandardBottomSheetState(
+                    initialValue = SheetValue.Hidden,
+                    skipHiddenState = false,
+                ),
+        )
 
     var location by remember {
         mutableStateOf<LocationRow?>(null)
@@ -89,8 +91,9 @@ fun LocationsScreen(
                 },
             )
         },
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         Box(
             Modifier,
@@ -191,15 +194,16 @@ private fun LocationsScreenViewPreview(
 @Composable
 private fun BottomSheetPreview() {
     val context = LocalContext.current
-    val row = LocationRow(
-        1,
-        "test",
-        LocationStatus.Open,
-        1,
-        hasChildren = true,
-        isExpanded = true,
-        schedule = listOf(LocationSchedule(Instant.now(), Instant.now(), "test", "open")),
-    )
+    val row =
+        LocationRow(
+            1,
+            "test",
+            LocationStatus.Open,
+            1,
+            hasChildren = true,
+            isExpanded = true,
+            schedule = listOf(LocationSchedule(Instant.now(), Instant.now(), "test", "open")),
+        )
     ScheduleTheme {
         ScheduleBottomSheet(context, row, "America/Los_Angeles") {
         }

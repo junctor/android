@@ -19,14 +19,13 @@ fun PromoSwitch(
     title: String,
     description: String,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
         Modifier
             .clickable {
                 onCheckedChange(!checked)
-            }
-            .padding(16.dp)
+            }.padding(16.dp),
     ) {
         Column(Modifier.weight(1.0f)) {
             Text(title)
@@ -35,10 +34,11 @@ fun PromoSwitch(
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                uncheckedThumbColor = Color.White
-            )
+            colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    uncheckedThumbColor = Color.White,
+                ),
         )
     }
 }
@@ -51,7 +51,7 @@ private fun PromoSwitchPreview() {
             title = "Goon Discount",
             description = "Must show Goon Badge",
             checked = true,
-            onCheckedChange = {}
+            onCheckedChange = {},
         )
     }
 }

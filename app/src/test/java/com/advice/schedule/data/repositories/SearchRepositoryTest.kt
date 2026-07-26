@@ -14,7 +14,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class SearchRepositoryTest {
-
     private val userSession = mockk<UserSession>()
     private val eventsDataSource = mockk<ContentRepository>()
     private val speakersDataSource = mockk<SpeakersRepository>()
@@ -23,25 +22,29 @@ class SearchRepositoryTest {
     private val documentsDataSource = mockk<DocumentsRepository>()
 
     @Test
-    fun `return idle when search is empty`() = runTest {
-        val subject = getSubject()
+    fun `return idle when search is empty`() =
+        runTest {
+            val subject = getSubject()
 
-        val state = subject.collectState {
-            search("")
+            val state =
+                subject.collectState {
+                    search("")
+                }
+            assert(state is SearchState.Idle)
         }
-        assert(state is SearchState.Idle)
-    }
 
     @Test
-    fun `return search results when search is 3 or more characters`() = runTest {
-        val subject = getSubject()
+    fun `return search results when search is 3 or more characters`() =
+        runTest {
+            val subject = getSubject()
 
-        val state = subject.collectState {
-            search("123")
+            val state =
+                subject.collectState {
+                    search("123")
+                }
+            assert(state is SearchState.Results)
+            assertEquals("123", (state as SearchState.Results).results.query)
         }
-        assert(state is SearchState.Results)
-        assertEquals("123", (state as SearchState.Results).results.query)
-    }
 
     private fun getSubject(): SearchRepository {
         every { userSession.getConference() } returns flowOf(mockk<Conference>())
@@ -51,11 +54,15 @@ class SearchRepositoryTest {
         every { faqDataSource.faqs } returns flowOf(FlowResult.Loading)
         every { documentsDataSource.documents } returns flowOf(emptyList())
 
-        val subject = SearchRepository(
-            userSession,
-            eventsDataSource, speakersDataSource, organizationsDataSource, faqDataSource,
-            documentsDataSource
-        )
+        val subject =
+            SearchRepository(
+                userSession,
+                eventsDataSource,
+                speakersDataSource,
+                organizationsDataSource,
+                faqDataSource,
+                documentsDataSource,
+            )
         return subject
     }
 

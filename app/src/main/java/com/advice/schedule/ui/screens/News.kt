@@ -9,7 +9,10 @@ import com.advice.schedule.presentation.viewmodel.NewsViewModel
 import com.advice.ui.screens.NewsScreen
 
 @Composable
-internal fun News(navController: NavHostController, label: String?) {
+internal fun News(
+    navController: NavHostController,
+    label: String?,
+) {
     val viewModel = navController.navGraphViewModel<NewsViewModel>()
 
     val news = viewModel.getNews().collectAsState(initial = emptyList()).value

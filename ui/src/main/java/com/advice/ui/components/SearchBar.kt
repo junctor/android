@@ -48,14 +48,16 @@ fun SearchBar(
                 }
             }
         },
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search,
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                keyboardController?.hide()
-            },
-        ),
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = ImeAction.Search,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                },
+            ),
         placeholder = { Text(placeholder) },
         shape = RoundedCornerShape(8.dp),
         singleLine = true,

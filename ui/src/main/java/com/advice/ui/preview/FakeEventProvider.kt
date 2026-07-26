@@ -8,8 +8,9 @@ class FakeEventProvider : PreviewParameterProvider<Event> {
         get() = events.asSequence()
 
     companion object {
-        val events = FakeContentProvider.content.map {
-            Event(it, it.sessions.first())
-        }
+        val events =
+            FakeContentProvider.content.map {
+                Event(it, it.sessions.first())
+            }
     }
 }

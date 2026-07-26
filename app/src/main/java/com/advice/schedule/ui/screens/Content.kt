@@ -28,9 +28,12 @@ import com.advice.ui.screens.ErrorScreen
 import com.advice.ui.states.ContentScreenState
 import com.advice.ui.states.EventScreenState
 
-
 @Composable
-fun Contents(context: AppCompatActivity, navController: NavHostController, label: String?) {
+fun Contents(
+    context: AppCompatActivity,
+    navController: NavHostController,
+    label: String?,
+) {
     val viewModel = viewModel<ContentViewModel>(context)
     val state = viewModel.state.collectAsState(initial = ContentScreenState.Loading).value
 
@@ -46,7 +49,7 @@ fun Contents(context: AppCompatActivity, navController: NavHostController, label
         onBookmark = { content, isBookmarked ->
             viewModel.bookmark(content, isBookmarked)
             (context as MainActivity).onBookmarkEvent()
-        }
+        },
     )
 }
 
@@ -56,14 +59,14 @@ fun Event(
     navController: NavHostController,
     conference: String?,
     id: String?,
-    session: String?
+    session: String?,
 ) {
     val viewModel = viewModel<EventViewModel>(context)
     LaunchedEffect("$conference/$id") {
         viewModel.getEvent(
             conference,
             id?.toLongOrNull(),
-            session?.toLongOrNull()
+            session?.toLongOrNull(),
         )
     }
     when (val state = viewModel.state.collectAsState(initial = EventScreenState.Loading).value) {
@@ -90,7 +93,7 @@ fun Event(
                 content = state.content,
                 session = state.session,
                 relatedContent = state.relatedContent,
-                navController = navController
+                navController = navController,
             ) { content, session, isBookmarked ->
                 viewModel.bookmark(state.content, session, isBookmarked)
             }
@@ -121,7 +124,7 @@ private fun Content(
         },
         onLocationClicked = { location ->
             navController.navigateTo(
-                Navigation.Location(location.id, location.shortName.orEmpty())
+                Navigation.Location(location.id, location.shortName.orEmpty()),
             )
         },
         onSessionClicked = {
@@ -129,8 +132,8 @@ private fun Content(
                 Navigation.Event(
                     content.conference,
                     content.id.toString(),
-                    it.id.toString()
-                )
+                    it.id.toString(),
+                ),
             )
         },
         onRelatedContentPressed = {
@@ -138,7 +141,7 @@ private fun Content(
                 Navigation.Event(
                     content.conference,
                     it.id.toString(),
-                )
+                ),
             )
         },
         onUrlClicked = { url ->
@@ -149,6 +152,6 @@ private fun Content(
         },
         onFeedbackClicked = {
             navController.navigateTo(Navigation.Feedback(it.id, content.id))
-        }
+        },
     )
 }

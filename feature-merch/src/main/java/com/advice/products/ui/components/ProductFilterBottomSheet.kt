@@ -24,9 +24,10 @@ internal fun ProductFilterBottomSheet(
     onDismiss: () -> Unit,
     onClick: (Tag) -> Unit,
 ) {
-    val state = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-    )
+    val state =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,

@@ -26,7 +26,6 @@ import org.koin.dsl.module
 import java.io.File
 
 class ApplicationCoroutineScopeLifecycleTest {
-
     @Test
     fun `application scope is cancelled when module is unloaded`() {
         val lifecycleModule =
@@ -63,10 +62,11 @@ class ApplicationCoroutineScopeLifecycleTest {
         every { userSession.getConferenceFlow() } returns
             MutableStateFlow(FlowResult.Success(Conference.Zero))
 
-        val filesDir = File.createTempFile("maps", "dir").apply {
-            delete()
-            mkdirs()
-        }
+        val filesDir =
+            File.createTempFile("maps", "dir").apply {
+                delete()
+                mkdirs()
+            }
 
         val mapsModule =
             module {

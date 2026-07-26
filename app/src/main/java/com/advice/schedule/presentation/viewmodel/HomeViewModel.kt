@@ -22,16 +22,17 @@ import org.koin.core.component.inject
 import java.util.Date
 import kotlin.time.Duration.Companion.milliseconds
 
-class HomeViewModel : ViewModel(), KoinComponent {
-
+class HomeViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<HomeRepository>()
     private val analytics by inject<AnalyticsProvider>()
     private val appManager by inject<AppManager>()
     private val notificationHelper by inject<NotificationHelper>()
     private val documentRepository by inject<DocumentsRepository>()
 
-    private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
-    private val _countdown = MutableStateFlow(0L)
+    private val state = MutableStateFlow<HomeState>(HomeState.Loading)
+    private val countdown = MutableStateFlow(0L)
 
     private var countdownJob: Job? = null
     private var emergencyDocumentId: Long? = null
@@ -47,9 +48,10 @@ class HomeViewModel : ViewModel(), KoinComponent {
                     is HomeState.Loaded -> {
                         // Check if there is any updates available
                         val isUpdateAvailable = appManager.isUpdateAvailable()
-                        _state.value = it.copy(
-                            isUpdateAvailable = isUpdateAvailable,
-                        )
+                        state.value =
+                            it.copy(
+                                isUpdateAvailable = isUpdateAvailable,
+                            )
                         if (countdownJob == null) {
                             startCountdown(it.conference)
                         }
@@ -78,38 +80,39 @@ class HomeViewModel : ViewModel(), KoinComponent {
     private fun startCountdown(conference: Conference) {
         var remainder = conference.kickoffDate.toEpochMilli() - Date().time
         if (remainder > 0L) {
-            countdownJob = viewModelScope.launch {
-                while (remainder > 0L) {
-                    remainder = conference.kickoffDate.toEpochMilli() - Date().time
-                    _countdown.value = remainder.coerceAtLeast(0L)
-                    delay(COUNTDOWN_DELAY.milliseconds)
+            countdownJob =
+                viewModelScope.launch {
+                    while (remainder > 0L) {
+                        remainder = conference.kickoffDate.toEpochMilli() - Date().time
+                        countdown.value = remainder.coerceAtLeast(0L)
+                        delay(COUNTDOWN_DELAY.milliseconds)
+                    }
+                    countdown.value = 0L
                 }
-                _countdown.value = 0L
-            }
         } else {
-            _countdown.value = 0L
+            countdown.value = 0L
         }
     }
 
     fun setConference(conference: Conference) {
         countdownJob?.cancel()
         countdownJob = null
-        _countdown.value = 0L
+        countdown.value = 0L
         viewModelScope.launch {
             repository.setConference(conference)
         }
         analytics.onConferenceChangeEvent(conference)
     }
 
-    fun getHomeState(): Flow<HomeState> = _state
+    fun getHomeState(): Flow<HomeState> = state
 
-    fun getCountdown(): StateFlow<Long> = _countdown.asStateFlow()
+    fun getCountdown(): StateFlow<Long> = countdown.asStateFlow()
 
     fun markLatestNewsAsRead(newsArticle: NewsArticle) {
         viewModelScope.launch {
-            val temp = _state.value
+            val temp = state.value
             if (temp is HomeState.Loaded) {
-                _state.value = temp.copy(news = null)
+                state.value = temp.copy(news = null)
             }
             repository.markLatestNewsAsRead(newsArticle)
         }

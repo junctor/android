@@ -60,7 +60,7 @@ internal fun EditableProduct(
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color.White)
                     .height(height)
-                    .aspectRatio(0.909f)
+                    .aspectRatio(0.909f),
             ) {
                 Image(
                     model = product.media.firstOrNull()?.url,
@@ -115,14 +115,14 @@ internal fun EditableProduct(
 
                 if (product.variant.stockStatus == StockStatus.OUT_OF_STOCK) {
                     Row(
-                        modifier = Modifier
-                            .background(
-                                MaterialTheme.colorScheme.errorContainer,
-                                shape = roundedCornerShape
-                            )
-                            .height(32.dp)
-                            .padding(horizontal = 8.dp, vertical = 0.dp)
-                            .align(Alignment.End),
+                        modifier =
+                            Modifier
+                                .background(
+                                    MaterialTheme.colorScheme.errorContainer,
+                                    shape = roundedCornerShape,
+                                ).height(32.dp)
+                                .padding(horizontal = 8.dp, vertical = 0.dp)
+                                .align(Alignment.End),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
@@ -136,8 +136,9 @@ internal fun EditableProduct(
                             painter = painterResource(id = R.drawable.ic_delete),
                             contentDescription = "Delete",
                             tint = iconButtonForegroundColor,
-                            modifier = Modifier
-                                .size(14.dp),
+                            modifier =
+                                Modifier
+                                    .size(14.dp),
                         )
                     }
                 } else {
@@ -170,18 +171,21 @@ internal fun EditableProduct(
 
 @PreviewLightDark
 @Composable
-private fun EditableProductPreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun EditableProductPreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         Surface {
             val product = state.products.first()
             Column {
                 for (variant in product.variants) {
                     EditableProduct(
-                        product = ProductSelection(
-                            product = product,
-                            variant = variant,
-                            quantity = 1
-                        ),
+                        product =
+                            ProductSelection(
+                                product = product,
+                                variant = variant,
+                                quantity = 1,
+                            ),
                         onQuantityChanged = {},
                     )
                 }

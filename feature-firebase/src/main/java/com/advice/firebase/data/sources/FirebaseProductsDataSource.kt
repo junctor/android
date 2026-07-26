@@ -50,8 +50,7 @@ class FirebaseProductsDataSource(
                                 context,
                                 it.audienceLabel,
                             )
-                        }
-                        .mapNotNull { it.toMerch(tags) }
+                        }.mapNotNull { it.toMerch(tags) }
                 }
             }.shareIn(
                 applicationScope,
@@ -82,8 +81,7 @@ class FirebaseProductsDataSource(
                 querySnapshot
                     .toObjectsOrEmpty(FirebaseProduct::class.java)
                     .sortedBy { it.sortOrder }
-            }
-            .unwrapList("Failed to load products")
+            }.unwrapList("Failed to load products")
 
     override fun get(): Flow<List<Product>> = products
 

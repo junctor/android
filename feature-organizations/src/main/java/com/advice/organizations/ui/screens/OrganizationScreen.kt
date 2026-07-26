@@ -32,7 +32,11 @@ import com.advice.ui.theme.roundedCornerShape
 
 sealed class OrganizationScreenState {
     data object Loading : OrganizationScreenState()
-    data class Success(val organization: Organization) : OrganizationScreenState()
+
+    data class Success(
+        val organization: Organization,
+    ) : OrganizationScreenState()
+
     data object Error : OrganizationScreenState()
 }
 
@@ -82,12 +86,13 @@ fun OrganizationScreen(
 private fun Content(
     organization: Organization,
     onLinkClicked: (String) -> Unit,
-    onScheduleClicked: (Long, String) -> Unit
+    onScheduleClicked: (Long, String) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .padding(bottom = 16.dp)
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            Modifier
+                .padding(bottom = 16.dp)
+                .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         if (organization.media.isNotEmpty()) {
@@ -130,8 +135,9 @@ private fun Content(
                         onClick = {
                             onLinkClicked(link.url)
                         },
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 16.dp),
                     )
                 }
             }
@@ -143,21 +149,24 @@ private fun Content(
 @Composable
 private fun OrganizationScreenPreview() {
     ScheduleTheme {
-        val organization = Organization(
-            1,
-            "Test Organization",
-            null,
-            locations = emptyList(),
-            links = listOf(
-                OrganizationLink("Website", "website", "https://www.google.com"),
-                OrganizationLink("Website", "website", "https://www.google.com"),
-            ),
-            media = listOf(
-                OrganizationMedia(1, "https://picsum.photos/200/300")
-            ),
-            tag = 1,
-            tags = listOf(1),
-        )
+        val organization =
+            Organization(
+                1,
+                "Test Organization",
+                null,
+                locations = emptyList(),
+                links =
+                    listOf(
+                        OrganizationLink("Website", "website", "https://www.google.com"),
+                        OrganizationLink("Website", "website", "https://www.google.com"),
+                    ),
+                media =
+                    listOf(
+                        OrganizationMedia(1, "https://picsum.photos/200/300"),
+                    ),
+                tag = 1,
+                tags = listOf(1),
+            )
         OrganizationScreen(
             state = OrganizationScreenState.Success(organization),
             onBackPressed = {},

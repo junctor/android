@@ -42,8 +42,11 @@ fun Paragraph(
 private fun ParagraphPreview() {
     ScheduleTheme {
         Paragraph(
-            "DEF CON provides a forum for open discussion between participants, where radical viewpoints are welcome and a high degree of skepticism is expected." +
-                "- The Dark Tangent[https://www.defcon.org/html/links/dc-policy.html](https://www.defcon.org/html/links/dc-policy.html)",
+            "DEF CON provides a forum for open discussion between participants, " +
+                "where radical viewpoints are welcome and a high degree of skepticism is expected." +
+                "- The Dark Tangent" +
+                "[https://www.defcon.org/html/links/dc-policy.html]" +
+                "(https://www.defcon.org/html/links/dc-policy.html)",
         )
     }
 }

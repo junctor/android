@@ -14,7 +14,7 @@ fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
     return callbackFlow {
         // Emit loading state
         trySend(SnapshotResult.Loading)
-        listeners_count++
+        listenersCount++
         // Create a listener
         val listenerRegistration =
             addSnapshotListener { value, error ->
@@ -30,7 +30,7 @@ fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
                 }
             }
         awaitClose {
-            listeners_count--
+            listenersCount--
             logSnapshotClosure(path)
             listenerRegistration.remove()
         }

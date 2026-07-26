@@ -16,7 +16,10 @@ import com.advice.ui.screens.SpeakersScreen
 import com.advice.ui.states.SpeakerState
 
 @Composable
-internal fun Speakers(navController: NavHostController, label: String) {
+internal fun Speakers(
+    navController: NavHostController,
+    label: String,
+) {
     val viewModel = navController.navGraphViewModel<SpeakersViewModel>()
     val state = viewModel.speakers.collectAsState(initial = null).value
     SpeakersScreen(
@@ -57,9 +60,9 @@ fun Speaker(
                 Navigation.Event(
                     it.conference,
                     it.content.id.toString(),
-                    it.id.toString()
-                )
+                    it.id.toString(),
+                ),
             )
-        }
+        },
     )
 }

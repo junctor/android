@@ -13,40 +13,48 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SettingsViewModel : ViewModel(), KoinComponent {
-
+class SettingsViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<SettingsRepository>()
     private val analytics by inject<AnalyticsProvider>()
 
-    private val _state = MutableStateFlow(
-        SettingsScreenViewState()
-    )
+    private val _state =
+        MutableStateFlow(
+            SettingsScreenViewState(),
+        )
     val state = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
             repository.state.collect {
-                val preferences = listOf(
-                    Preferences.ConferenceTimeZone.toPreference(it.useConferenceTimeZone)
-                        .copy(title = Preferences.ConferenceTimeZone.title.replace("{timezone}", it.timezone)),
-                    Preferences.ShowSchedule.toPreference(it.showSchedule),
-                    Preferences.FabShown.toPreference(it.showFilterButton),
-                    Preferences.AllowAnalytics.toPreference(it.enableAnalytics),
-                    Preferences.AllowCrashlytics.toPreference(it.enableCrashlytics),
-                    Preferences.EasterEggs.toPreference(it.enableEasterEggs),
-                )
+                val preferences =
+                    listOf(
+                        Preferences.ConferenceTimeZone
+                            .toPreference(it.useConferenceTimeZone)
+                            .copy(title = Preferences.ConferenceTimeZone.title.replace("{timezone}", it.timezone)),
+                        Preferences.ShowSchedule.toPreference(it.showSchedule),
+                        Preferences.FabShown.toPreference(it.showFilterButton),
+                        Preferences.AllowAnalytics.toPreference(it.enableAnalytics),
+                        Preferences.AllowCrashlytics.toPreference(it.enableCrashlytics),
+                        Preferences.EasterEggs.toPreference(it.enableEasterEggs),
+                    )
 
-                _state.value = SettingsScreenViewState(
-                    timeZone = it.timezone,
-                    version = it.version,
-                    enableEasterEggs = it.enableEasterEggs,
-                    preferences = preferences,
-                )
+                _state.value =
+                    SettingsScreenViewState(
+                        timeZone = it.timezone,
+                        version = it.version,
+                        enableEasterEggs = it.enableEasterEggs,
+                        preferences = preferences,
+                    )
             }
         }
     }
 
-    fun onPreferenceChanged(id: String, isChecked: Boolean) {
+    fun onPreferenceChanged(
+        id: String,
+        isChecked: Boolean,
+    ) {
         repository.onPreferenceChanged(id, isChecked)
     }
 
@@ -54,13 +62,11 @@ class SettingsViewModel : ViewModel(), KoinComponent {
         analytics.onVersionClickEvent()
     }
 
-    fun onThemeChanged(theme: String): Boolean {
-        return repository.onThemeChanged(theme)
-    }
+    fun onThemeChanged(theme: String): Boolean = repository.onThemeChanged(theme)
 }
 
-private fun Preferences.toPreference(enabled: Boolean): SettingsScreenPreference {
-    return SettingsScreenPreference(
+private fun Preferences.toPreference(enabled: Boolean): SettingsScreenPreference =
+    SettingsScreenPreference(
         key = key,
         title = title,
         summary = summary,
@@ -68,4 +74,3 @@ private fun Preferences.toPreference(enabled: Boolean): SettingsScreenPreference
         summaryOff = summaryOff,
         isChecked = enabled,
     )
-}

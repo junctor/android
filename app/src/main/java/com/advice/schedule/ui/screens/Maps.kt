@@ -15,7 +15,7 @@ internal fun Maps(navController: NavHostController) {
     com.advice.ui.screens.MapsScreen(
         state = state,
         onMapChange = {
-                      viewModel.onMapChanged(it)
+            viewModel.onMapChanged(it)
         },
         onBackPress = {
             navController.onBackPressed()

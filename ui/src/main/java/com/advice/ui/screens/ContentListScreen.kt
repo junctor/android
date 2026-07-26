@@ -42,8 +42,8 @@ fun ContentListScreen(
             )
         },
         modifier =
-        Modifier
-            .clip(topRoundedCornerShape),
+            Modifier
+                .clip(topRoundedCornerShape),
     ) {
         ContentScreenContent(state, onContentClick, onBookmark, Modifier.padding(it))
     }

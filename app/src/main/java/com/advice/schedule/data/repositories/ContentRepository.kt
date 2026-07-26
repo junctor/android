@@ -21,32 +21,32 @@ class ContentRepository(
     private val notificationHelper: NotificationHelper,
     private val storage: Storage,
 ) {
-    val content: Flow<ConferenceContent> = contentDataSource
-        .get()
-        .onEach {
-            updateBookmarkedContent(it)
-        }
-        .shareIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            replay = 1,
-        )
+    val content: Flow<ConferenceContent> =
+        contentDataSource
+            .get()
+            .onEach {
+                updateBookmarkedContent(it)
+            }.shareIn(
+                scope = CoroutineScope(Dispatchers.IO),
+                started = SharingStarted.Eagerly,
+                replay = 1,
+            )
 
     /**
      * On each sync update any reminders on Bookmarked Content that has been updated since last sync.
      */
     private fun updateBookmarkedContent(conferenceContent: ConferenceContent) {
-        val updatedBookmarks = conferenceContent.content
-            .filter { it -> it.isBookmarked || it.sessions.any { it.isBookmarked } }
-            .also {
-                // Handling edge case for users that have bookmarked items before this update.
-                it.forEach { content ->
-                    if (storage.getContentUpdatedTimestamp(content.id) == 0L) {
-                        storage.setContentUpdatedTimestamp(content.id, content.updated.toEpochMilli())
+        val updatedBookmarks =
+            conferenceContent.content
+                .filter { it -> it.isBookmarked || it.sessions.any { it.isBookmarked } }
+                .also {
+                    // Handling edge case for users that have bookmarked items before this update.
+                    it.forEach { content ->
+                        if (storage.getContentUpdatedTimestamp(content.id) == 0L) {
+                            storage.setContentUpdatedTimestamp(content.id, content.updated.toEpochMilli())
+                        }
                     }
-                }
-            }
-            .filter { storage.getContentUpdatedTimestamp(it.id) < it.updated.toEpochMilli() }
+                }.filter { storage.getContentUpdatedTimestamp(it.id) < it.updated.toEpochMilli() }
         for (bookmark in updatedBookmarks) {
             val sessions = bookmark.sessions.filter { it.isBookmarked }
 
@@ -67,16 +67,15 @@ class ContentRepository(
         contentDataSource.bookmark(content)
     }
 
-    suspend fun bookmark(content: Content, session: Session) {
+    suspend fun bookmark(
+        content: Content,
+        session: Session,
+    ) {
         contentDataSource.bookmark(session)
         storage.setContentUpdatedTimestamp(content.id, content.updated.toEpochMilli())
     }
 
-    suspend fun isBookmarked(content: Content): Boolean {
-        return contentDataSource.isBookmarked(content)
-    }
+    suspend fun isBookmarked(content: Content): Boolean = contentDataSource.isBookmarked(content)
 
-    suspend fun isBookmarked(session: Session): Boolean {
-        return contentDataSource.isBookmarked(session)
-    }
+    suspend fun isBookmarked(session: Session): Boolean = contentDataSource.isBookmarked(session)
 }

@@ -10,8 +10,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-
-class OrganizationViewModel : ViewModel(), KoinComponent {
+class OrganizationViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<OrganizationsRepository>()
 
     private val _state = MutableStateFlow<OrganizationScreenState>(OrganizationScreenState.Loading)

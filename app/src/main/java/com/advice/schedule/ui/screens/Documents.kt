@@ -12,7 +12,10 @@ import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
 
 @Composable
-internal fun Document(navController: NavHostController, id: Long? = null) {
+internal fun Document(
+    navController: NavHostController,
+    id: Long? = null,
+) {
     val viewModel = navController.navGraphViewModel<DocumentsViewModel>()
     val state = viewModel.state.collectAsState(initial = DocumentsScreenState.Loading).value
 

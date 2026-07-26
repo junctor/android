@@ -7,8 +7,11 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
 
 object Glitch {
-
-    fun apply(canvas: Canvas, bitmap: Bitmap, isGlitch: Boolean = false) {
+    fun apply(
+        canvas: Canvas,
+        bitmap: Bitmap,
+        isGlitch: Boolean = false,
+    ) {
         val effect = ColorChannelShift(bitmap)
         effect.apply(canvas, bitmap, isGlitch)
     }
@@ -18,7 +21,7 @@ object Glitch {
     private fun convertLayout(view: View): Bitmap? {
         view.measure(
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
         )
         view.layout(0, 0, view.measuredWidth, view.measuredHeight)
 

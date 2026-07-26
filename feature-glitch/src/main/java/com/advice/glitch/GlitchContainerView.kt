@@ -9,9 +9,10 @@ import android.util.AttributeSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.createBitmap
 
-class GlitchContainerView(context: Context, attrs: AttributeSet?) :
-    CoordinatorLayout(context, attrs) {
-
+class GlitchContainerView(
+    context: Context,
+    attrs: AttributeSet?,
+) : CoordinatorLayout(context, attrs) {
     private var isGlitch = false
     private var corruption = GLITCH_NONE
     private var isOverriding = false
@@ -47,21 +48,23 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
 
         if (isGlitch) {
             val handler = Handler(Looper.getMainLooper())
-            normalRunnable = Runnable {
-                if (isRunning) {
-                    isNormal = true
-                    invalidate()
-                    handler.postDelayed(glitchRunnable, delay)
+            normalRunnable =
+                Runnable {
+                    if (isRunning) {
+                        isNormal = true
+                        invalidate()
+                        handler.postDelayed(glitchRunnable, delay)
+                    }
                 }
-            }
 
-            glitchRunnable = Runnable {
-                if (isRunning) {
-                    isNormal = false
-                    invalidate()
-                    handler.postDelayed(normalRunnable, GLITCH_DURATION)
+            glitchRunnable =
+                Runnable {
+                    if (isRunning) {
+                        isNormal = false
+                        invalidate()
+                        handler.postDelayed(normalRunnable, GLITCH_DURATION)
+                    }
                 }
-            }
 
             handler.postDelayed(normalRunnable, delay)
         }
@@ -92,14 +95,13 @@ class GlitchContainerView(context: Context, attrs: AttributeSet?) :
         isDrawing = false
     }
 
-    private fun getDelay(corruption: Int): Long {
-        return when (corruption) {
+    private fun getDelay(corruption: Int): Long =
+        when (corruption) {
             GLITCH_MINOR -> LONG_DELAY
             GLITCH_MEDIUM -> MEDIUM_DELAY
             GLITCH_MAJOR -> SHORT_DELAY
             else -> 0
         }
-    }
 
     companion object {
         private const val GLITCH_NONE = 0

@@ -43,9 +43,7 @@ fun Event.toScheduleEventUi(context: Context): ScheduleEventUi {
     )
 }
 
-fun Map<String, List<Event>>.toScheduleEventUi(
-    context: Context,
-): Map<String, List<ScheduleEventUi>> =
+fun Map<String, List<Event>>.toScheduleEventUi(context: Context): Map<String, List<ScheduleEventUi>> =
     mapValues { (_, events) ->
         events.map { it.toScheduleEventUi(context) }
     }

@@ -18,9 +18,7 @@ fun WifiManager.existingWirelessConfig(ssid: String): WifiConfiguration? {
     return existing
 }
 
-fun WirelessNetwork.toWifiEnterpriseConfig(
-    caCertificate: X509Certificate?,
-): WifiEnterpriseConfig {
+fun WirelessNetwork.toWifiEnterpriseConfig(caCertificate: X509Certificate?): WifiEnterpriseConfig {
     val enterpriseConfig = WifiEnterpriseConfig()
     if (phase2Method != null) {
         enterpriseConfig.phase2Method = phase2Method.toPhase2Method()
@@ -52,9 +50,10 @@ internal fun WirelessNetwork.applyServerIdentityMatch(enterpriseConfig: WifiEnte
         // Domain suffix match uses bare domain names, not "DNS:value".
         enterpriseConfig.domainSuffixMatch = subjects.joinToString(";") { it.value }
     } else {
-        enterpriseConfig.altSubjectMatch = subjects.joinToString(separator = ";") {
-            "${it.type}:${it.value}"
-        }
+        enterpriseConfig.altSubjectMatch =
+            subjects.joinToString(separator = ";") {
+                "${it.type}:${it.value}"
+            }
     }
 }
 
@@ -77,18 +76,15 @@ fun WifiEnterpriseConfig.validateForSuggestion(): String? {
     return null
 }
 
-private fun WifiEnterpriseConfig.usesTlsBasedEap(): Boolean {
-    return eapMethod == WifiEnterpriseConfig.Eap.PEAP ||
+private fun WifiEnterpriseConfig.usesTlsBasedEap(): Boolean =
+    eapMethod == WifiEnterpriseConfig.Eap.PEAP ||
         eapMethod == WifiEnterpriseConfig.Eap.TLS ||
         eapMethod == WifiEnterpriseConfig.Eap.TTLS
-}
 
-fun String.toBooleanFlag(): Boolean {
-    return this == "Y"
-}
+fun String.toBooleanFlag(): Boolean = this == "Y"
 
-private fun String?.convertEapMethod(): Int {
-    return when (this?.uppercase(Locale.ROOT)) {
+private fun String?.convertEapMethod(): Int =
+    when (this?.uppercase(Locale.ROOT)) {
         "PEAP" -> WifiEnterpriseConfig.Eap.PEAP
         "TLS" -> WifiEnterpriseConfig.Eap.TLS
         "TTLS" -> WifiEnterpriseConfig.Eap.TTLS
@@ -98,10 +94,9 @@ private fun String?.convertEapMethod(): Int {
         "AKA_PRIME" -> WifiEnterpriseConfig.Eap.AKA_PRIME
         else -> WifiEnterpriseConfig.Eap.NONE
     }
-}
 
-private fun String?.toPhase2Method(): Int {
-    return when (this?.uppercase(Locale.ROOT)) {
+private fun String?.toPhase2Method(): Int =
+    when (this?.uppercase(Locale.ROOT)) {
         "PAP" -> WifiEnterpriseConfig.Phase2.PAP
         "MSCHAP" -> WifiEnterpriseConfig.Phase2.MSCHAP
         "MSCHAPV2" -> WifiEnterpriseConfig.Phase2.MSCHAPV2
@@ -111,7 +106,6 @@ private fun String?.toPhase2Method(): Int {
         "AKA_PRIME" -> WifiEnterpriseConfig.Phase2.AKA_PRIME
         else -> WifiEnterpriseConfig.Phase2.NONE
     }
-}
 
 internal fun WirelessNetwork.isWpa3Enterprise(): Boolean {
     val type = networkType.uppercase(Locale.ROOT)
@@ -128,9 +122,10 @@ internal fun WirelessNetwork.validateEnterpriseOnly(): String? {
             "Only WPA2/WPA3-Enterprise networks can be saved."
     }
     val type = networkType.uppercase(Locale.ROOT)
-    val looksEnterprise = type.contains("ENTERPRISE") ||
-        type.contains("EAP") ||
-        !eapMethod.isNullOrBlank()
+    val looksEnterprise =
+        type.contains("ENTERPRISE") ||
+            type.contains("EAP") ||
+            !eapMethod.isNullOrBlank()
     if (!looksEnterprise) {
         return "Only WPA2/WPA3-Enterprise networks are supported."
     }
@@ -161,6 +156,4 @@ internal fun WirelessNetwork.isOpenOrPersonalNetwork(): Boolean {
     return false
 }
 
-fun surroundWithQuotes(string: String): String {
-    return "\"" + string + "\""
-}
+fun surroundWithQuotes(string: String): String = "\"" + string + "\""

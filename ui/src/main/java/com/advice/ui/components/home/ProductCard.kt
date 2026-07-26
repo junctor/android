@@ -31,22 +31,23 @@ internal fun ProductCard(
     HomeCard {
         Column(
             modifier =
-            Modifier.clickable {
-                onMerchClick()
-            },
+                Modifier.clickable {
+                    onMerchClick()
+                },
         ) {
             Box(
                 modifier =
-                Modifier
-                    .clip(RoundedCornerShape(12.dp)),
+                    Modifier
+                        .clip(RoundedCornerShape(12.dp)),
             ) {
                 if (media != null) {
                     Image(
                         model = media,
                         contentDescription = "logo",
-                        modifier = Modifier
-                            .background(Color.White)
-                            .aspectRatio(2f),
+                        modifier =
+                            Modifier
+                                .background(Color.White)
+                                .aspectRatio(2f),
                         contentScale = ContentScale.Fit,
                     )
                 } else {
@@ -59,11 +60,11 @@ internal fun ProductCard(
 
                     Box(
                         modifier =
-                        modifier
-                            .aspectRatio(2f)
-                            .background(
-                                gradient, // Gradient background
-                            ),
+                            modifier
+                                .aspectRatio(2f)
+                                .background(
+                                    gradient, // Gradient background
+                                ),
                         contentAlignment = Alignment.Center,
                     ) {
                         // Empty or additional content as needed
@@ -73,10 +74,10 @@ internal fun ProductCard(
 
             Column(
                 modifier =
-                Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
             ) {
                 Text(
                     "Browse Merch",

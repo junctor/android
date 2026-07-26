@@ -3,7 +3,6 @@ package com.advice.products.presentation.viewmodel
 import com.advice.core.local.products.ProductVariantSelection
 
 class ProductCart {
-
     private val selections = mutableListOf<ProductVariantSelection>()
 
     fun add(selection: ProductVariantSelection) {
@@ -20,7 +19,11 @@ class ProductCart {
         }
     }
 
-    fun setQuantity(id: Long, quantity: Int, variant: Long?) {
+    fun setQuantity(
+        id: Long,
+        quantity: Int,
+        variant: Long?,
+    ) {
         val indexOf =
             selections.indexOfFirst { it.id == id && it.variant == variant }
         if (indexOf != -1) {
@@ -37,7 +40,5 @@ class ProductCart {
         selections.clear()
     }
 
-    fun getSelections(): List<ProductVariantSelection> {
-        return selections
-    }
+    fun getSelections(): List<ProductVariantSelection> = selections
 }

@@ -11,16 +11,18 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-class FiltersViewModel : ViewModel(), KoinComponent {
-
+class FiltersViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<FiltersRepository>()
 
-    val state = flow {
-        emit(FiltersScreenState.Loading)
-        repository.state.collect {
-            emit(it)
+    val state =
+        flow {
+            emit(FiltersScreenState.Loading)
+            repository.state.collect {
+                emit(it)
+            }
         }
-    }
 
     fun toggle(tag: Tag) {
         Timber.i("User toggled the tag: $tag")

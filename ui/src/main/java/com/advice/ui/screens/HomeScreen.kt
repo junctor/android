@@ -137,7 +137,7 @@ private fun HomeScreen(
         if (logo != null) {
             Box(
                 Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Image(
                     model = logo,
@@ -156,7 +156,7 @@ private fun HomeScreen(
         if (state.menu.items.isNotEmpty() && state.hasChicken) {
             Box(
                 Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 SoundButton()
             }
@@ -165,7 +165,6 @@ private fun HomeScreen(
         }
     }
 }
-
 
 @Composable
 private fun Divider() {

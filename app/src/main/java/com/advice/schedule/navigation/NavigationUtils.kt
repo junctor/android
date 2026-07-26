@@ -24,8 +24,8 @@ fun NavController.onBackPressed() {
     }
 }
 
-internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Navigation {
-    return when (this) {
+internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Navigation =
+    when (this) {
         is Navigation.Content -> {
             val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
             copy(label = label)
@@ -129,8 +129,11 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         }
 
         is Navigation.Schedule -> {
-            val ids = backStackEntry.arguments?.getString("ids")?.split(",")
-                ?.mapNotNull { it.toLongOrNull() } ?: error("ids is required")
+            val ids =
+                backStackEntry.arguments
+                    ?.getString("ids")
+                    ?.split(",")
+                    ?.mapNotNull { it.toLongOrNull() } ?: error("ids is required")
             val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
             copy(ids = ids, label = label)
         }
@@ -168,10 +171,9 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
             copy(id = id, label = label)
         }
     }
-}
 
-internal fun MenuItem.toNavigation(): Navigation? {
-    return when (this) {
+internal fun MenuItem.toNavigation(): Navigation? =
+    when (this) {
         is MenuItem.Content -> Navigation.Content(label)
         is MenuItem.Divider -> null
         is MenuItem.Document -> Navigation.Document(documentId)
@@ -184,4 +186,3 @@ internal fun MenuItem.toNavigation(): Navigation? {
         is MenuItem.Maps -> Navigation.Maps
         is MenuItem.Search -> Navigation.Search
     }
-}

@@ -41,9 +41,10 @@ fun ProductSquare(
     isAdded: Boolean = false,
 ) {
     Box(
-        modifier = modifier
-            .aspectRatio(.909f)
-            .padding(horizontal = 4.dp, vertical = 4.dp),
+        modifier =
+            modifier
+                .aspectRatio(.909f)
+                .padding(horizontal = 4.dp, vertical = 4.dp),
     ) {
         Box(
             Modifier
@@ -54,23 +55,26 @@ fun ProductSquare(
             Image(
                 model = product.media.firstOrNull()?.url,
                 contentDescription = product.label,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .alpha(if (product.inStock) 1f else 0.5f),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .alpha(if (product.inStock) 1f else 0.5f),
                 contentScale = ContentScale.Fit,
             )
 
             LabelBadge(
                 text = product.code,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(8.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(8.dp),
             )
 
             Column(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(8.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.End,
             ) {
@@ -82,10 +86,11 @@ fun ProductSquare(
                     OutOfStockLabel()
                 } else {
                     PriceLabel(
-                        text = product.baseCost.toCurrency(
-                            showCents = true,
-                            showPlus = product.hasPriceVariation
-                        ),
+                        text =
+                            product.baseCost.toCurrency(
+                                showCents = true,
+                                showPlus = product.hasPriceVariation,
+                            ),
                     )
                 }
             }
@@ -94,9 +99,10 @@ fun ProductSquare(
         if (isAdded) {
             LabelBadge(
                 text = "Added",
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp),
                 color = MaterialTheme.colorScheme.onPrimary,
                 backgroundColor = MaterialTheme.colorScheme.primary,
             )
@@ -106,7 +112,9 @@ fun ProductSquare(
 
 @PreviewLightDark
 @Composable
-private fun InStockProductSquarePreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun InStockProductSquarePreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         Surface {
             ProductSquare(
@@ -121,7 +129,9 @@ private fun InStockProductSquarePreview(@PreviewParameter(ProductsProvider::clas
 
 @PreviewLightDark
 @Composable
-private fun OutOfStockProductSquarePreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun OutOfStockProductSquarePreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         Surface {
             ProductSquare(
@@ -136,7 +146,9 @@ private fun OutOfStockProductSquarePreview(@PreviewParameter(ProductsProvider::c
 
 @PreviewLightDark
 @Composable
-private fun LowStockProductSquarePreview(@PreviewParameter(ProductsProvider::class) state: ProductsState) {
+private fun LowStockProductSquarePreview(
+    @PreviewParameter(ProductsProvider::class) state: ProductsState,
+) {
     ScheduleTheme {
         Surface {
             ProductSquare(

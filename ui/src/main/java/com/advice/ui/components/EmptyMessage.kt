@@ -41,9 +41,10 @@ fun EmptyMessage(
 ) {
     Box(modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(horizontal = 32.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 32.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -91,4 +92,3 @@ private fun ErrorViewPreview() {
         }
     }
 }
-

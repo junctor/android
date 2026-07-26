@@ -5,11 +5,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FaqFilterTest {
-
-    private val faqs = listOf(
-        FAQ("What is DEF CON?", "A hacking conference."),
-        FAQ("Where is Vegas?", "Nevada."),
-    )
+    private val faqs =
+        listOf(
+            FAQ("What is DEF CON?", "A hacking conference."),
+            FAQ("Where is Vegas?", "Nevada."),
+        )
 
     @Test
     fun shortQueryReturnsAllFaqs() {

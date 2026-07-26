@@ -25,11 +25,13 @@ fun Image(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
 ) {
-    val request = ImageRequest.Builder(LocalContext.current)
-        .data(model)
-        .error(R.drawable.logo_glitch)
-        .crossfade(enable = true)
-        .build()
+    val request =
+        ImageRequest
+            .Builder(LocalContext.current)
+            .data(model)
+            .error(R.drawable.logo_glitch)
+            .crossfade(enable = true)
+            .build()
 
     Image(request, contentDescription, modifier, contentScale)
 }
@@ -42,9 +44,10 @@ fun Image(
     contentScale: ContentScale = ContentScale.Fit,
 ) {
     Box(
-        modifier = modifier
-            .clip(roundedCornerShape)
-            .background(Color.Black),
+        modifier =
+            modifier
+                .clip(roundedCornerShape)
+                .background(Color.Black),
     ) {
         AsyncImage(
             model = request,
@@ -59,12 +62,14 @@ fun Image(
 @PreviewLightDark
 @Composable
 private fun PreviewImage() {
-    val request = ImageRequest.Builder(LocalContext.current)
-        .data("https://info.defcon.org/blobs/v_aerospace.png")
-        .placeholder(R.drawable.logo_glitch)
-        .error(R.drawable.logo_glitch)
-        .crossfade(enable = true)
-        .build()
+    val request =
+        ImageRequest
+            .Builder(LocalContext.current)
+            .data("https://info.defcon.org/blobs/v_aerospace.png")
+            .placeholder(R.drawable.logo_glitch)
+            .error(R.drawable.logo_glitch)
+            .crossfade(enable = true)
+            .build()
 
     Image(
         request = request,

@@ -6,7 +6,6 @@ import com.advice.core.local.FlowResult
 import kotlinx.coroutines.flow.Flow
 
 interface UserSession {
-
     var audienceContext: Flow<AudienceContext>
 
     var isDeveloper: Boolean
@@ -17,6 +16,7 @@ interface UserSession {
     val currentConference: Conference?
 
     fun getConference(): Flow<Conference>
+
     fun getConferenceFlow(): Flow<FlowResult<Conference>>
 
     fun setConference(conference: Conference)

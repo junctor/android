@@ -7,7 +7,10 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.shortstack.hackertracker.BuildConfig
 
 object TelemetryCollection {
-    fun apply(context: Context, storage: Storage) {
+    fun apply(
+        context: Context,
+        storage: Storage,
+    ) {
         apply(
             context = context,
             allowAnalytics = storage.allowAnalytics,
@@ -20,7 +23,8 @@ object TelemetryCollection {
         allowAnalytics: Boolean,
         allowCrashlytics: Boolean,
     ) {
-        FirebaseAnalytics.getInstance(context)
+        FirebaseAnalytics
+            .getInstance(context)
             .setAnalyticsCollectionEnabled(allowAnalytics)
         FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = allowCrashlytics && !BuildConfig.DEBUG
     }

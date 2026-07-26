@@ -7,7 +7,6 @@ import com.advice.ui.R
 import com.advice.ui.utils.toResource
 import timber.log.Timber
 
-
 @Composable
 fun MenuIcon(resource: String?) {
     val drawable = resource?.toResource()

@@ -44,8 +44,7 @@ class FirebaseTagsDataSource(
                             .toObjectsOrEmpty(FirebaseTagType::class.java)
                             .sortedBy { it.sortOrder }
                             .mapNotNull { it.toTagType() }
-                    }
-                    .unwrapList("Failed to load tags")
+                    }.unwrapList("Failed to load tags")
             }.stateIn(
                 scope = applicationScope,
                 started = SharingStarted.Eagerly,

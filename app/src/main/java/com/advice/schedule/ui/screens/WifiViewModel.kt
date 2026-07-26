@@ -14,8 +14,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal class WifiViewModel : ViewModel(), KoinComponent {
-
+internal class WifiViewModel :
+    ViewModel(),
+    KoinComponent {
     private val manager by inject<WirelessConnectionManager>()
     private val repository by inject<WifiNetworkRepository>()
 
@@ -25,11 +26,12 @@ internal class WifiViewModel : ViewModel(), KoinComponent {
     fun get(id: Long) {
         viewModelScope.launch {
             val wifiNetworks = repository.get(id)
-            _state.value = if (wifiNetworks == null) {
-                WiFiScreenViewState.Error
-            } else {
-                WiFiScreenViewState.Loaded(wifiNetworks)
-            }
+            _state.value =
+                if (wifiNetworks == null) {
+                    WiFiScreenViewState.Error
+                } else {
+                    WiFiScreenViewState.Loaded(wifiNetworks)
+                }
         }
     }
 
@@ -51,11 +53,12 @@ internal class WifiViewModel : ViewModel(), KoinComponent {
 
     fun onAddNetworksResult(resultCode: Int) {
         val state = _state.value as? WiFiScreenViewState.Loaded ?: return
-        val result = when (resultCode) {
-            android.app.Activity.RESULT_OK -> ConnectionResult.SavedViaSettings
-            android.app.Activity.RESULT_CANCELED -> ConnectionResult.Cancelled
-            else -> ConnectionResult.Error("Unexpected result from Wi-Fi settings ($resultCode)")
-        }
+        val result =
+            when (resultCode) {
+                android.app.Activity.RESULT_OK -> ConnectionResult.SavedViaSettings
+                android.app.Activity.RESULT_CANCELED -> ConnectionResult.Cancelled
+                else -> ConnectionResult.Error("Unexpected result from Wi-Fi settings ($resultCode)")
+            }
         _state.value = state.copy(result = result)
     }
 
@@ -63,17 +66,20 @@ internal class WifiViewModel : ViewModel(), KoinComponent {
         val state = _state.value as? WiFiScreenViewState.Loaded ?: return
         viewModelScope.launch {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val result = manager.removeNetworkSuggestion(
-                    state.wirelessNetwork,
-                    state.forceLocalCert,
-                )
+                val result =
+                    manager.removeNetworkSuggestion(
+                        state.wirelessNetwork,
+                        state.forceLocalCert,
+                    )
                 _state.value = state.copy(result = result)
             } else {
-                _state.value = state.copy(
-                    result = ConnectionResult.Error(
-                        "Removing saved networks is not supported on this Android version."
+                _state.value =
+                    state.copy(
+                        result =
+                            ConnectionResult.Error(
+                                "Removing saved networks is not supported on this Android version.",
+                            ),
                     )
-                )
             }
         }
     }

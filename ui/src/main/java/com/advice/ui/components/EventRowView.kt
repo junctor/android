@@ -42,9 +42,10 @@ fun EventRow(
 ) {
     val context = LocalContext.current
     val row = remember(event) { event.toScheduleEventUi(context) }
-    val dateTime = remember(event.session) {
-        TimeUtil.getDateTimeStamp(context, event.session)
-    }
+    val dateTime =
+        remember(event.session) {
+            TimeUtil.getDateTimeStamp(context, event.session)
+        }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -52,8 +53,7 @@ fun EventRow(
             modifier
                 .clickable {
                     onEventPressed()
-                }
-                .fillMaxWidth(),
+                }.fillMaxWidth(),
     ) {
         CategoryDash(color = row.dashColor)
         Spacer(Modifier.width(24.dp))
@@ -89,8 +89,7 @@ fun EventRowView(
             modifier
                 .clickable {
                     onEventPressed()
-                }
-                .fillMaxWidth(),
+                }.fillMaxWidth(),
     ) {
         CategoryDash(color = dashColor)
         Text(
@@ -136,7 +135,10 @@ fun EventRowView(
 }
 
 @Composable
-internal fun CategoryDash(color: Color?, height: Dp = 80.dp) {
+internal fun CategoryDash(
+    color: Color?,
+    height: Dp = 80.dp,
+) {
     if (color != null) {
         Box(
             modifier =

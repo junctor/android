@@ -7,8 +7,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SearchViewModel : ViewModel(), KoinComponent {
-
+class SearchViewModel :
+    ViewModel(),
+    KoinComponent {
     private val searchRepository: SearchRepository by inject()
 
     val conference = searchRepository.conference

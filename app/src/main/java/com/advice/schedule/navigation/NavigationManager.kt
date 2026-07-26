@@ -6,10 +6,9 @@ import androidx.navigation.compose.composable
 import timber.log.Timber
 
 class NavigationManager {
-
     internal inline fun <reified T : Navigation> NavGraphBuilder.register(
         navigation: T,
-        crossinline content: @Composable (T) -> Unit
+        crossinline content: @Composable (T) -> Unit,
     ) {
         Timber.i("Registering: ${navigation.route()}")
         composable(navigation.route()) {

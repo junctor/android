@@ -11,13 +11,17 @@ class SpeakerRepository(
     suspend fun getSpeakerDetails(id: Long): SpeakerState {
         val speaker = speakersRepository.get(id) ?: return SpeakerState.Error
 
-        val events = contentRepository.content.first().content.filter {
-            it.speakers.any { it -> it.id == id }
-        }.flatMap {
-            it.sessions.map { session ->
-                Event(it, session)
-            }
-        }
+        val events =
+            contentRepository.content
+                .first()
+                .content
+                .filter {
+                    it.speakers.any { it -> it.id == id }
+                }.flatMap {
+                    it.sessions.map { session ->
+                        Event(it, session)
+                    }
+                }
         return SpeakerState.Success(speaker, events)
     }
 }

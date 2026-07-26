@@ -7,8 +7,8 @@ import com.advice.core.local.feedback.FeedbackType
 import com.advice.core.network.NetworkResponse
 import com.advice.core.utils.ToastData
 import com.advice.core.utils.ToastManager
-import com.advice.feedback.ui.screens.FeedbackState
 import com.advice.feedback.network.FeedbackSubmissionRepository
+import com.advice.feedback.ui.screens.FeedbackState
 import com.advice.schedule.data.repositories.FeedbackFormRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +16,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class FeedbackViewModel : ViewModel(), KoinComponent {
-
+class FeedbackViewModel :
+    ViewModel(),
+    KoinComponent {
     private val formRepository by inject<FeedbackFormRepository>()
     private val submissionRepository by inject<FeedbackSubmissionRepository>()
     private val toastManager by inject<ToastManager>()
@@ -37,34 +38,39 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    fun onValueChanged(item: FeedbackItem, value: String) {
+    fun onValueChanged(
+        item: FeedbackItem,
+        value: String,
+    ) {
         val state = _state.value as? FeedbackState.Content ?: return
 
-        val items = state.feedback.items.map {
-            if (it.id == item.id) {
-                when (val type = it.type) {
-                    FeedbackType.DisplayOnly -> it
-                    is FeedbackType.MultiSelect -> {
-                        val selections = if (value.toLong() in type.selections) {
-                            type.selections.filter { it != value.toLong() }
-                        } else {
-                            type.selections + value.toLong()
+        val items =
+            state.feedback.items.map {
+                if (it.id == item.id) {
+                    when (val type = it.type) {
+                        FeedbackType.DisplayOnly -> it
+                        is FeedbackType.MultiSelect -> {
+                            val selections =
+                                if (value.toLong() in type.selections) {
+                                    type.selections.filter { it != value.toLong() }
+                                } else {
+                                    type.selections + value.toLong()
+                                }
+                            it.copy(type = FeedbackType.MultiSelect(type.options, selections))
                         }
-                        it.copy(type = FeedbackType.MultiSelect(type.options, selections))
-                    }
 
-                    is FeedbackType.SelectOne -> {
-                        it.copy(type = FeedbackType.SelectOne(type.options, value.toLong()))
-                    }
+                        is FeedbackType.SelectOne -> {
+                            it.copy(type = FeedbackType.SelectOne(type.options, value.toLong()))
+                        }
 
-                    is FeedbackType.TextBox -> {
-                        it.copy(type = FeedbackType.TextBox(value))
+                        is FeedbackType.TextBox -> {
+                            it.copy(type = FeedbackType.TextBox(value))
+                        }
                     }
+                } else {
+                    it
                 }
-            } else {
-                it
             }
-        }
 
         _state.value = FeedbackState.Content(state.feedback.copy(items = items))
     }
@@ -76,21 +82,23 @@ class FeedbackViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch {
             when (val response = submissionRepository.submitFeedback(content, state.feedback)) {
                 NetworkResponse.Success -> {
-                    _state.value = state.copy(
-                        isLoading = false,
-                        isComplete = true,
-                    )
+                    _state.value =
+                        state.copy(
+                            isLoading = false,
+                            isComplete = true,
+                        )
                 }
 
                 is NetworkResponse.Error -> {
                     val message = response.exception.message
                     val text = "Could not submit feedback: " + (message ?: "unknown error")
 
-                    _state.value = state.copy(
-                        isLoading = false,
-                        isComplete = true,
-                        errorMessage = text,
-                    )
+                    _state.value =
+                        state.copy(
+                            isLoading = false,
+                            isComplete = true,
+                            errorMessage = text,
+                        )
 
                     toastManager.push(ToastData(text))
                 }

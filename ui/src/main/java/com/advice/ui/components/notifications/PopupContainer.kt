@@ -19,17 +19,19 @@ fun PopupContainer(
     content: @Composable () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.35f))
-            .zIndex(10F),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.35f))
+                .zIndex(10F),
         contentAlignment = Alignment.Center,
     ) {
         Popup(
             alignment = Alignment.Center,
-            properties = PopupProperties(
-                excludeFromSystemGesture = true,
-            ),
+            properties =
+                PopupProperties(
+                    excludeFromSystemGesture = true,
+                ),
             onDismissRequest = onDismiss,
         ) {
             content()

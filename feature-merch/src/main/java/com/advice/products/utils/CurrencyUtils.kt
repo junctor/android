@@ -2,7 +2,11 @@ package com.advice.products.utils
 
 import java.util.Locale
 
-fun Long.toCurrency(prefix: String = "US", showCents: Boolean = false, showPlus: Boolean = false): String {
+fun Long.toCurrency(
+    prefix: String = "US",
+    showCents: Boolean = false,
+    showPlus: Boolean = false,
+): String {
     val suffix = if (showPlus) "+" else ""
 
     // if the value is divisible by 100, return without decimals

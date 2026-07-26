@@ -49,11 +49,12 @@ fun ImageScaffold(
 
     if (url != null) {
         DisposableEffect(view) {
-            val window = generateSequence(view.context) { (it as? ContextWrapper)?.baseContext }
-                .filterIsInstance<Activity>()
-                .firstOrNull()
-                ?.window
-                ?: return@DisposableEffect onDispose {}
+            val window =
+                generateSequence(view.context) { (it as? ContextWrapper)?.baseContext }
+                    .filterIsInstance<Activity>()
+                    .firstOrNull()
+                    ?.window
+                    ?: return@DisposableEffect onDispose {}
 
             val previousStatusBarColor = window.statusBarColor
             val previousNavigationBarColor = window.navigationBarColor
@@ -82,11 +83,13 @@ fun ImageScaffold(
         Column(modifier) {
             if (url != null) {
                 Box(Modifier.background(Color.Black)) {
-                    val request = ImageRequest.Builder(LocalContext.current)
-                        .data(url)
-                        .placeholder(com.advice.ui.R.drawable.logo_glitch)
-                        .error(com.advice.ui.R.drawable.logo_glitch)
-                        .build()
+                    val request =
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(url)
+                            .placeholder(com.advice.ui.R.drawable.logo_glitch)
+                            .error(com.advice.ui.R.drawable.logo_glitch)
+                            .build()
 
                     Image(
                         request = request,
@@ -95,7 +98,6 @@ fun ImageScaffold(
                         modifier = imageModifier,
                     )
                 }
-
             }
             content()
             if (url != null) {

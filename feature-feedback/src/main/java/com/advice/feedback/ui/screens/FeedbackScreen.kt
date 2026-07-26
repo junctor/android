@@ -32,32 +32,36 @@ fun FeedbackContent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+        modifier =
+            modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         form.items.forEach { item ->
             when (val type = item.type) {
                 FeedbackType.DisplayOnly -> DisplayOnlyItem(item.caption)
-                is FeedbackType.SelectOne -> SelectOneItem(
-                    item.caption,
-                    type.options,
-                    type.selection
-                ) {
-                    onValueChanged(item, it.toString())
-                }
+                is FeedbackType.SelectOne ->
+                    SelectOneItem(
+                        item.caption,
+                        type.options,
+                        type.selection,
+                    ) {
+                        onValueChanged(item, it.toString())
+                    }
 
-                is FeedbackType.MultiSelect -> MultiSelectItem(
-                    item.caption,
-                    type.options
-                ) {
-                    onValueChanged(item, it.toString())
-                }
+                is FeedbackType.MultiSelect ->
+                    MultiSelectItem(
+                        item.caption,
+                        type.options,
+                    ) {
+                        onValueChanged(item, it.toString())
+                    }
 
-                is FeedbackType.TextBox -> TextBoxItem(item.caption, type.value) {
-                    onValueChanged(item, it)
-                }
+                is FeedbackType.TextBox ->
+                    TextBoxItem(item.caption, type.value) {
+                        onValueChanged(item, it)
+                    }
             }
         }
 

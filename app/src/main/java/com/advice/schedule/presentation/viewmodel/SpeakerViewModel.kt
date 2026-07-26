@@ -10,8 +10,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SpeakerViewModel : ViewModel(), KoinComponent {
-
+class SpeakerViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<SpeakerRepository>()
 
     private val _speakerDetails = MutableStateFlow<SpeakerState>(SpeakerState.Loading)

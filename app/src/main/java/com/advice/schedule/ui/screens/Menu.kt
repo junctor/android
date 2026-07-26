@@ -12,7 +12,6 @@ import com.advice.schedule.presentation.viewmodel.MenuViewModel
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
 
-
 @Composable
 internal fun Menu(
     navController: NavHostController,
@@ -23,7 +22,6 @@ internal fun Menu(
     when (val state = viewModel.state.collectAsState(initial = MenuScreenState.Loading).value) {
         is MenuScreenState.Error -> {
             ErrorScreen {
-
             }
         }
 
@@ -41,7 +39,7 @@ internal fun Menu(
                 },
                 onBackPressed = {
                     navController.onBackPressed()
-                }
+                },
             )
         }
     }

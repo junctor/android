@@ -15,8 +15,14 @@ import timber.log.Timber
 
 sealed class ScheduleResult {
     data object Loading : ScheduleResult()
-    data class Empty(val message: String) : ScheduleResult()
-    data class Success(val events: List<Event>) : ScheduleResult()
+
+    data class Empty(
+        val message: String,
+    ) : ScheduleResult()
+
+    data class Success(
+        val events: List<Event>,
+    ) : ScheduleResult()
 }
 
 class ScheduleRepository(
@@ -25,7 +31,6 @@ class ScheduleRepository(
     private val reminderManager: ReminderManager,
     private val bookmarksDataSource: BookmarkedElementDataSource,
 ) {
-
     fun getSchedule(filter: ScheduleFilter): Flow<ScheduleResult> {
         return combine(
             contentRepository.content,
@@ -36,11 +41,12 @@ class ScheduleRepository(
                 return@combine ScheduleResult.Loading
             }
 
-            val events: List<Event> = content.content.flatMap { content ->
-                content.sessions.map { session ->
-                    Event(content, session)
+            val events: List<Event> =
+                content.content.flatMap { content ->
+                    content.sessions.map { session ->
+                        Event(content, session)
+                    }
                 }
-            }
 
             val sortedEvents = events.sortedBy { it.session.start }
             val selected = tags.filter { it.tags.any { it -> it.isSelected } }
@@ -49,33 +55,34 @@ class ScheduleRepository(
                     .filterIsInstance<Bookmark.TagBookmark>()
                     .any { it.id == Tag.bookmark.id.toString() && it.value }
 
-            val filteredEvents = when (filter) {
-                ScheduleFilter.Default -> {
-                    filter(sortedEvents, selected, isBookmarkFilterSelected)
-                }
+            val filteredEvents =
+                when (filter) {
+                    ScheduleFilter.Default -> {
+                        filter(sortedEvents, selected, isBookmarkFilterSelected)
+                    }
 
-                is ScheduleFilter.Location -> {
-                    sortedEvents.filter { it.session.location.id == filter.id }
-                }
+                    is ScheduleFilter.Location -> {
+                        sortedEvents.filter { it.session.location.id == filter.id }
+                    }
 
-                is ScheduleFilter.Tag -> {
-                    if (filter.id == Tag.bookmark.id) {
-                        sortedEvents.filter { it.session.isBookmarked }
-                    } else {
-                        sortedEvents.filter { it.types.any { it -> it.id == filter.id } }
+                    is ScheduleFilter.Tag -> {
+                        if (filter.id == Tag.bookmark.id) {
+                            sortedEvents.filter { it.session.isBookmarked }
+                        } else {
+                            sortedEvents.filter { it.types.any { it -> it.id == filter.id } }
+                        }
+                    }
+
+                    is ScheduleFilter.Tags -> {
+                        val ids = filter.ids ?: emptyList()
+                        if (ids == listOf(Tag.bookmark.id)) {
+                            sortedEvents.filter { it.session.isBookmarked }
+                        } else {
+                            // Any content that have any of the selected tags
+                            sortedEvents.filter { it.types.any { it -> it.id in ids } }
+                        }
                     }
                 }
-
-                is ScheduleFilter.Tags -> {
-                    val ids = filter.ids ?: emptyList()
-                    if (ids == listOf(Tag.bookmark.id)) {
-                        sortedEvents.filter { it.session.isBookmarked }
-                    } else {
-                        // Any content that have any of the selected tags
-                        sortedEvents.filter { it.types.any { it -> it.id in ids } }
-                    }
-                }
-            }
 
             if (filteredEvents.isEmpty()) {
                 val defaultFilter = filter is ScheduleFilter.Default && isBookmarkFilterSelected
@@ -84,24 +91,25 @@ class ScheduleRepository(
                     (filter as? ScheduleFilter.Tag)?.id == Tag.bookmark.id ||
                         (filter as? ScheduleFilter.Tags)?.ids == listOf(Tag.bookmark.id)
                 val isDisplayingBookmarks = defaultFilter || onlyBookmarks || filterByBookmarks
-                val message = when {
-                    // Bookmarks
-                    isDisplayingBookmarks -> {
-                        "Bookmark events to see them here"
-                    }
+                val message =
+                    when {
+                        // Bookmarks
+                        isDisplayingBookmarks -> {
+                            "Bookmark events to see them here"
+                        }
 
-                    filter is ScheduleFilter.Location -> {
-                        "No events found in this location"
-                    }
+                        filter is ScheduleFilter.Location -> {
+                            "No events found in this location"
+                        }
 
-                    filter is ScheduleFilter.Tag -> {
-                        "No events found for ${filter.label}"
-                    }
+                        filter is ScheduleFilter.Tag -> {
+                            "No events found for ${filter.label}"
+                        }
 
-                    else -> {
-                        "No events found with selected tags"
+                        else -> {
+                            "No events found with selected tags"
+                        }
                     }
-                }
 
                 return@combine ScheduleResult.Empty(message)
             }
@@ -122,9 +130,10 @@ class ScheduleRepository(
             return events
         }
 
-        val groups = filter.map {
-            it.tags.filter { it -> it.isSelected }.map { it -> it.id }
-        }
+        val groups =
+            filter.map {
+                it.tags.filter { it -> it.isSelected }.map { it -> it.id }
+            }
 
         return events
             .filter {
@@ -151,7 +160,7 @@ class ScheduleRepository(
      */
     private suspend fun bookmarkContent(
         content: Content,
-        isBookmarked: Boolean
+        isBookmarked: Boolean,
     ) {
         // Bookmarking content that has sessions
         if (content.sessions.isNotEmpty()) {

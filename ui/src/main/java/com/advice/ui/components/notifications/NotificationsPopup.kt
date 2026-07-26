@@ -39,10 +39,11 @@ fun NotificationsPopup(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .width(300.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(MaterialTheme.colorScheme.surface),
+        modifier =
+            modifier
+                .width(300.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -51,7 +52,7 @@ fun NotificationsPopup(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 16.dp)
+                modifier = Modifier.padding(start = 16.dp),
             ) {
                 Text(
                     text = "Event Notifications",
@@ -65,7 +66,8 @@ fun NotificationsPopup(
                     onClick = onDismiss,
                 ) {
                     Icon(
-                        Icons.Default.Close, "Dismiss",
+                        Icons.Default.Close,
+                        "Dismiss",
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
@@ -76,20 +78,21 @@ fun NotificationsPopup(
             Column(
                 Modifier
                     .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             ) {
-                val text = buildAnnotatedString {
-                    append("Hacker Tracker can send you a notification ")
-                    withStyle(
-                        SpanStyle(
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    ) {
-                        append("20 mins")
+                val text =
+                    buildAnnotatedString {
+                        append("Hacker Tracker can send you a notification ")
+                        withStyle(
+                            SpanStyle(
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                        ) {
+                            append("20 mins")
+                        }
+                        append(" before an event starts.")
                     }
-                    append(" before an event starts.")
-                }
 
                 Text(
                     text = text,

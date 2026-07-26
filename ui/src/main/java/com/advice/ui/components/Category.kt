@@ -97,8 +97,7 @@ private fun AnimatedCircleTextView(
                             radius = circleSizePixels,
                         )
                     }
-                }
-                .padding(4.dp),
+                }.padding(4.dp),
         contentAlignment = Alignment.CenterStart,
     ) {
         Text(

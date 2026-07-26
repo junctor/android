@@ -47,12 +47,13 @@ fun ProductRow(
         Modifier
             .clickable { onMerchClicked(product) }
             .defaultMinSize(minHeight = 86.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp)) {
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+    ) {
         Column(Modifier.weight(1.0f)) {
             Text(product.label, style = MaterialTheme.typography.labelLarge)
             Text(
                 product.baseCost.toCurrency(showCents = true, showPlus = product.hasPriceVariation),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
 
             Spacer(Modifier.height(8.dp))
@@ -61,7 +62,8 @@ fun ProductRow(
             ) {
                 for (option in product.variants) {
                     ProductVariantTag(
-                        text = option.label, inStock = option.stockStatus == StockStatus.IN_STOCK
+                        text = option.label,
+                        inStock = option.stockStatus == StockStatus.IN_STOCK,
                     )
                 }
             }
@@ -71,9 +73,10 @@ fun ProductRow(
                 if (quantity > 0) {
                     Badge(
                         containerColor = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .offset(x = (-12).dp, y = 12.dp)
+                        modifier =
+                            Modifier
+                                .size(24.dp)
+                                .offset(x = (-12).dp, y = 12.dp),
                     ) {
                         Text(
                             text = "$quantity",
@@ -83,13 +86,14 @@ fun ProductRow(
                         )
                     }
                 }
-            }, Modifier.size(64.dp)
+            },
+            Modifier.size(64.dp),
         ) {
             if (product.media.isNotEmpty()) {
                 Box(
                     Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color.Black)
+                        .background(Color.Black),
                 ) {
                     Image(
                         model = product.media.first().url,

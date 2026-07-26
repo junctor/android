@@ -32,18 +32,20 @@ internal fun IconButton(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .background(iconButtonBackgroundColor, roundedCornerShape)
-            .size(32.dp)
-            .clickable { onClick() },
+        modifier =
+            modifier
+                .background(iconButtonBackgroundColor, roundedCornerShape)
+                .size(32.dp)
+                .clickable { onClick() },
     ) {
         Icon(
             imageVector = icon,
             contentDescription = "Options",
             tint = iconButtonForegroundColor,
-            modifier = Modifier
-                .size(14.dp)
-                .align(Alignment.Center),
+            modifier =
+                Modifier
+                    .size(14.dp)
+                    .align(Alignment.Center),
         )
     }
 }
@@ -56,18 +58,20 @@ internal fun IconButton(
     backgroundColor: Color = iconButtonBackgroundColor,
 ) {
     Box(
-        modifier = modifier
-            .background(backgroundColor, roundedCornerShape)
-            .size(32.dp)
-            .clickable { onClick() },
+        modifier =
+            modifier
+                .background(backgroundColor, roundedCornerShape)
+                .size(32.dp)
+                .clickable { onClick() },
     ) {
         Icon(
             painter = icon,
             contentDescription = "Options",
             tint = iconButtonForegroundColor,
-            modifier = Modifier
-                .size(14.dp)
-                .align(Alignment.Center),
+            modifier =
+                Modifier
+                    .size(14.dp)
+                    .align(Alignment.Center),
         )
     }
 }

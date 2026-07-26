@@ -25,21 +25,27 @@ class FeedbackSubmissionRepository(
     private val version: String,
     private val storage: Storage,
 ) {
-    suspend fun submitFeedback(contentId: Long, feedback: FeedbackForm): NetworkResponse =
+    suspend fun submitFeedback(
+        contentId: Long,
+        feedback: FeedbackForm,
+    ): NetworkResponse =
         withContext(Dispatchers.IO) {
             val date = Date()
             val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US).format(date)
 
-            val request = FeedbackRequest(
-                feedbackFormId = feedback.id,
-                contentId = contentId,
-                conferenceId = feedback.conference,
-                client = "Android $version",
-                deviceId = storage.userUUID,
-                timestamp = timestamp,
-                items = feedback.items.mapNotNull {
-                    it.toFeedback()
-                })
+            val request =
+                FeedbackRequest(
+                    feedbackFormId = feedback.id,
+                    contentId = contentId,
+                    conferenceId = feedback.conference,
+                    client = "Android $version",
+                    deviceId = storage.userUUID,
+                    timestamp = timestamp,
+                    items =
+                        feedback.items.mapNotNull {
+                            it.toFeedback()
+                        },
+                )
 
             val response = submitFeedback(feedback.endpoint, request)
             // cache any failed submissions and retry again later
@@ -49,15 +55,24 @@ class FeedbackSubmissionRepository(
             return@withContext response
         }
 
-    private suspend fun submitFeedback(url: String, feedback: FeedbackRequest): NetworkResponse =
+    private suspend fun submitFeedback(
+        url: String,
+        feedback: FeedbackRequest,
+    ): NetworkResponse =
         withContext(Dispatchers.IO) {
             val gson =
-                GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                GsonBuilder()
+                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .create()
 
             val json = gson.toJson(feedback)
             val body = json.toRequestBody("application/json".toMediaTypeOrNull())
-            val request = Request.Builder().url(url).post(body).build()
+            val request =
+                Request
+                    .Builder()
+                    .url(url)
+                    .post(body)
+                    .build()
 
             return@withContext try {
                 Network.client.newCall(request).execute().use { response ->
@@ -74,8 +89,8 @@ class FeedbackSubmissionRepository(
             }
         }
 
-    private fun FeedbackItem.toFeedback(): Feedback? {
-        return when (val feedbackType = type) {
+    private fun FeedbackItem.toFeedback(): Feedback? =
+        when (val feedbackType = type) {
             FeedbackType.DisplayOnly -> null
             is FeedbackType.MultiSelect -> {
                 Feedback(
@@ -98,5 +113,4 @@ class FeedbackSubmissionRepository(
                 )
             }
         }
-    }
 }

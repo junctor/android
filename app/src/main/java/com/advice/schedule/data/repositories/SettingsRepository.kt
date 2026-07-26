@@ -8,25 +8,25 @@ import com.advice.schedule.telemetry.TelemetryCollection
 import com.advice.ui.preview.Preferences
 import kotlinx.coroutines.flow.map
 
-
 class SettingsRepository(
     userSession: UserSession,
     private val preferences: Storage,
     private val version: String,
     private val context: Context,
 ) {
-    val state = userSession.getConference().map {
-        SettingsScreenState(
-            it.timezone,
-            version,
-            preferences.forceTimeZone,
-            preferences.showSchedule,
-            preferences.showFilters,
-            preferences.easterEggs,
-            preferences.allowAnalytics,
-            preferences.allowCrashlytics,
-        )
-    }
+    val state =
+        userSession.getConference().map {
+            SettingsScreenState(
+                it.timezone,
+                version,
+                preferences.forceTimeZone,
+                preferences.showSchedule,
+                preferences.showFilters,
+                preferences.easterEggs,
+                preferences.allowAnalytics,
+                preferences.allowCrashlytics,
+            )
+        }
 
     fun onPreferenceChanged(
         id: String,

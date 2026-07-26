@@ -10,8 +10,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class LocationsViewModel : ViewModel(), KoinComponent {
-
+class LocationsViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<LocationRepository>()
 
     private val _state = MutableStateFlow(LocationsScreenState(emptyList()))

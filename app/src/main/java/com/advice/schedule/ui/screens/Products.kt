@@ -19,7 +19,11 @@ import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
 
 @Composable
-fun Products(context: AppCompatActivity, navController: NavHostController, label: String) {
+fun Products(
+    context: AppCompatActivity,
+    navController: NavHostController,
+    label: String,
+) {
     val viewModel = viewModel<ProductsViewModel>(context)
     val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value
 
@@ -93,14 +97,17 @@ fun Product(
                 },
                 onBackPressed = {
                     navController.onBackPressed()
-                }
+                },
             )
         }
     }
 }
 
 @Composable
-fun ProductsSummary(context: AppCompatActivity, navController: NavHostController) {
+fun ProductsSummary(
+    context: AppCompatActivity,
+    navController: NavHostController,
+) {
     val viewModel = viewModel<ProductsViewModel>(context)
 
     // Storing the previous brightness for when we exit the Summary screen

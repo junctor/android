@@ -21,7 +21,7 @@ internal fun FAQ(navController: NavHostController) {
                 message = state.error.message ?: "An error occurred",
                 onBackPress = {
                     navController.onBackPressed()
-                }
+                },
             )
         }
 

@@ -12,41 +12,44 @@ class FakeContentProvider : PreviewParameterProvider<Content> {
         get() = content.asSequence()
 
     companion object {
-        val content = listOf(
-            Content(
-                conference = "THOTCON 0xC",
-                title = "DOORS OPEN 喝一杯",
-                description = "",
-                updated = Instant.now(),
-                speakers = emptyList(),
-                types = listOf(
-                    Tag(
-                        -1L,
-                        "Misc",
-                        "",
-                        "#e73dd2",
-                        -1,
-                    ),
-                ),
-                urls = emptyList(),
-                media = emptyList(),
-                sessions = listOf(
-                    Session(
-                        id = 1,
-                        timeZone = "America/Chicago",
-                        start = Instant.now(),
-                        end = Instant.now(),
-                        location =
-                        Location(
-                            -1L,
-                            "LOC://AUD - Track 1 / Первый Трек",
-                            "Track 1 / Первый Трек",
-                            "THOCON 0xC",
+        val content =
+            listOf(
+                Content(
+                    conference = "THOTCON 0xC",
+                    title = "DOORS OPEN 喝一杯",
+                    description = "",
+                    updated = Instant.now(),
+                    speakers = emptyList(),
+                    types =
+                        listOf(
+                            Tag(
+                                -1L,
+                                "Misc",
+                                "",
+                                "#e73dd2",
+                                -1,
+                            ),
                         ),
-                    )
+                    urls = emptyList(),
+                    media = emptyList(),
+                    sessions =
+                        listOf(
+                            Session(
+                                id = 1,
+                                timeZone = "America/Chicago",
+                                start = Instant.now(),
+                                end = Instant.now(),
+                                location =
+                                    Location(
+                                        -1L,
+                                        "LOC://AUD - Track 1 / Первый Трек",
+                                        "Track 1 / Первый Трек",
+                                        "THOCON 0xC",
+                                    ),
+                            ),
+                        ),
+                    relatedContentIds = emptyList(),
                 ),
-                relatedContentIds = emptyList(),
-            ),
-        )
+            )
     }
 }

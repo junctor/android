@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SpeakersDataSource {
     fun get(): Flow<List<Speaker>>
+
     suspend fun get(id: Long): Speaker?
 }

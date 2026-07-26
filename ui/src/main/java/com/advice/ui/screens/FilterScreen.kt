@@ -44,7 +44,7 @@ fun FilterScreen(
                                 state.filters
                                     .flatMap { it.tags }
                                     .any { it.isSelected }
-                            )
+                        )
                 if (showClearButton) {
                     IconButton(onClear) {
                         Icon(Icons.Default.Close, null)

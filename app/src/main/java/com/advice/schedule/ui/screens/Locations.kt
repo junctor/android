@@ -44,12 +44,13 @@ fun Location(
     context: AppCompatActivity,
     navController: NavHostController,
     id: Long?,
-    label: String?
+    label: String?,
 ) {
     val viewModel = viewModel<ScheduleViewModel>(context)
-    val state = remember {
-        viewModel.getState(ScheduleFilter.Location(id))
-    }.collectAsState(initial = ScheduleScreenState.Loading).value
+    val state =
+        remember {
+            viewModel.getState(ScheduleFilter.Location(id))
+        }.collectAsState(initial = ScheduleScreenState.Loading).value
 
     ScheduleScreen(
         state = state,
@@ -62,8 +63,8 @@ fun Location(
                 Navigation.Event(
                     it.conference,
                     it.content.id.toString(),
-                    it.id.toString()
-                )
+                    it.id.toString(),
+                ),
             )
         },
         onBookmarkClick = { event, isBookmarked ->
@@ -72,4 +73,3 @@ fun Location(
         },
     )
 }
-

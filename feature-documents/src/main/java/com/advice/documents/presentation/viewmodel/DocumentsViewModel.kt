@@ -9,8 +9,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class DocumentsViewModel : ViewModel(), KoinComponent {
-
+class DocumentsViewModel :
+    ViewModel(),
+    KoinComponent {
     private val repository by inject<DocumentsRepository>()
 
     private val _state = MutableStateFlow<DocumentsScreenState>(DocumentsScreenState.Loading)
