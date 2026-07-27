@@ -237,8 +237,7 @@ object TimeUtil {
             )
     }
 
-    fun getNewsTimestamp(date: Instant): String =
-        formatter("MMMM d, yyyy").format(date.atZone(ZoneId.systemDefault()))
+    fun getNewsTimestamp(date: Instant): String = formatter("MMMM d, yyyy").format(date.atZone(ZoneId.systemDefault()))
 
     private fun isSameDay(
         instant1: Instant,
