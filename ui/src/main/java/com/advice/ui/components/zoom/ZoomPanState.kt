@@ -33,7 +33,7 @@ internal class ZoomPanState(
         private set
     var contentSize by mutableStateOf(Size.Zero)
         private set
-    var maxZoom by mutableStateOf(DEFAULT_MAX_ZOOM)
+    var maxZoom by mutableFloatStateOf(DEFAULT_MAX_ZOOM)
         private set
 
     val isZoomed: Boolean by derivedStateOf { scale > MIN_ZOOM + 0.01f }

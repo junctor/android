@@ -1,6 +1,6 @@
 package com.advice.schedule.ui.viewmodels
 
-import android.content.Context
+import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -109,11 +109,14 @@ class MainViewModel :
     private var hasStarted = false
 
     fun onAppStart(
-        context: Context,
+        activity: Activity,
         appUpdateLauncher: ActivityResultLauncher<IntentSenderRequest>,
     ) {
         if (hasStarted) return
         hasStarted = true
+
+        // Play Age Signals 0.0.4 requires an Activity for the sharing-access prompt.
+        userSession.resolveAudienceContext(activity)
 
         // Only showing the prompt once per version.
         if (storage.updateVersion != BuildConfig.VERSION_CODE) {
@@ -121,7 +124,7 @@ class MainViewModel :
         }
         val format =
             if (android.text.format.DateFormat
-                    .is24HourFormat(context)
+                    .is24HourFormat(activity)
             ) {
                 "24h"
             } else {
@@ -132,7 +135,7 @@ class MainViewModel :
         viewModelScope.launch {
             toastManager.messages.collect {
                 if (it != null) {
-                    Toast.makeText(context, it.text, it.duration).show()
+                    Toast.makeText(activity, it.text, it.duration).show()
                     toastManager.clear()
                 }
             }

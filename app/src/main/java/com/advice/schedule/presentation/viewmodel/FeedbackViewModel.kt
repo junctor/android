@@ -45,10 +45,10 @@ class FeedbackViewModel :
         val state = _state.value as? FeedbackState.Content ?: return
 
         val items =
-            state.feedback.items.map {
-                if (it.id == item.id) {
-                    when (val type = it.type) {
-                        FeedbackType.DisplayOnly -> it
+            state.feedback.items.map { feedbackItem ->
+                if (feedbackItem.id == item.id) {
+                    when (val type = feedbackItem.type) {
+                        FeedbackType.DisplayOnly -> feedbackItem
                         is FeedbackType.MultiSelect -> {
                             val selections =
                                 if (value.toLong() in type.selections) {
@@ -56,19 +56,23 @@ class FeedbackViewModel :
                                 } else {
                                     type.selections + value.toLong()
                                 }
-                            it.copy(type = FeedbackType.MultiSelect(type.options, selections))
+                            feedbackItem.copy(
+                                type = FeedbackType.MultiSelect(type.options, selections),
+                            )
                         }
 
                         is FeedbackType.SelectOne -> {
-                            it.copy(type = FeedbackType.SelectOne(type.options, value.toLong()))
+                            feedbackItem.copy(
+                                type = FeedbackType.SelectOne(type.options, value.toLong()),
+                            )
                         }
 
                         is FeedbackType.TextBox -> {
-                            it.copy(type = FeedbackType.TextBox(value))
+                            feedbackItem.copy(type = FeedbackType.TextBox(value))
                         }
                     }
                 } else {
-                    it
+                    feedbackItem
                 }
             }
 

@@ -34,7 +34,7 @@ class FirebaseFAQDataSource(
                     .snapshotFlow()
                     .closeOnConferenceChange(userSession.getConference())
                     .mapSnapshot {
-                        it.toObjectsOrEmpty(FirebaseFAQ::class.java).map { it.toFAQ() }
+                        it.toObjectsOrEmpty(FirebaseFAQ::class.java).map { faq -> faq.toFAQ() }
                     }.onStart { emit(FlowResult.Loading) }
             }.shareIn(
                 applicationScope,

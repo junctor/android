@@ -1,17 +1,16 @@
 package com.advice.core.audience
 
-enum class AudienceStatus(
-    val value: Int,
-) {
-    Verified(0),
-    Supervised(1),
-    Declared(5),
-    Pending(2),
-    Denied(3),
-    Unknown(4),
-    ;
-
-    companion object {
-        fun getByValue(value: Int?) = entries.firstOrNull { it.value == value }
-    }
+/**
+ * Domain mapping of Play Age Signals response fields.
+ *
+ * [Declared]/[Supervised]/[Verified] come from `ageRangeSource` (TIER_A–D).
+ * [Pending]/[Denied] come from `significantChangeStatus` when present.
+ */
+enum class AudienceStatus {
+    Declared,
+    Supervised,
+    Verified,
+    Pending,
+    Denied,
+    Unknown,
 }

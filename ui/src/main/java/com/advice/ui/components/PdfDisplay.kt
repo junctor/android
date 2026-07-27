@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.core.graphics.createBitmap
 import com.advice.ui.components.zoom.derivedMaxZoom
 import com.advice.ui.components.zoom.fitContentSize
 import com.advice.ui.components.zoom.rememberZoomPanState
@@ -52,6 +53,7 @@ import timber.log.Timber
 import java.io.Closeable
 import java.io.File
 import kotlin.math.ceil
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val DETAIL_SETTLE_MS = 120L
 private const val DETAIL_ZOOM_THRESHOLD = 1.05f
@@ -302,7 +304,7 @@ private fun PdfPageDetail(
                 // Drop the previous overlay immediately so a pan/zoom never shows
                 // a stale screen-space frame in the wrong place.
                 detail = null
-                delay(DETAIL_SETTLE_MS)
+                delay(DETAIL_SETTLE_MS.milliseconds)
 
                 if (settledScale < DETAIL_ZOOM_THRESHOLD ||
                     contentSize == Size.Zero ||
@@ -410,7 +412,7 @@ private class PdfRendererSession(
         mutex.withLock {
             withContext(Dispatchers.Default) {
                 renderer.openPage(index).use { page ->
-                    Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { bitmap ->
+                    createBitmap(width, height).also { bitmap ->
                         bitmap.eraseColor(android.graphics.Color.WHITE)
                         page.render(
                             bitmap,
@@ -453,7 +455,7 @@ private class PdfRendererSession(
                                 bitmapHeight / region.height,
                             )
                         }
-                    Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888).also { bitmap ->
+                    createBitmap(bitmapWidth, bitmapHeight).also { bitmap ->
                         bitmap.eraseColor(android.graphics.Color.WHITE)
                         page.render(
                             bitmap,

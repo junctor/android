@@ -314,7 +314,7 @@ private fun ScheduleScreenPreview(
 @PreviewLightDark
 @Composable
 private fun ScheduleScreenEmptyPreview(
-    @PreviewParameter(FakeEventProvider::class) @Suppress("UNUSED_PARAMETER") event: Event,
+    @PreviewParameter(FakeEventProvider::class) event: Event,
 ) {
     ScheduleTheme {
         val state =

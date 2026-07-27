@@ -1,5 +1,6 @@
 package com.advice.firebase.session
 
+import android.app.Activity
 import com.advice.core.audience.AudienceContext
 import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
@@ -9,6 +10,7 @@ import com.advice.data.sources.ConferencesDataSource
 import com.advice.play.AgeSignalsRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,9 @@ class FirebaseUserSession(
     private val _conference = MutableStateFlow<Conference?>(null)
     private val _conferenceFlow: MutableStateFlow<FlowResult<Conference>> =
         MutableStateFlow(FlowResult.Loading)
+
+    /** Completes true once anonymous auth succeeds; false if auth failed. */
+    private val authReady = CompletableDeferred<Boolean>()
 
     override var isDeveloper: Boolean = false
 
@@ -73,16 +78,28 @@ class FirebaseUserSession(
                 val user = it.user
                 if (user != null) {
                     Timber.d("User uid: ${user.uid}")
-                    _audienceContext.value = ageSignals.get()
+                    authReady.complete(true)
                 } else {
                     crashlytics.log("user cannot be signed in")
                     Timber.e("User could not be signed in")
                     _audienceContext.value = AudienceContext.Unavailable
+                    authReady.complete(false)
                 }
             } catch (ex: Exception) {
                 Timber.e(ex, "Could not sign in anonymously")
                 _audienceContext.value = AudienceContext.Unavailable
+                authReady.complete(false)
             }
+        }
+    }
+
+    override fun resolveAudienceContext(activity: Activity) {
+        if (_audienceContext.value !is AudienceContext.Unresolved) return
+
+        applicationScope.launch {
+            if (!authReady.await()) return@launch
+            if (_audienceContext.value !is AudienceContext.Unresolved) return@launch
+            _audienceContext.value = ageSignals.get(activity)
         }
     }
 
