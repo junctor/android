@@ -20,7 +20,6 @@ import com.advice.firebase.extensions.documentReads
 import com.advice.firebase.extensions.listenersCount
 import com.advice.play.AppManager
 import com.advice.schedule.ui.components.DragAnchors
-import com.google.firebase.messaging.FirebaseMessaging
 import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,12 +48,6 @@ class MainViewModel :
             setAnchor(DragAnchors.Center)
         } else {
             setAnchor(DragAnchors.Start)
-        }
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener {
-            if (it.isSuccessful) {
-                Timber.d("FCM Token: ${it.result}")
-            }
         }
 
         // Attempting to submit any feedback that previously failed
@@ -91,6 +84,7 @@ class MainViewModel :
         _state.value =
             _state.value.copy(
                 currentAnchor = anchor,
+                // Only the home panel shows the bottom nav; schedule/filter minimize it.
                 isShown = anchor == DragAnchors.Start,
             )
     }

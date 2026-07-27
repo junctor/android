@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,7 @@ fun OverlappingPanelsView(
     onPanelChangedListener: ((DragAnchors) -> Unit)? = null,
 ) {
     val isComposableReady = remember { mutableStateOf(false) }
+    var hasSyncedToAnchor by remember { mutableStateOf(false) }
 
     val density = LocalDensity.current
 
@@ -66,22 +68,8 @@ fun OverlappingPanelsView(
     val gutterSize = with(density) { GUTTER_SIZE.dp.toPx() }
 
     val dragState =
-        rememberSaveable(
-            saver =
-                AnchoredDraggableState.Saver(
-                    confirmValueChange = { anchor ->
-                        onPanelChangedListener?.invoke(anchor)
-                        true
-                    },
-                ),
-        ) {
-            AnchoredDraggableState(
-                initialValue = DragAnchors.Start,
-                confirmValueChange = { anchor ->
-                    onPanelChangedListener?.invoke(anchor)
-                    true
-                },
-            )
+        rememberSaveable(saver = AnchoredDraggableState.Saver()) {
+            AnchoredDraggableState(initialValue = DragAnchors.Start)
         }
 
     val flingBehavior =
@@ -101,11 +89,30 @@ fun OverlappingPanelsView(
 
     LaunchedEffect(currentAnchor, isComposableReady.value) {
         if (isComposableReady.value) {
-            when (currentAnchor) {
-                DragAnchors.Start -> dragState.animateTo(DragAnchors.Start)
-                DragAnchors.Center -> dragState.animateTo(DragAnchors.Center)
-                DragAnchors.End -> dragState.animateTo(DragAnchors.End)
+            if (dragState.settledValue != currentAnchor) {
+                dragState.animateTo(currentAnchor)
             }
+            hasSyncedToAnchor = true
+        }
+    }
+
+    LaunchedEffect(dragState.settledValue, hasSyncedToAnchor) {
+        if (hasSyncedToAnchor && dragState.settledValue != currentAnchor) {
+            onPanelChangedListener?.invoke(dragState.settledValue)
+        }
+    }
+
+    val showLeftPanel by remember {
+        derivedStateOf {
+            val offset = dragState.offset
+            !offset.isNaN() && offset > 0
+        }
+    }
+
+    val showRightPanel by remember {
+        derivedStateOf {
+            val offset = dragState.offset
+            !offset.isNaN() && offset < 0
         }
     }
 
@@ -123,7 +130,7 @@ fun OverlappingPanelsView(
             },
     ) {
         // The left panel
-        if (dragState.requireOffset() > 0) {
+        if (showLeftPanel) {
             Box(
                 Modifier
                     .systemBarsPadding()
@@ -134,7 +141,7 @@ fun OverlappingPanelsView(
         }
 
         // The right panel
-        if (dragState.requireOffset() < 0) {
+        if (showRightPanel) {
             Box(
                 Modifier
                     .systemBarsPadding()
@@ -159,19 +166,19 @@ fun OverlappingPanelsView(
             mainPanel()
         }
 
-        if (currentAnchor != DragAnchors.Center) {
-            val alignment =
-                when (currentAnchor) {
-                    DragAnchors.Start -> Alignment.CenterEnd
-                    DragAnchors.Center -> Alignment.Center
-                    DragAnchors.End -> Alignment.CenterStart
-                }
+        val gutterAlignment =
+            when (currentAnchor) {
+                DragAnchors.Start -> Alignment.CenterEnd
+                DragAnchors.End -> Alignment.CenterStart
+                DragAnchors.Center -> null
+            }
+        if (gutterAlignment != null) {
             Box(
                 modifier =
                     Modifier
                         .width(GUTTER_SIZE.dp)
                         .fillMaxHeight()
-                        .align(alignment)
+                        .align(gutterAlignment)
                         .clickable {
                             onPanelChangedListener?.invoke(DragAnchors.Center)
                         },

@@ -12,40 +12,46 @@ import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 
 object Network {
-    val client: OkHttpClient
-
-    init {
-        val trustManagerFactory =
-            TrustManagerFactory.getInstance(
-                TrustManagerFactory.getDefaultAlgorithm(),
-            )
-        trustManagerFactory.init(null as KeyStore?)
-        val trustManagers = trustManagerFactory.trustManagers
-        check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
-            ("Unexpected default trust managers:" + trustManagers.contentToString())
+    val client: OkHttpClient by lazy {
+        if (System.getProperty("com.android.tools.idea.preview") == "true") {
+            return@lazy OkHttpClient()
         }
-        val trustManager = trustManagers[0] as X509TrustManager
 
-        val sslContext = SSLContext.getInstance(TlsVersion.TLS_1_3.javaName)
-        sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
+        try {
+            val trustManagerFactory =
+                TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm(),
+                )
+            trustManagerFactory.init(null as KeyStore?)
+            val trustManagers = trustManagerFactory.trustManagers
+            check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
+                ("Unexpected default trust managers:" + trustManagers.contentToString())
+            }
+            val trustManager = trustManagers[0] as X509TrustManager
 
-        val sslSocketFactory: SSLSocketFactory = sslContext.socketFactory
+            val sslContext = SSLContext.getInstance(TlsVersion.TLS_1_3.javaName)
+            sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
 
-        val connectionSpec =
-            ConnectionSpec
-                .Builder(ConnectionSpec.RESTRICTED_TLS)
-                .tlsVersions(TlsVersion.TLS_1_3)
-                .cipherSuites(
-                    CipherSuite.TLS_AES_256_GCM_SHA384,
-                    CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
-                    CipherSuite.TLS_AES_128_GCM_SHA256,
-                ).build()
+            val sslSocketFactory: SSLSocketFactory = sslContext.socketFactory
 
-        client =
+            val connectionSpec =
+                ConnectionSpec
+                    .Builder(ConnectionSpec.RESTRICTED_TLS)
+                    .tlsVersions(TlsVersion.TLS_1_3)
+                    .cipherSuites(
+                        CipherSuite.TLS_AES_256_GCM_SHA384,
+                        CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
+                        CipherSuite.TLS_AES_128_GCM_SHA256,
+                    ).build()
+
             OkHttpClient
                 .Builder()
                 .sslSocketFactory(sslSocketFactory, trustManager)
                 .connectionSpecs(listOf(connectionSpec))
                 .build()
+        } catch (_: Throwable) {
+            // Fallback to a basic client if custom TLS configuration fails (e.g. in a JVM preview environment)
+            OkHttpClient()
+        }
     }
 }

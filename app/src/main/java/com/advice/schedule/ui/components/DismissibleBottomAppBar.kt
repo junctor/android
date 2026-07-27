@@ -4,7 +4,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -21,9 +24,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
+import kotlin.math.roundToInt
+
+/** Material3 bottom app bar container height; used to fully dismiss off-screen. */
+private val BottomAppBarHeight = 80.dp
 
 @Composable
 fun DismissibleBottomAppBar(
@@ -31,16 +39,25 @@ fun DismissibleBottomAppBar(
     isShown: Boolean,
     content: @Composable RowScope.() -> Unit,
 ) {
+    val density = LocalDensity.current
+    val navigationBarHeight = WindowInsets.navigationBars.getBottom(density)
+    val hiddenOffset =
+        with(density) { BottomAppBarHeight.toPx() } + navigationBarHeight
     var offsetY by rememberSaveable { mutableFloatStateOf(0f) }
-    offsetY = if (isShown) 0f else with(LocalDensity.current) { 48.dp.toPx() }
+    offsetY = if (isShown) 0f else hiddenOffset
     val animatedOffsetY by animateFloatAsState(
         targetValue = offsetY,
+        label = "bottomAppBarOffset",
     )
 
     BottomAppBar(
         modifier =
             modifier
-                .offset(y = animatedOffsetY.dp),
+                .navigationBarsPadding()
+                .offset { IntOffset(0, animatedOffsetY.roundToInt()) },
+        // Insets applied via navigationBarsPadding on the modifier so the bar surface
+        // sits above the system nav; avoid double-padding inside the bar content.
+        windowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 0.dp,
     ) {

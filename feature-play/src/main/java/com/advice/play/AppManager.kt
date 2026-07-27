@@ -28,9 +28,9 @@ class AppManager(context: Context) {
                             it.resumeWith(Result.success(false))
                         }
                     }
-            } catch (ex: SecurityException) {
+            } catch (_: SecurityException) {
                 it.resumeWith(Result.success(false))
-            } catch (ex: Exception) {
+            } catch (_: Exception) {
                 it.resumeWith(Result.success(false))
             }
         }
@@ -53,7 +53,7 @@ class AppManager(context: Context) {
                     )
                 }
             }
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
     }

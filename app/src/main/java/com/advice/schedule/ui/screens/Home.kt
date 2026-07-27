@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -17,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.ui.FiltersScreenState
@@ -38,6 +41,9 @@ import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
+
+/** Matches Material3 bottom app bar height so panel content clears [DismissibleBottomAppBar]. */
+private val BottomNavContentClearance = 80.dp
 
 @Composable
 internal fun Home(
@@ -61,71 +67,81 @@ internal fun Home(
         filtersViewModel.state.collectAsState(initial = FiltersScreenState.Loading).value
 
     Box {
-        OverlappingPanelsView(viewState.currentAnchor, leftPanel = {
-            HomeScreen(
-                state = homeState,
-                onConferenceClick = {
-                    homeViewModel.setConference(it)
-                },
-                onNavigationClick = {
-                    when (val navigation = it.toNavigation()) {
-                        is Navigation.Schedule -> {
-                            if (navigation.ids.isEmpty()) {
-                                mainViewModel.setAnchor(DragAnchors.Center)
-                                return@HomeScreen
+        OverlappingPanelsView(
+            currentAnchor = viewState.currentAnchor,
+            leftPanel = {
+                HomeScreen(
+                    state = homeState,
+                    onConferenceClick = {
+                        homeViewModel.setConference(it)
+                    },
+                    onNavigationClick = {
+                        when (val navigation = it.toNavigation()) {
+                            is Navigation.Schedule -> {
+                                if (navigation.ids.isEmpty()) {
+                                    mainViewModel.setAnchor(DragAnchors.Center)
+                                    return@HomeScreen
+                                }
+                                navController.navigateTo(navigation)
                             }
-                            navController.navigateTo(navigation)
-                        }
 
-                        is Navigation.Maps -> {
-                            navController.navigateTo(navigation)
-                        }
+                            is Navigation.Maps -> {
+                                navController.navigateTo(navigation)
+                            }
 
-                        else -> {
-                            navController.navigateTo(navigation)
+                            else -> {
+                                navController.navigateTo(navigation)
+                            }
                         }
-                    }
-                },
-                onDismissNews = {
-                    homeViewModel.markLatestNewsAsRead(it)
-                },
-                countdownContent = {
-                    HomeCountdown(homeViewModel)
-                },
-            )
-        }, rightPanel = {
-            FilterScreen(state = filtersScreenState, onClick = {
-                filtersViewModel.toggle(it)
-            }, onClear = {
-                filtersViewModel.clearBookmarks()
-            })
-        }, mainPanel = {
-            ScheduleScreen(
-                state = scheduleScreenState,
-                onMenuClick = {
-                    mainViewModel.setAnchor(DragAnchors.Start)
-                },
-                onFabClick = {
-                    mainViewModel.setAnchor(DragAnchors.End)
-                },
-                onEventClick = {
-                    // passing the content id and the session id
-                    navController.navigateTo(
-                        Navigation.Event(
-                            it.conference,
-                            it.content.id.toString(),
-                            it.id.toString(),
-                        ),
-                    )
-                },
-                onBookmarkClick = { event, isBookmarked ->
-                    scheduleViewModel.bookmark(event, isBookmarked)
-                    (context as MainActivity).onBookmarkEvent()
-                },
-            )
-        }, onPanelChangedListener = { panel ->
-            mainViewModel.setAnchor(panel)
-        })
+                    },
+                    onDismissNews = {
+                        homeViewModel.markLatestNewsAsRead(it)
+                    },
+                    countdownContent = {
+                        HomeCountdown(homeViewModel)
+                    },
+                )
+            },
+            rightPanel = {
+                FilterScreen(state = filtersScreenState, onClick = {
+                    filtersViewModel.toggle(it)
+                }, onClear = {
+                    filtersViewModel.clearBookmarks()
+                })
+            },
+            mainPanel = {
+                ScheduleScreen(
+                    state = scheduleScreenState,
+                    onMenuClick = {
+                        mainViewModel.setAnchor(DragAnchors.Start)
+                    },
+                    onFabClick = {
+                        mainViewModel.setAnchor(DragAnchors.End)
+                    },
+                    onEventClick = {
+                        // passing the content id and the session id
+                        navController.navigateTo(
+                            Navigation.Event(
+                                it.conference,
+                                it.content.id.toString(),
+                                it.id.toString(),
+                            ),
+                        )
+                    },
+                    onBookmarkClick = { event, isBookmarked ->
+                        scheduleViewModel.bookmark(event, isBookmarked)
+                        (context as MainActivity).onBookmarkEvent()
+                    },
+                )
+            },
+            onPanelChangedListener = { panel ->
+                mainViewModel.setAnchor(panel)
+            },
+            modifier =
+                Modifier
+                    .navigationBarsPadding()
+                    .padding(bottom = if (viewState.isShown) BottomNavContentClearance else 0.dp),
+        )
         DismissibleBottomAppBar(
             Modifier.align(Alignment.BottomCenter),
             isShown = viewState.isShown,

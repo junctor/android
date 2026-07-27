@@ -28,8 +28,8 @@ import com.advice.ui.utils.TemporarySystemBarScrims
 
 @Composable
 fun ImageScaffold(
+    modifier: Modifier = Modifier,
     url: String? = null,
-    imageModifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
@@ -55,8 +55,8 @@ fun ImageScaffold(
         contentColor = contentColor,
         contentWindowInsets = contentWindowInsets,
     ) {
-        val modifier = if (url != null) contentModifier else contentModifier.padding(it)
-        Column(modifier) {
+        val cMod = if (url != null) contentModifier else contentModifier.padding(it)
+        Column(cMod) {
             if (url != null) {
                 Box(Modifier.background(Color.Black)) {
                     val request =
@@ -71,7 +71,7 @@ fun ImageScaffold(
                         request = request,
                         contentDescription = "background image",
                         contentScale = ContentScale.Fit,
-                        modifier = imageModifier,
+                        modifier = modifier,
                     )
                 }
             }
@@ -87,10 +87,10 @@ fun ImageScaffold(
 @Composable
 private fun ImageScreenPreview() {
     ScheduleTheme {
-        ImageScaffold(url = "", imageModifier = Modifier.aspectRatio(16f / 9f)) {
+        ImageScaffold(modifier = Modifier.aspectRatio(16f / 9f), url = "", content = {
             Box {
                 Text("hello world")
             }
-        }
+        })
     }
 }

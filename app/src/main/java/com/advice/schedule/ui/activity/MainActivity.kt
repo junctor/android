@@ -19,6 +19,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
@@ -34,6 +37,7 @@ import com.advice.schedule.ui.viewmodels.MainViewState
 import com.advice.ui.components.notifications.NotificationsPopup
 import com.advice.ui.components.notifications.PopupContainer
 import com.advice.ui.theme.ScheduleTheme
+import com.advice.ui.utils.ClearEdgeToEdgeProtectionsEffect
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
@@ -83,11 +87,14 @@ class MainActivity :
             statusBarStyle = SystemBarStyle.dark(AndroidColor.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(AndroidColor.TRANSPARENT),
         )
+        hideSystemNavigationBars()
 
         pendingDeepLink = intent.data
         mainViewModel.onAppStart(this, appUpdateLauncher)
 
         setContent {
+            ClearEdgeToEdgeProtectionsEffect()
+
             val navController = rememberNavController()
 
             DisposableEffect(navController) {
@@ -293,6 +300,13 @@ class MainActivity :
         }
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            hideSystemNavigationBars()
+        }
+    }
+
     override fun onPause() {
         try {
             mainViewModel.onPause()
@@ -300,5 +314,16 @@ class MainActivity :
             Timber.e(ex)
         }
         super.onPause()
+    }
+
+    /**
+     * Hides the system navigation bar (back / home / recent). Swiping from the bottom edge
+     * temporarily reveals it ([WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE]).
+     */
+    private fun hideSystemNavigationBars() {
+        val controller = WindowCompat.getInsetsController(window, window.decorView)
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        controller.hide(WindowInsetsCompat.Type.navigationBars())
     }
 }
