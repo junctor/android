@@ -35,6 +35,7 @@ fun TemporarySystemBarScrims(scrim: Color) {
 
         @Suppress("DEPRECATION")
         val previousStatusBarColor = window.statusBarColor
+
         @Suppress("DEPRECATION")
         val previousNavigationBarColor = window.navigationBarColor
 

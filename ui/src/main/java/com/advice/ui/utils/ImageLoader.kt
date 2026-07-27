@@ -5,8 +5,9 @@ import coil.ImageLoader
 import com.advice.core.network.Network
 
 fun Context.getImageLoader(isPreview: Boolean = false): ImageLoader {
-    val builder = ImageLoader(this)
-        .newBuilder()
+    val builder =
+        ImageLoader(this)
+            .newBuilder()
 
     val isPreviewMode = isPreview || System.getProperty("com.android.tools.idea.preview") == "true"
 

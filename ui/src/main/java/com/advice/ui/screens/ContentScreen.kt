@@ -164,7 +164,7 @@ private fun TopBar(
                 scrolledContainerColor = Color.Unspecified,
                 navigationIconContentColor = Color.Unspecified,
                 titleContentColor = Color.Unspecified,
-                actionIconContentColor = Color.Unspecified
+                actionIconContentColor = Color.Unspecified,
             ),
     )
 }

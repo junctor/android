@@ -43,7 +43,6 @@ import org.koin.core.component.inject
 import timber.log.Timber
 import android.graphics.Color as AndroidColor
 
-
 class MainActivity :
     AppCompatActivity(),
     KoinComponent {
