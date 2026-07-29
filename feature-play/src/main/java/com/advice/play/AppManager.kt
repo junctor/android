@@ -9,8 +9,9 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-class AppManager(context: Context) {
-
+class AppManager(
+    context: Context,
+) {
     private val appUpdateManager = AppUpdateManagerFactory.create(context)
 
     suspend fun isUpdateAvailable(): Boolean {

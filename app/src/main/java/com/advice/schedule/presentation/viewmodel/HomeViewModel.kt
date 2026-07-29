@@ -55,7 +55,7 @@ class HomeViewModel :
                             startCountdown(it.conference)
                         }
 
-                        // Showing notification in emergency document is present
+                        // Showing notification when emergency document is present
                         val id = it.conference.emergencyDocumentId
                         if (id != emergencyDocumentId) {
                             emergencyDocumentId = id

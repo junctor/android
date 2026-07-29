@@ -2,6 +2,7 @@
 .gradle
 .kotlin
 .artifacts
+.cursor
 /.idea
 .DS_Store
 /build

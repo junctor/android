@@ -15,6 +15,7 @@ import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.feedback.network.FeedbackSubmissionRepository
+import com.advice.feedback.network.ReportSubmissionRepository
 import com.advice.firebase.extensions.documentCacheReads
 import com.advice.firebase.extensions.documentReads
 import com.advice.firebase.extensions.listenersCount
@@ -37,6 +38,7 @@ class MainViewModel :
     private val storage by inject<Storage>()
     private val documentRepository by inject<DocumentsRepository>()
     private val feedbackRepository by inject<FeedbackSubmissionRepository>()
+    private val reportRepository by inject<ReportSubmissionRepository>()
     private val toastManager by inject<ToastManager>()
 
     private val _state = MutableStateFlow(MainViewState())
@@ -60,6 +62,11 @@ class MainViewModel :
                     storage.removeCachedFeedbackRequest(request)
                 }
             }
+        }
+
+        // Attempting to submit any reports that previously failed
+        viewModelScope.launch {
+            reportRepository.retryCached()
         }
 
         viewModelScope.launch {

@@ -10,3 +10,24 @@ plugins {
 tasks.register('clean', Delete) {
     delete rootProject.layout.buildDirectory
 }
+
+tasks.register('ciCheck') {
+    group = 'verification'
+    description = 'Runs the same checks as GitHub CI (ktlint, unit tests, app lintDebug, assembleDebug).'
+    dependsOn ':app:lintDebug', ':app:assembleDebug'
+}
+
+gradle.projectsEvaluated {
+    tasks.named('ciCheck').configure {
+        dependsOn(
+            allprojects
+                .findAll { it.tasks.findByName('ktlintCheck') != null }
+                .collect { it.tasks.named('ktlintCheck') },
+        )
+        dependsOn(
+            allprojects
+                .findAll { it.tasks.findByName('test') != null }
+                .collect { it.tasks.named('test') },
+        )
+    }
+}

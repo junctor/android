@@ -25,6 +25,7 @@ import com.advice.ui.components.ImageGallery
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.ReportSection
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.screens.ErrorScreen
 import com.advice.ui.theme.ScheduleTheme
@@ -47,6 +48,7 @@ fun OrganizationScreen(
     onBackPressed: () -> Unit,
     onLinkClicked: (String) -> Unit,
     onScheduleClicked: (Long, String) -> Unit,
+    onReport: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -62,7 +64,7 @@ fun OrganizationScreen(
             )
         },
     ) {
-        Box(modifier = Modifier.padding(it)) {
+        Box(Modifier.padding(it)) {
             when (state) {
                 OrganizationScreenState.Error -> {
                     ErrorScreen {
@@ -75,7 +77,7 @@ fun OrganizationScreen(
                 }
 
                 is OrganizationScreenState.Success -> {
-                    Content(state.organization, onLinkClicked, onScheduleClicked)
+                    Content(state.organization, onLinkClicked, onScheduleClicked, onReport)
                 }
             }
         }
@@ -87,6 +89,7 @@ private fun Content(
     organization: Organization,
     onLinkClicked: (String) -> Unit,
     onScheduleClicked: (Long, String) -> Unit,
+    onReport: (String) -> Unit,
 ) {
     Column(
         modifier =
@@ -142,6 +145,8 @@ private fun Content(
                 }
             }
         }
+
+        ReportSection(onSubmit = onReport)
     }
 }
 
@@ -173,6 +178,7 @@ private fun OrganizationScreenPreview() {
             onLinkClicked = {},
             onScheduleClicked = { _, _ ->
             },
+            onReport = {},
         )
     }
 }

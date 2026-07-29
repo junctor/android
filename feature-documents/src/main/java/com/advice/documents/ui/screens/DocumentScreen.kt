@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Document
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.Paragraph
+import com.advice.ui.components.ReportSection
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,6 +25,7 @@ import com.advice.ui.theme.ScheduleTheme
 fun DocumentScreen(
     document: Document,
     onBackPressed: () -> Unit,
+    onReport: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -42,6 +44,7 @@ fun DocumentScreen(
                 .verticalScroll(rememberScrollState()),
         ) {
             Paragraph(document.description)
+            ReportSection(onSubmit = onReport)
             Spacer(Modifier.height(64.dp))
         }
     }
@@ -59,6 +62,7 @@ private fun SupportScreenViewPreview() {
                     "If you need support, please call us 555-555-0000",
                 ),
             onBackPressed = {},
+            onReport = {},
         )
     }
 }

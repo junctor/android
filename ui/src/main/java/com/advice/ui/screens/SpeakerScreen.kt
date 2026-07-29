@@ -30,6 +30,7 @@ import com.advice.ui.components.EventRow
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.ReportSection
 import com.advice.ui.preview.SpeakerProvider
 import com.advice.ui.states.SpeakerState
 import com.advice.ui.theme.ScheduleTheme
@@ -42,6 +43,7 @@ fun SpeakerScreen(
     onBackPress: () -> Unit,
     onLinkClick: (String) -> Unit,
     onEventClick: (Event) -> Unit,
+    onReport: (String) -> Unit,
 ) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = {
@@ -74,6 +76,7 @@ fun SpeakerScreen(
                         state.events,
                         onLinkClick,
                         onEventClick,
+                        onReport,
                     )
                 }
             }
@@ -87,6 +90,7 @@ fun SpeakerScreenContent(
     events: List<Event>,
     onLinkClick: (String) -> Unit,
     onEventClick: (Event) -> Unit,
+    onReport: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.verticalScroll(rememberScrollState())) {
@@ -112,7 +116,7 @@ fun SpeakerScreenContent(
             NoDetailsView()
         }
         if (speaker.links.isNotEmpty()) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(modifier.height(16.dp))
             speaker.links.forEach {
                 ClickableUrl(label = it.title, url = it.url, onClick = {
                     onLinkClick(it.url)
@@ -121,7 +125,7 @@ fun SpeakerScreenContent(
         }
 
         if (events.isNotEmpty()) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(modifier.height(16.dp))
             Text(
                 "Events",
                 textAlign = TextAlign.Center,
@@ -140,6 +144,9 @@ fun SpeakerScreenContent(
                 )
             }
         }
+
+        ReportSection(onSubmit = onReport)
+        Spacer(modifier.height(16.dp))
     }
 }
 
@@ -156,6 +163,7 @@ private fun SpeakerScreenPreview(
             onBackPress = {},
             onEventClick = {},
             onLinkClick = {},
+            onReport = {},
         )
     }
 }

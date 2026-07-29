@@ -15,11 +15,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.local.Content
 import com.advice.core.local.Session
+import com.advice.core.network.report.ReportObjectType
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.ContentViewModel
 import com.advice.schedule.presentation.viewmodel.EventViewModel
+import com.advice.schedule.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ContentListScreen
@@ -62,6 +64,7 @@ fun Event(
     session: String?,
 ) {
     val viewModel = viewModel<EventViewModel>(context)
+    val reportViewModel = viewModel<ReportViewModel>(context)
     LaunchedEffect("$conference/$id") {
         viewModel.getEvent(
             conference,
@@ -94,9 +97,17 @@ fun Event(
                 session = state.session,
                 relatedContent = state.relatedContent,
                 navController = navController,
-            ) { content, session, isBookmarked ->
-                viewModel.bookmark(state.content, session, isBookmarked)
-            }
+                onBookmark = { content, session, isBookmarked ->
+                    viewModel.bookmark(state.content, session, isBookmarked)
+                },
+                onReport = { message ->
+                    reportViewModel.submit(
+                        message = message,
+                        objectType = ReportObjectType.CONTENT,
+                        objectId = state.content.id,
+                    )
+                },
+            )
         }
     }
 }
@@ -109,6 +120,7 @@ private fun Content(
     relatedContent: List<Content>,
     navController: NavHostController,
     onBookmark: (Content, Session?, Boolean) -> Unit,
+    onReport: (String) -> Unit,
 ) {
     ContentScreen(
         content = content,
@@ -153,5 +165,6 @@ private fun Content(
         onFeedbackClicked = {
             navController.navigateTo(Navigation.Feedback(it.id, content.id))
         },
+        onReport = onReport,
     )
 }

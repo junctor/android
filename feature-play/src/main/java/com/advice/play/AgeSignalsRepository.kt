@@ -27,7 +27,6 @@ class AgeSignalsRepository(
     private val manager: AgeSignalsManager,
     private val crashlytics: FirebaseCrashlytics,
 ) {
-
     /**
      * Requests age-signals access (may show Play's sharing prompt), then fetches signals when shared.
      *
@@ -62,8 +61,8 @@ class AgeSignalsRepository(
         return AudienceContext.Unavailable
     }
 
-    private fun isRetryable(errorCode: Int): Boolean {
-        return when (errorCode) {
+    private fun isRetryable(errorCode: Int): Boolean =
+        when (errorCode) {
             AgeSignalsErrorCode.API_NOT_AVAILABLE,
             AgeSignalsErrorCode.PLAY_STORE_NOT_FOUND,
             AgeSignalsErrorCode.NETWORK_ERROR,
@@ -75,7 +74,6 @@ class AgeSignalsRepository(
             -> true
             else -> false
         }
-    }
 
     private suspend fun fetchAgeSignals(activity: Activity): AudienceContext {
         val accessStatus = requestAccess(activity)

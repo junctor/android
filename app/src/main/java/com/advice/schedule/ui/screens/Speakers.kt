@@ -4,11 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.advice.core.network.report.ReportObjectType
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
+import com.advice.schedule.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.ui.screens.SpeakerScreen
@@ -42,6 +45,7 @@ fun Speaker(
     onLinkClicked: (String) -> Unit,
 ) {
     val viewModel = navController.navGraphViewModel<SpeakerViewModel>()
+    val reportViewModel = viewModel<ReportViewModel>()
     val speakerDetails by viewModel.speakerDetails.collectAsState(SpeakerState.Loading)
 
     LaunchedEffect(id) {
@@ -62,6 +66,15 @@ fun Speaker(
                     it.content.id.toString(),
                     it.id.toString(),
                 ),
+            )
+        },
+        onReport = { message ->
+            val speakerId =
+                (speakerDetails as? SpeakerState.Success)?.speaker?.id ?: id ?: return@SpeakerScreen
+            reportViewModel.submit(
+                message = message,
+                objectType = ReportObjectType.PERSON,
+                objectId = speakerId,
             )
         },
     )

@@ -23,8 +23,8 @@ private val debugPersona: AgeSignalsResult =
         .setInstallId("fake_install_id")
         .build()
 
-fun createAgeSignalsManager(context: Context): AgeSignalsManager {
-    return FakeAgeSignalsManager().apply {
+fun createAgeSignalsManager(context: Context): AgeSignalsManager =
+    FakeAgeSignalsManager().apply {
         setNextAgeSignalsAccessResult(
             AgeSignalsAccessResult
                 .builder()
@@ -33,4 +33,3 @@ fun createAgeSignalsManager(context: Context): AgeSignalsManager {
         )
         setNextAgeSignalsResult(debugPersona)
     }
-}

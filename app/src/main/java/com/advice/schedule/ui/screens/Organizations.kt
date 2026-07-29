@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.advice.core.network.report.ReportObjectType
 import com.advice.organizations.ui.screens.OrganizationScreenState
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
@@ -12,6 +14,7 @@ import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.OrganizationViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
+import com.advice.schedule.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.ui.activity.MainActivity
 
 @Composable
@@ -41,6 +44,7 @@ internal fun Organization(
 ) {
     val context = LocalContext.current
     val viewModel = navController.navGraphViewModel<OrganizationViewModel>()
+    val reportViewModel = viewModel<ReportViewModel>()
 
     LaunchedEffect(id) {
         viewModel.getOrganization(id)
@@ -58,6 +62,17 @@ internal fun Organization(
         },
         onScheduleClicked = { id, label ->
             navController.navigateTo(Navigation.Schedule(label, listOf(id)))
+        },
+        onReport = { message ->
+            val organizationId =
+                (organization as? OrganizationScreenState.Success)?.organization?.id
+                    ?: id
+                    ?: return@OrganizationScreen
+            reportViewModel.submit(
+                message = message,
+                objectType = ReportObjectType.ORG,
+                objectId = organizationId,
+            )
         },
     )
 }

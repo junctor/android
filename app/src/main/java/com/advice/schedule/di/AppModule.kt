@@ -31,6 +31,7 @@ import com.advice.data.sources.VillagesDataSource
 import com.advice.data.sources.WiFiNetworksDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.feedback.network.FeedbackSubmissionRepository
+import com.advice.feedback.network.ReportSubmissionRepository
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseContentDataSource
 import com.advice.firebase.data.sources.FirebaseDocumentsDataSource
@@ -83,6 +84,7 @@ import com.advice.schedule.presentation.viewmodel.HomeViewModel
 import com.advice.schedule.presentation.viewmodel.InformationViewModel
 import com.advice.schedule.presentation.viewmodel.MapsViewModel
 import com.advice.schedule.presentation.viewmodel.OrganizationsViewModel
+import com.advice.schedule.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SettingsViewModel
@@ -290,6 +292,12 @@ val appModule =
                 get(),
             )
         }
+        single {
+            ReportSubmissionRepository(
+                "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                get(),
+            )
+        }
 
         single { WifiNetworkRepository(get()) }
         single<WiFiNetworksDataSource> {
@@ -327,4 +335,5 @@ val appModule =
         viewModel { ProductsViewModel() }
 
         viewModel { WifiViewModel() }
+        viewModel { ReportViewModel() }
     }

@@ -59,6 +59,7 @@ import com.advice.ui.components.ClickableUrl
 import com.advice.ui.components.ContentRow
 import com.advice.ui.components.NoDetailsView
 import com.advice.ui.components.Paragraph
+import com.advice.ui.components.ReportSection
 import com.advice.ui.components.Speaker
 import com.advice.ui.preview.FakeContentProvider
 import com.advice.ui.preview.PreviewLightDark
@@ -79,6 +80,7 @@ fun ContentScreen(
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
     onFeedbackClicked: (FeedbackForm) -> Unit,
+    onReport: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -105,6 +107,7 @@ fun ContentScreen(
                 onUrlClicked = onUrlClicked,
                 onSpeakerClicked = onSpeakerClicked,
                 onFeedbackClicked = onFeedbackClicked,
+                onReport = onReport,
                 modifier = Modifier.padding(contentPadding),
             )
         }
@@ -292,6 +295,7 @@ private fun EventScreenContent(
     onUrlClicked: (String) -> Unit,
     onSpeakerClicked: (Speaker) -> Unit,
     onFeedbackClicked: (FeedbackForm) -> Unit,
+    onReport: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -414,6 +418,8 @@ private fun EventScreenContent(
             }
         }
 
+        ReportSection(onSubmit = onReport)
+
         Spacer(modifier = Modifier.height(64.dp))
     }
 }
@@ -473,6 +479,7 @@ private fun EventScreenPreview(
             onUrlClicked = {},
             onSpeakerClicked = {},
             onFeedbackClicked = {},
+            onReport = {},
         )
     }
 }
