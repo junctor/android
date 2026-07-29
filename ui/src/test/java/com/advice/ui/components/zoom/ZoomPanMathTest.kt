@@ -3,6 +3,7 @@ package com.advice.ui.components.zoom
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -56,6 +57,81 @@ class ZoomPanMathTest {
         val clamped = clampOffset(mid, scale, viewport, content)
         assertEquals(mid.x, clamped.x, 0.01f)
         assertEquals(mid.y, clamped.y, 0.01f)
+    }
+
+    @Test
+    fun `softClampOffset allows overscroll past hard bounds`() {
+        val scale = 3f
+        val (lower, upper) = offsetBounds(scale, viewport, content)
+        val pastLeft = softClampOffset(Offset(upper.x + 100f, 0f), scale, viewport, content)
+        assertEquals(upper.x + OVERSCROLL_PX, pastLeft.x, 0.01f)
+        val pastRight = softClampOffset(Offset(lower.x - 100f, 0f), scale, viewport, content)
+        assertEquals(lower.x - OVERSCROLL_PX, pastRight.x, 0.01f)
+    }
+
+    @Test
+    fun `isOffsetOverscrolled detects soft overscroll`() {
+        val scale = 3f
+        val (lower, _) = offsetBounds(scale, viewport, content)
+        assertFalse(
+            isOffsetOverscrolled(
+                clampOffset(Offset.Zero, scale, viewport, content),
+                scale,
+                viewport,
+                content,
+            ),
+        )
+        assertTrue(
+            isOffsetOverscrolled(
+                Offset(lower.x - OVERSCROLL_PX, 0f),
+                scale,
+                viewport,
+                content,
+            ),
+        )
+    }
+
+    @Test
+    fun `overscrollScaleRange extends past hard min and max`() {
+        val range = overscrollScaleRange(DEFAULT_MAX_ZOOM)
+        assertEquals(MIN_ZOOM * OVERSCROLL_MIN_SCALE_FACTOR, range.start, 0.001f)
+        assertEquals(DEFAULT_MAX_ZOOM * OVERSCROLL_MAX_SCALE_FACTOR, range.endInclusive, 0.001f)
+    }
+
+    @Test
+    fun `nextDoubleTapScale ladders MIN mid max then wraps`() {
+        val max = 8f
+        assertEquals(DOUBLE_TAP_ZOOM, nextDoubleTapScale(MIN_ZOOM, max), 0.01f)
+        assertEquals(max, nextDoubleTapScale(DOUBLE_TAP_ZOOM, max), 0.01f)
+        assertEquals(MIN_ZOOM, nextDoubleTapScale(max, max), 0.01f)
+        // Near mid still advances to max
+        assertEquals(max, nextDoubleTapScale(DOUBLE_TAP_ZOOM - 0.05f, max), 0.01f)
+    }
+
+    @Test
+    fun `nextDoubleTapScale collapses mid when max below DOUBLE_TAP_ZOOM`() {
+        val max = 2f
+        assertEquals(max, nextDoubleTapScale(MIN_ZOOM, max), 0.01f)
+        assertEquals(MIN_ZOOM, nextDoubleTapScale(max, max), 0.01f)
+    }
+
+    @Test
+    fun `canPanHorizontally false at edges for outward pan`() {
+        val scale = 3f
+        val (lower, upper) = offsetBounds(scale, viewport, content)
+        // At left edge (upper.x): cannot pan further positive (content right).
+        assertFalse(canPanHorizontally(Offset(upper.x, 0f), scale, viewport, content, deltaX = 10f))
+        assertTrue(canPanHorizontally(Offset(upper.x, 0f), scale, viewport, content, deltaX = -10f))
+        // At right edge (lower.x): cannot pan further negative.
+        assertFalse(canPanHorizontally(Offset(lower.x, 0f), scale, viewport, content, deltaX = -10f))
+        assertTrue(canPanHorizontally(Offset(lower.x, 0f), scale, viewport, content, deltaX = 10f))
+    }
+
+    @Test
+    fun `canPanHorizontally false when content fits`() {
+        assertFalse(
+            canPanHorizontally(Offset.Zero, MIN_ZOOM, viewport, content, deltaX = 10f),
+        )
     }
 
     @Test
@@ -119,5 +195,36 @@ class ZoomPanMathTest {
         assertTrue(lower.x < upper.x || lower.y < upper.y)
         assertTrue(lower.x <= upper.x)
         assertTrue(lower.y <= upper.y)
+    }
+
+    @Test
+    fun `baseRenderScale stays within density band and edge cap`() {
+        val scale = baseRenderScale(density = 3f, fittedWidthPx = 400f)
+        assertTrue(scale in 1.5f..2.5f)
+        val capped = baseRenderScale(density = 3f, fittedWidthPx = 3000f, maxBitmapEdge = 4096)
+        assertTrue(capped <= 4096f / 3000f + 0.001f)
+    }
+
+    @Test
+    fun `detailPixelRatio is monotonic and capped`() {
+        val a = detailPixelRatio(1f)
+        val b = detailPixelRatio(2f)
+        val c = detailPixelRatio(10f)
+        assertTrue(b >= a)
+        assertTrue(c >= b)
+        assertTrue(c <= 2.5f + 0.001f)
+        assertEquals(1.5f, detailPixelRatio(1f), 0.01f)
+    }
+
+    @Test
+    fun `detailPixelRatio respects custom max`() {
+        assertEquals(1.5f, detailPixelRatio(10f, maxRatio = 1.5f), 0.01f)
+    }
+
+    @Test
+    fun `cappedBitmapSize preserves aspect under edge limit`() {
+        val (w, h) = cappedBitmapSize(8000, 4000, maxEdge = 4096)
+        assertEquals(4096, w)
+        assertEquals(2048, h)
     }
 }

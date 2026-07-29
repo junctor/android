@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Size
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @Stable
 internal class ZoomPanState(
@@ -36,7 +37,26 @@ internal class ZoomPanState(
     var maxZoom by mutableFloatStateOf(DEFAULT_MAX_ZOOM)
         private set
 
+    /**
+     * When false, zoom/settle snaps immediately (reduced-motion / animator scale 0).
+     */
+    var animationsEnabled: Boolean = true
+
     val isZoomed: Boolean by derivedStateOf { scale > MIN_ZOOM + 0.01f }
+
+    /** True when offset sits at the left hard bound (room for previous-page handoff). */
+    val atLeftEdge: Boolean by derivedStateOf {
+        val (lower, upper) = offsetBounds(scale, viewportSize, contentSize)
+        abs(upper.x - lower.x) < HORIZONTAL_EDGE_EPSILON ||
+            offset.x >= upper.x - HORIZONTAL_EDGE_EPSILON
+    }
+
+    /** True when offset sits at the right hard bound (room for next-page handoff). */
+    val atRightEdge: Boolean by derivedStateOf {
+        val (lower, upper) = offsetBounds(scale, viewportSize, contentSize)
+        abs(upper.x - lower.x) < HORIZONTAL_EDGE_EPSILON ||
+            offset.x <= lower.x + HORIZONTAL_EDGE_EPSILON
+    }
 
     private var animationJob: Job? = null
 
@@ -61,33 +81,110 @@ internal class ZoomPanState(
     }
 
     /**
+     * Whether this state can still absorb a horizontal pan of [deltaX].
+     * When false at an edge, excess pan should be left for a parent pager.
+     */
+    fun canPanHorizontally(deltaX: Float): Boolean =
+        canPanHorizontally(
+            offset = offset,
+            scale = scale,
+            viewport = viewportSize,
+            content = contentSize,
+            deltaX = deltaX,
+        )
+
+    /**
      * Synchronous transform update for use inside restricted pointer coroutines.
+     *
+     * When [overscroll] is true, scale/offset may briefly exceed hard limits.
+     * When [consumeHorizontal] is false, horizontal pan is ignored (edge handoff).
      */
     fun applyTransform(
         zoomChange: Float,
         panChange: Offset,
         centroid: Offset,
+        overscroll: Boolean = true,
+        consumeHorizontal: Boolean = true,
     ) {
         val oldScale = scale
-        val newScale = (oldScale * zoomChange).coerceIn(MIN_ZOOM, maxZoom)
+        val scaleRange =
+            if (overscroll) {
+                overscrollScaleRange(maxZoom)
+            } else {
+                MIN_ZOOM..maxZoom
+            }
+        val newScale = (oldScale * zoomChange).coerceIn(scaleRange.start, scaleRange.endInclusive)
         val zoomed =
             if (zoomChange != 1f) {
                 zoomAround(offset, oldScale, newScale, centroid)
             } else {
                 offset
             }
+        val pan =
+            if (consumeHorizontal) {
+                panChange
+            } else {
+                Offset(0f, panChange.y)
+            }
+        val proposed = zoomed + pan
         scale = newScale
-        offset = clampOffset(zoomed + panChange, newScale, viewportSize, contentSize)
+        offset =
+            if (overscroll) {
+                // Outward horizontal rubber-band is suppressed at edges so a parent
+                // pager can take the unconsumed pan (gallery-style handoff).
+                softClampWithEdgeHandoff(proposed, newScale)
+            } else {
+                clampOffset(proposed, newScale, viewportSize, contentSize)
+            }
+    }
+
+    /**
+     * Soft-clamps [proposed], but does not rubber-band past horizontal edges
+     * when the pan would move further outward — those stay at the hard bound.
+     */
+    private fun softClampWithEdgeHandoff(
+        proposed: Offset,
+        newScale: Float,
+    ): Offset {
+        val soft = softClampOffset(proposed, newScale, viewportSize, contentSize)
+        val (lower, upper) = offsetBounds(newScale, viewportSize, contentSize)
+        val hardX =
+            when {
+                proposed.x > upper.x -> upper.x
+                proposed.x < lower.x -> lower.x
+                else -> soft.x
+            }
+        return Offset(hardX, soft.y)
+    }
+
+    fun isOverscrolled(): Boolean =
+        isScaleOverscrolled(scale, maxZoom) ||
+            isOffsetOverscrolled(offset, scale, viewportSize, contentSize)
+
+    suspend fun settleAfterGesture() {
+        val endScale = scale.coerceIn(MIN_ZOOM, maxZoom)
+        val endOffset = clampOffset(offset, endScale, viewportSize, contentSize)
+        if (abs(endScale - scale) < 0.001f &&
+            abs(endOffset.x - offset.x) < 0.5f &&
+            abs(endOffset.y - offset.y) < 0.5f
+        ) {
+            scale = endScale
+            offset = endOffset
+            return
+        }
+        animateTo(endScale, endOffset)
     }
 
     suspend fun animateDoubleTap(tap: Offset) {
-        val targetScale =
-            if (scale < DOUBLE_TAP_ZOOM - 0.1f) {
-                DOUBLE_TAP_ZOOM.coerceAtMost(maxZoom)
-            } else {
-                MIN_ZOOM
-            }
+        val targetScale = nextDoubleTapScale(scale, maxZoom)
         animateZoomTo(targetScale, tap)
+    }
+
+    suspend fun animateZoomByStep(
+        step: Float,
+        centroid: Offset = viewportCenter(),
+    ) {
+        animateZoomTo(scale * step, centroid)
     }
 
     suspend fun animateZoomTo(
@@ -104,6 +201,21 @@ internal class ZoomPanState(
                 viewportSize,
                 contentSize,
             )
+        animateTo(endScale, endOffset, startScale, startOffset)
+    }
+
+    private suspend fun animateTo(
+        endScale: Float,
+        endOffset: Offset,
+        startScale: Float = scale,
+        startOffset: Offset = offset,
+    ) {
+        if (!animationsEnabled) {
+            stopAnimations()
+            scale = endScale
+            offset = endOffset
+            return
+        }
         coroutineScope {
             animationJob =
                 launch {
@@ -140,10 +252,19 @@ internal class ZoomPanState(
     ) {
         if (velocity == Offset.Zero) return
         if (viewportSize == Size.Zero || contentSize == Size.Zero) return
+        if (isOverscrolled()) {
+            settleAfterGesture()
+            return
+        }
 
         val (lower, upper) = offsetBounds(scale, viewportSize, contentSize)
         // Degenerate bounds (content fits) — nothing to fling.
         if (lower == upper) return
+
+        if (!animationsEnabled) {
+            offset = clampOffset(offset, scale, viewportSize, contentSize)
+            return
+        }
 
         coroutineScope {
             animationJob =
@@ -162,11 +283,7 @@ internal class ZoomPanState(
     suspend fun reset() {
         animateZoomTo(
             targetScale = MIN_ZOOM,
-            centroid =
-                Offset(
-                    x = viewportSize.width / 2f,
-                    y = viewportSize.height / 2f,
-                ),
+            centroid = viewportCenter(),
         )
     }
 
@@ -175,6 +292,12 @@ internal class ZoomPanState(
         scale = MIN_ZOOM
         offset = clampOffset(Offset.Zero, MIN_ZOOM, viewportSize, contentSize)
     }
+
+    fun viewportCenter(): Offset =
+        Offset(
+            x = viewportSize.width / 2f,
+            y = viewportSize.height / 2f,
+        )
 }
 
 @Composable
