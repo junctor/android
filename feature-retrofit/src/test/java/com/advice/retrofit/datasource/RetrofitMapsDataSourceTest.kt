@@ -90,8 +90,18 @@ class RetrofitMapsDataSourceTest {
             val success = emissions.filterIsInstance<FlowResult.Success<Maps>>().last()
             assertEquals(2L, success.value.conference.id)
             assertEquals(1, success.value.maps.size)
-            assertEquals("Floor 1", success.value.maps.first().name)
-            assertTrue(success.value.maps.first().file.exists())
+            assertEquals(
+                "Floor 1",
+                success.value.maps
+                    .first()
+                    .name,
+            )
+            assertTrue(
+                success.value.maps
+                    .first()
+                    .file
+                    .exists(),
+            )
 
             collectJob.cancel()
             mapsScope.cancel()
@@ -204,8 +214,7 @@ class RetrofitMapsDataSourceTest {
         assertFalse(RetrofitMapsDataSource.isValidCache(file))
     }
 
-    private fun TestScope.childMapsScope(): CoroutineScope =
-        CoroutineScope(coroutineContext + SupervisorJob())
+    private fun TestScope.childMapsScope(): CoroutineScope = CoroutineScope(coroutineContext + SupervisorJob())
 
     private fun createSubject(
         conferenceFlow: MutableStateFlow<FlowResult<Conference>>,
