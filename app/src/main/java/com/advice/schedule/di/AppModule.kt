@@ -243,7 +243,7 @@ val appModule =
         single<LocationsDataSource> {
             FirebaseLocationsDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
         }
-        single {
+        single(createdAtStart = true) {
             RetrofitMapsDataSource(
                 get(),
                 androidContext().applicationContext.getExternalFilesDir(null),

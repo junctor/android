@@ -89,40 +89,67 @@ private fun PdfDisplayContent(
     file: File,
     modifier: Modifier = Modifier,
 ) {
-    val session =
-        remember(file.absolutePath) {
-            runCatching { PdfRendererSession(file) }
-                .onFailure { Timber.e(it, "Failed to open PDF: $file") }
-                .getOrNull()
-        }
+    var session by remember(file.absolutePath) { mutableStateOf<PdfRendererSession?>(null) }
+    var loadFailed by remember(file.absolutePath) { mutableStateOf(false) }
 
-    DisposableEffect(session) {
-        onDispose { session?.close() }
+    LaunchedEffect(file.absolutePath) {
+        session?.close()
+        session = null
+        loadFailed = false
+        var opened: PdfRendererSession? = null
+        try {
+            opened =
+                withContext(Dispatchers.IO) {
+                    runCatching { PdfRendererSession(file) }
+                        .onFailure { Timber.e(it, "Failed to open PDF: $file") }
+                        .getOrNull()
+                }
+            if (opened == null) {
+                loadFailed = true
+            } else {
+                session = opened
+                opened = null
+            }
+        } finally {
+            opened?.close()
+        }
     }
 
-    if (session == null) {
+    DisposableEffect(file.absolutePath) {
+        onDispose {
+            session?.close()
+            session = null
+        }
+    }
+
+    val currentSession = session
+    if (currentSession == null) {
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = "Unable to open PDF",
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+            if (loadFailed) {
+                Text(
+                    text = "Unable to open PDF",
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            } else {
+                ProgressSpinner()
+            }
         }
         return
     }
 
-    if (session.pageCount <= 1) {
+    if (currentSession.pageCount <= 1) {
         ZoomablePdfPage(
-            session = session,
+            session = currentSession,
             pageIndex = 0,
             modifier = modifier.fillMaxSize(),
         )
         return
     }
 
-    val pagerState = rememberPagerState { session.pageCount }
+    val pagerState = rememberPagerState { currentSession.pageCount }
     // Track zoom of the current page so the pager doesn't steal pans.
     var currentPageZoomed by remember { mutableStateOf(false) }
 
@@ -133,7 +160,7 @@ private fun PdfDisplayContent(
     ) { pageIndex ->
         val isCurrentPage = pageIndex == pagerState.currentPage
         ZoomablePdfPage(
-            session = session,
+            session = currentSession,
             pageIndex = pageIndex,
             isActive = isCurrentPage,
             onZoomedChanged = { zoomed ->
