@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.local.Content
 import com.advice.core.local.Session
-import com.advice.core.network.report.ReportObjectType
+import com.advice.feedback.network.models.ReportObjectType
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed

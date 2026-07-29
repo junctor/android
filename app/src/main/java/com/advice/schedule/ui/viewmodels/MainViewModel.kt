@@ -66,7 +66,11 @@ class MainViewModel :
 
         // Attempting to submit any reports that previously failed
         viewModelScope.launch {
-            reportRepository.retryCached()
+            try {
+                reportRepository.retryCached()
+            } catch (ex: Exception) {
+                Timber.e(ex, "Failed to retry cached report submissions")
+            }
         }
 
         viewModelScope.launch {

@@ -6,7 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.advice.core.network.report.ReportObjectType
+import com.advice.feedback.network.models.ReportObjectType
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo

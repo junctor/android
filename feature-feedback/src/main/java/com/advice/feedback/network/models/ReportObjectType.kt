@@ -1,4 +1,4 @@
-package com.advice.core.network.report
+package com.advice.feedback.network.models
 
 import com.google.gson.annotations.SerializedName
 

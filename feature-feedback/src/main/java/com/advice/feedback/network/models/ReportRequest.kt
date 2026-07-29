@@ -1,4 +1,4 @@
-package com.advice.core.network.report
+package com.advice.feedback.network.models
 
 data class ReportRequest(
     val message: String,

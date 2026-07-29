@@ -4,6 +4,16 @@ plugins {
     alias libs.plugins.ktlint
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+
+def reportUrl = localProperties.getProperty("REPORT_URL")
+    ?: System.getenv("REPORT_URL")
+    ?: "https://REPLACE_ME/report"
+
 android {
     namespace 'com.advice.feedback'
     compileSdk = libs.versions.compileSdk.get() as Integer
@@ -14,6 +24,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        buildConfigField "String", "REPORT_URL", "\"${reportUrl}\""
     }
 
     buildTypes {
@@ -24,6 +36,7 @@ android {
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     compileOptions {
         sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())

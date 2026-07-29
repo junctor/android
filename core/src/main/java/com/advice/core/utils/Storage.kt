@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.network.CachedFeedbackRequest
-import com.advice.core.network.report.CachedReportRequest
+import com.advice.core.network.CachedReportRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
@@ -205,11 +205,14 @@ class Storage(
                 gson.fromJson<List<CachedReportRequest>>(
                     json,
                     object : TypeToken<List<CachedReportRequest>>() {}.type,
-                )
-            return list
+                ) ?: return emptyList()
+            return list.filter { entry ->
+                !entry.endpoint.isNullOrBlank() && !entry.payloadJson.isNullOrBlank()
+            }
         } catch (ex: Exception) {
             Timber.e("Could not convert stored cached report request to list")
             Timber.e(ex)
+            preferences.edit { remove("cached_report_requests") }
             return emptyList()
         }
     }

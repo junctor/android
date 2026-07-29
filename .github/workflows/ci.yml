@@ -35,6 +35,14 @@ jobs:
             cp app/google-services.json.example app/google-services.json
           fi
 
+      - name: Write report URL
+        env:
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+        run: |
+          if [ -n "$REPORT_URL" ]; then
+            echo "REPORT_URL=$REPORT_URL" >> local.properties
+          fi
+
       - name: ktlint
         run: ./gradlew ktlintCheck --no-daemon
 
