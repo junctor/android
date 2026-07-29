@@ -55,7 +55,6 @@ class RetrofitMapsDataSource(
     private val sharingScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
 ) : MapsDataSource,
     Closeable {
-
     private val mapsFlow: Flow<FlowResult<Maps>> =
         userSession
             .getConferenceFlow()
@@ -76,9 +75,7 @@ class RetrofitMapsDataSource(
                 replay = 1,
             )
 
-    private suspend fun FlowCollector<FlowResult<Maps>>.emitAllMapsForConference(
-        conference: Conference,
-    ) {
+    private suspend fun FlowCollector<FlowResult<Maps>>.emitAllMapsForConference(conference: Conference) {
         val mark = TimeSource.Monotonic.markNow()
         Timber.d(
             "Maps: conference=%s (%s) mapCount=%d",
@@ -112,8 +109,7 @@ class RetrofitMapsDataSource(
             }
         }
 
-        fun snapshot(): List<MapFile> =
-            entries.mapNotNull { entry -> completed[entry.key] }
+        fun snapshot(): List<MapFile> = entries.mapNotNull { entry -> completed[entry.key] }
 
         if (toDownload.isEmpty()) {
             Timber.d(
