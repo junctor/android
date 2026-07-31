@@ -1,6 +1,9 @@
 package com.advice.schedule.ui.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +39,8 @@ import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.components.BackButton
+import com.advice.ui.components.CategorySize
+import com.advice.ui.components.CategoryView
 import com.advice.ui.components.EventRow
 import com.advice.ui.components.FreqAskedQuestion
 import com.advice.ui.components.Label
@@ -120,6 +125,32 @@ private fun SearchResults(
     navController: NavController,
 ) {
     LazyColumn(state = scrollState) {
+        if (results.tags.isNotEmpty()) {
+            item {
+                HeaderRow("Tags")
+            }
+            item {
+                FlowRow(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    for (tag in results.tags) {
+                        CategoryView(
+                            tag = tag,
+                            size = CategorySize.Medium,
+                            modifier =
+                                Modifier.clickable {
+                                    navController.navigateTo(Navigation.Tag(tag.id, tag.label))
+                                },
+                        )
+                    }
+                }
+            }
+        }
+
         if (results.faq.isNotEmpty()) {
             item {
                 HeaderRow("FAQ")

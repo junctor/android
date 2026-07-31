@@ -196,7 +196,7 @@ val appModule =
         single { ProductsRepository(get(), get()) }
         single { DocumentsRepository(get()) }
         single { TagsRepository(get()) }
-        single { SearchRepository(get(), get(), get(), get(), get(), get()) }
+        single { SearchRepository(get(), get(), get(), get(), get(), get(), get()) }
         single { MenuRepository(get()) }
         single { FeedbackFormRepository(get()) }
 

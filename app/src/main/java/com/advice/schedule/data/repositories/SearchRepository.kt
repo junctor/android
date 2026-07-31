@@ -7,6 +7,7 @@ import com.advice.core.local.FAQ
 import com.advice.core.local.FlowResult
 import com.advice.core.local.Organization
 import com.advice.core.local.Speaker
+import com.advice.core.local.Tag
 import com.advice.data.session.UserSession
 import com.advice.documents.data.repositories.DocumentsRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,7 @@ sealed class SearchState {
 
 data class SearchResults(
     val query: String,
+    val tags: List<Tag>,
     val contents: List<Content>,
     val speakers: List<Speaker>,
     val organizations: List<Organization>,
@@ -44,6 +46,7 @@ class SearchRepository(
     organizationsDataSource: OrganizationsRepository,
     faqDataSource: FAQRepository,
     documentsDataSource: DocumentsRepository,
+    tagsDataSource: TagsRepository,
 ) {
     val conference = userSession.getConference()
 
@@ -55,22 +58,36 @@ class SearchRepository(
             eventsDataSource.content,
             speakersDataSource.speakers,
             organizationsDataSource.organizations,
-            combine(faqDataSource.faqs, documentsDataSource.documents, ::Pair),
-        ) { query, conferenceContent, speakers, organizations, faqsAndDocuments ->
+            combine(
+                faqDataSource.faqs,
+                documentsDataSource.documents,
+                tagsDataSource.tags,
+                ::Triple,
+            ),
+        ) { query, conferenceContent, speakers, organizations, faqsDocumentsAndTags ->
             if (query.length < MIN_QUERY_LENGTH) {
                 return@combine SearchState.Idle
             }
 
-            val (faqs, documents) = faqsAndDocuments
+            val (faqs, documents, tagTypes) = faqsDocumentsAndTags
             val faqList =
                 when (faqs) {
                     is FlowResult.Success -> faqs.value
                     else -> emptyList()
                 }
+            val applicableTags =
+                tagTypes
+                    .filter { it.isBrowsable && it.category == CONTENT_TAG_CATEGORY }
+                    .flatMap { it.tags }
 
             SearchState.Results(
                 SearchResults(
                     query = query,
+                    tags =
+                        applicableTags.filter { tag ->
+                            tag.label.contains(query, ignoreCase = true) ||
+                                tag.description.contains(query, ignoreCase = true)
+                        },
                     contents =
                         conferenceContent.content.filter { event ->
                             event.title.contains(query, ignoreCase = true) ||
@@ -104,3 +121,4 @@ class SearchRepository(
 }
 
 private const val MIN_QUERY_LENGTH = 2
+private const val CONTENT_TAG_CATEGORY = "content"
