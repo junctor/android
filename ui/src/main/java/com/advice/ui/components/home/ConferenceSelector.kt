@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
@@ -41,7 +43,15 @@ fun ConferenceSelector(
     onConferenceClick: (Conference) -> Unit,
 ) {
     if (state == null) {
-        CenterAlignedTopAppBar(title = { Text("Home") })
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    "Home",
+                    modifier =
+                        Modifier.semantics { contentDescription = "Conference selector" },
+                )
+            },
+        )
         return
     }
 
@@ -57,6 +67,7 @@ fun ConferenceSelector(
         Box(
             modifier =
                 Modifier
+                    .semantics { contentDescription = "Conference selector" }
                     .clickable {
                         expanded = !expanded
                     }.fillMaxWidth(),

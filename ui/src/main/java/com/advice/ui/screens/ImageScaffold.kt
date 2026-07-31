@@ -63,8 +63,6 @@ fun ImageScaffold(
                         ImageRequest
                             .Builder(LocalContext.current)
                             .data(url)
-                            .placeholder(com.advice.ui.R.drawable.logo_glitch)
-                            .error(com.advice.ui.R.drawable.logo_glitch)
                             .build()
 
                     Image(

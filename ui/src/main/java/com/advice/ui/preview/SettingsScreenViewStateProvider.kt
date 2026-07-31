@@ -50,6 +50,13 @@ sealed class Preferences(
         summary = "???",
     )
 
+    data object GlitchAnimation : Preferences(
+        key = "glitch_animation_enabled",
+        title = "Glitch logo animation",
+        summaryOn = "Animated glitch effect",
+        summaryOff = "Static glitch logo",
+    )
+
     companion object {
         val entries =
             listOf(
@@ -59,6 +66,7 @@ sealed class Preferences(
                 AllowAnalytics,
                 AllowCrashlytics,
                 EasterEggs,
+                GlitchAnimation,
             )
     }
 }

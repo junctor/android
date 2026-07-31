@@ -28,6 +28,7 @@ class Storage(
         const val SHOW_SCHEDULE_BY_DEFAULT = "show_schedule_by_default"
         const val USER_ANALYTICS_KEY = "user_analytics"
         const val USER_CRASHLYTICS_KEY = "user_crashlytics"
+        const val GLITCH_ANIMATION_ENABLED_KEY = "glitch_animation_enabled"
 
         const val LATEST_NEWS_READ = "latest_news_read"
     }
@@ -69,6 +70,13 @@ class Storage(
         get() = preferences.getBoolean(EASTER_EGGS_ENABLED_KEY, false)
         set(value) {
             preferences.edit { putBoolean(EASTER_EGGS_ENABLED_KEY, value) }
+        }
+
+    /** When false, glitch logos use the static `logo_glitch` asset instead of the live effect. */
+    var glitchAnimationEnabled: Boolean
+        get() = preferences.getBoolean(GLITCH_ANIMATION_ENABLED_KEY, true)
+        set(value) {
+            preferences.edit { putBoolean(GLITCH_ANIMATION_ENABLED_KEY, value) }
         }
 
     var preferredConference: Long

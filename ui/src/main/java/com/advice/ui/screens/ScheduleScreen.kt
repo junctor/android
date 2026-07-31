@@ -69,7 +69,7 @@ fun ScheduleScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
-                        Icon(Icons.Default.Menu, "Menu")
+                        Icon(Icons.Default.Menu, contentDescription = "Menu")
                     }
                 },
             )

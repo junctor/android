@@ -150,19 +150,23 @@ internal fun Home(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                IconButton(onClick = {
-                    mainViewModel.setAnchor(DragAnchors.Center)
-                }) {
+                IconButton(
+                    onClick = {
+                        mainViewModel.setAnchor(DragAnchors.Center)
+                    },
+                ) {
                     Icon(
                         painterResource(
                             id = com.advice.ui.R.drawable.baseline_event_note_24,
                         ),
-                        contentDescription = "schedule",
+                        contentDescription = "Schedule",
                     )
                 }
-                IconButton(onClick = {
-                    navController.navigateTo(Navigation.Maps)
-                }) {
+                IconButton(
+                    onClick = {
+                        navController.navigateTo(Navigation.Maps)
+                    },
+                ) {
                     Icon(
                         painterResource(
                             id = com.advice.ui.R.drawable.baseline_map_24,
@@ -170,10 +174,14 @@ internal fun Home(
                         contentDescription = "Maps",
                     )
                 }
-                IconButton(onClick = { navController.navigateTo(Navigation.Search) }) {
+                IconButton(
+                    onClick = { navController.navigateTo(Navigation.Search) },
+                ) {
                     Icon(Icons.Default.Search, contentDescription = "Search")
                 }
-                IconButton(onClick = { navController.navigateTo(Navigation.Settings) }) {
+                IconButton(
+                    onClick = { navController.navigateTo(Navigation.Settings) },
+                ) {
                     Icon(Icons.Default.Settings, contentDescription = "Settings")
                 }
             }

@@ -58,19 +58,69 @@ fun List<ProductVariantSelection>.toStringData(
     conference: Long,
     versionCode: Int,
 ): String {
-    // Version 1 of the compat encoding scheme
+    // Version 1 of the compact encoding scheme
     val version = 1
     // A is for Android 🤖
     val platform = "A$versionCode"
     // txn is always empty on the client
     val txn = ""
-    // mapping each product to "<id>:<quantity>/"
+    // mapping each line to "<variantId>:<quantity>"
     val items = joinToString(";") { "${it.variant}:${it.quantity}" }
     val compact = "$version:$conference:$platform:$items"
     if (txn.isNotEmpty()) {
         return "$compact:$txn"
     }
     return compact
+}
+
+/**
+ * Parsed compact merch order payload.
+ *
+ * Encoded: `1:123:A726:456:2;789:3`
+ */
+data class CompactOrderData(
+    val version: Int,
+    val conferenceId: Long,
+    val platform: String,
+    val items: List<CompactOrderItem>,
+) {
+    val totalQuantity: Int get() = items.sumOf { it.quantity }
+}
+
+data class CompactOrderItem(
+    val variantId: Long,
+    val quantity: Int,
+)
+
+private val compactOrderRegex =
+    Regex("""^(\d+):(\d+):(A\d+):(\d+:\d+(?:;\d+:\d+)*)$""")
+
+/**
+ * Parse a compact order string produced by [toStringData].
+ * @throws IllegalArgumentException if [data] is not a valid non-empty compact order
+ */
+fun parseCompactOrderData(data: String): CompactOrderData {
+    val match =
+        compactOrderRegex.matchEntire(data.trim())
+            ?: throw IllegalArgumentException("Not a compact order payload: $data")
+    val (version, conferenceId, platform, itemsBlob) = match.destructured
+    val items =
+        itemsBlob.split(";").map { part ->
+            val pieces = part.split(":")
+            require(pieces.size == 2) { "Invalid cart line: $part" }
+            CompactOrderItem(
+                variantId = pieces[0].toLong(),
+                quantity = pieces[1].toInt(),
+            )
+        }
+    require(items.isNotEmpty()) { "Compact order has no cart lines" }
+    require(items.all { it.quantity > 0 }) { "Compact order has non-positive quantity" }
+    return CompactOrderData(
+        version = version.toInt(),
+        conferenceId = conferenceId.toLong(),
+        platform = platform,
+        items = items,
+    )
 }
 
 fun generateQRCode(data: String): Bitmap {

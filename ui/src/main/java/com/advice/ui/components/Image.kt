@@ -1,5 +1,6 @@
 package com.advice.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,9 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
+import com.advice.glitch.ui.GlitchLogo
 import com.advice.ui.R
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.roundedCornerShape
@@ -30,7 +34,6 @@ fun Image(
         ImageRequest
             .Builder(LocalContext.current)
             .data(model)
-            .error(R.drawable.logo_glitch)
             .crossfade(enable = true)
             .build()
 
@@ -50,12 +53,30 @@ fun Image(
                 .clip(roundedCornerShape)
                 .background(Color.Black),
     ) {
-        AsyncImage(
+        SubcomposeAsyncImage(
             model = request,
             imageLoader = LocalContext.current.getImageLoader(LocalInspectionMode.current),
             contentDescription = contentDescription,
             contentScale = contentScale,
             modifier = Modifier.fillMaxSize(),
+            loading = {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_clean),
+                    contentDescription = contentDescription,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            },
+            error = {
+                GlitchLogo(
+                    contentDescription = contentDescription,
+                    animated = true,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            },
+            success = {
+                SubcomposeAsyncImageContent()
+            },
         )
     }
 }
@@ -67,8 +88,6 @@ private fun PreviewImage() {
         ImageRequest
             .Builder(LocalContext.current)
             .data("https://info.defcon.org/blobs/v_aerospace.png")
-            .placeholder(R.drawable.logo_glitch)
-            .error(R.drawable.logo_glitch)
             .crossfade(enable = true)
             .build()
 

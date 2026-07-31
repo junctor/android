@@ -25,6 +25,7 @@ class SettingsRepository(
                 preferences.easterEggs,
                 preferences.allowAnalytics,
                 preferences.allowCrashlytics,
+                preferences.glitchAnimationEnabled,
             )
         }
 
@@ -45,6 +46,7 @@ class SettingsRepository(
                 TelemetryCollection.apply(context, preferences)
             }
             Preferences.EasterEggs.key -> preferences.easterEggs = checked
+            Preferences.GlitchAnimation.key -> preferences.glitchAnimationEnabled = checked
         }
     }
 

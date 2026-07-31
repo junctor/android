@@ -161,6 +161,7 @@ internal fun EditableProduct(
                                 onQuantityChanged(0)
                             },
                             backgroundColor = MaterialTheme.colorScheme.errorContainer,
+                            contentDescription = "Remove from cart",
                         )
                     }
                 }

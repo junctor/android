@@ -2,7 +2,7 @@
 .gradle
 .kotlin
 .artifacts
-.cursor
+/.cursor*
 /.idea
 .DS_Store
 /build

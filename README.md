@@ -107,3 +107,23 @@ Install on a device or emulator:
 ```bash
 ./gradlew :app:installDebug
 ```
+
+## Testing
+
+### Unit / CI
+
+```bash
+./gradlew ciCheck
+```
+
+Runs `ktlintCheck`, unit `test`, `:app:lintDebug`, and `:app:assembleDebug` (same as [CI](.github/workflows/ci.yml)).
+
+### Maintainer smoke test
+
+Manual checklist for DC34 → DC33 → TEST (home menu walk, conference switch, merch QR): [docs/SMOKE_TEST.md](docs/SMOKE_TEST.md).
+
+Live-Firebase Compose instrumentation (device/emulator + `google-services.json` required; not PR-gated):
+
+```bash
+./gradlew :app:connectedDebugAndroidTest
+```

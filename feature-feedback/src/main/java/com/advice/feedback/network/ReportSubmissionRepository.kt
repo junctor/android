@@ -78,7 +78,7 @@ class ReportSubmissionRepository(
         for (entry in cached) {
             val endpoint = entry.endpoint
             val payloadJson = entry.payloadJson
-            if (endpoint.isNullOrBlank() || payloadJson.isNullOrBlank()) {
+            if (endpoint.isBlank() || payloadJson.isBlank()) {
                 Timber.w("Dropping invalid cached report request")
                 storage.removeCachedReportRequest(entry)
                 continue

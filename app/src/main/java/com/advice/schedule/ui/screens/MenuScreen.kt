@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
@@ -67,9 +69,9 @@ fun MenuScreen(
                                 Row(
                                     Modifier
                                         .fillMaxWidth()
-                                        .clickable {
-                                            onNavigationClick(menuItem)
-                                        }.padding(16.dp),
+                                        .semantics { contentDescription = "Home menu: ${menuItem.label}" }
+                                        .clickable { onNavigationClick(menuItem) }
+                                        .padding(16.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 ) {

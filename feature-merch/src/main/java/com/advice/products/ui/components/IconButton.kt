@@ -56,6 +56,7 @@ internal fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     backgroundColor: Color = iconButtonBackgroundColor,
+    contentDescription: String = "Options",
 ) {
     Box(
         modifier =
@@ -66,7 +67,7 @@ internal fun IconButton(
     ) {
         Icon(
             painter = icon,
-            contentDescription = "Options",
+            contentDescription = contentDescription,
             tint = iconButtonForegroundColor,
             modifier =
                 Modifier

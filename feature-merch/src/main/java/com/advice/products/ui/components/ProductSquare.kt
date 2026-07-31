@@ -19,6 +19,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.StockStatus
@@ -48,13 +50,14 @@ fun ProductSquare(
     ) {
         Box(
             Modifier
+                .semantics { contentDescription = "Product ${product.label}" }
                 .background(Color.Black, shape = RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))
                 .clickable { onMerchClicked(product) },
         ) {
             Image(
                 model = product.media.firstOrNull()?.url,
-                contentDescription = product.label,
+                contentDescription = "",
                 modifier =
                     Modifier
                         .fillMaxSize()

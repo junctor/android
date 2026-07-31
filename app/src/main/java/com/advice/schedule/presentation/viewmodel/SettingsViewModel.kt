@@ -38,6 +38,7 @@ class SettingsViewModel :
                         Preferences.AllowAnalytics.toPreference(it.enableAnalytics),
                         Preferences.AllowCrashlytics.toPreference(it.enableCrashlytics),
                         Preferences.EasterEggs.toPreference(it.enableEasterEggs),
+                        Preferences.GlitchAnimation.toPreference(it.enableGlitchAnimation),
                     )
 
                 _state.value =

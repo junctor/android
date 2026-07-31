@@ -160,7 +160,10 @@ fun ProductsScreenContent(
     onDismiss: (DismissibleInformation) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(modifier.padding(horizontal = 16.dp)) {
+    LazyColumn(
+        modifier
+            .padding(horizontal = 16.dp),
+    ) {
         items(informationList) { dismissibleInformation ->
             InformationCard(
                 information = dismissibleInformation,

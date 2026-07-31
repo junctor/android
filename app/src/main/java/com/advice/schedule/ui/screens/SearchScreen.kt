@@ -1,6 +1,5 @@
 package com.advice.schedule.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,18 +24,17 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.advice.core.local.Conference
+import com.advice.glitch.ui.GlitchLogo
 import com.advice.organizations.ui.components.OrganizationRow
 import com.advice.schedule.data.repositories.SearchResults
 import com.advice.schedule.data.repositories.SearchState
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
-import com.advice.ui.R
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.EventRow
 import com.advice.ui.components.FreqAskedQuestion
@@ -186,12 +184,9 @@ private fun SearchResults(
 @Composable
 private fun PlaceholderImage() {
     Box(Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.logo_glitch),
+        GlitchLogo(
             contentDescription = null,
-            modifier =
-                Modifier
-                    .align(Alignment.Center),
+            modifier = Modifier.align(Alignment.Center),
         )
     }
 }

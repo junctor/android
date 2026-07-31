@@ -9,4 +9,5 @@ data class SettingsScreenState(
     val enableEasterEggs: Boolean,
     val enableAnalytics: Boolean,
     val enableCrashlytics: Boolean,
+    val enableGlitchAnimation: Boolean,
 )

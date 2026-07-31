@@ -1,6 +1,5 @@
 package com.advice.products.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,11 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.advice.core.local.products.ProductSelection
+import com.advice.glitch.ui.GlitchLogo
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.EditableProduct
 import com.advice.products.ui.components.LegalLabel
@@ -95,13 +94,13 @@ private fun ProductsSummaryContent(
                             .fillMaxSize(),
                         shape = roundedCornerShape,
                     ) {
-                        Image(
-                            painter = painterResource(id = com.advice.ui.R.drawable.logo_glitch),
+                        GlitchLogo(
                             contentDescription = "logo",
-                            Modifier
-                                .fillMaxSize()
-                                .background(Color.Black)
-                                .clip(roundedCornerShape),
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .background(Color.Black)
+                                    .clip(roundedCornerShape),
                         )
                     }
                 }

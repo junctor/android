@@ -17,6 +17,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
@@ -37,6 +39,7 @@ fun ConferenceSelectorView(
     Row(
         modifier =
             modifier
+                .semantics { contentDescription = "Conference ${conference.name}" }
                 .clickable { onConferenceClick() }
                 .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,

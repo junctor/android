@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
 import com.advice.core.local.Menu
@@ -114,53 +116,61 @@ private fun HomeScreen(
             ) { onDismissNews(news) }
         }
 
-        state.menu.items.forEach {
-            when (it) {
-                is MenuItem.SectionHeading -> {
-                    Label(text = it.label)
-                }
+        if (state.menu == Menu.LOADING) {
+            ProgressSpinner(
+                Modifier
+                    .fillMaxWidth()
+                    .height(240.dp),
+            )
+        } else {
+            state.menu.items.forEach {
+                when (it) {
+                    is MenuItem.SectionHeading -> {
+                        Label(text = it.label)
+                    }
 
-                is MenuItem.Divider -> {
-                    Divider()
-                }
+                    is MenuItem.Divider -> {
+                        Divider()
+                    }
 
-                else -> {
-                    MenuItem(it) {
-                        onNavigationClick(it)
+                    else -> {
+                        MenuItem(it) {
+                            onNavigationClick(it)
+                        }
                     }
                 }
             }
-        }
 
-        val logo = state.conference.squareLogo(isSystemInDarkTheme())
-        if (logo != null) {
-            Box(
-                Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Image(
-                    model = logo,
-                    contentDescription = state.conference.name,
-                    modifier =
-                        Modifier
-                            .size(160.dp)
-                            .padding(horizontal = 16.dp, vertical = 4.dp),
-                )
-            }
-        }
-
-        // Required spacer to push content above the bottom bar
-        Spacer(Modifier.height(84.dp))
-
-        if (state.menu.items.isNotEmpty() && state.hasChicken) {
-            Box(
-                Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                SoundButton()
+            val logo = state.conference.squareLogo(isSystemInDarkTheme())
+            if (logo != null) {
+                Box(
+                    Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Image(
+                        model = logo,
+                        contentDescription = state.conference.name,
+                        modifier =
+                            Modifier
+                                .size(160.dp)
+                                .padding(horizontal = 16.dp, vertical = 4.dp),
+                    )
+                }
             }
 
+            // Required spacer to push content above the bottom bar
             Spacer(Modifier.height(84.dp))
+
+            if (state.menu.items.isNotEmpty() && state.hasChicken) {
+                Box(
+                    Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    SoundButton()
+                }
+
+                Spacer(Modifier.height(84.dp))
+            }
         }
     }
 }
@@ -184,6 +194,7 @@ private fun MenuItem(
     HomeCard {
         Column(
             Modifier
+                .semantics { contentDescription = "Home menu: ${menuItem.label}" }
                 .clickable(onClick = onNavigationClick)
                 .padding(16.dp),
         ) {

@@ -22,7 +22,7 @@ internal fun QRCodeImage(
     }
     Image(
         bitmap = bitmap.asImageBitmap(),
-        contentDescription = "QR Code",
+        contentDescription = "QR Code: $json",
         modifier = modifier,
     )
 }
@@ -32,6 +32,8 @@ internal fun QRCodeImage(
 @Composable
 private fun QRCodeImagePreview() {
     ScheduleTheme {
-        QRCodeImage("{\"products\":[{\"id\":1,\"quantity\":1,\"variant\":\"M\"},{\"id\":3,\"quantity\":2,\"variant\":\"S\"}]}")
+        QRCodeImage(
+            "1:123:A42:456:2;789:3",
+        )
     }
 }
