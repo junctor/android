@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Document
+import com.advice.ui.components.AnchoredMarkdown
 import com.advice.ui.components.BackButton
-import com.advice.ui.components.Paragraph
 import com.advice.ui.components.ReportSection
 import com.advice.ui.theme.ScheduleTheme
 
@@ -27,6 +27,8 @@ fun DocumentScreen(
     onBackPressed: () -> Unit,
     onReport: (String) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -41,9 +43,12 @@ fun DocumentScreen(
             Modifier
                 .padding(it)
                 .padding(horizontal = 8.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
         ) {
-            Paragraph(document.description)
+            AnchoredMarkdown(
+                text = document.description,
+                scrollState = scrollState,
+            )
             ReportSection(onSubmit = onReport)
             Spacer(Modifier.height(64.dp))
         }
@@ -59,7 +64,12 @@ private fun SupportScreenViewPreview() {
                 Document(
                     -1L,
                     "Code of Conduct",
-                    "If you need support, please call us 555-555-0000",
+                    """
+                    - [Support](#support)
+
+                    ## Support
+                    If you need support, please call us 555-555-0000
+                    """.trimIndent(),
                 ),
             onBackPressed = {},
             onReport = {},
