@@ -1,6 +1,6 @@
 package com.advice.ui.components
 
-data class ThemeOption(
+data class PreferenceOption(
     val title: String,
-    val theme: String,
+    val value: String,
 )

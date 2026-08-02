@@ -36,6 +36,9 @@ fun Settings(navController: NavHostController) {
                 (context as MainActivity).recreate()
             }
         },
+        onScheduleDayFormatChange = { formatId ->
+            viewModel.onScheduleDayFormatChanged(formatId)
+        },
         onVersionClick = { index ->
             if (index == 0) {
                 toast?.cancel()

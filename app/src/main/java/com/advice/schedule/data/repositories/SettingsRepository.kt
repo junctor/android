@@ -1,12 +1,13 @@
 package com.advice.schedule.data.repositories
 
 import android.content.Context
+import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.ui.SettingsScreenState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.schedule.telemetry.TelemetryCollection
 import com.advice.ui.preview.Preferences
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 
 class SettingsRepository(
     userSession: UserSession,
@@ -15,9 +16,12 @@ class SettingsRepository(
     private val context: Context,
 ) {
     val state =
-        userSession.getConference().map {
+        combine(
+            userSession.getConference(),
+            preferences.scheduleDayFormatFlow,
+        ) { conference, scheduleDayFormat ->
             SettingsScreenState(
-                it.timezone,
+                conference.timezone,
                 version,
                 preferences.forceTimeZone,
                 preferences.showSchedule,
@@ -26,6 +30,7 @@ class SettingsRepository(
                 preferences.allowAnalytics,
                 preferences.allowCrashlytics,
                 preferences.glitchAnimationEnabled,
+                scheduleDayFormat.id,
             )
         }
 
@@ -54,5 +59,9 @@ class SettingsRepository(
         val result = preferences.theme != theme
         preferences.theme = theme
         return result
+    }
+
+    fun onScheduleDayFormatChanged(formatId: String) {
+        preferences.scheduleDayFormat = ScheduleDayFormat.fromId(formatId)
     }
 }

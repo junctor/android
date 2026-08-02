@@ -10,7 +10,7 @@ import com.advice.schedule.data.repositories.ScheduleRepository
 import com.advice.schedule.data.repositories.ScheduleResult
 import com.advice.ui.states.ScheduleScreenState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -22,7 +22,10 @@ class ScheduleViewModel :
     private val repository by inject<ScheduleRepository>()
 
     fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> =
-        repository.getSchedule(filter).map { result ->
+        combine(
+            repository.getSchedule(filter),
+            storage.scheduleDayFormatFlow,
+        ) { result, dayFormat ->
             when (result) {
                 ScheduleResult.Loading -> {
                     ScheduleScreenState.Loading
@@ -38,6 +41,7 @@ class ScheduleViewModel :
                             TimeUtil.getDateStamp(
                                 it.session,
                                 storage.forceTimeZone,
+                                dayFormat,
                             )
                         }
                     ScheduleScreenState.Success(filter, days, storage.showFilters)

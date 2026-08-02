@@ -23,13 +23,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.advice.core.local.ScheduleDayFormat
+import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.ButtonPreference
+import com.advice.ui.components.PreferenceOption
 import com.advice.ui.components.SwitchPreference
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.preview.SettingsScreenViewStateProvider
 import com.advice.ui.theme.ScheduleTheme
+import java.time.Instant
 
 data class SettingsScreenPreference(
     val key: String,
@@ -44,6 +48,7 @@ data class SettingsScreenViewState(
     val timeZone: String = "American/Los_Angeles",
     val version: String = "1.0.0",
     val enableEasterEggs: Boolean = false,
+    val scheduleDayFormat: String = ScheduleDayFormat.MonthDay.id,
     val preferences: List<SettingsScreenPreference> = emptyList(),
 )
 
@@ -53,6 +58,7 @@ fun SettingScreen(
     state: SettingsScreenViewState,
     onPreferenceChange: (String, Boolean) -> Unit,
     onThemeChange: (String) -> Unit,
+    onScheduleDayFormatChange: (String) -> Unit,
     onVersionClick: (Int) -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     onBackPress: () -> Unit,
@@ -66,6 +72,7 @@ fun SettingScreen(
             state,
             onPreferenceChange,
             onThemeChange,
+            onScheduleDayFormatChange,
             onVersionClick,
             onPrivacyPolicyClick,
             Modifier.padding(it),
@@ -78,16 +85,42 @@ private fun SettingsScreenContent(
     state: SettingsScreenViewState,
     onPreferenceChange: (String, Boolean) -> Unit,
     onThemeChange: (String) -> Unit,
+    onScheduleDayFormatChange: (String) -> Unit,
     onVersionClick: (Int) -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val enableEasterEggs by remember { mutableStateOf(state.enableEasterEggs) }
+    val now = remember { Instant.now() }
+    val dayFormatOptions =
+        remember(now) {
+            ScheduleDayFormat.entries.map { format ->
+                PreferenceOption(
+                    title = TimeUtil.formatScheduleDay(now, format),
+                    value = format.id,
+                )
+            }
+        }
+    val selectedDayFormat = ScheduleDayFormat.fromId(state.scheduleDayFormat)
+    val dayFormatSummary = TimeUtil.formatScheduleDay(now, selectedDayFormat)
 
     Column(modifier) {
-        ButtonPreference(onPreferenceChange = {
-            onThemeChange(it)
-        })
+        ButtonPreference(
+            title = "Choose theme",
+            options =
+                listOf(
+                    PreferenceOption("Light", "light"),
+                    PreferenceOption("Dark", "dark"),
+                    PreferenceOption("System default", "system"),
+                ),
+            onPreferenceChange = onThemeChange,
+        )
+        ButtonPreference(
+            title = "Schedule day format",
+            options = dayFormatOptions,
+            summary = dayFormatSummary,
+            onPreferenceChange = onScheduleDayFormatChange,
+        )
         for (preference in state.preferences) {
             SwitchPreference(
                 title = preference.title,
@@ -163,6 +196,7 @@ private fun SettingScreenViewDarkPreview(
             state = state,
             onPreferenceChange = { _, _ -> },
             onThemeChange = {},
+            onScheduleDayFormatChange = {},
             onVersionClick = {},
             onPrivacyPolicyClick = {},
             onBackPress = {},

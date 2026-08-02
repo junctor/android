@@ -1,11 +1,13 @@
 package com.advice.core.utils
 
 import com.advice.core.local.LocationSchedule
+import com.advice.core.local.ScheduleDayFormat
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
+import java.time.ZoneId
 
 class TimeUtilTest {
     @Test
@@ -67,5 +69,32 @@ class TimeUtilTest {
         assertTrue(twelveHour.contains("4:00 PM"))
         assertTrue(twentyFourHour.contains("14:30"))
         assertTrue(twentyFourHour.contains("16:00"))
+    }
+
+    @Test
+    fun formatScheduleDay_appliesEachScheduleDayFormat() {
+        // Saturday, August 10, 2024 in America/New_York
+        val instant = Instant.parse("2024-08-10T18:00:00Z")
+        val zoneId = ZoneId.of("America/New_York")
+
+        assertEquals(
+            "August 10",
+            TimeUtil.formatScheduleDay(instant, ScheduleDayFormat.MonthDay, zoneId),
+        )
+        assertEquals(
+            "Saturday",
+            TimeUtil.formatScheduleDay(instant, ScheduleDayFormat.DayOfWeek, zoneId),
+        )
+        assertEquals(
+            "Sat, Aug 10",
+            TimeUtil.formatScheduleDay(instant, ScheduleDayFormat.DayAbbrMonthDay, zoneId),
+        )
+    }
+
+    @Test
+    fun scheduleDayFormat_fromIdFallsBackToMonthDay() {
+        assertEquals(ScheduleDayFormat.MonthDay, ScheduleDayFormat.fromId(null))
+        assertEquals(ScheduleDayFormat.MonthDay, ScheduleDayFormat.fromId("unknown"))
+        assertEquals(ScheduleDayFormat.DayOfWeek, ScheduleDayFormat.fromId("day_of_week"))
     }
 }

@@ -3,6 +3,7 @@ package com.advice.core.utils
 import android.content.Context
 import com.advice.core.local.Conference
 import com.advice.core.local.LocationSchedule
+import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.local.Session
 import com.shortstack.core.BuildConfig
 import timber.log.Timber
@@ -54,14 +55,20 @@ object TimeUtil {
         }
     }
 
+    fun formatScheduleDay(
+        instant: Instant,
+        format: ScheduleDayFormat,
+        zoneId: ZoneId = ZoneId.systemDefault(),
+    ): String = formatter(format.pattern).format(instant.atZone(zoneId))
+
     fun getDateStamp(
         session: Session,
         forceTimeZone: Boolean,
+        format: ScheduleDayFormat = ScheduleDayFormat.MonthDay,
     ): String {
         val zoneId = getZoneId(forceTimeZone, session.timeZone)
 
-        val localDateTime = session.start.atZone(zoneId)
-        return formatter("MMMM d").format(localDateTime)
+        return formatScheduleDay(session.start, format, zoneId ?: ZoneId.systemDefault())
     }
 
     fun getEventDateStamp(

@@ -23,19 +23,16 @@ import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
-fun ButtonPreference(onPreferenceChange: (String) -> Unit) {
-    val title = "Choose theme"
-    val options =
-        listOf(
-            ThemeOption("Light", "light"),
-            ThemeOption("Dark", "dark"),
-            ThemeOption("System default", "system"),
-        )
-
+fun ButtonPreference(
+    title: String,
+    options: List<PreferenceOption>,
+    summary: String? = null,
+    onPreferenceChange: (String) -> Unit,
+) {
     var dialogOpen by remember { mutableStateOf(false) }
 
     if (dialogOpen) {
-        Dialog(
+        PreferenceDialog(
             title = title,
             options = options,
             onOptionSelect = {
@@ -63,14 +60,17 @@ fun ButtonPreference(onPreferenceChange: (String) -> Unit) {
             verticalArrangement = Arrangement.Center,
         ) {
             Text(title)
+            if (summary != null) {
+                Text(summary)
+            }
         }
     }
 }
 
 @Composable
-private fun Dialog(
+private fun PreferenceDialog(
     title: String,
-    options: List<ThemeOption>,
+    options: List<PreferenceOption>,
     onOptionSelect: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -80,7 +80,7 @@ private fun Dialog(
         text = {
             Column {
                 for (option in options) {
-                    TextButton(onClick = { onOptionSelect(option.theme) }) {
+                    TextButton(onClick = { onOptionSelect(option.value) }) {
                         Text(option.title, modifier = Modifier.fillMaxWidth())
                     }
                 }
@@ -95,22 +95,30 @@ private fun Dialog(
 @Composable
 private fun ButtonPreferencePreview() {
     ScheduleTheme {
-        ButtonPreference {}
+        ButtonPreference(
+            title = "Choose theme",
+            options =
+                listOf(
+                    PreferenceOption("Light", "light"),
+                    PreferenceOption("Dark", "dark"),
+                    PreferenceOption("System default", "system"),
+                ),
+            onPreferenceChange = {},
+        )
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun ButtonPreferenceDarkPreview() {
-    val title = "Choose theme"
+private fun ButtonPreferenceWithSummaryPreview() {
     val options =
         listOf(
-            ThemeOption("Light", "light"),
-            ThemeOption("Dark", "dark"),
-            ThemeOption("System default", "system"),
+            PreferenceOption("August 1", "month_day"),
+            PreferenceOption("Saturday", "day_of_week"),
+            PreferenceOption("Sat, Aug 1", "day_abbr_month_day"),
         )
 
     ScheduleTheme {
-        Dialog(title, options, {}, {})
+        PreferenceDialog("Schedule day format", options, {}, {})
     }
 }

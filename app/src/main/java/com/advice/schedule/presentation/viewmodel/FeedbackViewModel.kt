@@ -63,7 +63,7 @@ class FeedbackViewModel :
 
                         is FeedbackType.SelectOne -> {
                             feedbackItem.copy(
-                                type = FeedbackType.SelectOne(type.options, value.toLong()),
+                                type = FeedbackType.SelectOne(type.options, value.toLongOrNull()),
                             )
                         }
 

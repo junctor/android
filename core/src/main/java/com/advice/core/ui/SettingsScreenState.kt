@@ -10,4 +10,5 @@ data class SettingsScreenState(
     val enableAnalytics: Boolean,
     val enableCrashlytics: Boolean,
     val enableGlitchAnimation: Boolean,
+    val scheduleDayFormat: String,
 )

@@ -3,11 +3,15 @@ package com.advice.core.utils
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.network.CachedFeedbackRequest
 import com.advice.core.network.CachedReportRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 
 class Storage(
@@ -29,12 +33,21 @@ class Storage(
         const val USER_ANALYTICS_KEY = "user_analytics"
         const val USER_CRASHLYTICS_KEY = "user_crashlytics"
         const val GLITCH_ANIMATION_ENABLED_KEY = "glitch_animation_enabled"
+        const val SCHEDULE_DAY_FORMAT_KEY = "schedule_day_format"
 
         const val LATEST_NEWS_READ = "latest_news_read"
     }
 
     private val preferences: SharedPreferences =
         context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
+
+    private val _scheduleDayFormat =
+        MutableStateFlow(
+            ScheduleDayFormat.fromId(
+                preferences.getString(SCHEDULE_DAY_FORMAT_KEY, ScheduleDayFormat.MonthDay.id),
+            ),
+        )
+    val scheduleDayFormatFlow: StateFlow<ScheduleDayFormat> = _scheduleDayFormat.asStateFlow()
 
     var allowAnalytics: Boolean
         get() = preferences.getBoolean(USER_ANALYTICS_KEY, false)
@@ -89,6 +102,13 @@ class Storage(
         get() = preferences.getString(USER_THEME, null)
         set(value) {
             preferences.edit { putString(USER_THEME, value) }
+        }
+
+    var scheduleDayFormat: ScheduleDayFormat
+        get() = _scheduleDayFormat.value
+        set(value) {
+            preferences.edit { putString(SCHEDULE_DAY_FORMAT_KEY, value.id) }
+            _scheduleDayFormat.value = value
         }
 
     var updateVersion: Int?
@@ -215,7 +235,7 @@ class Storage(
                     object : TypeToken<List<CachedReportRequest>>() {}.type,
                 ) ?: return emptyList()
             return list.filter { entry ->
-                !entry.endpoint.isNullOrBlank() && !entry.payloadJson.isNullOrBlank()
+                entry.endpoint.isNotBlank() && entry.payloadJson.isNotBlank()
             }
         } catch (ex: Exception) {
             Timber.e("Could not convert stored cached report request to list")

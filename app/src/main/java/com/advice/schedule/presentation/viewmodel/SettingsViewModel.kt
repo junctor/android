@@ -46,6 +46,7 @@ class SettingsViewModel :
                         timeZone = it.timezone,
                         version = it.version,
                         enableEasterEggs = it.enableEasterEggs,
+                        scheduleDayFormat = it.scheduleDayFormat,
                         preferences = preferences,
                     )
             }
@@ -64,6 +65,10 @@ class SettingsViewModel :
     }
 
     fun onThemeChanged(theme: String): Boolean = repository.onThemeChanged(theme)
+
+    fun onScheduleDayFormatChanged(formatId: String) {
+        repository.onScheduleDayFormatChanged(formatId)
+    }
 }
 
 private fun Preferences.toPreference(enabled: Boolean): SettingsScreenPreference =

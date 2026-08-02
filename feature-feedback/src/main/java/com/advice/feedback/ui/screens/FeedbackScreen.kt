@@ -47,7 +47,7 @@ fun FeedbackContent(
                         type.options,
                         type.selection,
                     ) {
-                        onValueChanged(item, it.toString())
+                        onValueChanged(item, it?.toString().orEmpty())
                     }
 
                 is FeedbackType.MultiSelect ->

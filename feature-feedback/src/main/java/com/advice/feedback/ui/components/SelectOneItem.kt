@@ -24,67 +24,91 @@ fun SelectOneItem(
     caption: String,
     options: List<FeedbackOption>,
     selection: Long? = null,
-    onSelectOption: (Long) -> Unit,
+    onSelectOption: (Long?) -> Unit,
 ) {
     var choice by remember { mutableStateOf(selection) }
 
-    Column(Modifier.fillMaxWidth()) {
-        Text(caption)
+    fun toggle(optionId: Long) {
+        val next = if (choice == optionId) null else optionId
+        choice = next
+        onSelectOption(next)
+    }
 
-        if (options.size > 3) {
-            // Vertical layout
-            options.forEach {
-                Row(
-                    modifier =
-                        Modifier
-                            .clickable {
-                                choice = it.id
-                                onSelectOption(it.id)
-                            }.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    RadioButton(
-                        selected = choice == it.id,
-                        onClick = {
-                            choice = it.id
-                            onSelectOption(it.id)
-                        },
-                    )
-                    Text(
-                        text = it.value,
+    Column(Modifier.fillMaxWidth()) {
+        if (caption.isNotBlank()) {
+            Text(caption)
+        }
+
+        when {
+            // Single option (e.g. acknowledgment) — radio beside label
+            options.size <= 1 -> {
+                options.forEach { option ->
+                    SelectOneOptionRow(
+                        option = option,
+                        selected = choice == option.id,
+                        onSelect = { toggle(option.id) },
                     )
                 }
             }
-        } else {
-            // Horizontal layout
-            Row(Modifier.fillMaxWidth()) {
-                options.forEach {
-                    Column(
-                        modifier =
-                            Modifier
-                                .clickable {
-                                    choice = it.id
-                                    onSelectOption(it.id)
-                                }.weight(1f),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        RadioButton(
-                            selected = choice == it.id,
-                            onClick = {
-                                choice = it.id
-                                onSelectOption(it.id)
-                            },
-                        )
-                        Text(
-                            text = it.value,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                        )
+
+            // Few options — rating-style columns
+            options.size <= 3 -> {
+                Row(Modifier.fillMaxWidth()) {
+                    options.forEach { option ->
+                        Column(
+                            modifier =
+                                Modifier
+                                    .clickable { toggle(option.id) }
+                                    .weight(1f),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            RadioButton(
+                                selected = choice == option.id,
+                                onClick = { toggle(option.id) },
+                            )
+                            Text(
+                                text = option.value,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
                 }
             }
+
+            // Many options — vertical list
+            else -> {
+                options.forEach { option ->
+                    SelectOneOptionRow(
+                        option = option,
+                        selected = choice == option.id,
+                        onSelect = { toggle(option.id) },
+                    )
+                }
+            }
         }
+    }
+}
+
+@Composable
+private fun SelectOneOptionRow(
+    option: FeedbackOption,
+    selected: Boolean,
+    onSelect: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .clickable(onClick = onSelect)
+                .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onSelect,
+        )
+        Text(text = option.value)
     }
 }
 
@@ -118,6 +142,19 @@ private fun SelectOneItemVerticalPreview() {
                     FeedbackOption(3, "Option 3"),
                     FeedbackOption(4, "Option 4"),
                 ),
+            onSelectOption = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun SelectOneItemSingleOptionPreview() {
+    ScheduleTheme {
+        SelectOneItem(
+            caption = "",
+            options = listOf(FeedbackOption(1, "OK")),
+            selection = 1,
             onSelectOption = {},
         )
     }
