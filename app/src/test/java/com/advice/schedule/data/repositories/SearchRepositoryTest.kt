@@ -7,6 +7,7 @@ import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.data.session.UserSession
 import com.advice.documents.data.repositories.DocumentsRepository
+import com.advice.organizations.data.repositories.OrganizationsRepository
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

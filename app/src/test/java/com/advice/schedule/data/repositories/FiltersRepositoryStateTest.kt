@@ -80,7 +80,7 @@ class FiltersRepositoryStateTest {
             }
     }
 
-    private suspend fun awaitState(subject: FiltersRepository): FiltersScreenState {
+    private fun awaitState(subject: FiltersRepository): FiltersScreenState {
         var attempts = 0
         while (subject.state.replayCache.isEmpty() && attempts < 50) {
             // shareIn uses Dispatchers.IO; wall-clock wait (runTest delay is virtual).

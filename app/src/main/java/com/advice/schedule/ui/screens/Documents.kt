@@ -8,9 +8,9 @@ import androidx.navigation.NavHostController
 import com.advice.documents.presentation.viewmodel.DocumentsScreenState
 import com.advice.documents.presentation.viewmodel.DocumentsViewModel
 import com.advice.feedback.network.models.ReportObjectType
+import com.advice.feedback.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.onBackPressed
-import com.advice.schedule.presentation.viewmodel.ReportViewModel
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
 

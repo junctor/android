@@ -1,4 +1,4 @@
-package com.advice.schedule.presentation.viewmodel
+package com.advice.feedback.presentation.viewmodel
 
 import com.advice.core.local.feedback.FeedbackItem
 import com.advice.core.local.feedback.FeedbackType

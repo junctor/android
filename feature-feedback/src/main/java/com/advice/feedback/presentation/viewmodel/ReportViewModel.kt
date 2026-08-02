@@ -1,4 +1,4 @@
-package com.advice.schedule.presentation.viewmodel
+package com.advice.feedback.presentation.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

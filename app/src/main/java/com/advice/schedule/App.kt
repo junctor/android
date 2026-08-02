@@ -3,7 +3,7 @@ package com.advice.schedule
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.advice.core.utils.Storage
-import com.advice.schedule.di.appModule
+import com.advice.schedule.di.appModules
 import com.advice.schedule.telemetry.TelemetryCollection
 import com.google.firebase.FirebaseApp
 import com.shortstack.hackertracker.BuildConfig
@@ -22,7 +22,7 @@ class App : Application() {
 
         startKoin {
             androidContext(this@App)
-            modules(appModule)
+            modules(appModules())
         }
 
         TelemetryCollection.apply(this, get<Storage>())

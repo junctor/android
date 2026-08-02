@@ -12,7 +12,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import java.time.Instant
@@ -26,39 +25,6 @@ class ContentRepositoryReminderSyncTest {
     private val location = Location(1, "Track A", "A")
     private val updated = Instant.parse("2024-08-01T12:00:00Z")
     private val updatedMillis = updated.toEpochMilli()
-
-    @Test
-    fun `rescheduleBookmarkedReminders only updates bookmarked sessions`() =
-        runTest {
-            val bookmarked = session(1, bookmarked = true)
-            val plain = session(2, bookmarked = false)
-            val item = content(sessions = listOf(bookmarked, plain))
-            val flow = MutableSharedFlow<ConferenceContent>(replay = 1)
-            every { contentDataSource.get() } returns flow
-            every { storage.getContentUpdatedTimestamp(any()) } returns updatedMillis
-
-            val subject = ContentRepository(contentDataSource, reminderManager, notificationHelper, storage)
-            flow.emit(ConferenceContent(listOf(item)))
-            awaitReplay(subject)
-
-            subject.rescheduleBookmarkedReminders()
-
-            verify(atLeast = 1) { reminderManager.updateReminders(item, bookmarked) }
-            verify(exactly = 0) { reminderManager.updateReminders(item, plain) }
-        }
-
-    @Test
-    fun `rescheduleBookmarkedReminders no-ops when replay cache empty`() =
-        runTest {
-            every { contentDataSource.get() } returns emptyFlow()
-
-            val subject = ContentRepository(contentDataSource, reminderManager, notificationHelper, storage)
-            Thread.sleep(50)
-
-            subject.rescheduleBookmarkedReminders()
-
-            verify(exactly = 0) { reminderManager.updateReminders(any(), any()) }
-        }
 
     @Test
     fun `updated bookmark with older stored timestamp updates reminders and notifies`() =
@@ -104,7 +70,7 @@ class ContentRepositoryReminderSyncTest {
             verify(exactly = 0) { notificationHelper.notifySessionUpdated(any()) }
         }
 
-    private suspend fun awaitReplay(subject: ContentRepository) {
+    private fun awaitReplay(subject: ContentRepository) {
         var attempts = 0
         while (subject.content.replayCache.isEmpty() && attempts < 50) {
             // shareIn uses Dispatchers.IO; wall-clock wait (runTest delay is virtual).

@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.ui.activity.MainActivity
+import com.advice.wifi.presentation.viewmodel.WifiViewModel
 import com.advice.wifi.ui.screens.WifiScreen
 
 @Composable

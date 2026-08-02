@@ -33,6 +33,7 @@ android {
 
 dependencies {
     implementation project(":core")
+    implementation project(":data")
     implementation project(":ui")
 
     def composeBom = platform(libs.androidx.compose.bom)
@@ -44,6 +45,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.androidx.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.koin)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

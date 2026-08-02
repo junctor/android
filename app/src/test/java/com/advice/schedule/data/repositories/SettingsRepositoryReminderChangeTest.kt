@@ -6,6 +6,7 @@ import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
+import com.advice.schedule.domain.ContentBookmarkUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -18,7 +19,7 @@ class SettingsRepositoryReminderChangeTest {
     private val userSession = mockk<UserSession>()
     private val preferences = mockk<Storage>(relaxed = true)
     private val context = mockk<Context>(relaxed = true)
-    private val contentRepository = mockk<ContentRepository>(relaxed = true)
+    private val contentBookmarkUseCase = mockk<ContentBookmarkUseCase>(relaxed = true)
 
     private lateinit var subject: SettingsRepository
 
@@ -36,7 +37,7 @@ class SettingsRepositoryReminderChangeTest {
                 preferences,
                 version = "1.0",
                 context,
-                contentRepository,
+                contentBookmarkUseCase,
             )
     }
 
@@ -44,7 +45,7 @@ class SettingsRepositoryReminderChangeTest {
     fun `same sanitized event reminder minutes does not reschedule`() {
         subject.onEventReminderMinutesChanged(ReminderMinutes.DEFAULT)
 
-        verify(exactly = 0) { contentRepository.rescheduleBookmarkedReminders() }
+        verify(exactly = 0) { contentBookmarkUseCase.rescheduleBookmarkedReminders() }
         verify(exactly = 0) { preferences.eventReminderMinutes = any() }
     }
 
@@ -53,7 +54,7 @@ class SettingsRepositoryReminderChangeTest {
         subject.onEventReminderMinutesChanged(30)
 
         verify(exactly = 1) { preferences.eventReminderMinutes = 30 }
-        verify(exactly = 1) { contentRepository.rescheduleBookmarkedReminders() }
+        verify(exactly = 1) { contentBookmarkUseCase.rescheduleBookmarkedReminders() }
     }
 
     @Test

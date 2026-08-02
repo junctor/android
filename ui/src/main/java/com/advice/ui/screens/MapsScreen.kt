@@ -79,9 +79,12 @@ fun MapsScreen(
                     }
                 },
                 colors =
-                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    TopAppBarDefaults.topAppBarColors(
                         containerColor = MapBarColor,
+                        scrolledContainerColor = Color.Unspecified,
                         navigationIconContentColor = Color.White,
+                        titleContentColor = Color.Unspecified,
+                        actionIconContentColor = Color.Unspecified,
                     ),
             )
         },

@@ -1,4 +1,4 @@
-package com.advice.schedule.data.repositories
+package com.advice.organizations.data.repositories
 
 import com.advice.core.local.Organization
 import com.advice.data.sources.OrganizationsDataSource

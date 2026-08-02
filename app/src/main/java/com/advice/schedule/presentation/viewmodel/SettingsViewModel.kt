@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.ReminderMinutes
+import com.advice.core.preferences.Preferences
 import com.advice.schedule.data.repositories.SettingsRepository
-import com.advice.ui.preview.Preferences
 import com.advice.ui.screens.SettingsScreenPreference
 import com.advice.ui.screens.SettingsScreenViewState
 import kotlinx.coroutines.flow.MutableStateFlow

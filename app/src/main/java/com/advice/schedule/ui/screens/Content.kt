@@ -16,12 +16,12 @@ import androidx.navigation.NavHostController
 import com.advice.core.local.Content
 import com.advice.core.local.Session
 import com.advice.feedback.network.models.ReportObjectType
+import com.advice.feedback.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.ContentViewModel
 import com.advice.schedule.presentation.viewmodel.EventViewModel
-import com.advice.schedule.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ContentListScreen

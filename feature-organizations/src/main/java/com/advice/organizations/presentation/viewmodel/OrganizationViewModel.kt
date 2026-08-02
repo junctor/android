@@ -1,9 +1,9 @@
-package com.advice.schedule.presentation.viewmodel
+package com.advice.organizations.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.advice.organizations.data.repositories.OrganizationsRepository
 import com.advice.organizations.ui.screens.OrganizationScreenState
-import com.advice.schedule.data.repositories.OrganizationsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

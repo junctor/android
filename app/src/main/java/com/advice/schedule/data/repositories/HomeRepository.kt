@@ -14,6 +14,7 @@ import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.FeedbackDataSource
+import com.advice.wifi.data.repositories.WifiNetworkRepository
 import kotlinx.coroutines.flow.combine
 
 class HomeRepository(

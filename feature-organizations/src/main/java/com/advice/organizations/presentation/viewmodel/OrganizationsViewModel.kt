@@ -1,8 +1,8 @@
-package com.advice.schedule.presentation.viewmodel
+package com.advice.organizations.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.advice.core.local.Organization
-import com.advice.schedule.data.repositories.OrganizationsRepository
+import com.advice.organizations.data.repositories.OrganizationsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent

@@ -58,16 +58,6 @@ class ContentRepository(
         }
     }
 
-    fun rescheduleBookmarkedReminders() {
-        val conferenceContent = content.replayCache.firstOrNull() ?: return
-        for (item in conferenceContent.content) {
-            val sessions = item.sessions.filter { it.isBookmarked }
-            for (session in sessions) {
-                reminderManager.updateReminders(item, session)
-            }
-        }
-    }
-
     suspend fun getContent(
         conference: String,
         contentId: Long,

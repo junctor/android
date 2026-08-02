@@ -9,7 +9,7 @@ import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.ScheduleFilter
 import com.advice.data.sources.BookmarkedElementDataSource
-import com.advice.reminder.ReminderManager
+import com.advice.schedule.domain.ContentBookmarkUseCase
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
@@ -25,7 +25,7 @@ import java.time.Instant
 class ScheduleRepositoryFilterTest {
     private val contentRepository = mockk<ContentRepository>()
     private val tagsRepository = mockk<TagsRepository>()
-    private val reminderManager = mockk<ReminderManager>(relaxed = true)
+    private val contentBookmarkUseCase = mockk<ContentBookmarkUseCase>(relaxed = true)
     private val bookmarksDataSource = mockk<BookmarkedElementDataSource>()
 
     private val locationA = Location(1, "Track A", "A")
@@ -44,7 +44,7 @@ class ScheduleRepositoryFilterTest {
             ScheduleRepository(
                 contentRepository,
                 tagsRepository,
-                reminderManager,
+                contentBookmarkUseCase,
                 bookmarksDataSource,
             )
     }

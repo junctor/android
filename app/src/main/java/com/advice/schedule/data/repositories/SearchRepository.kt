@@ -10,6 +10,7 @@ import com.advice.core.local.Speaker
 import com.advice.core.local.Tag
 import com.advice.data.session.UserSession
 import com.advice.documents.data.repositories.DocumentsRepository
+import com.advice.organizations.data.repositories.OrganizationsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine

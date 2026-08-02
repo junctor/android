@@ -89,7 +89,7 @@ fun ProductsScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
+                colors = TopAppBarDefaults.topAppBarColors(),
             )
         },
     ) {

@@ -13,6 +13,7 @@ import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.FeedbackDataSource
+import com.advice.wifi.data.repositories.WifiNetworkRepository
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

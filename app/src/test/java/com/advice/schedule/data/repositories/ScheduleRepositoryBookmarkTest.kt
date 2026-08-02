@@ -4,11 +4,9 @@ import com.advice.core.local.Content
 import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.data.sources.BookmarkedElementDataSource
-import com.advice.reminder.ReminderManager
-import io.mockk.coEvery
+import com.advice.schedule.domain.ContentBookmarkUseCase
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +15,7 @@ import java.time.Instant
 class ScheduleRepositoryBookmarkTest {
     private val contentRepository = mockk<ContentRepository>(relaxed = true)
     private val tagsRepository = mockk<TagsRepository>(relaxed = true)
-    private val reminderManager = mockk<ReminderManager>(relaxed = true)
+    private val contentBookmarkUseCase = mockk<ContentBookmarkUseCase>(relaxed = true)
     private val bookmarksDataSource = mockk<BookmarkedElementDataSource>(relaxed = true)
 
     private lateinit var subject: ScheduleRepository
@@ -30,72 +28,35 @@ class ScheduleRepositoryBookmarkTest {
             ScheduleRepository(
                 contentRepository,
                 tagsRepository,
-                reminderManager,
+                contentBookmarkUseCase,
                 bookmarksDataSource,
             )
     }
 
     @Test
-    fun `bookmark content with no sessions bookmarked bookmarks all and sets reminders`() =
+    fun `bookmark delegates to ContentBookmarkUseCase`() =
         runTest {
             val sessions = listOf(session(1), session(2))
             val content = content(sessions)
-            coEvery { contentRepository.isBookmarked(any<Session>()) } returns false
 
             subject.bookmark(content, session = null, isBookmarked = true)
 
-            coVerify(exactly = 1) { contentRepository.bookmark(content, sessions[0]) }
-            coVerify(exactly = 1) { contentRepository.bookmark(content, sessions[1]) }
-            verify(exactly = 1) { reminderManager.setReminders(content, sessions[0]) }
-            verify(exactly = 1) { reminderManager.setReminders(content, sessions[1]) }
-            coVerify(exactly = 1) { contentRepository.bookmark(content) }
+            coVerify(exactly = 1) {
+                contentBookmarkUseCase.bookmark(content, session = null, isBookmarked = true)
+            }
         }
 
     @Test
-    fun `unbookmark content when all sessions bookmarked removes all and reminders`() =
+    fun `bookmark session delegates to ContentBookmarkUseCase`() =
         runTest {
             val sessions = listOf(session(1), session(2))
             val content = content(sessions)
-            coEvery { contentRepository.isBookmarked(any<Session>()) } returns true
-
-            subject.bookmark(content, session = null, isBookmarked = false)
-
-            coVerify(exactly = 1) { contentRepository.bookmark(content, sessions[0]) }
-            coVerify(exactly = 1) { contentRepository.bookmark(content, sessions[1]) }
-            verify(exactly = 1) { reminderManager.removeReminders(content, sessions[0]) }
-            verify(exactly = 1) { reminderManager.removeReminders(content, sessions[1]) }
-            coVerify(exactly = 1) { contentRepository.bookmark(content) }
-        }
-
-    @Test
-    fun `bookmark session sets reminder and bookmarks content when all sessions bookmarked`() =
-        runTest {
-            val sessions = listOf(session(1), session(2))
-            val content = content(sessions)
-            coEvery { contentRepository.isBookmarked(content) } returns false
-            coEvery { contentRepository.isBookmarked(sessions[0]) } returns true
-            coEvery { contentRepository.isBookmarked(sessions[1]) } returns true
-
-            subject.bookmark(content, sessions[0], isBookmarked = true)
-
-            coVerify(exactly = 1) { contentRepository.bookmark(content, sessions[0]) }
-            verify(exactly = 1) { reminderManager.setReminders(content, sessions[0]) }
-            coVerify(exactly = 1) { contentRepository.bookmark(content) }
-        }
-
-    @Test
-    fun `unbookmark session removes reminder and unbookmarks content when none remain`() =
-        runTest {
-            val sessions = listOf(session(1), session(2))
-            val content = content(sessions)
-            coEvery { contentRepository.isBookmarked(content) } returns true
-            coEvery { contentRepository.isBookmarked(any<Session>()) } returns false
 
             subject.bookmark(content, sessions[0], isBookmarked = false)
 
-            coVerify(exactly = 1) { contentRepository.bookmark(content, sessions[0]) }
-            verify(exactly = 1) { reminderManager.removeReminders(content, sessions[0]) }
-            coVerify(exactly = 1) { contentRepository.bookmark(content) }
+            coVerify(exactly = 1) {
+                contentBookmarkUseCase.bookmark(content, sessions[0], isBookmarked = false)
+            }
         }
 
     private fun content(sessions: List<Session>) =

@@ -81,7 +81,7 @@ fun ProductScreen(
                     BackButton(onBackPressed)
                 },
                 title = { },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
+                colors = TopAppBarDefaults.topAppBarColors(),
             )
         },
     ) {

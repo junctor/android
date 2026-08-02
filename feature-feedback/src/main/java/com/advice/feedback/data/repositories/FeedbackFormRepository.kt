@@ -1,4 +1,4 @@
-package com.advice.schedule.data.repositories
+package com.advice.feedback.data.repositories
 
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.data.sources.FeedbackDataSource

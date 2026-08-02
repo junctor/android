@@ -73,7 +73,7 @@ class LocationRepository(
             if (!node.predicate()) {
                 return false
             }
-            node = locations.find { it.id == node!!.parent }
+            node = locations.find { it.id == node.parent }
         }
         return true
     }

@@ -1,4 +1,4 @@
-package com.advice.schedule.data.repositories
+package com.advice.wifi.data.repositories
 
 import com.advice.data.sources.WiFiNetworksDataSource
 

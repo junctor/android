@@ -3,11 +3,12 @@ package com.advice.schedule.data.repositories
 import android.content.Context
 import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
+import com.advice.core.preferences.Preferences
 import com.advice.core.ui.SettingsScreenState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
+import com.advice.schedule.domain.ContentBookmarkUseCase
 import com.advice.schedule.telemetry.TelemetryCollection
-import com.advice.ui.preview.Preferences
 import kotlinx.coroutines.flow.combine
 
 class SettingsRepository(
@@ -15,7 +16,7 @@ class SettingsRepository(
     private val preferences: Storage,
     private val version: String,
     private val context: Context,
-    private val contentRepository: ContentRepository,
+    private val contentBookmarkUseCase: ContentBookmarkUseCase,
 ) {
     val state =
         combine(
@@ -77,7 +78,7 @@ class SettingsRepository(
             return
         }
         preferences.eventReminderMinutes = sanitized
-        contentRepository.rescheduleBookmarkedReminders()
+        contentBookmarkUseCase.rescheduleBookmarkedReminders()
     }
 
     fun onFeedbackReminderMinutesChanged(minutes: Int) {
@@ -86,6 +87,6 @@ class SettingsRepository(
             return
         }
         preferences.feedbackReminderMinutes = sanitized
-        contentRepository.rescheduleBookmarkedReminders()
+        contentBookmarkUseCase.rescheduleBookmarkedReminders()
     }
 }

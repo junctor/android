@@ -7,11 +7,11 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.feedback.network.models.ReportObjectType
+import com.advice.feedback.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
-import com.advice.schedule.presentation.viewmodel.ReportViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.ui.screens.SpeakerScreen

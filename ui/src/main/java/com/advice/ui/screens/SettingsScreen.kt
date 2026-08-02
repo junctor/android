@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
+import com.advice.core.preferences.Preferences
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
 import com.advice.ui.components.BackButton
@@ -35,7 +36,6 @@ import com.advice.ui.components.ButtonPreference
 import com.advice.ui.components.PreferenceOption
 import com.advice.ui.components.SectionHeader
 import com.advice.ui.components.SwitchPreference
-import com.advice.ui.preview.Preferences
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.preview.SettingsScreenViewStateProvider
 import com.advice.ui.theme.ScheduleTheme

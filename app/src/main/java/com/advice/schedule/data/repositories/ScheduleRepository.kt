@@ -8,10 +8,9 @@ import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.ScheduleFilter
 import com.advice.data.sources.BookmarkedElementDataSource
-import com.advice.reminder.ReminderManager
+import com.advice.schedule.domain.ContentBookmarkUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import timber.log.Timber
 
 sealed class ScheduleResult {
     data object Loading : ScheduleResult()
@@ -28,7 +27,7 @@ sealed class ScheduleResult {
 class ScheduleRepository(
     private val contentRepository: ContentRepository,
     private val tagsRepository: TagsRepository,
-    private val reminderManager: ReminderManager,
+    private val contentBookmarkUseCase: ContentBookmarkUseCase,
     private val bookmarksDataSource: BookmarkedElementDataSource,
 ) {
     fun getSchedule(filter: ScheduleFilter): Flow<ScheduleResult> {
@@ -148,74 +147,6 @@ class ScheduleRepository(
         session: Session?,
         isBookmarked: Boolean,
     ) {
-        if (session != null) {
-            bookmarkSession(content, session, isBookmarked)
-        } else {
-            bookmarkContent(content, isBookmarked)
-        }
-    }
-
-    /**
-     * Bookmark a content and all its sessions
-     */
-    private suspend fun bookmarkContent(
-        content: Content,
-        isBookmarked: Boolean,
-    ) {
-        // Bookmarking content that has sessions
-        if (content.sessions.isNotEmpty()) {
-            val all = content.sessions.all { contentRepository.isBookmarked(it) }
-            val any = content.sessions.any { contentRepository.isBookmarked(it) }
-
-            when {
-                !isBookmarked && all -> {
-                    Timber.d("All sessions are bookmarked - unbookmarking all")
-                    // All sessions are bookmarked - unbookmark them all
-                    content.sessions.forEach {
-                        contentRepository.bookmark(content, it)
-                        reminderManager.removeReminders(content, it)
-                    }
-                }
-
-                isBookmarked && !any -> {
-                    Timber.d("No sessions are bookmarked - bookmarking all")
-                    // No sessions are bookmarked - bookmark them all
-                    content.sessions.forEach {
-                        contentRepository.bookmark(content, it)
-                        reminderManager.setReminders(content, it)
-                    }
-                }
-            }
-        }
-
-        contentRepository.bookmark(content)
-    }
-
-    private suspend fun bookmarkSession(
-        content: Content,
-        session: Session,
-        isBookmarked: Boolean,
-    ) {
-        val contentBookmarked = contentRepository.isBookmarked(content)
-
-        contentRepository.bookmark(content, session)
-        if (isBookmarked) {
-            reminderManager.setReminders(content, session)
-        } else {
-            reminderManager.removeReminders(content, session)
-        }
-
-        val all = content.sessions.all { contentRepository.isBookmarked(it) }
-        val none = content.sessions.none { contentRepository.isBookmarked(it) }
-
-        if (all && !contentBookmarked) {
-            Timber.d("All sessions are bookmarked - bookmarking Content")
-            // All sessions are now bookmarked - bookmark Content as well.
-            contentRepository.bookmark(content)
-        } else if (none && contentBookmarked) {
-            Timber.d("No sessions are bookmarked - unbookmarking Content")
-            // No sessions are bookmarked - unbookmark Content as well.
-            contentRepository.bookmark(content)
-        }
+        contentBookmarkUseCase.bookmark(content, session, isBookmarked)
     }
 }
