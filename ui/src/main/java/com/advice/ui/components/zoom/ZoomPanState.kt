@@ -107,24 +107,33 @@ internal class ZoomPanState(
         consumeHorizontal: Boolean = true,
     ) {
         val oldScale = scale
+        // At hard zoom limits, further pinch must not nudge scale via zoomAround or
+        // apply the accompanying centroid pan — otherwise the map drifts while the
+        // user tries to zoom past max/min. Single-finger pan (zoomChange == 1) still works.
+        val ignorePinchZoom =
+            (oldScale >= maxZoom && zoomChange > 1f) ||
+                (oldScale <= MIN_ZOOM && zoomChange < 1f)
+        val effectiveZoomChange = if (ignorePinchZoom) 1f else zoomChange
+        val effectivePanChange = if (ignorePinchZoom) Offset.Zero else panChange
         val scaleRange =
             if (overscroll) {
                 overscrollScaleRange(maxZoom)
             } else {
                 MIN_ZOOM..maxZoom
             }
-        val newScale = (oldScale * zoomChange).coerceIn(scaleRange.start, scaleRange.endInclusive)
+        val newScale =
+            (oldScale * effectiveZoomChange).coerceIn(scaleRange.start, scaleRange.endInclusive)
         val zoomed =
-            if (zoomChange != 1f) {
+            if (kotlin.math.abs(newScale - oldScale) > 0.0001f) {
                 zoomAround(offset, oldScale, newScale, centroid)
             } else {
                 offset
             }
         val pan =
             if (consumeHorizontal) {
-                panChange
+                effectivePanChange
             } else {
-                Offset(0f, panChange.y)
+                Offset(0f, effectivePanChange.y)
             }
         val proposed = zoomed + pan
         scale = newScale
@@ -184,6 +193,7 @@ internal class ZoomPanState(
         step: Float,
         centroid: Offset = viewportCenter(),
     ) {
+        stopAnimations()
         animateZoomTo(scale * step, centroid)
     }
 
@@ -191,6 +201,7 @@ internal class ZoomPanState(
         targetScale: Float,
         centroid: Offset,
     ) {
+        stopAnimations()
         val startScale = scale
         val startOffset = offset
         val endScale = targetScale.coerceIn(MIN_ZOOM, maxZoom)
@@ -210,8 +221,8 @@ internal class ZoomPanState(
         startScale: Float = scale,
         startOffset: Offset = offset,
     ) {
+        stopAnimations()
         if (!animationsEnabled) {
-            stopAnimations()
             scale = endScale
             offset = endOffset
             return

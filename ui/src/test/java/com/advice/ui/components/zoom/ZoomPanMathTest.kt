@@ -99,13 +99,14 @@ class ZoomPanMathTest {
     }
 
     @Test
-    fun `nextDoubleTapScale ladders MIN mid max then wraps`() {
-        val max = 8f
+    fun `nextDoubleTapScale ladders gradual steps then wraps`() {
+        val max = 40f
         assertEquals(DOUBLE_TAP_ZOOM, nextDoubleTapScale(MIN_ZOOM, max), 0.01f)
-        assertEquals(max, nextDoubleTapScale(DOUBLE_TAP_ZOOM, max), 0.01f)
+        assertEquals(5f, nextDoubleTapScale(DOUBLE_TAP_ZOOM, max), 0.01f)
+        assertEquals(10f, nextDoubleTapScale(5f, max), 0.01f)
+        assertEquals(20f, nextDoubleTapScale(10f, max), 0.01f)
+        assertEquals(max, nextDoubleTapScale(20f, max), 0.01f)
         assertEquals(MIN_ZOOM, nextDoubleTapScale(max, max), 0.01f)
-        // Near mid still advances to max
-        assertEquals(max, nextDoubleTapScale(DOUBLE_TAP_ZOOM - 0.05f, max), 0.01f)
     }
 
     @Test
@@ -113,6 +114,12 @@ class ZoomPanMathTest {
         val max = 2f
         assertEquals(max, nextDoubleTapScale(MIN_ZOOM, max), 0.01f)
         assertEquals(MIN_ZOOM, nextDoubleTapScale(max, max), 0.01f)
+    }
+
+    @Test
+    fun `doubleTapZoomLevels drops steps above max`() {
+        assertEquals(listOf(1f, 2f), doubleTapZoomLevels(2f))
+        assertEquals(listOf(1f, 2.5f, 5f, 10f), doubleTapZoomLevels(10f))
     }
 
     @Test
@@ -209,11 +216,15 @@ class ZoomPanMathTest {
     fun `detailPixelRatio is monotonic and capped`() {
         val a = detailPixelRatio(1f)
         val b = detailPixelRatio(2f)
-        val c = detailPixelRatio(10f)
+        val c = detailPixelRatio(5f)
+        val d = detailPixelRatio(10f)
         assertTrue(b >= a)
         assertTrue(c >= b)
-        assertTrue(c <= 2.5f + 0.001f)
+        assertTrue(d >= c)
+        assertTrue(d <= 2.5f + 0.001f)
         assertEquals(1.5f, detailPixelRatio(1f), 0.01f)
+        // Ramp continues past scale 4 (was previously plateaued).
+        assertTrue(detailPixelRatio(5f) > detailPixelRatio(4f) - 0.001f)
     }
 
     @Test

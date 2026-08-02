@@ -45,7 +45,7 @@ class ZoomPanStateTest {
         }
 
     @Test
-    fun `animateDoubleTap cycles MIN mid max MIN`() =
+    fun `animateDoubleTap cycles gradual ladder then fit`() =
         runBlocking {
             val maxZoom = 8f
             val state = stateAt(MIN_ZOOM, maxZoom = maxZoom)
@@ -53,6 +53,9 @@ class ZoomPanStateTest {
 
             state.animateDoubleTap(tap)
             assertEquals(DOUBLE_TAP_ZOOM, state.scale, 0.01f)
+
+            state.animateDoubleTap(tap)
+            assertEquals(5f, state.scale, 0.01f)
 
             state.animateDoubleTap(tap)
             assertEquals(maxZoom, state.scale, 0.01f)
@@ -95,6 +98,32 @@ class ZoomPanStateTest {
             assertEquals(ZOOM_BUTTON_STEP, state.scale, 0.01f)
             state.animateZoomByStep(1f / ZOOM_BUTTON_STEP)
             assertEquals(MIN_ZOOM, state.scale, 0.01f)
+        }
+
+    @Test
+    fun `pinch past max zoom does not drift offset via zoomAround`() {
+        val state = stateAt(DEFAULT_MAX_ZOOM, offset = Offset(-50f, -80f))
+        val before = state.offset
+        state.applyTransform(
+            zoomChange = 1.2f,
+            panChange = Offset.Zero,
+            centroid = Offset(350f, 700f),
+            overscroll = true,
+        )
+        assertEquals(DEFAULT_MAX_ZOOM, state.scale, 0.01f)
+        assertEquals(before.x, state.offset.x, 0.01f)
+        assertEquals(before.y, state.offset.y, 0.01f)
+    }
+
+    @Test
+    fun `animateZoomByStep chains from current scale after stop`() =
+        runBlocking {
+            val state = stateAt(MIN_ZOOM)
+            state.animationsEnabled = false
+            state.animateZoomByStep(ZOOM_BUTTON_STEP)
+            assertEquals(ZOOM_BUTTON_STEP, state.scale, 0.01f)
+            state.animateZoomByStep(ZOOM_BUTTON_STEP)
+            assertEquals(ZOOM_BUTTON_STEP * ZOOM_BUTTON_STEP, state.scale, 0.01f)
         }
 
     @Test

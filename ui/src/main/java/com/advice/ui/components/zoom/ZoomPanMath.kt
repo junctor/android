@@ -7,14 +7,16 @@ import kotlin.math.max
 import kotlin.math.min
 
 internal const val MIN_ZOOM = 1f
-internal const val DEFAULT_MAX_ZOOM = 10f
+internal const val DEFAULT_MAX_ZOOM = 40f
+
+/** First step above fit; further double-taps follow [doubleTapZoomLevels]. */
 internal const val DOUBLE_TAP_ZOOM = 2.5f
 
 /**
  * PDFs are vector, so the page's point-width is not a hard resolution limit;
  * allow zooming past it by this factor.
  */
-internal const val NATIVE_ZOOM_HEADROOM = 2f
+internal const val NATIVE_ZOOM_HEADROOM = 8f
 
 /** How far pan may exceed hard offset bounds during an active gesture. */
 internal const val OVERSCROLL_PX = 48f
@@ -189,17 +191,28 @@ internal fun canPanHorizontally(
 
 /**
  * Next double-tap target: first ladder level strictly above [currentScale], else fit.
- * Levels: [MIN_ZOOM], [DOUBLE_TAP_ZOOM] (capped), [maxZoom].
+ * Ladder is ~2× steps from [DOUBLE_TAP_ZOOM] up to [maxZoom], so maps don't jump
+ * from a slight zoom straight to maximum.
  */
 internal fun nextDoubleTapScale(
     currentScale: Float,
     maxZoom: Float,
     epsilon: Float = DOUBLE_TAP_EPSILON,
 ): Float {
-    val max = maxZoom.coerceAtLeast(MIN_ZOOM)
-    val mid = DOUBLE_TAP_ZOOM.coerceAtMost(max)
-    val levels = listOf(MIN_ZOOM, mid, max).distinct()
+    val levels = doubleTapZoomLevels(maxZoom)
     return levels.firstOrNull { it > currentScale + epsilon } ?: MIN_ZOOM
+}
+
+/**
+ * Double-tap zoom ladder: fit → 2.5 → 5 → 10 → 20 → max (values above max dropped).
+ */
+internal fun doubleTapZoomLevels(maxZoom: Float): List<Float> {
+    val max = maxZoom.coerceAtLeast(MIN_ZOOM)
+    val steps = listOf(MIN_ZOOM, DOUBLE_TAP_ZOOM, 5f, 10f, 20f, max)
+    return steps
+        .map { it.coerceAtMost(max) }
+        .distinct()
+        .sorted()
 }
 
 /**
@@ -258,7 +271,7 @@ internal const val DEFAULT_MAX_BITMAP_EDGE = 4096
 internal fun detailPixelRatio(
     scale: Float,
     maxRatio: Float = 2.5f,
-): Float = (1.5f + (scale - 1f).coerceIn(0f, 3f) * 0.25f).coerceAtMost(maxRatio)
+): Float = (1.5f + (scale - 1f).coerceIn(0f, 8f) * 0.25f).coerceAtMost(maxRatio)
 
 /**
  * Caps width/height so `max(w, h) <= maxEdge` while preserving aspect ratio.
