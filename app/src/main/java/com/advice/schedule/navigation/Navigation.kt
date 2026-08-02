@@ -186,11 +186,15 @@ sealed class Navigation {
 
     data class Feedback(
         val id: Long = 0L,
-        val content: Long = 0L,
+        val content: Long? = null,
     ) : Navigation() {
         override fun route(): String = "feedback/{id}/{content}"
 
-        override fun destination(): String = "feedback/$id/$content"
+        override fun destination(): String = "feedback/$id/${content ?: NO_CONTENT_ID}"
+
+        companion object {
+            const val NO_CONTENT_ID = -1L
+        }
     }
 
     /**

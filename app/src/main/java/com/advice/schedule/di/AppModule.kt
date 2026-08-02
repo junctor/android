@@ -175,7 +175,7 @@ val appModule =
         // repo
         single { ScheduleRepository(get(), get(), get(), get(named("tags"))) }
         single { NewsRepository(get()) }
-        single { HomeRepository(get(), get(), get(), get(), get(), get(), get()) }
+        single { HomeRepository(get(), get(), get(), get(), get(), get(), get(), get()) }
         single { SpeakersRepository(get()) }
         single { ContentRepository(get(), get(), get(), get()) }
         single { SpeakerRepository(get(), get()) }
@@ -197,7 +197,7 @@ val appModule =
         single { DocumentsRepository(get()) }
         single { TagsRepository(get()) }
         single { SearchRepository(get(), get(), get(), get(), get(), get(), get()) }
-        single { MenuRepository(get()) }
+        single { MenuRepository(get(), get()) }
         single { FeedbackFormRepository(get()) }
 
 //    single<BookmarkedElementDataSource> { BookmarksDataSourceImpl(get(), get()) }

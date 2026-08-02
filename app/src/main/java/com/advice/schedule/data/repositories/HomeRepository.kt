@@ -6,11 +6,14 @@ import com.advice.core.local.FlowResult
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
+import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.local.wifi.WirelessNetwork
+import com.advice.core.local.withGeneralFeedback
 import com.advice.core.ui.HomeState
 import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
+import com.advice.data.sources.FeedbackDataSource
 import kotlinx.coroutines.flow.combine
 
 class HomeRepository(
@@ -19,6 +22,7 @@ class HomeRepository(
     menuRepository: MenuRepository,
     newsRepository: NewsRepository,
     networkRepository: WifiNetworkRepository,
+    feedbackDataSource: FeedbackDataSource,
     private val storage: Storage,
     private val analyticsProvider: AnalyticsProvider,
 ) {
@@ -28,8 +32,11 @@ class HomeRepository(
             conferencesDataSource.get(),
             menuRepository.get(),
             newsRepository.get(),
-            networkRepository.get(),
-        ) { conference, conferences, menu, news, wifi ->
+            combine(networkRepository.get(), feedbackDataSource.get()) { wifi, forms ->
+                wifi to forms
+            },
+        ) { conference, conferences, menu, news, wifiAndForms ->
+            val (wifi, forms) = wifiAndForms
             val latest =
                 news.firstOrNull().takeUnless {
                     it == null || storage.hasReadNews(conference.code, it.id)
@@ -44,7 +51,7 @@ class HomeRepository(
             HomeState.Loaded(
                 conferences = list,
                 conference = conference,
-                menu = getMenu(menu, conference, wifi),
+                menu = getMenu(menu, conference, wifi, forms),
                 news = latest,
                 hasChicken = hasChicken(conference),
             )
@@ -57,20 +64,24 @@ class HomeRepository(
         menu: FlowResult<List<Menu>>,
         conference: Conference,
         wifi: List<WirelessNetwork>,
+        forms: List<FeedbackForm>,
     ): Menu =
         when (menu) {
             is FlowResult.Failure -> Menu.ERROR
             FlowResult.Loading -> Menu.LOADING
-            is FlowResult.Success -> menu(menu, conference, wifi)
+            is FlowResult.Success -> menu(menu, conference, wifi, forms)
         }
 
     private fun menu(
         result: FlowResult.Success<List<Menu>>,
         conference: Conference,
         wifi: List<WirelessNetwork>,
+        forms: List<FeedbackForm>,
     ): Menu {
         if (result.value.isEmpty()) return Menu.ERROR
-        val menu = result.value.find { it.id == conference.homeMenuId } ?: result.value.first()
+        val menu =
+            (result.value.find { it.id == conference.homeMenuId } ?: result.value.first())
+                .withGeneralFeedback(forms)
         if (!analyticsProvider.isWifiEnabled() || wifi.isEmpty()) {
             return menu
         }

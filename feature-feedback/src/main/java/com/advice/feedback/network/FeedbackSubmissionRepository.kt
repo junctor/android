@@ -26,7 +26,7 @@ class FeedbackSubmissionRepository(
     private val storage: Storage,
 ) {
     suspend fun submitFeedback(
-        contentId: Long,
+        contentId: Long?,
         feedback: FeedbackForm,
     ): NetworkResponse =
         withContext(Dispatchers.IO) {

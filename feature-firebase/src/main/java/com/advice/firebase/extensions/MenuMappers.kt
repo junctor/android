@@ -65,7 +65,7 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
                     menuId ?: error("null menu id: $titleText"),
                 )
 
-            "people", "locations", "products", "news", "faq" ->
+            "people", "locations", "products", "news", "faq", "feedback" ->
                 MenuItem.Navigation(
                     googleMaterialsymbol,
                     titleText,

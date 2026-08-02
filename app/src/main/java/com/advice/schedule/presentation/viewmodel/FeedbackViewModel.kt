@@ -79,7 +79,7 @@ class FeedbackViewModel :
         _state.value = FeedbackState.Content(state.feedback.copy(items = items))
     }
 
-    fun submitFeedback(content: Long) {
+    fun submitFeedback(content: Long?) {
         val state = _state.value as? FeedbackState.Content ?: return
         _state.value = state.copy(isLoading = true)
 

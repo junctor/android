@@ -42,7 +42,7 @@ import com.advice.ui.theme.ScheduleTheme
 fun Feedback(
     navController: NavController,
     id: Long,
-    content: Long,
+    content: Long?,
 ) {
     val viewModel = viewModel<FeedbackViewModel>()
     LaunchedEffect("$id/$content") {

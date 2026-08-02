@@ -69,4 +69,11 @@ sealed class MenuItem(
         label: String,
         description: String?,
     ) : MenuItem(icon, label, description)
+
+    class Feedback(
+        icon: String,
+        label: String,
+        description: String?,
+        val formId: Long,
+    ) : MenuItem(icon, label, description)
 }

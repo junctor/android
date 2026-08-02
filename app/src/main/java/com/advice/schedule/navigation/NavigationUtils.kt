@@ -52,7 +52,10 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
 
         is Navigation.Feedback -> {
             val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
-            val content = backStackEntry.arguments?.getString("content")?.toLongOrNull() ?: error("content is required")
+            val contentArg =
+                backStackEntry.arguments?.getString("content")?.toLongOrNull()
+                    ?: error("content is required")
+            val content = contentArg.takeUnless { it == Navigation.Feedback.NO_CONTENT_ID }
             copy(id = id, content = content)
         }
 
@@ -177,6 +180,7 @@ internal fun MenuItem.toNavigation(): Navigation? =
         is MenuItem.Content -> Navigation.Content(label)
         is MenuItem.Divider -> null
         is MenuItem.Document -> Navigation.Document(documentId)
+        is MenuItem.Feedback -> Navigation.Feedback(formId, content = null)
         is MenuItem.Menu -> Navigation.Menu(label, menuId)
         is MenuItem.Navigation -> Navigation.Function(function, label)
         is MenuItem.Organization -> Navigation.Organizations(label, organizationId)
