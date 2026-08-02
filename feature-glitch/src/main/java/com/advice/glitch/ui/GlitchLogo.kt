@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.glitch.R
 
 @Composable
@@ -60,16 +60,16 @@ private fun rememberGlitchAnimationEnabled(): Boolean {
     val context = LocalContext.current
     val preferences =
         remember(context) {
-            context.getSharedPreferences(Storage.KEY_PREFERENCES, Context.MODE_PRIVATE)
+            context.getSharedPreferences(UserPreferencesStore.KEY_PREFERENCES, Context.MODE_PRIVATE)
         }
     var enabled by remember {
-        mutableStateOf(preferences.getBoolean(Storage.GLITCH_ANIMATION_ENABLED_KEY, true))
+        mutableStateOf(preferences.getBoolean(UserPreferencesStore.GLITCH_ANIMATION_ENABLED_KEY, true))
     }
 
     DisposableEffect(preferences) {
         val listener =
             SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
-                if (key == Storage.GLITCH_ANIMATION_ENABLED_KEY) {
+                if (key == UserPreferencesStore.GLITCH_ANIMATION_ENABLED_KEY) {
                     enabled = prefs.getBoolean(key, true)
                 }
             }

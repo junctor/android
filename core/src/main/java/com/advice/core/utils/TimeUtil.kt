@@ -5,6 +5,7 @@ import com.advice.core.local.Conference
 import com.advice.core.local.LocationSchedule
 import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.local.Session
+import com.advice.core.storage.UserPreferencesStore
 import com.shortstack.core.BuildConfig
 import timber.log.Timber
 import java.time.Instant
@@ -28,8 +29,8 @@ object TimeUtil {
     ): ZoneId? {
         val forceTimeZone =
             context
-                .getSharedPreferences(Storage.KEY_PREFERENCES, Context.MODE_PRIVATE)
-                .getBoolean(Storage.FORCE_TIME_ZONE_KEY, true)
+                .getSharedPreferences(UserPreferencesStore.KEY_PREFERENCES, Context.MODE_PRIVATE)
+                .getBoolean(UserPreferencesStore.FORCE_TIME_ZONE_KEY, true)
         return getZoneId(forceTimeZone, timezone)
     }
 

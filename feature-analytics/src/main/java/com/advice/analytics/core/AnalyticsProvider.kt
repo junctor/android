@@ -2,7 +2,7 @@ package com.advice.analytics.core
 
 import android.os.Bundle
 import com.advice.core.local.Conference
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
@@ -11,7 +11,7 @@ import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 
 class AnalyticsProvider(
-    private val storage: Storage,
+    private val storage: UserPreferencesStore,
     private val version: Int,
 ) {
     private val analytics: FirebaseAnalytics = Firebase.analytics

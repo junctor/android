@@ -4,8 +4,8 @@ import android.content.Context
 import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.preferences.Preferences
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.ui.SettingsScreenState
-import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.schedule.domain.ContentBookmarkUseCase
 import com.advice.schedule.telemetry.TelemetryCollection
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.combine
 
 class SettingsRepository(
     userSession: UserSession,
-    private val preferences: Storage,
+    private val preferences: UserPreferencesStore,
     private val version: String,
     private val context: Context,
     private val contentBookmarkUseCase: ContentBookmarkUseCase,

@@ -2,7 +2,10 @@ package com.advice.schedule.di
 
 import androidx.work.WorkManager
 import com.advice.analytics.core.AnalyticsProvider
-import com.advice.core.utils.Storage
+import com.advice.core.storage.ContentSyncStore
+import com.advice.core.storage.MerchCartStore
+import com.advice.core.storage.OfflineQueueStore
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.utils.ToastManager
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.SharedPreferencesBookmarkDataSource
@@ -31,7 +34,10 @@ val shellModule =
             onClose { it?.cancel() }
         }
 
-        single { Storage(get(), get(), BuildConfig.VERSION_CODE) }
+        single { UserPreferencesStore(androidContext()) }
+        single { MerchCartStore(androidContext(), get()) }
+        single { ContentSyncStore(androidContext()) }
+        single { OfflineQueueStore(androidContext(), get()) }
 
         single {
             GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()

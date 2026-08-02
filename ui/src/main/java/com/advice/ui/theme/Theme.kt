@@ -8,7 +8,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 
 private val DarkColorPalette =
     darkColorScheme(
@@ -49,7 +49,7 @@ fun ScheduleTheme(
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
-    val preferences = context.getSharedPreferences(Storage.KEY_PREFERENCES, Context.MODE_PRIVATE)
+    val preferences = context.getSharedPreferences(UserPreferencesStore.KEY_PREFERENCES, Context.MODE_PRIVATE)
     val preference = preferences.getString("user_theme", "system")
 
     val colors =

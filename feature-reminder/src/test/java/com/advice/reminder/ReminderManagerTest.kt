@@ -9,7 +9,7 @@ import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.Session
 import com.advice.core.local.feedback.ContentFeedbackForm
 import com.advice.core.local.feedback.FeedbackForm
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,7 +19,7 @@ import java.time.Instant
 
 class ReminderManagerTest {
     private val workManager = mockk<WorkManager>(relaxed = true)
-    private val storage = mockk<Storage>()
+    private val storage = mockk<UserPreferencesStore>()
     private lateinit var subject: ReminderManager
 
     private val location = Location(1, "Track A", "A")

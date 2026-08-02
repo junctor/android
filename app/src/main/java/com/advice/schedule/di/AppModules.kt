@@ -21,7 +21,7 @@ fun appModules(): List<Module> =
         wifiModule,
         feedbackModule("${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"),
         locationsModule,
-        productsModule,
+        productsModule(BuildConfig.VERSION_CODE),
         documentsModule,
         playModule,
     )

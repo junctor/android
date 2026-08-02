@@ -4,7 +4,8 @@ import com.advice.core.local.Conference
 import com.advice.core.network.CachedReportRequest
 import com.advice.core.network.Network
 import com.advice.core.network.NetworkResponse
-import com.advice.core.utils.Storage
+import com.advice.core.storage.OfflineQueueStore
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.feedback.BuildConfig
 import com.advice.feedback.network.models.ReportObjectType
 import com.advice.feedback.network.models.ReportRequest
@@ -24,7 +25,8 @@ import java.util.UUID
 
 class ReportSubmissionRepository(
     private val version: String,
-    private val storage: Storage,
+    private val preferences: UserPreferencesStore,
+    private val offlineQueue: OfflineQueueStore,
 ) {
     private val gson =
         GsonBuilder()
@@ -57,13 +59,13 @@ class ReportSubmissionRepository(
                         .toString()
                         .uppercase(Locale.US),
                 client = "HackerTracker Android $version",
-                deviceIdentifier = storage.userUUID,
+                deviceIdentifier = preferences.userUUID,
             )
 
         val endpoint = BuildConfig.REPORT_URL
         val response = post(endpoint, request)
         if (response is NetworkResponse.Error) {
-            storage.storeReportRequest(
+            offlineQueue.storeReportRequest(
                 CachedReportRequest(
                     endpoint = endpoint,
                     payloadJson = gson.toJson(request),
@@ -74,13 +76,13 @@ class ReportSubmissionRepository(
     }
 
     suspend fun retryCached() {
-        val cached = storage.getCachedReportRequest()
+        val cached = offlineQueue.getCachedReportRequest()
         for (entry in cached) {
             val endpoint = entry.endpoint
             val payloadJson = entry.payloadJson
             if (endpoint.isBlank() || payloadJson.isBlank()) {
                 Timber.w("Dropping invalid cached report request")
-                storage.removeCachedReportRequest(entry)
+                offlineQueue.removeCachedReportRequest(entry)
                 continue
             }
 
@@ -89,19 +91,19 @@ class ReportSubmissionRepository(
                     gson.fromJson(payloadJson, ReportRequest::class.java)
                 } catch (ex: Exception) {
                     Timber.e(ex, "Could not deserialize cached report request")
-                    storage.removeCachedReportRequest(entry)
+                    offlineQueue.removeCachedReportRequest(entry)
                     continue
                 }
             if (report == null) {
                 Timber.w("Dropping cached report with empty payload")
-                storage.removeCachedReportRequest(entry)
+                offlineQueue.removeCachedReportRequest(entry)
                 continue
             }
 
             try {
                 val response = post(endpoint, report)
                 if (response is NetworkResponse.Success) {
-                    storage.removeCachedReportRequest(entry)
+                    offlineQueue.removeCachedReportRequest(entry)
                 }
             } catch (ex: Exception) {
                 Timber.e(ex, "Failed to retry cached report")

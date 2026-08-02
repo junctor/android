@@ -4,8 +4,8 @@ import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
 import com.advice.core.local.Event
 import com.advice.core.local.Session
+import com.advice.core.storage.ContentSyncStore
 import com.advice.core.utils.NotificationHelper
-import com.advice.core.utils.Storage
 import com.advice.data.sources.ContentDataSource
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +19,7 @@ class ContentRepository(
     private val contentDataSource: ContentDataSource,
     private val reminderManager: ReminderManager,
     private val notificationHelper: NotificationHelper,
-    private val storage: Storage,
+    private val storage: ContentSyncStore,
 ) {
     val content: SharedFlow<ConferenceContent> =
         contentDataSource

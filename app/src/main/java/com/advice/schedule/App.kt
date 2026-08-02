@@ -2,7 +2,7 @@ package com.advice.schedule
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.schedule.di.appModules
 import com.advice.schedule.telemetry.TelemetryCollection
 import com.google.firebase.FirebaseApp
@@ -25,7 +25,7 @@ class App : Application() {
             modules(appModules())
         }
 
-        TelemetryCollection.apply(this, get<Storage>())
+        TelemetryCollection.apply(this, get<UserPreferencesStore>())
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

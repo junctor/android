@@ -4,8 +4,8 @@ import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
 import com.advice.core.local.Location
 import com.advice.core.local.Session
+import com.advice.core.storage.ContentSyncStore
 import com.advice.core.utils.NotificationHelper
-import com.advice.core.utils.Storage
 import com.advice.data.sources.ContentDataSource
 import com.advice.reminder.ReminderManager
 import io.mockk.every
@@ -20,7 +20,7 @@ class ContentRepositoryReminderSyncTest {
     private val contentDataSource = mockk<ContentDataSource>()
     private val reminderManager = mockk<ReminderManager>(relaxed = true)
     private val notificationHelper = mockk<NotificationHelper>(relaxed = true)
-    private val storage = mockk<Storage>(relaxed = true)
+    private val storage = mockk<ContentSyncStore>(relaxed = true)
 
     private val location = Location(1, "Track A", "A")
     private val updated = Instant.parse("2024-08-01T12:00:00Z")

@@ -9,8 +9,8 @@ import com.advice.core.local.NewsArticle
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.core.local.withGeneralFeedback
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.ui.HomeState
-import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.FeedbackDataSource
@@ -24,7 +24,7 @@ class HomeRepository(
     newsRepository: NewsRepository,
     networkRepository: WifiNetworkRepository,
     feedbackDataSource: FeedbackDataSource,
-    private val storage: Storage,
+    private val storage: UserPreferencesStore,
     private val analyticsProvider: AnalyticsProvider,
 ) {
     val contents =

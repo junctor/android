@@ -4,7 +4,8 @@ import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.network.CachedFeedbackRequest
 import com.advice.core.network.Network
 import com.advice.core.network.NetworkResponse
-import com.advice.core.utils.Storage
+import com.advice.core.storage.OfflineQueueStore
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.feedback.network.models.FeedbackRequest
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
@@ -20,7 +21,8 @@ import java.util.Locale
 
 class FeedbackSubmissionRepository(
     private val version: String,
-    private val storage: Storage,
+    private val preferences: UserPreferencesStore,
+    private val offlineQueue: OfflineQueueStore,
 ) {
     suspend fun submitFeedback(
         contentId: Long?,
@@ -38,7 +40,7 @@ class FeedbackSubmissionRepository(
                     contentId = contentId,
                     conferenceId = feedback.conference,
                     client = "Android $version",
-                    deviceId = storage.userUUID,
+                    deviceId = preferences.userUUID,
                     timestamp = timestamp,
                     items =
                         feedback.items.mapNotNull {
@@ -49,7 +51,7 @@ class FeedbackSubmissionRepository(
             val response = submitFeedback(feedback.endpoint, request)
             // cache any failed submissions and retry again later
             if (response is NetworkResponse.Error) {
-                storage.storeFeedbackRequest(CachedFeedbackRequest(contentId, feedback))
+                offlineQueue.storeFeedbackRequest(CachedFeedbackRequest(contentId, feedback))
             }
             return@withContext response
         }

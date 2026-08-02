@@ -1,7 +1,7 @@
 package com.advice.schedule.telemetry
 
 import android.content.Context
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.shortstack.hackertracker.BuildConfig
@@ -9,12 +9,12 @@ import com.shortstack.hackertracker.BuildConfig
 object TelemetryCollection {
     fun apply(
         context: Context,
-        storage: Storage,
+        preferences: UserPreferencesStore,
     ) {
         apply(
             context = context,
-            allowAnalytics = storage.allowAnalytics,
-            allowCrashlytics = storage.allowCrashlytics,
+            allowAnalytics = preferences.allowAnalytics,
+            allowCrashlytics = preferences.allowCrashlytics,
         )
     }
 

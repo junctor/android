@@ -4,7 +4,7 @@ import android.content.Context
 import com.advice.core.local.Conference
 import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.data.session.UserSession
 import com.advice.schedule.domain.ContentBookmarkUseCase
 import io.mockk.every
@@ -17,7 +17,7 @@ import org.junit.Test
 
 class SettingsRepositoryReminderChangeTest {
     private val userSession = mockk<UserSession>()
-    private val preferences = mockk<Storage>(relaxed = true)
+    private val preferences = mockk<UserPreferencesStore>(relaxed = true)
     private val context = mockk<Context>(relaxed = true)
     private val contentBookmarkUseCase = mockk<ContentBookmarkUseCase>(relaxed = true)
 

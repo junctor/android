@@ -7,13 +7,13 @@ import androidx.work.workDataOf
 import com.advice.core.local.Content
 import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.Session
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class ReminderManager(
     private val workManager: WorkManager,
-    private val storage: Storage,
+    private val storage: UserPreferencesStore,
 ) {
     companion object {
         private const val KEY_REMINDER = "reminder"

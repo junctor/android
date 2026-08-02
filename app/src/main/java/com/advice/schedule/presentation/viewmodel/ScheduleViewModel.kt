@@ -3,8 +3,8 @@ package com.advice.schedule.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Event
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.ui.ScheduleFilter
-import com.advice.core.utils.Storage
 import com.advice.core.utils.TimeUtil
 import com.advice.schedule.data.repositories.ScheduleRepository
 import com.advice.schedule.data.repositories.ScheduleResult
@@ -18,7 +18,7 @@ import org.koin.core.component.inject
 class ScheduleViewModel :
     ViewModel(),
     KoinComponent {
-    private val storage by inject<Storage>()
+    private val storage by inject<UserPreferencesStore>()
     private val repository by inject<ScheduleRepository>()
 
     fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> =

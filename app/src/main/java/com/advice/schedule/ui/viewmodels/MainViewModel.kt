@@ -10,7 +10,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.network.NetworkResponse
-import com.advice.core.utils.Storage
+import com.advice.core.storage.OfflineQueueStore
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
 import com.advice.documents.data.repositories.DocumentsRepository
@@ -35,7 +36,8 @@ class MainViewModel :
     private val userSession by inject<UserSession>()
     private val appManager by inject<AppManager>()
     private val analytics by inject<AnalyticsProvider>()
-    private val storage by inject<Storage>()
+    private val preferences by inject<UserPreferencesStore>()
+    private val offlineQueue by inject<OfflineQueueStore>()
     private val documentRepository by inject<DocumentsRepository>()
     private val feedbackRepository by inject<FeedbackSubmissionRepository>()
     private val reportRepository by inject<ReportSubmissionRepository>()
@@ -46,7 +48,7 @@ class MainViewModel :
 
     init {
         // Showing the Schedule by default if they have enabled this preference
-        if (storage.showSchedule) {
+        if (preferences.showSchedule) {
             setAnchor(DragAnchors.Center)
         } else {
             setAnchor(DragAnchors.Start)
@@ -54,12 +56,12 @@ class MainViewModel :
 
         // Attempting to submit any feedback that previously failed
         viewModelScope.launch {
-            val cachedFeedbackRequests = storage.getCachedFeedbackRequest()
+            val cachedFeedbackRequests = offlineQueue.getCachedFeedbackRequest()
             for (request in cachedFeedbackRequests) {
                 val response =
                     feedbackRepository.submitFeedback(request.contentId, request.feedbackForm)
                 if (response is NetworkResponse.Success) {
-                    storage.removeCachedFeedbackRequest(request)
+                    offlineQueue.removeCachedFeedbackRequest(request)
                 }
             }
         }
@@ -100,9 +102,9 @@ class MainViewModel :
             )
     }
 
-    fun hasSeenNotificationPopup(): Boolean = storage.hasSeenNotificationPopup()
+    fun hasSeenNotificationPopup(): Boolean = preferences.hasSeenNotificationPopup()
 
-    fun eventReminderMinutes(): Int = storage.eventReminderMinutes
+    fun eventReminderMinutes(): Int = preferences.eventReminderMinutes
 
     fun showPermissionDialog() {
         _state.value =
@@ -112,7 +114,7 @@ class MainViewModel :
     }
 
     fun dismissPermissionDialog() {
-        storage.dismissNotificationPopup()
+        preferences.dismissNotificationPopup()
         _state.value =
             _state.value.copy(
                 permissionDialog = false,
@@ -132,7 +134,7 @@ class MainViewModel :
         userSession.resolveAudienceContext(activity)
 
         // Only showing the prompt once per version.
-        if (storage.updateVersion != BuildConfig.VERSION_CODE) {
+        if (preferences.updateVersion != BuildConfig.VERSION_CODE) {
             appManager.checkForUpdate(appUpdateLauncher)
         }
         val format =
@@ -193,7 +195,7 @@ class MainViewModel :
     fun onAppUpdateRequest(resultCode: Int) {
         Timber.e("Update flow failed! Result code: $resultCode")
         // Storing the version code so we don't keep asking for updates.
-        storage.updateVersion = BuildConfig.VERSION_CODE
+        preferences.updateVersion = BuildConfig.VERSION_CODE
     }
 
     fun onDestinationChanged(

@@ -8,8 +8,8 @@ import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
 import com.advice.core.local.wifi.EapSubject
 import com.advice.core.local.wifi.WirelessNetwork
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.ui.HomeState
-import com.advice.core.utils.Storage
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.FeedbackDataSource
@@ -33,7 +33,7 @@ class HomeRepositoryMenuTest {
     private val newsRepository = mockk<NewsRepository>()
     private val networkRepository = mockk<WifiNetworkRepository>()
     private val feedbackDataSource = mockk<FeedbackDataSource>()
-    private val storage = mockk<Storage>(relaxed = true)
+    private val storage = mockk<UserPreferencesStore>(relaxed = true)
     private val analyticsProvider = mockk<AnalyticsProvider>(relaxed = true)
 
     @Test

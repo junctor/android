@@ -1,24 +1,16 @@
-package com.advice.core.utils
+package com.advice.core.storage
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
-import com.advice.core.local.products.ProductVariantSelection
-import com.advice.core.network.CachedFeedbackRequest
-import com.advice.core.network.CachedReportRequest
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import timber.log.Timber
 
-class Storage(
+class UserPreferencesStore(
     context: Context,
-    private val gson: Gson,
-    val versionCode: Int,
 ) {
     companion object {
         const val KEY_PREFERENCES = "preferences"
@@ -185,104 +177,9 @@ class Storage(
         return preferences.getInt("$LATEST_NEWS_READ-$code", -1) == id
     }
 
-    fun dismissMerchInformation(key: String) = preferences.edit(commit = true) { putBoolean("merch_information_$key", true) }
-
-    fun hasSeenMerchInformation(key: String): Boolean = preferences.getBoolean("merch_information_$key", false)
-
     fun dismissNotificationPopup() {
         preferences.edit { putBoolean("notification_popup", true) }
     }
 
     fun hasSeenNotificationPopup(): Boolean = preferences.getBoolean("notification_popup", false)
-
-    fun setContentUpdatedTimestamp(
-        id: Long,
-        timestamp: Long,
-    ) {
-        preferences.edit { putLong("content_updated_timestamp_$id", timestamp) }
-    }
-
-    fun getContentUpdatedTimestamp(id: Long): Long = preferences.getLong("content_updated_timestamp_$id", 0)
-
-    fun setSelectedProducts(
-        id: Long,
-        list: List<ProductVariantSelection>,
-    ) {
-        preferences.edit { putString("merch_products_selection_$id", gson.toJson(list)) }
-    }
-
-    fun getSelectedProducts(id: Long): List<ProductVariantSelection> {
-        val json = preferences.getString("merch_products_selection_$id", null) ?: return emptyList()
-        try {
-            val list =
-                gson.fromJson<List<ProductVariantSelection>>(
-                    json,
-                    object : TypeToken<List<ProductVariantSelection>>() {}.type,
-                )
-            return list
-        } catch (ex: Exception) {
-            Timber.e("Could not convert stored merch products selection to product variant selection")
-            Timber.e(ex)
-            return emptyList()
-        }
-    }
-
-    fun storeFeedbackRequest(cachedFeedbackRequest: CachedFeedbackRequest) {
-        val cache = getCachedFeedbackRequest() + cachedFeedbackRequest
-
-        preferences.edit { putString("cached_feedback_requests", gson.toJson(cache)) }
-    }
-
-    fun getCachedFeedbackRequest(): List<CachedFeedbackRequest> {
-        val json = preferences.getString("cached_feedback_requests", null) ?: return emptyList()
-        try {
-            val list =
-                gson.fromJson<List<CachedFeedbackRequest>>(
-                    json,
-                    object : TypeToken<List<CachedFeedbackRequest>>() {}.type,
-                )
-            return list
-        } catch (ex: Exception) {
-            Timber.e("Could not convert stored cached feedback request to list")
-            Timber.e(ex)
-            return emptyList()
-        }
-    }
-
-    fun removeCachedFeedbackRequest(request: CachedFeedbackRequest) {
-        val cache = getCachedFeedbackRequest().filter { it != request }
-
-        preferences.edit { putString("cached_feedback_requests", gson.toJson(cache)) }
-    }
-
-    fun storeReportRequest(cachedReportRequest: CachedReportRequest) {
-        val cache = getCachedReportRequest() + cachedReportRequest
-
-        preferences.edit { putString("cached_report_requests", gson.toJson(cache)) }
-    }
-
-    fun getCachedReportRequest(): List<CachedReportRequest> {
-        val json = preferences.getString("cached_report_requests", null) ?: return emptyList()
-        try {
-            val list =
-                gson.fromJson<List<CachedReportRequest>>(
-                    json,
-                    object : TypeToken<List<CachedReportRequest>>() {}.type,
-                ) ?: return emptyList()
-            return list.filter { entry ->
-                entry.endpoint.isNotBlank() && entry.payloadJson.isNotBlank()
-            }
-        } catch (ex: Exception) {
-            Timber.e("Could not convert stored cached report request to list")
-            Timber.e(ex)
-            preferences.edit { remove("cached_report_requests") }
-            return emptyList()
-        }
-    }
-
-    fun removeCachedReportRequest(request: CachedReportRequest) {
-        val cache = getCachedReportRequest().filter { it != request }
-
-        preferences.edit { putString("cached_report_requests", gson.toJson(cache)) }
-    }
 }

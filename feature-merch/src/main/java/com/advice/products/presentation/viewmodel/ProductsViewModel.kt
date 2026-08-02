@@ -8,7 +8,7 @@ import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariantSelection
-import com.advice.core.utils.Storage
+import com.advice.core.storage.MerchCartStore
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
@@ -23,11 +23,12 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-class ProductsViewModel :
-    ViewModel(),
+class ProductsViewModel(
+    private val versionCode: Int,
+) : ViewModel(),
     KoinComponent {
     private val repository by inject<ProductsRepository>()
-    private val storage by inject<Storage>()
+    private val merchCartStore by inject<MerchCartStore>()
     private val cart by inject<ProductCart>()
 
     private val _state = MutableStateFlow<ProductsScreenState>(ProductsScreenState.Loading)
@@ -119,7 +120,7 @@ class ProductsViewModel :
      */
     private fun loadProductSelections(conference: Conference) {
         cart.clear()
-        val selections = storage.getSelectedProducts(conference.id)
+        val selections = merchCartStore.getSelectedProducts(conference.id)
         for (selection in selections) {
             cart.add(selection)
         }
@@ -130,7 +131,7 @@ class ProductsViewModel :
      */
     private fun saveProductSelection(selections: List<ProductVariantSelection>) {
         conference?.let {
-            storage.setSelectedProducts(it, selections)
+            merchCartStore.setSelectedProducts(it, selections)
         }
     }
 
@@ -142,8 +143,19 @@ class ProductsViewModel :
     }
 
     private fun updateSummary() {
-        val selections = cart.getSelections()
-        saveProductSelection(selections)
+        var selections = cart.getSelections()
+        val conferenceId = conference
+        if (conferenceId != null && products.isNotEmpty()) {
+            val pruned = MerchCartStore.pruneSelectionsToCatalog(selections, products)
+            if (pruned != selections) {
+                cart.clear()
+                pruned.forEach { cart.add(it) }
+                selections = pruned
+            }
+            merchCartStore.setSelectedProducts(conferenceId, selections)
+        } else {
+            saveProductSelection(selections)
+        }
         updateState(selections = selections)
     }
 
@@ -159,7 +171,7 @@ class ProductsViewModel :
     }
 
     fun dismiss(dismissibleInformation: DismissibleInformation) {
-        storage.dismissMerchInformation(dismissibleInformation.key)
+        merchCartStore.dismissMerchInformation(dismissibleInformation.key)
         updateState()
     }
 
@@ -224,7 +236,7 @@ class ProductsViewModel :
                 merchTaxStatement = merchTaxStatement,
                 canAdd = canAdd,
                 cart = cart,
-                data = cart.toStringData(conference = conference, versionCode = storage.versionCode),
+                data = cart.toStringData(conference = conference, versionCode = versionCode),
             )
 
         _state.tryEmit(ProductsScreenState.Success(state))
@@ -234,7 +246,7 @@ class ProductsViewModel :
         val list = mutableListOf<DismissibleInformation>()
         // Legal information about sales being cash only and include Nevada State Sales Tax
         val text = merchMandatoryAcknowledgement
-        if (!storage.hasSeenMerchInformation("mandatory_acknowledgement") && text != null) {
+        if (!merchCartStore.hasSeenMerchInformation("mandatory_acknowledgement") && text != null) {
             list.add(
                 DismissibleInformation(
                     key = "mandatory_acknowledgement",

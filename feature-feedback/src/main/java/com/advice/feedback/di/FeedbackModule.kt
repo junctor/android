@@ -11,8 +11,8 @@ import org.koin.dsl.module
 fun feedbackModule(versionName: String) =
     module {
         single { FeedbackFormRepository(get()) }
-        single { FeedbackSubmissionRepository(versionName, get()) }
-        single { ReportSubmissionRepository(versionName, get()) }
+        single { FeedbackSubmissionRepository(versionName, get(), get()) }
+        single { ReportSubmissionRepository(versionName, get(), get()) }
         viewModel { FeedbackViewModel() }
         viewModel { ReportViewModel() }
     }

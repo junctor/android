@@ -4,7 +4,7 @@ import android.app.Activity
 import com.advice.core.audience.AudienceContext
 import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
-import com.advice.core.utils.Storage
+import com.advice.core.storage.UserPreferencesStore
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.play.AgeSignalsRepository
@@ -25,7 +25,7 @@ class FirebaseUserSession(
     private val ageSignals: AgeSignalsRepository,
     private val crashlytics: FirebaseCrashlytics,
     conferencesDataSource: ConferencesDataSource,
-    private val preferences: Storage,
+    private val preferences: UserPreferencesStore,
     private val applicationScope: CoroutineScope,
 ) : UserSession {
     private val _audienceContext = MutableStateFlow<AudienceContext>(AudienceContext.Unresolved)
