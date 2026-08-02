@@ -60,13 +60,13 @@ sealed class Preferences(
     companion object {
         val entries =
             listOf(
+                GlitchAnimation,
                 ConferenceTimeZone,
                 ShowSchedule,
                 FabShown,
                 AllowAnalytics,
                 AllowCrashlytics,
                 EasterEggs,
-                GlitchAnimation,
             )
     }
 }

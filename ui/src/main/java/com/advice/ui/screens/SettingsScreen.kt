@@ -2,8 +2,11 @@ package com.advice.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -29,7 +32,9 @@ import com.advice.ui.R
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.ButtonPreference
 import com.advice.ui.components.PreferenceOption
+import com.advice.ui.components.SectionHeader
 import com.advice.ui.components.SwitchPreference
+import com.advice.ui.preview.Preferences
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.preview.SettingsScreenViewStateProvider
 import com.advice.ui.theme.ScheduleTheme
@@ -103,8 +108,56 @@ private fun SettingsScreenContent(
         }
     val selectedDayFormat = ScheduleDayFormat.fromId(state.scheduleDayFormat)
     val dayFormatSummary = TimeUtil.formatScheduleDay(now, selectedDayFormat)
+    val preferencesByKey =
+        remember(state.preferences) {
+            state.preferences.associateBy { it.key }
+        }
 
-    Column(modifier) {
+    Column(
+        modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = 16.dp),
+    ) {
+        SectionHeader(stringResource(R.string.settings_section_schedule))
+        ButtonPreference(
+            title = "Schedule day format",
+            options = dayFormatOptions,
+            summary = dayFormatSummary,
+            onPreferenceChange = onScheduleDayFormatChange,
+        )
+        PreferenceSwitch(
+            preference = preferencesByKey[Preferences.ConferenceTimeZone.key],
+            onPreferenceChange = onPreferenceChange,
+        )
+        PreferenceSwitch(
+            preference = preferencesByKey[Preferences.ShowSchedule.key],
+            onPreferenceChange = onPreferenceChange,
+        )
+        PreferenceSwitch(
+            preference = preferencesByKey[Preferences.FabShown.key],
+            onPreferenceChange = onPreferenceChange,
+        )
+
+        SectionHeader(stringResource(R.string.settings_section_privacy))
+        PreferenceSwitch(
+            preference = preferencesByKey[Preferences.AllowAnalytics.key],
+            onPreferenceChange = onPreferenceChange,
+        )
+        PreferenceSwitch(
+            preference = preferencesByKey[Preferences.AllowCrashlytics.key],
+            onPreferenceChange = onPreferenceChange,
+        )
+        Text(
+            text = stringResource(R.string.privacy_policy_title),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onPrivacyPolicyClick)
+                    .padding(16.dp),
+        )
+
+        SectionHeader(stringResource(R.string.settings_section_appearance))
         ButtonPreference(
             title = "Choose theme",
             options =
@@ -115,33 +168,37 @@ private fun SettingsScreenContent(
                 ),
             onPreferenceChange = onThemeChange,
         )
-        ButtonPreference(
-            title = "Schedule day format",
-            options = dayFormatOptions,
-            summary = dayFormatSummary,
-            onPreferenceChange = onScheduleDayFormatChange,
+        PreferenceSwitch(
+            preference = preferencesByKey[Preferences.GlitchAnimation.key],
+            onPreferenceChange = onPreferenceChange,
         )
-        for (preference in state.preferences) {
-            SwitchPreference(
-                title = preference.title,
-                summary = preference.summary,
-                summaryOn = preference.summaryOn,
-                summaryOff = preference.summaryOff,
-                isChecked = preference.isChecked,
-            ) {
-                onPreferenceChange(preference.key, it)
-            }
-        }
-        Text(
-            text = stringResource(R.string.privacy_policy_title),
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = onPrivacyPolicyClick)
-                    .padding(16.dp),
+
+        SectionHeader(stringResource(R.string.settings_section_extras))
+        PreferenceSwitch(
+            preference = preferencesByKey[Preferences.EasterEggs.key],
+            onPreferenceChange = onPreferenceChange,
         )
+
         DeveloperSection()
         VersionNumber(state.version, enableEasterEggs, onVersionClick)
+    }
+}
+
+@Composable
+private fun PreferenceSwitch(
+    preference: SettingsScreenPreference?,
+    onPreferenceChange: (String, Boolean) -> Unit,
+) {
+    if (preference == null) return
+
+    SwitchPreference(
+        title = preference.title,
+        summary = preference.summary,
+        summaryOn = preference.summaryOn,
+        summaryOff = preference.summaryOff,
+        isChecked = preference.isChecked,
+    ) {
+        onPreferenceChange(preference.key, it)
     }
 }
 

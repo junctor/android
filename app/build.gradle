@@ -96,8 +96,8 @@ dependencies {
     implementation(libs.gson)
 
     // Keep aligned with androidx.test / Espresso (android.dependency.useConstraints).
-    implementation("androidx.concurrent:concurrent-futures:1.2.0")
-    implementation("androidx.concurrent:concurrent-futures-ktx:1.2.0")
+    implementation(libs.androidx.concurrent.futures)
+    implementation(libs.androidx.concurrent.futures.ktx)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
@@ -105,7 +105,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+    androidTestImplementation(libs.androidx.uiautomator)
     androidTestImplementation(libs.zxing.core)
 }
 

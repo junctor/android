@@ -30,6 +30,7 @@ class SettingsViewModel :
             repository.state.collect {
                 val preferences =
                     listOf(
+                        Preferences.GlitchAnimation.toPreference(it.enableGlitchAnimation),
                         Preferences.ConferenceTimeZone
                             .toPreference(it.useConferenceTimeZone)
                             .copy(title = Preferences.ConferenceTimeZone.title.replace("{timezone}", it.timezone)),
@@ -38,7 +39,6 @@ class SettingsViewModel :
                         Preferences.AllowAnalytics.toPreference(it.enableAnalytics),
                         Preferences.AllowCrashlytics.toPreference(it.enableCrashlytics),
                         Preferences.EasterEggs.toPreference(it.enableEasterEggs),
-                        Preferences.GlitchAnimation.toPreference(it.enableGlitchAnimation),
                     )
 
                 _state.value =
