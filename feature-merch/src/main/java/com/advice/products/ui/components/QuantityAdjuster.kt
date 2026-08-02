@@ -1,8 +1,6 @@
 package com.advice.products.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
@@ -15,12 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.advice.products.R
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.roundedCornerShape
+import androidx.compose.material3.IconButton as MaterialIconButton
 
 @Composable
 fun QuantityAdjuster(
@@ -36,15 +36,25 @@ fun QuantityAdjuster(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val canDecrement = enabled && (canDelete || quantity > 1)
-        QualityButton(
-            onQuantityChanged = { onQuantityChanged(quantity - 1) },
-            quantity = quantity,
+        val decrementDescription =
+            if (canDelete && quantity == 1) {
+                stringResource(R.string.cd_remove_from_cart)
+            } else {
+                stringResource(R.string.cd_decrease_quantity)
+            }
+        MaterialIconButton(
+            onClick = { onQuantityChanged(quantity - 1) },
             enabled = canDecrement,
+            modifier = Modifier.size(48.dp),
         ) {
             Icon(
-                painter = painterResource(id = if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove),
-                contentDescription = "Decrease quantity",
+                painter =
+                    painterResource(
+                        id = if (canDelete && quantity == 1) R.drawable.ic_delete else R.drawable.ic_remove,
+                    ),
+                contentDescription = decrementDescription,
                 tint = iconButtonForegroundColor.copy(alpha = if (canDecrement) 1f else 0.5f),
+                modifier = Modifier.size(18.dp),
             )
         }
         Text(
@@ -54,40 +64,17 @@ fun QuantityAdjuster(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
         )
-        QualityButton(
-            onQuantityChanged = { onQuantityChanged(quantity + 1) },
-            quantity = quantity,
+        MaterialIconButton(
+            onClick = { onQuantityChanged(quantity + 1) },
             enabled = enabled,
+            modifier = Modifier.size(48.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_add),
-                contentDescription = "Increase quantity",
-                tint = iconButtonForegroundColor,
+                contentDescription = stringResource(R.string.cd_increase_quantity),
+                tint = iconButtonForegroundColor.copy(alpha = if (enabled) 1f else 0.5f),
+                modifier = Modifier.size(18.dp),
             )
-        }
-    }
-}
-
-@Composable
-private fun QualityButton(
-    onQuantityChanged: (Int) -> Unit,
-    quantity: Int,
-    enabled: Boolean,
-    content: @Composable () -> Unit,
-) {
-    Box(
-        modifier =
-            Modifier
-                .size(32.dp)
-                .clickable(enabled = enabled) { onQuantityChanged(quantity) },
-    ) {
-        Box(
-            modifier =
-                Modifier
-                    .size(14.dp)
-                    .align(Alignment.Center),
-        ) {
-            content()
         }
     }
 }

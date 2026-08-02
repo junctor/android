@@ -7,11 +7,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.advice.products.R
 import com.advice.products.utils.generateQRCode
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
+/**
+ * QR bitmap for the cart summary. Content description keeps the
+ * `QR Code: {payload}` prefix so smoke tests can decode the payload from semantics.
+ */
 @Composable
 internal fun QRCodeImage(
     json: String,
@@ -22,7 +28,7 @@ internal fun QRCodeImage(
     }
     Image(
         bitmap = bitmap.asImageBitmap(),
-        contentDescription = "QR Code: $json",
+        contentDescription = stringResource(R.string.cd_qr_code, json),
         modifier = modifier,
     )
 }

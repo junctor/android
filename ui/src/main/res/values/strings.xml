@@ -12,4 +12,17 @@ Your message and an anonymous app identifier are sent to the Hacker Tracker team
     <string name="report_success">Report submitted</string>
     <string name="report_error">Could not submit report</string>
     <string name="report_message_required">Please enter a reason</string>
+
+    <!-- Accessibility -->
+    <string name="cd_back">Back</string>
+    <string name="cd_add_bookmark">Add bookmark</string>
+    <string name="cd_remove_bookmark">Remove bookmark</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_clear_filters">Clear filters</string>
+    <string name="cd_expanded">Expanded</string>
+    <string name="cd_collapsed">Collapsed</string>
+    <string name="cd_open_home_panel">Open home panel</string>
+    <string name="cd_open_filters_panel">Open filters panel</string>
+    <string name="cd_close_side_panel">Close side panel</string>
+    <string name="cd_gallery_image">Image %1$d of %2$d</string>
 </resources>

@@ -43,7 +43,7 @@ internal fun ProductCard(
                 if (media != null) {
                     Image(
                         model = media,
-                        contentDescription = "logo",
+                        contentDescription = null,
                         modifier =
                             Modifier
                                 .background(Color.White)

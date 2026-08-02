@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,9 +23,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.FAQ
+import com.advice.ui.R
 import com.advice.ui.preview.FAQProvider
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
@@ -40,6 +45,12 @@ fun FreqAskedQuestion(
     var isExpanded by rememberSaveable {
         mutableStateOf(value = expanded)
     }
+    val expandState =
+        if (isExpanded) {
+            stringResource(R.string.cd_expanded)
+        } else {
+            stringResource(R.string.cd_collapsed)
+        }
 
     Surface(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(0.15f)),
@@ -49,9 +60,12 @@ fun FreqAskedQuestion(
         Column {
             Row(
                 Modifier
-                    .clickable {
+                    .semantics(mergeDescendants = true) {
+                        role = Role.Button
+                        stateDescription = expandState
+                    }.clickable {
                         isExpanded = !isExpanded
-                    }.padding(start = 16.dp, top = 4.dp, bottom = 4.dp),
+                    }.padding(start = 16.dp, top = 4.dp, bottom = 4.dp, end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
@@ -63,16 +77,15 @@ fun FreqAskedQuestion(
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Spacer(Modifier.width(8.dp))
-                IconButton(onClick = {
-                    isExpanded = !isExpanded
-                }) {
-                    val rotation = if (isExpanded) 180f else 0f
-                    Icon(
-                        Icons.Default.KeyboardArrowDown,
-                        null,
-                        modifier = Modifier.rotate(rotation),
-                    )
-                }
+                val rotation = if (isExpanded) 180f else 0f
+                Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .padding(12.dp)
+                            .rotate(rotation),
+                )
             }
             AnimatedVisibility(isExpanded) {
                 Answer(answer)

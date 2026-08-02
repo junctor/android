@@ -1,15 +1,16 @@
 package com.advice.products.ui.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
@@ -23,9 +24,11 @@ fun PromoSwitch(
 ) {
     Row(
         Modifier
-            .clickable {
-                onCheckedChange(!checked)
-            }.padding(16.dp),
+            .toggleable(
+                value = checked,
+                role = Role.Switch,
+                onValueChange = onCheckedChange,
+            ).padding(16.dp),
     ) {
         Column(Modifier.weight(1.0f)) {
             Text(title)
@@ -33,7 +36,7 @@ fun PromoSwitch(
         }
         Switch(
             checked = checked,
-            onCheckedChange = onCheckedChange,
+            onCheckedChange = null,
             colors =
                 SwitchDefaults.colors(
                     checkedThumbColor = Color.White,

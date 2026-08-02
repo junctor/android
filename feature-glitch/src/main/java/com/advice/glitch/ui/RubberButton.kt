@@ -10,6 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.advice.glitch.R
 import java.util.Random
@@ -21,10 +25,11 @@ fun SoundButton() {
 
     Image(
         painter = painterResource(id = R.drawable.chicken),
-        contentDescription = "rubber chicken lmao",
+        contentDescription = stringResource(R.string.cd_rubber_chicken),
         modifier =
             Modifier
                 .clip(RoundedCornerShape(50f))
+                .semantics { role = Role.Button }
                 .clickable {
                     // todo: maybe don't - setVolume(audioManager)
                     playRandomChickenNoise(context)

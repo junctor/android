@@ -95,7 +95,7 @@ private fun ProductsSummaryContent(
                         shape = roundedCornerShape,
                     ) {
                         GlitchLogo(
-                            contentDescription = "logo",
+                            contentDescription = null,
                             modifier =
                                 Modifier
                                     .fillMaxSize()

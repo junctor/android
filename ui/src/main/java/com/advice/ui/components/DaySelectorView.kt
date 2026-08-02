@@ -28,6 +28,10 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.advice.ui.preview.PreviewLightDark
@@ -142,10 +146,14 @@ fun DaySelectorView(
                     }.padding(horizontal = 8.dp, vertical = 16.dp),
         ) {
             days.forEachIndexed { index, day ->
+                val isSelected = index in safeStart..safeEnd
                 Box(
                     modifier =
                         Modifier
-                            .clickable {
+                            .semantics {
+                                role = Role.Tab
+                                selected = isSelected
+                            }.clickable {
                                 onDaySelected(day)
                             }.onGloballyPositioned { coordinates ->
                                 val measured = coordinates.size
@@ -159,7 +167,7 @@ fun DaySelectorView(
                         day,
                         modifier = Modifier.padding(horizontal = 12.dp),
                         color =
-                            if (index in safeStart..safeEnd) {
+                            if (isSelected) {
                                 MaterialTheme.colorScheme.onPrimary
                             } else {
                                 MaterialTheme.colorScheme.onSurface

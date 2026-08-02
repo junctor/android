@@ -16,6 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.StockStatus
@@ -37,7 +41,10 @@ internal fun VariantRow(
     Row(
         Modifier
             .defaultMinSize(minHeight = 42.dp)
-            .clickable(enabled = inStock, onClick = onSelect)
+            .semantics(mergeDescendants = true) {
+                role = Role.RadioButton
+                selected = isSelected
+            }.clickable(enabled = inStock, onClick = onSelect)
             .padding(start = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -70,7 +77,7 @@ internal fun VariantRow(
         if (canAdd && inStock) {
             RadioButton(
                 selected = isSelected,
-                onClick = onSelect,
+                onClick = null,
             )
         } else {
             Spacer(modifier = Modifier.width(16.dp))

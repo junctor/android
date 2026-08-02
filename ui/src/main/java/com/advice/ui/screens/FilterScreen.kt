@@ -16,11 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.FiltersScreenState
+import com.advice.ui.R
 import com.advice.ui.components.Category
 import com.advice.ui.components.SectionHeader
 import com.advice.ui.preview.PreviewLightDark
@@ -47,7 +49,10 @@ fun FilterScreen(
                         )
                 if (showClearButton) {
                     IconButton(onClear) {
-                        Icon(Icons.Default.Close, null)
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.cd_clear_filters),
+                        )
                     }
                 }
             })

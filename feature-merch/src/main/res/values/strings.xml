@@ -7,4 +7,11 @@
 
     <!--  Stock Statuses  -->
     <string name="select_variant">-</string>
+
+    <!-- Accessibility -->
+    <string name="cd_increase_quantity">Increase quantity</string>
+    <string name="cd_decrease_quantity">Decrease quantity</string>
+    <string name="cd_remove_from_cart">Remove from cart</string>
+    <string name="cd_options">Options</string>
+    <string name="cd_qr_code">QR Code: %1$s</string>
 </resources>

@@ -23,6 +23,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,11 +33,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.advice.ui.R
 import com.advice.ui.theme.ScheduleTheme
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private const val GUTTER_SIZE = 56
@@ -62,6 +70,10 @@ fun OverlappingPanelsView(
     var hasSyncedToAnchor by remember { mutableStateOf(false) }
 
     val density = LocalDensity.current
+    val scope = rememberCoroutineScope()
+    val openHomeLabel = stringResource(R.string.cd_open_home_panel)
+    val openFiltersLabel = stringResource(R.string.cd_open_filters_panel)
+    val closePanelLabel = stringResource(R.string.cd_close_side_panel)
 
     var size by remember { mutableStateOf(IntSize.Zero) }
 
@@ -121,7 +133,26 @@ fun OverlappingPanelsView(
         modifier
             .onGloballyPositioned { isComposableReady.value = true }
             .fillMaxSize()
-            .anchoredDraggable(
+            .semantics {
+                customActions =
+                    listOf(
+                        CustomAccessibilityAction(openHomeLabel) {
+                            onPanelChangedListener?.invoke(DragAnchors.Start)
+                            scope.launch { dragState.animateTo(DragAnchors.Start) }
+                            true
+                        },
+                        CustomAccessibilityAction(openFiltersLabel) {
+                            onPanelChangedListener?.invoke(DragAnchors.End)
+                            scope.launch { dragState.animateTo(DragAnchors.End) }
+                            true
+                        },
+                        CustomAccessibilityAction(closePanelLabel) {
+                            onPanelChangedListener?.invoke(DragAnchors.Center)
+                            scope.launch { dragState.animateTo(DragAnchors.Center) }
+                            true
+                        },
+                    )
+            }.anchoredDraggable(
                 state = dragState,
                 orientation = Orientation.Horizontal,
                 flingBehavior = flingBehavior,
@@ -179,7 +210,9 @@ fun OverlappingPanelsView(
                         .width(GUTTER_SIZE.dp)
                         .fillMaxHeight()
                         .align(gutterAlignment)
-                        .clickable {
+                        .semantics {
+                            contentDescription = closePanelLabel
+                        }.clickable {
                             onPanelChangedListener?.invoke(DragAnchors.Center)
                         },
             )

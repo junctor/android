@@ -28,8 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
@@ -58,6 +62,12 @@ fun ConferenceSelector(
     var expanded by rememberSaveable {
         mutableStateOf(value = false)
     }
+    val expandState =
+        if (expanded) {
+            stringResource(R.string.cd_expanded)
+        } else {
+            stringResource(R.string.cd_collapsed)
+        }
 
     Column(
         Modifier
@@ -67,8 +77,11 @@ fun ConferenceSelector(
         Box(
             modifier =
                 Modifier
-                    .semantics { contentDescription = "Conference selector" }
-                    .clickable {
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = "Conference selector"
+                        role = Role.Button
+                        stateDescription = expandState
+                    }.clickable {
                         expanded = !expanded
                     }.fillMaxWidth(),
         ) {

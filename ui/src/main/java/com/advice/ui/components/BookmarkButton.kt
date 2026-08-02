@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.advice.ui.R
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
@@ -30,6 +32,12 @@ fun BookmarkButton(
     }
 
     val icon = if (state) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+    val contentDescription =
+        if (state) {
+            stringResource(R.string.cd_remove_bookmark)
+        } else {
+            stringResource(R.string.cd_add_bookmark)
+        }
 
     IconToggleButton(
         checked = state,
@@ -43,7 +51,7 @@ fun BookmarkButton(
                 contentColor = contentColor,
             ),
     ) {
-        Icon(icon, contentDescription = null)
+        Icon(icon, contentDescription = contentDescription)
     }
 }
 

@@ -138,7 +138,7 @@ Locators use **accessibility** and visible text only (no `testTag`s):
 | Add to cart | Button text `"Add to list"` |
 | Cart summary | Text `"View List"` (substring) |
 | Merch QR | `"QR Code:"` substring (payload in CD) |
-| Qty / remove | `"Increase quantity"` / `"Remove from cart"` |
+| Qty / remove | `"Increase quantity"` / `"Decrease quantity"` / `"Remove from cart"` (qty=1 + canDelete) |
 
 | Class | Phase |
 | ----- | ----- |
@@ -146,6 +146,10 @@ Locators use **accessibility** and visible text only (no `testTag`s):
 | `HomeMenuWalkSmokeTest` | B on DC34 (menu rows listed; full walk is manual) |
 | `ConferenceSwitchSmokeTest` | C DC34 → DC33 → TEST |
 | `MerchQrSmokeTest` | D: decode QR, compact order ↔ cart, clear cart removes QR |
+
+## Accessibility
+
+TalkBack / label / role checklist and static inventory: [ACCESSIBILITY.md](ACCESSIBILITY.md). Smoke locators intentionally reuse accessibility content descriptions; when changing labels, update this table and instrumentation together.
 
 ## Recording results
 

@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.advice.ui.R
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
@@ -25,7 +26,7 @@ fun BackButton(
     ) {
         Icon(
             painter = painterResource(id = R.drawable.arrow_back),
-            contentDescription = "back",
+            contentDescription = stringResource(R.string.cd_back),
             tint = tint,
         )
     }

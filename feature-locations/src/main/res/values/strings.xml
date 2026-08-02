@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources />
+<resources>
+    <string name="cd_location_status_open">Open</string>
+    <string name="cd_location_status_closed">Closed</string>
+    <string name="cd_location_status_mixed">Mixed</string>
+    <string name="cd_location_status_unknown">Unknown status</string>
+</resources>

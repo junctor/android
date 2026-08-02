@@ -3,6 +3,7 @@ package com.advice.feedback.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import com.advice.core.local.feedback.FeedbackOption
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
@@ -27,18 +29,32 @@ fun MultiSelectItem(
     Column(Modifier.fillMaxWidth()) {
         Text(caption)
 
-        options.forEach {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = it.id in choices, onCheckedChange = { isChecked ->
-                    choices =
-                        if (isChecked) {
-                            choices + it.id
-                        } else {
-                            choices - it.id
-                        }
-                    onSelectOption(it.id)
-                })
-                Text(it.value)
+        options.forEach { option ->
+            val checked = option.id in choices
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .toggleable(
+                            value = checked,
+                            role = Role.Checkbox,
+                            onValueChange = { isChecked ->
+                                choices =
+                                    if (isChecked) {
+                                        choices + option.id
+                                    } else {
+                                        choices - option.id
+                                    }
+                                onSelectOption(option.id)
+                            },
+                        ),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Checkbox(
+                    checked = checked,
+                    onCheckedChange = null,
+                )
+                Text(option.value)
             }
         }
     }

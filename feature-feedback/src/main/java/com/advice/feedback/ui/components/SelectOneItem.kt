@@ -14,6 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import com.advice.core.local.feedback.FeedbackOption
 import com.advice.ui.preview.PreviewLightDark
@@ -58,14 +61,16 @@ fun SelectOneItem(
                         Column(
                             modifier =
                                 Modifier
-                                    .clickable { toggle(option.id) }
+                                    .semantics(mergeDescendants = true) {
+                                        role = Role.RadioButton
+                                    }.clickable { toggle(option.id) }
                                     .weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             RadioButton(
                                 selected = choice == option.id,
-                                onClick = { toggle(option.id) },
+                                onClick = null,
                             )
                             Text(
                                 text = option.value,
@@ -100,13 +105,15 @@ private fun SelectOneOptionRow(
     Row(
         modifier =
             Modifier
-                .clickable(onClick = onSelect)
+                .semantics(mergeDescendants = true) {
+                    role = Role.RadioButton
+                }.clickable(onClick = onSelect)
                 .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
             selected = selected,
-            onClick = onSelect,
+            onClick = null,
         )
         Text(text = option.value)
     }

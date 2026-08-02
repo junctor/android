@@ -50,7 +50,7 @@ fun InformationCard(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(Icons.Outlined.Info, contentDescription = "info")
+            Icon(Icons.Outlined.Info, contentDescription = null)
             Text(
                 text = information.text,
                 modifier = Modifier.weight(1f),

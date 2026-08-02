@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- View-based a11y backstop. Compose unlabeled clickables are not fully covered. -->
+    <issue id="ContentDescription" severity="warning" />
+    <issue id="LabelFor" severity="warning" />
+    <issue id="ClickableViewAccessibility" severity="warning" />
+    <issue id="KeyboardInaccessibleWidget" severity="warning" />
+    <issue id="SpeakableTextPresentCheck" severity="warning" />
+    <issue id="AccessibilityLinkReuse" severity="warning" />
+</lint>

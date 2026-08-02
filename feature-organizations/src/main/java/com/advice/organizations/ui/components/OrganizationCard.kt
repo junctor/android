@@ -52,7 +52,7 @@ internal fun OrganizationCard(
             ) {
                 Image(
                     model = media,
-                    contentDescription = "logo",
+                    contentDescription = null,
                     modifier =
                         Modifier
                             .fillMaxSize(),

@@ -22,6 +22,10 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
@@ -50,7 +54,10 @@ fun Category(
 
     Row(
         modifier
-            .clickable(onClick = onClick)
+            .semantics(mergeDescendants = true) {
+                role = Role.Checkbox
+                selected = tag.isSelected
+            }.clickable(onClick = onClick)
             .padding(8.dp),
     ) {
         AnimatedCircleTextView(selected = tag.isSelected, text = tag.label, color = tagColor)

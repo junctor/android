@@ -26,7 +26,7 @@ import com.advice.ui.utils.getImageLoader
 @Composable
 fun Image(
     model: String?,
-    contentDescription: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
 ) {
@@ -43,7 +43,7 @@ fun Image(
 @Composable
 fun Image(
     request: ImageRequest,
-    contentDescription: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
 ) {

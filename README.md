@@ -122,6 +122,8 @@ Runs `ktlintCheck`, unit `test`, `:app:lintDebug`, and `:app:assembleDebug` (sam
 
 Manual checklist for DC34 → DC33 → TEST (home menu walk, conference switch, merch QR): [docs/SMOKE_TEST.md](docs/SMOKE_TEST.md).
 
+TalkBack / content labels / custom control roles: [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
+
 Live-Firebase Compose instrumentation (device/emulator + `google-services.json` required; not PR-gated):
 
 ```bash

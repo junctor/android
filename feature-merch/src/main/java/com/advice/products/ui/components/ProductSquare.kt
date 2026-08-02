@@ -57,7 +57,7 @@ fun ProductSquare(
         ) {
             Image(
                 model = product.media.firstOrNull()?.url,
-                contentDescription = "",
+                contentDescription = null,
                 modifier =
                     Modifier
                         .fillMaxSize()

@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.advice.ui.R
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
@@ -39,12 +41,15 @@ fun SearchBar(
         onValueChange = onQuery,
         modifier = modifier.fillMaxWidth(),
         leadingIcon = {
-            Icon(Icons.Default.Search, null)
+            Icon(Icons.Default.Search, contentDescription = null)
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQuery("") }) {
-                    Icon(Icons.Default.Close, null)
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = stringResource(R.string.cd_clear_search),
+                    )
                 }
             }
         },

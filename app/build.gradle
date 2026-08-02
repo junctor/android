@@ -36,6 +36,9 @@ android {
         sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
         targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
     }
+    lint {
+        lintConfig = file("${rootDir}/lint.xml")
+    }
 }
 
 dependencies {
