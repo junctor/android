@@ -1,13 +1,10 @@
 package com.advice.feedback.network
 
 import com.advice.core.local.feedback.FeedbackForm
-import com.advice.core.local.feedback.FeedbackItem
-import com.advice.core.local.feedback.FeedbackType
 import com.advice.core.network.CachedFeedbackRequest
 import com.advice.core.network.Network
 import com.advice.core.network.NetworkResponse
 import com.advice.core.utils.Storage
-import com.advice.feedback.network.models.Feedback
 import com.advice.feedback.network.models.FeedbackRequest
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
@@ -88,31 +85,6 @@ class FeedbackSubmissionRepository(
             } catch (ex: Exception) {
                 Timber.e(ex, "Failed to submit feedback")
                 NetworkResponse.Error(ex)
-            }
-        }
-
-    private fun FeedbackItem.toFeedback(): Feedback? =
-        when (val feedbackType = type) {
-            FeedbackType.DisplayOnly -> null
-            is FeedbackType.MultiSelect -> {
-                Feedback(
-                    itemId = id,
-                    options = feedbackType.selections.map { it },
-                )
-            }
-
-            is FeedbackType.SelectOne -> {
-                Feedback(
-                    itemId = id,
-                    options = listOfNotNull(feedbackType.selection),
-                )
-            }
-
-            is FeedbackType.TextBox -> {
-                Feedback(
-                    itemId = id,
-                    text = feedbackType.value,
-                )
             }
         }
 }

@@ -72,6 +72,18 @@ class SearchRepositoryTest {
         }
 
     @Test
+    fun `return idle when search is one character`() =
+        runTest {
+            val subject = getSubject()
+
+            val state =
+                subject.collectState {
+                    search("a")
+                }
+            assert(state is SearchState.Idle)
+        }
+
+    @Test
     fun `return search results when search is 3 or more characters`() =
         runTest {
             val subject = getSubject()
@@ -136,7 +148,10 @@ class SearchRepositoryTest {
 
     private fun getSubject(): SearchRepository {
         every { userSession.getConference() } returns flowOf(mockk<Conference>())
-        every { eventsDataSource.content } returns flowOf(ConferenceContent(emptyList()))
+        every { eventsDataSource.content } returns
+            MutableSharedFlow<ConferenceContent>(replay = 1).apply {
+                tryEmit(ConferenceContent(emptyList()))
+            }
         every { speakersDataSource.speakers } returns flowOf(emptyList())
         every { organizationsDataSource.organizations } returns flowOf(emptyList())
         every { faqDataSource.faqs } returns flowOf(FlowResult.Loading)

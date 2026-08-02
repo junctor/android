@@ -3,7 +3,6 @@ package com.advice.products.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Conference
-import com.advice.core.local.StockStatus
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
@@ -229,49 +228,6 @@ class ProductsViewModel :
             )
 
         _state.tryEmit(ProductsScreenState.Success(state))
-    }
-
-    private fun groupProducts(products: List<Product>): Map<Tag, List<Product>> {
-        val outOfStockGroup = Tag(-1, "Out of Stock", "", "", 1000)
-        val availableInOtherSizes = Tag(-2, "Available in other sizes", "", "", 100)
-        val defaultGroup = Tag(-3, "Other", "", "", 99)
-        return products
-            .groupBy {
-                return@groupBy when {
-                    it.stockStatusOverride == StockStatus.OUT_OF_STOCK && it.stockStatus == StockStatus.IN_STOCK -> availableInOtherSizes
-                    !it.inStock -> outOfStockGroup
-                    it.tags.isNotEmpty() -> it.tags.first()
-                    else -> defaultGroup
-                }
-            }.toSortedMap(compareBy { it.sortOrder })
-    }
-
-    private fun getFilteredProducts(
-        products: List<Product>,
-        filter: List<Tag>,
-    ): List<Product> {
-        if (filter.isEmpty()) {
-            return products
-        }
-
-        return products
-            .map { product ->
-                // If there is no variants - return the product as is
-                if (!product.requiresSelection) {
-                    return@map product
-                }
-                // Check the variants if they're in stock
-                val inStock =
-                    product.variants.any { variant ->
-                        filter.any { it.id in variant.tags && variant.stockStatus == StockStatus.IN_STOCK }
-                    }
-                // Override the stock status with our preference
-                if (inStock) {
-                    product.copy(stockStatusOverride = StockStatus.IN_STOCK)
-                } else {
-                    product.copy(stockStatusOverride = StockStatus.OUT_OF_STOCK)
-                }
-            }.sortedWith(compareBy({ it.stockStatus }, { it.sortOrder }))
     }
 
     private fun getInformationList(): MutableList<DismissibleInformation> {

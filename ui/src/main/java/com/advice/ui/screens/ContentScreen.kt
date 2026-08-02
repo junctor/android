@@ -376,7 +376,7 @@ private fun EventScreenContent(
         }
 
         val feedback = content.feedback
-        if (feedback != null && feedback.isEnabled) {
+        if (feedback != null && feedback.isEnabled()) {
             Spacer(Modifier.height(32.dp))
             ClickableUrl(
                 label = feedback.title,

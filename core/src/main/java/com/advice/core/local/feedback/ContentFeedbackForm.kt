@@ -13,9 +13,7 @@ data class ContentFeedbackForm(
     val title: String
         get() = form.title
 
-    val isEnabled: Boolean
-        get() {
-            return (enable == null || enable.isBefore(Instant.now())) &&
-                (disable == null || disable.isAfter(Instant.now()))
-        }
+    fun isEnabled(now: Instant = Instant.now()): Boolean =
+        (enable == null || enable.isBefore(now)) &&
+            (disable == null || disable.isAfter(now))
 }

@@ -74,5 +74,5 @@ data class Content(
     val relatedContentIds: List<Long> = emptyList(),
 ) : Parcelable {
     val feedbackAvailable: Boolean
-        get() = feedback?.isEnabled ?: false
+        get() = feedback?.isEnabled() ?: false
 }

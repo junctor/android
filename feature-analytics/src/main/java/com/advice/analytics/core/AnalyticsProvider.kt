@@ -41,7 +41,7 @@ class AnalyticsProvider(
         }
     }
 
-    private fun isEnabled(minVersion: Long): Boolean = version == 1 || version >= minVersion
+    private fun isEnabled(minVersion: Long): Boolean = isMinVersionEnabled(version, minVersion)
 
     fun onConferenceChangeEvent(conference: Conference) {
         if (isAnalyticsDisabled) {

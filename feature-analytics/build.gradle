@@ -34,4 +34,5 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.config)
 
-    testImplementation(libs.junit)}
+    testImplementation(libs.junit)
+}

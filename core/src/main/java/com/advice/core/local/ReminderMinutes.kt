@@ -8,11 +8,9 @@ object ReminderMinutes {
 
     val feedbackPresets: List<Int> = listOf(DISABLED, 0) + (5..60 step 5).toList()
 
-    fun sanitizeEvent(minutes: Int): Int =
-        if (minutes in eventPresets) minutes else DEFAULT
+    fun sanitizeEvent(minutes: Int): Int = if (minutes in eventPresets) minutes else DEFAULT
 
-    fun sanitizeFeedback(minutes: Int): Int =
-        if (minutes in feedbackPresets) minutes else DEFAULT
+    fun sanitizeFeedback(minutes: Int): Int = if (minutes in feedbackPresets) minutes else DEFAULT
 
     fun isDisabled(minutes: Int): Boolean = minutes == DISABLED
 }

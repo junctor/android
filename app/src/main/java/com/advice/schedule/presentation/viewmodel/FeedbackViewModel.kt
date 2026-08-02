@@ -3,7 +3,6 @@ package com.advice.schedule.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.feedback.FeedbackItem
-import com.advice.core.local.feedback.FeedbackType
 import com.advice.core.network.NetworkResponse
 import com.advice.core.utils.ToastData
 import com.advice.core.utils.ToastManager
@@ -43,39 +42,7 @@ class FeedbackViewModel :
         value: String,
     ) {
         val state = _state.value as? FeedbackState.Content ?: return
-
-        val items =
-            state.feedback.items.map { feedbackItem ->
-                if (feedbackItem.id == item.id) {
-                    when (val type = feedbackItem.type) {
-                        FeedbackType.DisplayOnly -> feedbackItem
-                        is FeedbackType.MultiSelect -> {
-                            val selections =
-                                if (value.toLong() in type.selections) {
-                                    type.selections.filter { it != value.toLong() }
-                                } else {
-                                    type.selections + value.toLong()
-                                }
-                            feedbackItem.copy(
-                                type = FeedbackType.MultiSelect(type.options, selections),
-                            )
-                        }
-
-                        is FeedbackType.SelectOne -> {
-                            feedbackItem.copy(
-                                type = FeedbackType.SelectOne(type.options, value.toLongOrNull()),
-                            )
-                        }
-
-                        is FeedbackType.TextBox -> {
-                            feedbackItem.copy(type = FeedbackType.TextBox(value))
-                        }
-                    }
-                } else {
-                    feedbackItem
-                }
-            }
-
+        val items = applyFeedbackValueChange(state.feedback.items, item, value)
         _state.value = FeedbackState.Content(state.feedback.copy(items = items))
     }
 
