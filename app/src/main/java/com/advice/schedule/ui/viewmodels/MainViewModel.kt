@@ -102,6 +102,8 @@ class MainViewModel :
 
     fun hasSeenNotificationPopup(): Boolean = storage.hasSeenNotificationPopup()
 
+    fun eventReminderMinutes(): Int = storage.eventReminderMinutes
+
     fun showPermissionDialog() {
         _state.value =
             _state.value.copy(

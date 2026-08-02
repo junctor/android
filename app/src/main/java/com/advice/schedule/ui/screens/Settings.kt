@@ -39,6 +39,12 @@ fun Settings(navController: NavHostController) {
         onScheduleDayFormatChange = { formatId ->
             viewModel.onScheduleDayFormatChanged(formatId)
         },
+        onEventReminderMinutesChange = { minutes ->
+            viewModel.onEventReminderMinutesChanged(minutes)
+        },
+        onFeedbackReminderMinutesChange = { minutes ->
+            viewModel.onFeedbackReminderMinutesChanged(minutes)
+        },
         onVersionClick = { index ->
             if (index == 0) {
                 toast?.cancel()

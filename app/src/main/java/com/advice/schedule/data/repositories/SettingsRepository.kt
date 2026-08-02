@@ -1,6 +1,7 @@
 package com.advice.schedule.data.repositories
 
 import android.content.Context
+import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.ui.SettingsScreenState
 import com.advice.core.utils.Storage
@@ -14,12 +15,15 @@ class SettingsRepository(
     private val preferences: Storage,
     private val version: String,
     private val context: Context,
+    private val contentRepository: ContentRepository,
 ) {
     val state =
         combine(
             userSession.getConference(),
             preferences.scheduleDayFormatFlow,
-        ) { conference, scheduleDayFormat ->
+            preferences.eventReminderMinutesFlow,
+            preferences.feedbackReminderMinutesFlow,
+        ) { conference, scheduleDayFormat, eventReminderMinutes, feedbackReminderMinutes ->
             SettingsScreenState(
                 conference.timezone,
                 version,
@@ -31,6 +35,8 @@ class SettingsRepository(
                 preferences.allowCrashlytics,
                 preferences.glitchAnimationEnabled,
                 scheduleDayFormat.id,
+                eventReminderMinutes,
+                feedbackReminderMinutes,
             )
         }
 
@@ -63,5 +69,23 @@ class SettingsRepository(
 
     fun onScheduleDayFormatChanged(formatId: String) {
         preferences.scheduleDayFormat = ScheduleDayFormat.fromId(formatId)
+    }
+
+    fun onEventReminderMinutesChanged(minutes: Int) {
+        val sanitized = ReminderMinutes.sanitizeEvent(minutes)
+        if (preferences.eventReminderMinutes == sanitized) {
+            return
+        }
+        preferences.eventReminderMinutes = sanitized
+        contentRepository.rescheduleBookmarkedReminders()
+    }
+
+    fun onFeedbackReminderMinutesChanged(minutes: Int) {
+        val sanitized = ReminderMinutes.sanitizeFeedback(minutes)
+        if (preferences.feedbackReminderMinutes == sanitized) {
+            return
+        }
+        preferences.feedbackReminderMinutes = sanitized
+        contentRepository.rescheduleBookmarkedReminders()
     }
 }

@@ -167,7 +167,7 @@ val appModule =
         // reminder
         single { NotificationHelper(get()) }
         single { ToastManager() }
-        single { ReminderManager(get()) }
+        single { ReminderManager(get(), get()) }
 
         // navigation
         single { NavigationManager() }
@@ -187,6 +187,7 @@ val appModule =
                 get(),
                 "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
                 androidContext(),
+                get(),
             )
         }
         single { MapRepository(get()) }

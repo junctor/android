@@ -28,12 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.advice.core.local.ReminderMinutes
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
 
 @Composable
 fun NotificationsPopup(
     hasPermission: Boolean,
+    eventReminderMinutes: Int,
     onRequestPermission: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -80,22 +82,8 @@ fun NotificationsPopup(
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth(),
             ) {
-                val text =
-                    buildAnnotatedString {
-                        append("Hacker Tracker can send you a notification ")
-                        withStyle(
-                            SpanStyle(
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold,
-                            ),
-                        ) {
-                            append("20 mins")
-                        }
-                        append(" before an event starts.")
-                    }
-
                 Text(
-                    text = text,
+                    text = notificationMessage(eventReminderMinutes),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp,
                 )
@@ -122,6 +110,32 @@ fun NotificationsPopup(
     }
 }
 
+@Composable
+private fun notificationMessage(eventReminderMinutes: Int) =
+    buildAnnotatedString {
+        if (ReminderMinutes.isDisabled(eventReminderMinutes)) {
+            append("Hacker Tracker can notify you about bookmarked events. Enable event reminders in Settings when you're ready.")
+            return@buildAnnotatedString
+        }
+
+        append("Hacker Tracker can send you a notification ")
+        withStyle(
+            SpanStyle(
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+            ),
+        ) {
+            append(
+                if (eventReminderMinutes == 1) {
+                    "1 min"
+                } else {
+                    "$eventReminderMinutes mins"
+                },
+            )
+        }
+        append(" before an event starts.")
+    }
+
 @PreviewLightDark
 @Composable
 private fun NotificationsPopupPreview() {
@@ -129,6 +143,7 @@ private fun NotificationsPopupPreview() {
         Surface {
             NotificationsPopup(
                 hasPermission = false,
+                eventReminderMinutes = ReminderMinutes.DEFAULT,
                 onRequestPermission = {},
                 onDismiss = {},
             )
@@ -143,6 +158,22 @@ private fun ReminderPopupPreview() {
         Surface {
             NotificationsPopup(
                 hasPermission = true,
+                eventReminderMinutes = ReminderMinutes.DEFAULT,
+                onRequestPermission = {},
+                onDismiss = {},
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ReminderPopupDisabledPreview() {
+    ScheduleTheme {
+        Surface {
+            NotificationsPopup(
+                hasPermission = true,
+                eventReminderMinutes = ReminderMinutes.DISABLED,
                 onRequestPermission = {},
                 onDismiss = {},
             )

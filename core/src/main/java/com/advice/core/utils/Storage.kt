@@ -3,6 +3,7 @@ package com.advice.core.utils
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.network.CachedFeedbackRequest
@@ -34,6 +35,8 @@ class Storage(
         const val USER_CRASHLYTICS_KEY = "user_crashlytics"
         const val GLITCH_ANIMATION_ENABLED_KEY = "glitch_animation_enabled"
         const val SCHEDULE_DAY_FORMAT_KEY = "schedule_day_format"
+        const val EVENT_REMINDER_MINUTES_KEY = "event_reminder_minutes"
+        const val FEEDBACK_REMINDER_MINUTES_KEY = "feedback_reminder_minutes"
 
         const val LATEST_NEWS_READ = "latest_news_read"
     }
@@ -48,6 +51,22 @@ class Storage(
             ),
         )
     val scheduleDayFormatFlow: StateFlow<ScheduleDayFormat> = _scheduleDayFormat.asStateFlow()
+
+    private val _eventReminderMinutes =
+        MutableStateFlow(
+            ReminderMinutes.sanitizeEvent(
+                preferences.getInt(EVENT_REMINDER_MINUTES_KEY, ReminderMinutes.DEFAULT),
+            ),
+        )
+    val eventReminderMinutesFlow: StateFlow<Int> = _eventReminderMinutes.asStateFlow()
+
+    private val _feedbackReminderMinutes =
+        MutableStateFlow(
+            ReminderMinutes.sanitizeFeedback(
+                preferences.getInt(FEEDBACK_REMINDER_MINUTES_KEY, ReminderMinutes.DEFAULT),
+            ),
+        )
+    val feedbackReminderMinutesFlow: StateFlow<Int> = _feedbackReminderMinutes.asStateFlow()
 
     var allowAnalytics: Boolean
         get() = preferences.getBoolean(USER_ANALYTICS_KEY, false)
@@ -109,6 +128,22 @@ class Storage(
         set(value) {
             preferences.edit { putString(SCHEDULE_DAY_FORMAT_KEY, value.id) }
             _scheduleDayFormat.value = value
+        }
+
+    var eventReminderMinutes: Int
+        get() = _eventReminderMinutes.value
+        set(value) {
+            val sanitized = ReminderMinutes.sanitizeEvent(value)
+            preferences.edit { putInt(EVENT_REMINDER_MINUTES_KEY, sanitized) }
+            _eventReminderMinutes.value = sanitized
+        }
+
+    var feedbackReminderMinutes: Int
+        get() = _feedbackReminderMinutes.value
+        set(value) {
+            val sanitized = ReminderMinutes.sanitizeFeedback(value)
+            preferences.edit { putInt(FEEDBACK_REMINDER_MINUTES_KEY, sanitized) }
+            _feedbackReminderMinutes.value = sanitized
         }
 
     var updateVersion: Int?

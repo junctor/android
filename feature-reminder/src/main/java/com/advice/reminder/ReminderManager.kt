@@ -5,17 +5,20 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.advice.core.local.Content
+import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.Session
+import com.advice.core.utils.Storage
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class ReminderManager(
     private val workManager: WorkManager,
+    private val storage: Storage,
 ) {
     companion object {
-        private const val TWENTY_MINUTES_BEFORE = 1000 * 20 * 60
         private const val KEY_REMINDER = "reminder"
         private const val KEY_FEEDBACK = "feedback"
+        private const val MILLIS_PER_MINUTE = 60_000L
     }
 
     fun setReminders(
@@ -49,10 +52,14 @@ class ReminderManager(
         content: Content,
         session: Session,
     ) {
+        val minutes = storage.eventReminderMinutes
+        if (ReminderMinutes.isDisabled(minutes)) {
+            return
+        }
+
         val start = session.start
         val now = System.currentTimeMillis()
-
-        val delay = start.toEpochMilli() - now - TWENTY_MINUTES_BEFORE
+        val delay = start.toEpochMilli() - now - minutes * MILLIS_PER_MINUTE
 
         if (delay < 0) {
             Timber.e("ReminderManager: Delay is negative: $delay - ignoring reminder")
@@ -82,32 +89,39 @@ class ReminderManager(
         content: Content,
         session: Session,
     ) {
-        if (content.feedback != null) {
-            val enable = content.feedback?.enable ?: return
-            val delay = enable.toEpochMilli() - System.currentTimeMillis() - TWENTY_MINUTES_BEFORE
-            if (delay < 0) {
-                Timber.e("ReminderManager: Feedback delay is negative: $delay.")
-                return
-            }
-
-            val data =
-                workDataOf(
-                    ReminderWorker.INPUT_ID to content.id,
-                    ReminderWorker.INPUT_SESSION_ID to session.id,
-                    ReminderWorker.INPUT_CONFERENCE to content.conference,
-                    ReminderWorker.INPUT_ACTION to ReminderWorker.ACTION_FEEDBACK,
-                )
-
-            val tag = getTag(KEY_FEEDBACK, content, session)
-            val notify =
-                OneTimeWorkRequestBuilder<ReminderWorker>()
-                    .setInputData(data)
-                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                    .addTag(tag)
-                    .build()
-
-            workManager.enqueueUniqueWork(tag, ExistingWorkPolicy.REPLACE, notify)
+        if (content.feedback == null) {
+            return
         }
+
+        val minutes = storage.feedbackReminderMinutes
+        if (ReminderMinutes.isDisabled(minutes)) {
+            return
+        }
+
+        val enable = content.feedback?.enable ?: return
+        val delay = enable.toEpochMilli() - System.currentTimeMillis() - minutes * MILLIS_PER_MINUTE
+        if (delay < 0) {
+            Timber.e("ReminderManager: Feedback delay is negative: $delay.")
+            return
+        }
+
+        val data =
+            workDataOf(
+                ReminderWorker.INPUT_ID to content.id,
+                ReminderWorker.INPUT_SESSION_ID to session.id,
+                ReminderWorker.INPUT_CONFERENCE to content.conference,
+                ReminderWorker.INPUT_ACTION to ReminderWorker.ACTION_FEEDBACK,
+            )
+
+        val tag = getTag(KEY_FEEDBACK, content, session)
+        val notify =
+            OneTimeWorkRequestBuilder<ReminderWorker>()
+                .setInputData(data)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .addTag(tag)
+                .build()
+
+        workManager.enqueueUniqueWork(tag, ExistingWorkPolicy.REPLACE, notify)
     }
 
     private fun getTag(

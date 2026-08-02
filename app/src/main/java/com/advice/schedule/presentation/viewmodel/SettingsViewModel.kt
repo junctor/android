@@ -3,6 +3,7 @@ package com.advice.schedule.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.analytics.core.AnalyticsProvider
+import com.advice.core.local.ReminderMinutes
 import com.advice.schedule.data.repositories.SettingsRepository
 import com.advice.ui.preview.Preferences
 import com.advice.ui.screens.SettingsScreenPreference
@@ -47,6 +48,8 @@ class SettingsViewModel :
                         version = it.version,
                         enableEasterEggs = it.enableEasterEggs,
                         scheduleDayFormat = it.scheduleDayFormat,
+                        eventReminderMinutes = it.eventReminderMinutes,
+                        feedbackReminderMinutes = it.feedbackReminderMinutes,
                         preferences = preferences,
                     )
             }
@@ -68,6 +71,14 @@ class SettingsViewModel :
 
     fun onScheduleDayFormatChanged(formatId: String) {
         repository.onScheduleDayFormatChanged(formatId)
+    }
+
+    fun onEventReminderMinutesChanged(minutes: Int) {
+        repository.onEventReminderMinutesChanged(ReminderMinutes.sanitizeEvent(minutes))
+    }
+
+    fun onFeedbackReminderMinutesChanged(minutes: Int) {
+        repository.onFeedbackReminderMinutesChanged(ReminderMinutes.sanitizeFeedback(minutes))
     }
 }
 

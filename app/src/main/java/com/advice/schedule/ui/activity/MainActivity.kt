@@ -140,6 +140,7 @@ class MainActivity :
                     ) {
                         NotificationsPopup(
                             hasPermission = hasNotificationPermission(),
+                            eventReminderMinutes = mainViewModel.eventReminderMinutes(),
                             onRequestPermission = {
                                 requestNotificationPermission()
                                 mainViewModel.dismissPermissionDialog()

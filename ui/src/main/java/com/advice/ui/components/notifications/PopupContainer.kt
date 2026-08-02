@@ -46,6 +46,7 @@ private fun PreviewPopupContainer() {
         PopupContainer {
             NotificationsPopup(
                 hasPermission = false,
+                eventReminderMinutes = 20,
                 onRequestPermission = {},
                 onDismiss = {},
             )

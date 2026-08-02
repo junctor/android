@@ -10,7 +10,7 @@ import com.advice.data.sources.ContentDataSource
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
@@ -21,7 +21,7 @@ class ContentRepository(
     private val notificationHelper: NotificationHelper,
     private val storage: Storage,
 ) {
-    val content: Flow<ConferenceContent> =
+    val content: SharedFlow<ConferenceContent> =
         contentDataSource
             .get()
             .onEach {
@@ -55,6 +55,16 @@ class ContentRepository(
                 notificationHelper.notifySessionUpdated(Event(bookmark, session))
             }
             storage.setContentUpdatedTimestamp(bookmark.id, bookmark.updated.toEpochMilli())
+        }
+    }
+
+    fun rescheduleBookmarkedReminders() {
+        val conferenceContent = content.replayCache.firstOrNull() ?: return
+        for (item in conferenceContent.content) {
+            val sessions = item.sessions.filter { it.isBookmarked }
+            for (session in sessions) {
+                reminderManager.updateReminders(item, session)
+            }
         }
     }
 

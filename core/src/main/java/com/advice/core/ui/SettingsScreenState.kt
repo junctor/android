@@ -11,4 +11,6 @@ data class SettingsScreenState(
     val enableCrashlytics: Boolean,
     val enableGlitchAnimation: Boolean,
     val scheduleDayFormat: String,
+    val eventReminderMinutes: Int,
+    val feedbackReminderMinutes: Int,
 )

@@ -9,7 +9,7 @@ import timber.log.Timber
 
 /**
  * Decorative menu glyph. Parent rows supply the spoken label
- * (e.g. "Home menu: …"); keep [contentDescription] null so TalkBack does not
+ * (e.g. "Home menu: …"); keep contentDescription null so TalkBack does not
  * announce drawable resource keys.
  */
 @Composable

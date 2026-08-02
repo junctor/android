@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.advice.core.local.ReminderMinutes
 import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.utils.TimeUtil
 import com.advice.ui.R
@@ -54,6 +55,8 @@ data class SettingsScreenViewState(
     val version: String = "1.0.0",
     val enableEasterEggs: Boolean = false,
     val scheduleDayFormat: String = ScheduleDayFormat.MonthDay.id,
+    val eventReminderMinutes: Int = ReminderMinutes.DEFAULT,
+    val feedbackReminderMinutes: Int = ReminderMinutes.DEFAULT,
     val preferences: List<SettingsScreenPreference> = emptyList(),
 )
 
@@ -64,6 +67,8 @@ fun SettingScreen(
     onPreferenceChange: (String, Boolean) -> Unit,
     onThemeChange: (String) -> Unit,
     onScheduleDayFormatChange: (String) -> Unit,
+    onEventReminderMinutesChange: (Int) -> Unit,
+    onFeedbackReminderMinutesChange: (Int) -> Unit,
     onVersionClick: (Int) -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     onBackPress: () -> Unit,
@@ -78,6 +83,8 @@ fun SettingScreen(
             onPreferenceChange,
             onThemeChange,
             onScheduleDayFormatChange,
+            onEventReminderMinutesChange,
+            onFeedbackReminderMinutesChange,
             onVersionClick,
             onPrivacyPolicyClick,
             Modifier.padding(it),
@@ -91,6 +98,8 @@ private fun SettingsScreenContent(
     onPreferenceChange: (String, Boolean) -> Unit,
     onThemeChange: (String) -> Unit,
     onScheduleDayFormatChange: (String) -> Unit,
+    onEventReminderMinutesChange: (Int) -> Unit,
+    onFeedbackReminderMinutesChange: (Int) -> Unit,
     onVersionClick: (Int) -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -111,6 +120,24 @@ private fun SettingsScreenContent(
     val preferencesByKey =
         remember(state.preferences) {
             state.preferences.associateBy { it.key }
+        }
+    val eventReminderOptions =
+        remember {
+            ReminderMinutes.eventPresets.map { minutes ->
+                PreferenceOption(
+                    title = reminderOptionLabel(minutes, isFeedback = false),
+                    value = minutes.toString(),
+                )
+            }
+        }
+    val feedbackReminderOptions =
+        remember {
+            ReminderMinutes.feedbackPresets.map { minutes ->
+                PreferenceOption(
+                    title = reminderOptionLabel(minutes, isFeedback = true),
+                    value = minutes.toString(),
+                )
+            }
         }
 
     Column(
@@ -137,6 +164,20 @@ private fun SettingsScreenContent(
         PreferenceSwitch(
             preference = preferencesByKey[Preferences.FabShown.key],
             onPreferenceChange = onPreferenceChange,
+        )
+
+        SectionHeader(stringResource(R.string.settings_section_notifications))
+        ButtonPreference(
+            title = stringResource(R.string.settings_event_reminder_title),
+            options = eventReminderOptions,
+            summary = reminderSummary(state.eventReminderMinutes, isFeedback = false),
+            onPreferenceChange = { onEventReminderMinutesChange(it.toInt()) },
+        )
+        ButtonPreference(
+            title = stringResource(R.string.settings_feedback_reminder_title),
+            options = feedbackReminderOptions,
+            summary = reminderSummary(state.feedbackReminderMinutes, isFeedback = true),
+            onPreferenceChange = { onFeedbackReminderMinutesChange(it.toInt()) },
         )
 
         SectionHeader(stringResource(R.string.settings_section_privacy))
@@ -183,6 +224,22 @@ private fun SettingsScreenContent(
         VersionNumber(state.version, enableEasterEggs, onVersionClick)
     }
 }
+
+private fun reminderOptionLabel(
+    minutes: Int,
+    isFeedback: Boolean,
+): String =
+    when {
+        ReminderMinutes.isDisabled(minutes) -> "Disabled"
+        minutes == 0 && isFeedback -> "When feedback opens"
+        minutes == 1 -> "1 minute before"
+        else -> "$minutes minutes before"
+    }
+
+private fun reminderSummary(
+    minutes: Int,
+    isFeedback: Boolean,
+): String = reminderOptionLabel(minutes, isFeedback)
 
 @Composable
 private fun PreferenceSwitch(
@@ -254,6 +311,8 @@ private fun SettingScreenViewDarkPreview(
             onPreferenceChange = { _, _ -> },
             onThemeChange = {},
             onScheduleDayFormatChange = {},
+            onEventReminderMinutesChange = {},
+            onFeedbackReminderMinutesChange = {},
             onVersionClick = {},
             onPrivacyPolicyClick = {},
             onBackPress = {},
