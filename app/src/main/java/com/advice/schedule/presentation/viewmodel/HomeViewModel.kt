@@ -37,7 +37,7 @@ class HomeViewModel(
             repository.contents.collect {
                 when (it) {
                     is HomeState.Error -> {
-                        // no-op
+                        state.value = it
                     }
 
                     is HomeState.Loaded -> {
@@ -58,14 +58,17 @@ class HomeViewModel(
                             if (id != null) {
                                 val document = documentRepository.get(id)
                                 if (document != null) {
-                                    notificationHelper.notifyEmergency(document)
+                                    notificationHelper.notifyEmergency(
+                                        document,
+                                        it.conference.code,
+                                    )
                                 }
                             }
                         }
                     }
 
                     HomeState.Loading -> {
-                        // no-op
+                        state.value = HomeState.Loading
                     }
                 }
             }
@@ -97,6 +100,11 @@ class HomeViewModel(
             repository.setConference(conference)
         }
         analytics.onConferenceChangeEvent(conference)
+    }
+
+    fun retry() {
+        state.value = HomeState.Loading
+        repository.refreshConference()
     }
 
     fun getHomeState(): Flow<HomeState> = state

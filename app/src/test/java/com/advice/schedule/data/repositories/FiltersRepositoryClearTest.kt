@@ -1,6 +1,7 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Content
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Tag
@@ -10,6 +11,8 @@ import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -27,8 +30,8 @@ class FiltersRepositoryClearTest {
     fun `clearFilters empties filter selections but leaves event bookmarks intact`() =
         runTest {
             every { tagsRepository.tags } returns
-                MutableSharedFlow<List<TagType>>(replay = 1).apply {
-                    tryEmit(emptyList())
+                MutableSharedFlow<FlowResult<List<TagType>>>(replay = 1).apply {
+                    tryEmit(FlowResult.Success(emptyList()))
                 }
 
             val filterSelections = InMemoryBookmarkedDataSourceImpl()
@@ -67,7 +70,11 @@ class FiltersRepositoryClearTest {
             assertTrue(eventBookmarks.isBookmarked(session))
             assertTrue(eventBookmarks.isBookmarked(content))
 
-            FiltersRepository(tagsRepository, filterSelections).clearFilters()
+            FiltersRepository(
+                tagsRepository,
+                filterSelections,
+                CoroutineScope(Dispatchers.Unconfined),
+            ).clearFilters()
 
             assertFalse(filterSelections.isBookmarked(filterTag))
             assertTrue(eventBookmarks.isBookmarked(session))

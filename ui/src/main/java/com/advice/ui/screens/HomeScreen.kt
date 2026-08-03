@@ -30,6 +30,7 @@ import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
 import com.advice.core.ui.HomeState
 import com.advice.glitch.ui.SoundButton
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.Image
 import com.advice.ui.components.Label
 import com.advice.ui.components.MenuIcon
@@ -49,6 +50,7 @@ fun HomeScreen(
     onConferenceClick: (Conference) -> Unit,
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
+    onRetry: () -> Unit = {},
     countdownContent: @Composable () -> Unit = {},
 ) {
     Scaffold(
@@ -59,6 +61,7 @@ fun HomeScreen(
             state,
             onNavigationClick,
             onDismissNews,
+            onRetry,
             countdownContent,
             modifier =
                 Modifier
@@ -72,12 +75,19 @@ private fun HomeScreenContent(
     state: HomeState?,
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
+    onRetry: () -> Unit,
     countdownContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         when (state) {
             is HomeState.Error -> {
+                EmptyMessage(
+                    title = "Error",
+                    message = state.ex.message ?: "Could not load home",
+                    actionLabel = "Retry",
+                    onAction = onRetry,
+                )
             }
 
             is HomeState.Loaded -> {

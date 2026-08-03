@@ -17,8 +17,6 @@ import com.advice.data.sources.OrganizationsDataSource
 import com.advice.data.sources.ProductsDataSource
 import com.advice.data.sources.SpeakersDataSource
 import com.advice.data.sources.TagsDataSource
-import com.advice.data.sources.VendorsDataSource
-import com.advice.data.sources.VillagesDataSource
 import com.advice.data.sources.WiFiNetworksDataSource
 import com.advice.firebase.data.sources.FirebaseConferencesDataSource
 import com.advice.firebase.data.sources.FirebaseContentDataSource
@@ -32,8 +30,6 @@ import com.advice.firebase.data.sources.FirebaseOrganizationDataSource
 import com.advice.firebase.data.sources.FirebaseProductsDataSource
 import com.advice.firebase.data.sources.FirebaseSpeakersDataSource
 import com.advice.firebase.data.sources.FirebaseTagsDataSource
-import com.advice.firebase.data.sources.FirebaseVendorsDataSource
-import com.advice.firebase.data.sources.FirebaseVillagesDataSource
 import com.advice.firebase.data.sources.FirebaseWifiNetworksDataSource
 import com.advice.firebase.session.FirebaseUserSession
 import com.advice.retrofit.datasource.RetrofitMapsDataSource
@@ -135,8 +131,6 @@ val firebaseDataModule =
         single<OrganizationsDataSource> {
             FirebaseOrganizationDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))
         }
-        single<VendorsDataSource> { FirebaseVendorsDataSource(get(), get()) }
-        single<VillagesDataSource> { FirebaseVillagesDataSource(get(), get()) }
 
         single<DocumentsDataSource> {
             FirebaseDocumentsDataSource(get(), get(), get(), get(named(APPLICATION_SCOPE)))

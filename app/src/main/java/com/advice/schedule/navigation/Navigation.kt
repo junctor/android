@@ -1,6 +1,6 @@
 package com.advice.schedule.navigation
 
-import android.net.Uri
+import java.net.URLEncoder
 
 sealed class Navigation {
     data object Home : Navigation() {
@@ -16,7 +16,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "news/{label}"
 
-        override fun destination(): String = "news/$label"
+        override fun destination(): String = "news/${enc(label)}"
     }
 
     data object Search : Navigation() {
@@ -28,7 +28,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "locations/{label}"
 
-        override fun destination(): String = "locations/$label"
+        override fun destination(): String = "locations/${enc(label)}"
     }
 
     data class Event(
@@ -36,9 +36,9 @@ sealed class Navigation {
         val id: String = "",
         val session: String = "",
     ) : Navigation() {
-        override fun route(): String = "event/{conference}/{id}"
+        override fun route(): String = "event/{conference}/{contentId}/{sessionId}"
 
-        override fun destination(): String = "event/$conference/$id-$session"
+        override fun destination(): String = "event/${enc(conference)}/${enc(id)}/${enc(session)}"
     }
 
     data class Location(
@@ -47,7 +47,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "location/{id}/{label}"
 
-        override fun destination(): String = "location/$id/${Uri.encode(label)}"
+        override fun destination(): String = "location/$id/${enc(label)}"
     }
 
     data class Tag(
@@ -56,7 +56,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "tag/{id}/{label}"
 
-        override fun destination(): String = "tag/$id/$label"
+        override fun destination(): String = "tag/$id/${enc(label)}"
     }
 
     data class Schedule(
@@ -67,7 +67,7 @@ sealed class Navigation {
 
         override fun destination(): String {
             val ids = ids.joinToString(separator = ",")
-            return "schedule/$label/$ids"
+            return "schedule/${enc(label)}/$ids"
         }
     }
 
@@ -76,7 +76,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "content/{label}"
 
-        override fun destination(): String = "content/$label"
+        override fun destination(): String = "content/${enc(label)}"
     }
 
     data class Speaker(
@@ -85,7 +85,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "speaker/{id}/{name}"
 
-        override fun destination(): String = "speaker/$id/$name"
+        override fun destination(): String = "speaker/$id/${enc(name)}"
     }
 
     data object Settings : Navigation() {
@@ -102,7 +102,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "wifi/{id}/{label}"
 
-        override fun destination(): String = "wifi/$id/$label"
+        override fun destination(): String = "wifi/$id/${enc(label)}"
     }
 
     data class Menu(
@@ -111,16 +111,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "menu/{label}/{id}"
 
-        override fun destination(): String = "menu/$label/$id"
-    }
-
-    data class Function(
-        val function: String = "",
-        val label: String = "",
-    ) : Navigation() {
-        override fun route(): String = "{function}/{label}"
-
-        override fun destination(): String = "$function/$label"
+        override fun destination(): String = "menu/${enc(label)}/$id"
     }
 
     data class Document(
@@ -136,7 +127,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "faq/{label}"
 
-        override fun destination(): String = "faq/$label"
+        override fun destination(): String = "faq/${enc(label)}"
     }
 
     data class Organizations(
@@ -145,7 +136,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "organizations/{label}/{id}"
 
-        override fun destination(): String = "organizations/$label/$id"
+        override fun destination(): String = "organizations/${enc(label)}/$id"
     }
 
     data class Organization(
@@ -161,7 +152,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "people/{label}"
 
-        override fun destination(): String = "people/$label"
+        override fun destination(): String = "people/${enc(label)}"
     }
 
     data class Products(
@@ -169,7 +160,7 @@ sealed class Navigation {
     ) : Navigation() {
         override fun route(): String = "products/{label}"
 
-        override fun destination(): String = "products/$label"
+        override fun destination(): String = "products/${enc(label)}"
     }
 
     data class Product(
@@ -206,4 +197,16 @@ sealed class Navigation {
      * The destination for the navigation: e.g. "news/63"
      */
     open fun destination(): String = route()
+
+    companion object {
+        /**
+         * Percent-encodes path labels for Nav destinations.
+         * Uses form encoding with `+` normalized to `%20` so spaces match [android.net.Uri.encode].
+         */
+        fun enc(value: String): String =
+            URLEncoder
+                .encode(value, "UTF-8")
+                .replace("+", "%20")
+    }
 }
+

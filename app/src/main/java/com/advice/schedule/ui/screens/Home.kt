@@ -97,6 +97,9 @@ internal fun Home(
                     onDismissNews = {
                         homeViewModel.markLatestNewsAsRead(it)
                     },
+                    onRetry = {
+                        homeViewModel.retry()
+                    },
                     countdownContent = {
                         HomeCountdown(homeViewModel)
                     },
@@ -131,6 +134,9 @@ internal fun Home(
                     onBookmarkClick = { event, isBookmarked ->
                         scheduleViewModel.bookmark(event, isBookmarked)
                         (context as MainActivity).onBookmarkEvent()
+                    },
+                    onRetry = {
+                        scheduleViewModel.retry()
                     },
                 )
             },

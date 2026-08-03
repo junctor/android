@@ -59,11 +59,14 @@ class NotificationHelper(
             setContentIntent(getPendingIntent(event))
         }
 
-    private fun getDocumentNotification(document: Document): Notification =
+    private fun getDocumentNotification(
+        document: Document,
+        conferenceCode: String,
+    ): Notification =
         notification {
             setContentTitle(document.title)
             setContentText("Tap here for more details")
-            setContentIntent(getPendingIntent(document.id))
+            setContentIntent(getPendingIntent(document.id, conferenceCode))
         }
 
     private fun notification(block: NotificationCompat.Builder.() -> Unit): Notification =
@@ -89,15 +92,18 @@ class NotificationHelper(
             }
         return PendingIntent.getActivity(
             context,
-            0,
+            pendingIntentRequestCode(kind = "event", id = event.id),
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
     }
 
-    private fun getPendingIntent(documentId: Long): PendingIntent {
+    private fun getPendingIntent(
+        documentId: Long,
+        conferenceCode: String,
+    ): PendingIntent {
         val deepLink =
-            "https://hackertracker.app/document?id=$documentId".toUri()
+            "https://hackertracker.app/document?c=$conferenceCode&id=$documentId".toUri()
 
         val intent =
             Intent(Intent.ACTION_VIEW, deepLink).apply {
@@ -105,7 +111,7 @@ class NotificationHelper(
             }
         return PendingIntent.getActivity(
             context,
-            0,
+            pendingIntentRequestCode(kind = "document", id = documentId),
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
@@ -123,14 +129,23 @@ class NotificationHelper(
         manager.notify(1001 + event.id.toInt(), getFeedbackReminderNotification(event))
     }
 
-    fun notifyEmergency(document: Document) {
+    fun notifyEmergency(
+        document: Document,
+        conferenceCode: String,
+    ) {
         manager.notify(
             911 + document.id.toInt(),
-            getDocumentNotification(document),
+            getDocumentNotification(document, conferenceCode),
         )
     }
 
     companion object {
         private const val CHANNEL_UPDATES = "updates_channel"
+
+        /** Stable unique request codes so PendingIntents do not overwrite each other. */
+        fun pendingIntentRequestCode(
+            kind: String,
+            id: Long,
+        ): Int = 31 * kind.hashCode() + id.hashCode()
     }
 }

@@ -1,5 +1,6 @@
 package com.advice.firebase.data.sources
 
+import com.advice.core.local.FlowResult
 import com.advice.core.local.NewsArticle
 import com.advice.data.session.UserSession
 import com.advice.data.sources.NewsDataSource
@@ -8,7 +9,6 @@ import com.advice.firebase.extensions.mapSnapshot
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toArticle
 import com.advice.firebase.extensions.toObjectsOrEmpty
-import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.FirebaseArticle
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -23,9 +23,9 @@ import kotlinx.coroutines.flow.stateIn
 class FirebaseNewsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val applicationScope: CoroutineScope,
+    applicationScope: CoroutineScope,
 ) : NewsDataSource {
-    private val articles: StateFlow<List<NewsArticle>> =
+    private val articles: StateFlow<FlowResult<List<NewsArticle>>> =
         userSession
             .getConference()
             .flatMapLatest { conference ->
@@ -41,12 +41,12 @@ class FirebaseNewsDataSource(
                             .filter { !it.hidden || userSession.isDeveloper }
                             .sortedByDescending { it.updatedAt }
                             .mapNotNull { it.toArticle() }
-                    }.unwrapList("Failed to load news articles")
+                    }
             }.stateIn(
                 scope = applicationScope,
                 started = SharingStarted.Eagerly,
-                initialValue = emptyList(),
+                initialValue = FlowResult.Loading,
             )
 
-    override fun get(): Flow<List<NewsArticle>> = articles
+    override fun get(): Flow<FlowResult<List<NewsArticle>>> = articles
 }

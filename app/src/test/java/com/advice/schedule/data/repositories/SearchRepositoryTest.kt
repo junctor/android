@@ -150,16 +150,16 @@ class SearchRepositoryTest {
     private fun getSubject(): SearchRepository {
         every { userSession.getConference() } returns flowOf(mockk<Conference>())
         every { eventsDataSource.content } returns
-            MutableSharedFlow<ConferenceContent>(replay = 1).apply {
-                tryEmit(ConferenceContent(emptyList()))
+            MutableSharedFlow<FlowResult<ConferenceContent>>(replay = 1).apply {
+                tryEmit(FlowResult.Success(ConferenceContent(emptyList())))
             }
         every { speakersDataSource.speakers } returns flowOf(emptyList())
         every { organizationsDataSource.organizations } returns flowOf(emptyList())
         every { faqDataSource.faqs } returns flowOf(FlowResult.Loading)
         every { documentsDataSource.documents } returns flowOf(emptyList())
         every { tagsDataSource.tags } returns
-            MutableSharedFlow<List<TagType>>(replay = 1).apply {
-                tryEmit(tagTypes)
+            MutableSharedFlow<FlowResult<List<TagType>>>(replay = 1).apply {
+                tryEmit(FlowResult.Success(tagTypes))
             }
 
         return SearchRepository(

@@ -5,7 +5,6 @@ import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.data.repositories.FAQRepository
 import com.advice.schedule.data.repositories.FiltersRepository
 import com.advice.schedule.data.repositories.HomeRepository
-import com.advice.schedule.data.repositories.InformationRepository
 import com.advice.schedule.data.repositories.MapRepository
 import com.advice.schedule.data.repositories.MenuRepository
 import com.advice.schedule.data.repositories.NewsRepository
@@ -34,7 +33,15 @@ import org.koin.dsl.module
 
 val scheduleModule =
     module {
-        single { ContentRepository(get(), get(), get(), get()) }
+        single {
+            ContentRepository(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(named(APPLICATION_SCOPE)),
+            )
+        }
         single { ContentBookmarkUseCase(get(), get()) }
         single {
             ScheduleRepository(
@@ -52,17 +59,17 @@ val scheduleModule =
             FiltersRepository(
                 get(),
                 get(named(BookmarkDataSourceQualifiers.FILTER_SELECTIONS)),
+                get(named(APPLICATION_SCOPE)),
             )
         }
         single { FAQRepository(get()) }
         single { MapRepository(get()) }
-        single { InformationRepository(get(), get(), get(), get()) }
         single { TagsRepository(get()) }
         single { SearchRepository(get(), get(), get(), get(), get(), get(), get()) }
         single { MenuRepository(get(), get()) }
 
         viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
-        viewModel { ScheduleViewModel(get(), get()) }
+        viewModel { ScheduleViewModel(get(), get(), get()) }
         viewModel { EventViewModel(get(), get()) }
         viewModel { ContentViewModel(get(), get()) }
         viewModel { SpeakerViewModel(get()) }

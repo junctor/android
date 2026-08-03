@@ -71,5 +71,6 @@ fun Location(
             viewModel.bookmark(event, isBookmarked)
             (context as MainActivity).onBookmarkEvent()
         },
+        onRetry = { viewModel.retry() },
     )
 }

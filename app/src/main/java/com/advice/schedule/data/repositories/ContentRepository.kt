@@ -3,13 +3,13 @@ package com.advice.schedule.data.repositories
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
 import com.advice.core.local.Event
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Session
 import com.advice.core.storage.ContentSyncStore
 import com.advice.core.utils.NotificationHelper
 import com.advice.data.sources.ContentDataSource
 import com.advice.reminder.ReminderManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
@@ -20,14 +20,17 @@ class ContentRepository(
     private val reminderManager: ReminderManager,
     private val notificationHelper: NotificationHelper,
     private val storage: ContentSyncStore,
+    applicationScope: CoroutineScope,
 ) {
-    val content: SharedFlow<ConferenceContent> =
+    val content: SharedFlow<FlowResult<ConferenceContent>> =
         contentDataSource
             .get()
-            .onEach {
-                updateBookmarkedContent(it)
+            .onEach { result ->
+                if (result is FlowResult.Success) {
+                    updateBookmarkedContent(result.value)
+                }
             }.shareIn(
-                scope = CoroutineScope(Dispatchers.IO),
+                scope = applicationScope,
                 started = SharingStarted.Eagerly,
                 replay = 1,
             )

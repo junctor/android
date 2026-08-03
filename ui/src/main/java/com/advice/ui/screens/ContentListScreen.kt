@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.advice.core.local.Content
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.ContentRow
+import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.states.ContentScreenState
 import com.advice.ui.theme.topRoundedCornerShape
@@ -60,6 +61,13 @@ fun ContentScreenContent(
         when (state) {
             ContentScreenState.Loading -> {
                 ProgressSpinner()
+            }
+
+            ContentScreenState.Error -> {
+                EmptyMessage(
+                    title = "Error",
+                    message = "Could not load content",
+                )
             }
 
             is ContentScreenState.Success -> {

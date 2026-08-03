@@ -3,6 +3,7 @@ package com.advice.schedule.ui.screens
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
+import com.advice.core.local.FlowResult
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.presentation.viewmodel.NewsViewModel
@@ -15,7 +16,12 @@ internal fun News(
 ) {
     val viewModel = navController.navGraphViewModel<NewsViewModel>()
 
-    val news = viewModel.getNews().collectAsState(initial = emptyList()).value
+    val newsResult = viewModel.getNews().collectAsState(initial = FlowResult.Loading).value
+    val news =
+        when (newsResult) {
+            is FlowResult.Success -> newsResult.value
+            else -> emptyList()
+        }
 
     NewsScreen(label = label, news = news) {
         navController.onBackPressed()

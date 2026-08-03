@@ -3,11 +3,13 @@ package com.advice.products.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Conference
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.storage.MerchCartStore
+import com.advice.data.session.UserSession
 import com.advice.products.data.repositories.ProductsRepository
 import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
@@ -24,6 +26,7 @@ class ProductsViewModel(
     private val merchCartStore: MerchCartStore,
     private val cart: ProductCart,
     private val versionCode: Int,
+    private val userSession: UserSession,
 ) : ViewModel() {
     private val _state = MutableStateFlow<ProductsScreenState>(ProductsScreenState.Loading)
     val state: Flow<ProductsScreenState> = _state
@@ -49,6 +52,7 @@ class ProductsViewModel(
      */
     fun retry() {
         hasLoadError = false
+        userSession.currentConference?.let { userSession.setConference(it) }
         observe()
     }
 
@@ -81,12 +85,26 @@ class ProductsViewModel(
                 launch {
                     repository.products
                         .catch { emitError("products", it) }
-                        .collect {
+                        .collect { result ->
                             if (hasLoadError) return@collect
-                            products.clear()
-                            products.addAll(it.sortedByDescending { product -> product.inStock })
-                            syncSizeFiltersFromProducts()
-                            updateSummary()
+                            when (result) {
+                                FlowResult.Loading -> {
+                                    if (products.isEmpty()) {
+                                        _state.value = ProductsScreenState.Loading
+                                    }
+                                }
+                                is FlowResult.Failure -> {
+                                    emitError("products", result.error)
+                                }
+                                is FlowResult.Success -> {
+                                    products.clear()
+                                    products.addAll(
+                                        result.value.sortedByDescending { product -> product.inStock },
+                                    )
+                                    syncSizeFiltersFromProducts()
+                                    updateSummary()
+                                }
+                            }
                         }
                 }
             }

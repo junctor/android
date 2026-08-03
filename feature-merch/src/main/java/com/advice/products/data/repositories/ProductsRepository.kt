@@ -8,6 +8,5 @@ class ProductsRepository(
     productsDataSource: ProductsDataSource,
 ) {
     val conference = userSession.getConference()
-    val variants = productsDataSource.getProductVariantsTags()
     val products = productsDataSource.get()
 }

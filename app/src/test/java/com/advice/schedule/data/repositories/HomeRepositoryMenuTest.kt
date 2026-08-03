@@ -204,7 +204,7 @@ class HomeRepositoryMenuTest {
         every { userSession.getConference() } returns flowOf(conference)
         every { conferencesDataSource.get() } returns flowOf(FlowResult.Success(listOf(conference)))
         every { menuRepository.get() } returns flowOf(menus)
-        every { newsRepository.get() } returns flowOf(news)
+        every { newsRepository.get() } returns flowOf(FlowResult.Success(news))
         every { networkRepository.get() } returns flowOf(wifi)
         every { feedbackDataSource.get() } returns flowOf(emptyList())
     }

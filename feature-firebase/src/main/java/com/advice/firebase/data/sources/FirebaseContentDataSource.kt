@@ -7,6 +7,7 @@ import com.advice.core.local.Conference
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
 import com.advice.core.local.Event
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Speaker
@@ -27,7 +28,6 @@ import com.advice.firebase.extensions.mapSnapshot
 import com.advice.firebase.extensions.snapshotFlow
 import com.advice.firebase.extensions.toContents
 import com.advice.firebase.extensions.toObjectsOrEmpty
-import com.advice.firebase.extensions.unwrapList
 import com.advice.firebase.models.FirebaseContent
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -51,10 +51,10 @@ class FirebaseContentDataSource(
     feedbackDataSource: FeedbackDataSource,
     private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
     private val audiencePolicy: AudiencePolicy,
-    private val applicationScope: CoroutineScope,
+    applicationScope: CoroutineScope,
 ) : ContentDataSource {
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val content: StateFlow<List<FirebaseContent>> =
+    private val content: StateFlow<FlowResult<List<FirebaseContent>>> =
         userSession
             .getConference()
             .flatMapLatest { conference ->
@@ -68,11 +68,11 @@ class FirebaseContentDataSource(
                         querySnapshot
                             .toObjectsOrEmpty(FirebaseContent::class.java)
                             .filter { (!it.hidden || userSession.isDeveloper) }
-                    }.unwrapList("Failed to load content")
+                    }
             }.stateIn(
                 scope = applicationScope,
                 started = SharingStarted.Eagerly,
-                initialValue = emptyList(),
+                initialValue = FlowResult.Loading,
             )
 
     private val conferenceContent =
@@ -89,22 +89,33 @@ class FirebaseContentDataSource(
             ) { locations, feedbackforms, firebaseContent, bookmarks ->
                 AdditionalData(locations, feedbackforms, firebaseContent, bookmarks)
             },
-        ) { conference, context, tags, speakers, additional ->
-            val content =
-                getConferenceContent(
-                    conference = conference,
-                    context = context,
-                    tags = tags,
-                    speakers = speakers,
-                    locations = additional.locations,
-                    feedbackforms = additional.feedbackforms,
-                    firebaseContent = additional.firebaseContent,
-                    bookmarks = additional.bookmarks,
-                )
-
-            ConferenceContent(
-                content = content ?: emptyList(),
-            )
+        ) { conference, context, tagsResult, speakers, additional ->
+            when {
+                tagsResult is FlowResult.Failure -> tagsResult
+                additional.firebaseContent is FlowResult.Failure -> additional.firebaseContent
+                tagsResult is FlowResult.Loading ||
+                    additional.firebaseContent is FlowResult.Loading -> FlowResult.Loading
+                tagsResult is FlowResult.Success &&
+                    additional.firebaseContent is FlowResult.Success -> {
+                    val mapped =
+                        getConferenceContent(
+                            conference = conference,
+                            context = context,
+                            tags = tagsResult.value,
+                            speakers = speakers,
+                            locations = additional.locations,
+                            feedbackforms = additional.feedbackforms,
+                            firebaseContent = additional.firebaseContent.value,
+                            bookmarks = additional.bookmarks,
+                        )
+                    if (mapped == null) {
+                        FlowResult.Loading
+                    } else {
+                        FlowResult.Success(ConferenceContent(content = mapped))
+                    }
+                }
+                else -> FlowResult.Loading
+            }
         }.shareIn(
             scope = applicationScope,
             started = SharingStarted.Lazily,
@@ -114,7 +125,7 @@ class FirebaseContentDataSource(
     private data class AdditionalData(
         val locations: List<Location>,
         val feedbackforms: List<FeedbackForm>,
-        val firebaseContent: List<FirebaseContent>,
+        val firebaseContent: FlowResult<List<FirebaseContent>>,
         val bookmarks: List<Bookmark>,
     )
 
@@ -128,34 +139,32 @@ class FirebaseContentDataSource(
         firebaseContent: List<FirebaseContent>,
         bookmarks: List<Bookmark>,
     ): List<Content>? {
-        // Return null if any of the required data is empty.
-        if (tags.isEmpty() || locations.isEmpty() || firebaseContent.isEmpty()) {
+        // Locations still use unwrapList — empty means not ready yet.
+        if (locations.isEmpty()) {
             return null
         }
 
-        val content =
-            firebaseContent.mapNotNull { firebaseItem ->
-                if (!audiencePolicy.canView(
-                        firebaseItem.audienceRestriction,
-                        context,
-                        firebaseItem.audienceLabel,
-                    )
-                ) {
-                    return@mapNotNull null
-                }
-                firebaseItem.toContents(
-                    code = conference.code,
-                    tags = tags,
-                    speakers = speakers,
-                    bookmarkedEvents = bookmarks,
-                    locations = locations.flattenTree(),
-                    feedbackforms = feedbackforms,
+        return firebaseContent.mapNotNull { firebaseItem ->
+            if (!audiencePolicy.canView(
+                    firebaseItem.audienceRestriction,
+                    context,
+                    firebaseItem.audienceLabel,
                 )
+            ) {
+                return@mapNotNull null
             }
-        return content
+            firebaseItem.toContents(
+                code = conference.code,
+                tags = tags,
+                speakers = speakers,
+                bookmarkedEvents = bookmarks,
+                locations = locations.flattenTree(),
+                feedbackforms = feedbackforms,
+            )
+        }
     }
 
-    override fun get(): Flow<ConferenceContent> = conferenceContent
+    override fun get(): Flow<FlowResult<ConferenceContent>> = conferenceContent
 
     override suspend fun bookmark(content: Content) {
         bookmarkedEventsDataSource.bookmark(content, isBookmarked = !content.isBookmarked)
@@ -172,10 +181,15 @@ class FirebaseContentDataSource(
     override suspend fun getContent(
         conference: String,
         contentId: Long,
-    ): Content? =
-        conferenceContent.first().content.find {
+    ): Content? {
+        val result =
+            conferenceContent.first {
+                it is FlowResult.Success || it is FlowResult.Failure
+            }
+        return result.toResultOrNull()?.content?.find {
             it.conference == conference && it.id == contentId
         }
+    }
 
     override suspend fun getEvent(
         conference: String,

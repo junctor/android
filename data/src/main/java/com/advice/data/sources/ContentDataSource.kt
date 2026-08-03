@@ -3,11 +3,12 @@ package com.advice.data.sources
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
 import com.advice.core.local.Event
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Session
 import kotlinx.coroutines.flow.Flow
 
 interface ContentDataSource {
-    fun get(): Flow<ConferenceContent>
+    fun get(): Flow<FlowResult<ConferenceContent>>
 
     suspend fun getContent(
         conference: String,

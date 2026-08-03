@@ -36,8 +36,13 @@ class HomeRepository(
             combine(networkRepository.get(), feedbackDataSource.get()) { wifi, forms ->
                 wifi to forms
             },
-        ) { conference, conferences, menu, news, wifiAndForms ->
+        ) { conference, conferences, menu, newsResult, wifiAndForms ->
             val (wifi, forms) = wifiAndForms
+            val news =
+                when (newsResult) {
+                    is FlowResult.Success -> newsResult.value
+                    else -> emptyList()
+                }
             val latest =
                 news.firstOrNull().takeUnless {
                     it == null || storage.hasReadNews(conference.code, it.id)
@@ -103,5 +108,9 @@ class HomeRepository(
 
     fun setConference(conference: Conference) {
         userSession.setConference(conference)
+    }
+
+    fun refreshConference() {
+        userSession.currentConference?.let { userSession.setConference(it) }
     }
 }

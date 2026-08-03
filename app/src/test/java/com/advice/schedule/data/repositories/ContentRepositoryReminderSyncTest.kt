@@ -2,6 +2,7 @@ package com.advice.schedule.data.repositories
 
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.storage.ContentSyncStore
@@ -11,6 +12,8 @@ import com.advice.reminder.ReminderManager
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -31,12 +34,19 @@ class ContentRepositoryReminderSyncTest {
         runTest {
             val bookmarked = session(1, bookmarked = true)
             val item = content(sessions = listOf(bookmarked))
-            val flow = MutableSharedFlow<ConferenceContent>(replay = 1)
+            val flow = MutableSharedFlow<FlowResult<ConferenceContent>>(replay = 1)
             every { contentDataSource.get() } returns flow
             every { storage.getContentUpdatedTimestamp(item.id) } returns updatedMillis - 1_000
 
-            val subject = ContentRepository(contentDataSource, reminderManager, notificationHelper, storage)
-            flow.emit(ConferenceContent(listOf(item)))
+            val subject =
+                ContentRepository(
+                    contentDataSource,
+                    reminderManager,
+                    notificationHelper,
+                    storage,
+                    CoroutineScope(Dispatchers.Unconfined),
+                )
+            flow.emit(FlowResult.Success(ConferenceContent(listOf(item))))
             awaitReplay(subject)
             Thread.sleep(50)
 
@@ -50,7 +60,7 @@ class ContentRepositoryReminderSyncTest {
         runTest {
             val bookmarked = session(1, bookmarked = true)
             val item = content(sessions = listOf(bookmarked))
-            val flow = MutableSharedFlow<ConferenceContent>(replay = 1)
+            val flow = MutableSharedFlow<FlowResult<ConferenceContent>>(replay = 1)
             val timestamps = mutableMapOf<Long, Long>()
             every { contentDataSource.get() } returns flow
             every { storage.getContentUpdatedTimestamp(any()) } answers {
@@ -60,8 +70,15 @@ class ContentRepositoryReminderSyncTest {
                 timestamps[firstArg()] = secondArg()
             }
 
-            val subject = ContentRepository(contentDataSource, reminderManager, notificationHelper, storage)
-            flow.emit(ConferenceContent(listOf(item)))
+            val subject =
+                ContentRepository(
+                    contentDataSource,
+                    reminderManager,
+                    notificationHelper,
+                    storage,
+                    CoroutineScope(Dispatchers.Unconfined),
+                )
+            flow.emit(FlowResult.Success(ConferenceContent(listOf(item))))
             awaitReplay(subject)
             Thread.sleep(50)
 
@@ -73,7 +90,7 @@ class ContentRepositoryReminderSyncTest {
     private fun awaitReplay(subject: ContentRepository) {
         var attempts = 0
         while (subject.content.replayCache.isEmpty() && attempts < 50) {
-            // shareIn uses Dispatchers.IO; wall-clock wait (runTest delay is virtual).
+            // shareIn uses applicationScope; wall-clock wait (runTest delay is virtual).
             Thread.sleep(20)
             attempts++
         }

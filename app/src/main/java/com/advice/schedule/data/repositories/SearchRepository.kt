@@ -65,15 +65,25 @@ class SearchRepository(
                 tagsDataSource.tags,
                 ::Triple,
             ),
-        ) { query, conferenceContent, speakers, organizations, faqsDocumentsAndTags ->
+        ) { query, conferenceContentResult, speakers, organizations, faqsDocumentsAndTags ->
             if (query.length < MIN_QUERY_LENGTH) {
                 return@combine SearchState.Idle
             }
 
-            val (faqs, documents, tagTypes) = faqsDocumentsAndTags
+            val (faqs, documents, tagsResult) = faqsDocumentsAndTags
             val faqList =
                 when (faqs) {
                     is FlowResult.Success -> faqs.value
+                    else -> emptyList()
+                }
+            val conferenceContent =
+                when (conferenceContentResult) {
+                    is FlowResult.Success -> conferenceContentResult.value
+                    else -> return@combine SearchState.Idle
+                }
+            val tagTypes =
+                when (tagsResult) {
+                    is FlowResult.Success -> tagsResult.value
                     else -> emptyList()
                 }
             val applicableTags =

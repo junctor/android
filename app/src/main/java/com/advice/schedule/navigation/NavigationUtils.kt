@@ -15,6 +15,13 @@ fun NavController.navigateTo(navigation: Navigation?) {
         navigate(navigation.destination())
     } catch (ex: Exception) {
         Timber.e(ex)
+        try {
+            android.widget.Toast
+                .makeText(context, "Could not open screen", android.widget.Toast.LENGTH_SHORT)
+                .show()
+        } catch (_: Exception) {
+            // Context may be unavailable during teardown.
+        }
     }
 }
 
@@ -40,9 +47,10 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
         is Navigation.Event -> {
             val conference =
                 backStackEntry.arguments?.getString("conference") ?: error("conference is required")
-            val id = backStackEntry.arguments?.getString("id") ?: error("id is required")
-            val (content, session) = id.split("-")
-            copy(conference = conference, id = content, session = session)
+            val contentId =
+                backStackEntry.arguments?.getString("contentId") ?: error("contentId is required")
+            val sessionId = backStackEntry.arguments?.getString("sessionId").orEmpty()
+            copy(conference = conference, id = contentId, session = sessionId)
         }
 
         is Navigation.FAQ -> {
@@ -84,13 +92,6 @@ internal fun Navigation.withArguments(backStackEntry: NavBackStackEntry): Naviga
                 backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: error("id is required")
             val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
             copy(id = id, label = label)
-        }
-
-        is Navigation.Function -> {
-            val function =
-                backStackEntry.arguments?.getString("function") ?: error("function is required")
-            val label = backStackEntry.arguments?.getString("label") ?: error("label is required")
-            copy(function = function, label = label)
         }
 
         is Navigation.Product -> {
@@ -182,11 +183,24 @@ internal fun MenuItem.toNavigation(): Navigation? =
         is MenuItem.Document -> Navigation.Document(documentId)
         is MenuItem.Feedback -> Navigation.Feedback(formId, content = null)
         is MenuItem.Menu -> Navigation.Menu(label, menuId)
-        is MenuItem.Navigation -> Navigation.Function(function, label)
+        is MenuItem.Navigation -> function.toTypedNavigation(label)
         is MenuItem.Organization -> Navigation.Organizations(label, organizationId)
         is MenuItem.Schedule -> Navigation.Schedule(label, tags)
         is MenuItem.SectionHeading -> null
         is MenuItem.Wifi -> Navigation.Wifi(id, label)
         is MenuItem.Maps -> Navigation.Maps
         is MenuItem.Search -> Navigation.Search
+    }
+
+private fun String.toTypedNavigation(label: String): Navigation? =
+    when (this) {
+        "news" -> Navigation.News(label)
+        "locations" -> Navigation.Locations(label)
+        "people" -> Navigation.People(label)
+        "products" -> Navigation.Products(label)
+        "faq" -> Navigation.FAQ(label)
+        else -> {
+            Timber.e("Unknown menu navigation function: $this")
+            null
+        }
     }

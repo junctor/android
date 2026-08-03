@@ -1,6 +1,7 @@
 package com.advice.schedule.data.repositories
 
 import com.advice.core.local.Bookmark
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.ui.FiltersScreenState
@@ -10,6 +11,8 @@ import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -53,7 +56,12 @@ class FiltersRepositoryStateTest {
             stubTags(listOf(browsableContent, nonBrowsableContent, merch))
             every { filterSelectionsDataSource.get() } returns flowOf(emptyList())
 
-            val subject = FiltersRepository(tagsRepository, filterSelectionsDataSource)
+            val subject =
+                FiltersRepository(
+                    tagsRepository,
+                    filterSelectionsDataSource,
+                    CoroutineScope(Dispatchers.Unconfined),
+                )
             val state = awaitState(subject) as FiltersScreenState.Success
 
             assertEquals(listOf(browsableContent), state.filters)
@@ -67,7 +75,12 @@ class FiltersRepositoryStateTest {
             every { filterSelectionsDataSource.get() } returns
                 flowOf(listOf(Bookmark.TagBookmark(Tag.bookmark.id.toString(), value = true)))
 
-            val subject = FiltersRepository(tagsRepository, filterSelectionsDataSource)
+            val subject =
+                FiltersRepository(
+                    tagsRepository,
+                    filterSelectionsDataSource,
+                    CoroutineScope(Dispatchers.Unconfined),
+                )
             val state = awaitState(subject) as FiltersScreenState.Success
 
             assertTrue(state.isBookmarkSelected)
@@ -75,15 +88,15 @@ class FiltersRepositoryStateTest {
 
     private fun stubTags(tags: List<TagType>) {
         every { tagsRepository.tags } returns
-            MutableSharedFlow<List<TagType>>(replay = 1).apply {
-                tryEmit(tags)
+            MutableSharedFlow<FlowResult<List<TagType>>>(replay = 1).apply {
+                tryEmit(FlowResult.Success(tags))
             }
     }
 
     private fun awaitState(subject: FiltersRepository): FiltersScreenState {
         var attempts = 0
         while (subject.state.replayCache.isEmpty() && attempts < 50) {
-            // shareIn uses Dispatchers.IO; wall-clock wait (runTest delay is virtual).
+            // shareIn uses applicationScope; wall-clock wait (runTest delay is virtual).
             Thread.sleep(20)
             attempts++
         }

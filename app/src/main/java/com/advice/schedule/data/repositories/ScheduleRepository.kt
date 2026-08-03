@@ -3,6 +3,7 @@ package com.advice.schedule.data.repositories
 import com.advice.core.local.Bookmark
 import com.advice.core.local.Content
 import com.advice.core.local.Event
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
@@ -22,6 +23,10 @@ sealed class ScheduleResult {
     data class Success(
         val events: List<Event>,
     ) : ScheduleResult()
+
+    data class Error(
+        val message: String,
+    ) : ScheduleResult()
 }
 
 class ScheduleRepository(
@@ -36,20 +41,34 @@ class ScheduleRepository(
             contentRepository.content,
             tagsRepository.tags,
             filterSelectionsDataSource.get(),
-        ) { content, tags, bookmarks ->
-            if (content.content.isEmpty()) {
-                return@combine ScheduleResult.Loading
+        ) { contentResult, tagsResult, bookmarks ->
+            when {
+                contentResult is FlowResult.Failure ->
+                    return@combine ScheduleResult.Error(
+                        contentResult.error.message ?: "Could not load schedule",
+                    )
+                tagsResult is FlowResult.Failure ->
+                    return@combine ScheduleResult.Error(
+                        tagsResult.error.message ?: "Could not load schedule filters",
+                    )
+                contentResult is FlowResult.Loading || tagsResult is FlowResult.Loading ->
+                    return@combine ScheduleResult.Loading
+                contentResult !is FlowResult.Success || tagsResult !is FlowResult.Success ->
+                    return@combine ScheduleResult.Loading
             }
 
+            val content = contentResult.value
+            val tags = tagsResult.value
+
             val events: List<Event> =
-                content.content.flatMap { content ->
-                    content.sessions.map { session ->
-                        Event(content, session)
+                content.content.flatMap { item ->
+                    item.sessions.map { session ->
+                        Event(item, session)
                     }
                 }
 
             val sortedEvents = events.sortedBy { it.session.start }
-            val selected = tags.filter { it.tags.any { it -> it.isSelected } }
+            val selected = tags.filter { it.tags.any { tag -> tag.isSelected } }
             val isBookmarkFilterSelected =
                 bookmarks
                     .filterIsInstance<Bookmark.TagBookmark>()
@@ -69,7 +88,7 @@ class ScheduleRepository(
                         if (filter.id == Tag.bookmark.id) {
                             sortedEvents.filter { it.session.isBookmarked }
                         } else {
-                            sortedEvents.filter { it.types.any { it -> it.id == filter.id } }
+                            sortedEvents.filter { it.types.any { type -> type.id == filter.id } }
                         }
                     }
 
@@ -78,8 +97,7 @@ class ScheduleRepository(
                         if (ids == listOf(Tag.bookmark.id)) {
                             sortedEvents.filter { it.session.isBookmarked }
                         } else {
-                            // Any content that have any of the selected tags
-                            sortedEvents.filter { it.types.any { it -> it.id in ids } }
+                            sortedEvents.filter { it.types.any { type -> type.id in ids } }
                         }
                     }
                 }
@@ -93,7 +111,6 @@ class ScheduleRepository(
                 val isDisplayingBookmarks = defaultFilter || onlyBookmarks || filterByBookmarks
                 val message =
                     when {
-                        // Bookmarks
                         isDisplayingBookmarks -> {
                             "Bookmark events to see them here"
                         }
@@ -104,6 +121,10 @@ class ScheduleRepository(
 
                         filter is ScheduleFilter.Tag -> {
                             "No events found for ${filter.label}"
+                        }
+
+                        content.content.isEmpty() -> {
+                            "No events found"
                         }
 
                         else -> {
@@ -132,13 +153,13 @@ class ScheduleRepository(
 
         val groups =
             filter.map {
-                it.tags.filter { it -> it.isSelected }.map { it -> it.id }
+                it.tags.filter { tag -> tag.isSelected }.map { tag -> tag.id }
             }
 
         return events
             .filter {
                 groups.all { ids ->
-                    it.types.any { it -> it.id in ids }
+                    it.types.any { type -> type.id in ids }
                 }
             }
     }

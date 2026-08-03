@@ -8,4 +8,6 @@ sealed class ContentScreenState {
     data class Success(
         val content: List<Content>,
     ) : ContentScreenState()
+
+    data object Error : ContentScreenState()
 }

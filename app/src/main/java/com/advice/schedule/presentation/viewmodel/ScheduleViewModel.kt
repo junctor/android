@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 class ScheduleViewModel(
     private val storage: UserPreferencesStore,
     private val repository: ScheduleRepository,
+    private val userSession: com.advice.data.session.UserSession,
 ) : ViewModel() {
     fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> =
         combine(
@@ -29,6 +30,10 @@ class ScheduleViewModel(
 
                 is ScheduleResult.Empty -> {
                     ScheduleScreenState.Empty(result.message)
+                }
+
+                is ScheduleResult.Error -> {
+                    ScheduleScreenState.Error(result.message)
                 }
 
                 is ScheduleResult.Success -> {
@@ -52,5 +57,9 @@ class ScheduleViewModel(
         viewModelScope.launch {
             repository.bookmark(event.content, event.session, isBookmarked)
         }
+    }
+
+    fun retry() {
+        userSession.currentConference?.let { userSession.setConference(it) }
     }
 }

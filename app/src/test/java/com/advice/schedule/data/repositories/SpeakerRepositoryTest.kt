@@ -2,6 +2,7 @@ package com.advice.schedule.data.repositories
 
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Speaker
@@ -54,8 +55,8 @@ class SpeakerRepositoryTest {
                     speakers = listOf(other),
                     sessions = listOf(session(20)),
                 )
-            val contentFlow = MutableSharedFlow<ConferenceContent>(replay = 1)
-            contentFlow.tryEmit(ConferenceContent(listOf(matching, unrelated)))
+            val contentFlow = MutableSharedFlow<FlowResult<ConferenceContent>>(replay = 1)
+            contentFlow.tryEmit(FlowResult.Success(ConferenceContent(listOf(matching, unrelated))))
 
             coEvery { speakersRepository.get(7) } returns speaker
             every { contentRepository.content } returns contentFlow

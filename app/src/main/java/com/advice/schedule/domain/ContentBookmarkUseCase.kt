@@ -27,7 +27,8 @@ class ContentBookmarkUseCase(
     }
 
     fun rescheduleBookmarkedReminders() {
-        val conferenceContent = contentRepository.content.replayCache.firstOrNull() ?: return
+        val result = contentRepository.content.replayCache.firstOrNull() ?: return
+        val conferenceContent = result.toResultOrNull() ?: return
         rescheduleBookmarkedReminders(conferenceContent)
     }
 

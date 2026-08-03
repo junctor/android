@@ -17,8 +17,7 @@ class OfflineQueueStore(
         context.getSharedPreferences(UserPreferencesStore.KEY_PREFERENCES, Context.MODE_PRIVATE)
 
     fun storeFeedbackRequest(cachedFeedbackRequest: CachedFeedbackRequest) {
-        val cache = getCachedFeedbackRequest() + cachedFeedbackRequest
-
+        val cache = dedupeFeedback(getCachedFeedbackRequest(), cachedFeedbackRequest)
         preferences.edit { putString("cached_feedback_requests", gson.toJson(cache)) }
     }
 
@@ -45,8 +44,7 @@ class OfflineQueueStore(
     }
 
     fun storeReportRequest(cachedReportRequest: CachedReportRequest) {
-        val cache = getCachedReportRequest() + cachedReportRequest
-
+        val cache = dedupeReport(getCachedReportRequest(), cachedReportRequest)
         preferences.edit { putString("cached_report_requests", gson.toJson(cache)) }
     }
 
@@ -73,5 +71,27 @@ class OfflineQueueStore(
         val cache = getCachedReportRequest().filter { it != request }
 
         preferences.edit { putString("cached_report_requests", gson.toJson(cache)) }
+    }
+
+    companion object {
+        fun feedbackDedupeKey(request: CachedFeedbackRequest): String = "${request.contentId}:${request.feedbackForm.id}"
+
+        fun dedupeFeedback(
+            existing: List<CachedFeedbackRequest>,
+            incoming: CachedFeedbackRequest,
+        ): List<CachedFeedbackRequest> {
+            val key = feedbackDedupeKey(incoming)
+            return existing.filterNot { feedbackDedupeKey(it) == key } + incoming
+        }
+
+        fun reportDedupeKey(request: CachedReportRequest): String = "${request.endpoint}:${request.payloadJson.hashCode()}"
+
+        fun dedupeReport(
+            existing: List<CachedReportRequest>,
+            incoming: CachedReportRequest,
+        ): List<CachedReportRequest> {
+            val key = reportDedupeKey(incoming)
+            return existing.filterNot { reportDedupeKey(it) == key } + incoming
+        }
     }
 }

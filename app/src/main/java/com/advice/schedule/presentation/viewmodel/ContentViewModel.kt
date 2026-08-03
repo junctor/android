@@ -3,6 +3,7 @@ package com.advice.schedule.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Content
+import com.advice.core.local.FlowResult
 import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.domain.ContentBookmarkUseCase
 import com.advice.ui.states.ContentScreenState
@@ -19,8 +20,14 @@ class ContentViewModel(
 
     init {
         viewModelScope.launch {
-            repository.content.collect {
-                _state.value = ContentScreenState.Success(it.content)
+            repository.content.collect { result ->
+                when (result) {
+                    FlowResult.Loading -> _state.value = ContentScreenState.Loading
+                    is FlowResult.Failure ->
+                        _state.value = ContentScreenState.Error
+                    is FlowResult.Success ->
+                        _state.value = ContentScreenState.Success(result.value.content)
+                }
             }
         }
     }

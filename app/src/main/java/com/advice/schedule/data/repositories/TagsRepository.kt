@@ -1,18 +1,13 @@
 package com.advice.schedule.data.repositories
 
+import com.advice.core.local.FlowResult
+import com.advice.core.local.TagType
 import com.advice.data.sources.TagsDataSource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.Flow
 
 class TagsRepository(
     tagsDataSource: TagsDataSource,
 ) {
-    val tags =
-        tagsDataSource.get().shareIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            replay = 1,
-        )
+    /** Upstream tags datasource is already shared on the application scope. */
+    val tags: Flow<FlowResult<List<TagType>>> = tagsDataSource.get()
 }

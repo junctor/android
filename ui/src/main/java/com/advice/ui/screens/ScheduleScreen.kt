@@ -60,6 +60,7 @@ fun ScheduleScreen(
     onFabClick: () -> Unit,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event, Boolean) -> Unit,
+    onRetry: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -93,7 +94,7 @@ fun ScheduleScreen(
             Modifier
                 .clip(topRoundedCornerShape),
     ) {
-        ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
+        ScheduleScreenContent(state, onEventClick, onBookmarkClick, onRetry, Modifier.padding(it))
     }
 }
 
@@ -105,6 +106,7 @@ fun ScheduleScreen(
     onBackPress: () -> Unit,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event, Boolean) -> Unit,
+    onRetry: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -118,7 +120,7 @@ fun ScheduleScreen(
             )
         },
     ) {
-        ScheduleScreenContent(state, onEventClick, onBookmarkClick, Modifier.padding(it))
+        ScheduleScreenContent(state, onEventClick, onBookmarkClick, onRetry, Modifier.padding(it))
     }
 }
 
@@ -127,12 +129,18 @@ private fun ScheduleScreenContent(
     state: ScheduleScreenState,
     onEventClick: (Event) -> Unit,
     onBookmarkClick: (Event, Boolean) -> Unit,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier) {
         when (state) {
             is ScheduleScreenState.Error -> {
-                EmptyMessage(message = "Schedule not found")
+                EmptyMessage(
+                    title = "Error",
+                    message = state.error,
+                    actionLabel = "Retry",
+                    onAction = onRetry,
+                )
             }
 
             is ScheduleScreenState.Empty -> {
@@ -314,7 +322,6 @@ private fun ScheduleScreenPreview(
 @PreviewLightDark
 @Composable
 private fun ScheduleScreenEmptyPreview(
-    @PreviewParameter(FakeEventProvider::class) event: Event,
 ) {
     ScheduleTheme {
         val state =

@@ -9,11 +9,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.advice.analytics.core.AnalyticsProvider
-import com.advice.core.network.NetworkResponse
-import com.advice.core.storage.OfflineQueueStore
+import com.advice.core.local.FlowResult
 import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
+import com.advice.data.sources.ConferencesDataSource
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.feedback.network.FeedbackSubmissionRepository
 import com.advice.feedback.network.ReportSubmissionRepository
@@ -21,10 +21,12 @@ import com.advice.firebase.extensions.documentCacheReads
 import com.advice.firebase.extensions.documentReads
 import com.advice.firebase.extensions.listenersCount
 import com.advice.play.AppManager
+import com.advice.schedule.offline.OfflineQueueConnectivityMonitor
 import com.advice.schedule.ui.components.DragAnchors
 import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -33,11 +35,12 @@ class MainViewModel(
     private val appManager: AppManager,
     private val analytics: AnalyticsProvider,
     private val preferences: UserPreferencesStore,
-    private val offlineQueue: OfflineQueueStore,
     private val documentRepository: DocumentsRepository,
     private val feedbackRepository: FeedbackSubmissionRepository,
     private val reportRepository: ReportSubmissionRepository,
     private val toastManager: ToastManager,
+    private val conferencesDataSource: ConferencesDataSource,
+    private val offlineQueueConnectivityMonitor: OfflineQueueConnectivityMonitor,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MainViewState())
     val state: Flow<MainViewState> = _state
@@ -50,19 +53,15 @@ class MainViewModel(
             setAnchor(DragAnchors.Start)
         }
 
-        // Attempting to submit any feedback that previously failed
+        // Cold-start drain (connectivity monitor also drains when network returns).
         viewModelScope.launch {
-            val cachedFeedbackRequests = offlineQueue.getCachedFeedbackRequest()
-            for (request in cachedFeedbackRequests) {
-                val response =
-                    feedbackRepository.submitFeedback(request.contentId, request.feedbackForm)
-                if (response is NetworkResponse.Success) {
-                    offlineQueue.removeCachedFeedbackRequest(request)
-                }
+            try {
+                feedbackRepository.retryCached()
+            } catch (ex: Exception) {
+                Timber.e(ex, "Failed to retry cached feedback submissions")
             }
         }
 
-        // Attempting to submit any reports that previously failed
         viewModelScope.launch {
             try {
                 reportRepository.retryCached()
@@ -96,6 +95,24 @@ class MainViewModel(
                 // Only the home panel shows the bottom nav; schedule/filter minimize it.
                 isShown = anchor == DragAnchors.Start,
             )
+    }
+
+    /**
+     * Switches preferred conference when a document deep link includes `c`.
+     * @return true if the conference was found and selected (or already current).
+     */
+    suspend fun switchConferenceByCode(code: String): Boolean {
+        val current = userSession.currentConference
+        if (current?.code == code) return true
+
+        val conferences =
+            when (val result = conferencesDataSource.get().first()) {
+                is FlowResult.Success -> result.value
+                else -> emptyList()
+            }
+        val conference = conferences.find { it.code == code } ?: return false
+        userSession.setConference(conference)
+        return true
     }
 
     fun hasSeenNotificationPopup(): Boolean = preferences.hasSeenNotificationPopup()
@@ -142,6 +159,8 @@ class MainViewModel(
                 "12h"
             }
         analytics.setUserProperty("time_format", format)
+
+        offlineQueueConnectivityMonitor.start()
 
         viewModelScope.launch {
             toastManager.messages.collect {

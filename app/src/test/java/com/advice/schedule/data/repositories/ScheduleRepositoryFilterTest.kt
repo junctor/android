@@ -3,6 +3,7 @@ package com.advice.schedule.data.repositories
 import com.advice.core.local.Bookmark
 import com.advice.core.local.ConferenceContent
 import com.advice.core.local.Content
+import com.advice.core.local.FlowResult
 import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Tag
@@ -232,7 +233,7 @@ class ScheduleRepositoryFilterTest {
         }
 
     @Test
-    fun `empty content emits loading`() =
+    fun `empty content emits empty`() =
         runTest {
             stubContent(emptyList())
             stubTags(emptyList())
@@ -240,20 +241,20 @@ class ScheduleRepositoryFilterTest {
 
             val result = subject.getSchedule(ScheduleFilter.Default).first()
 
-            assertTrue(result is ScheduleResult.Loading)
+            assertTrue(result is ScheduleResult.Empty)
         }
 
     private fun stubContent(items: List<Content>) {
         every { contentRepository.content } returns
-            MutableSharedFlow<ConferenceContent>(replay = 1).apply {
-                tryEmit(ConferenceContent(items))
+            MutableSharedFlow<FlowResult<ConferenceContent>>(replay = 1).apply {
+                tryEmit(FlowResult.Success(ConferenceContent(items)))
             }
     }
 
     private fun stubTags(tags: List<TagType>) {
         every { tagsRepository.tags } returns
-            MutableSharedFlow<List<TagType>>(replay = 1).apply {
-                tryEmit(tags)
+            MutableSharedFlow<FlowResult<List<TagType>>>(replay = 1).apply {
+                tryEmit(FlowResult.Success(tags))
             }
     }
 

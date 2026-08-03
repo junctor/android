@@ -21,11 +21,13 @@ import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.advice.analytics.core.AnalyticsProvider
+import com.advice.schedule.navigation.DeepLinkParser
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.SetRoutes
@@ -37,6 +39,7 @@ import com.advice.ui.components.notifications.NotificationsPopup
 import com.advice.ui.components.notifications.PopupContainer
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.ClearEdgeToEdgeProtectionsEffect
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -250,40 +253,57 @@ class MainActivity : AppCompatActivity() {
         controller: NavHostController,
         uri: Uri,
     ) {
-        try {
-            val destination = getDestination(uri) ?: return
-            controller.navigateTo(destination)
+        lifecycleScope.launch {
+            try {
+                val destination = getDestination(uri) ?: return@launch
+                if (destination is Navigation.Document) {
+                    val code = uri.getQueryParameter("c")
+                    if (code.isNullOrBlank()) {
+                        Timber.e("Document deep link missing conference code: $uri")
+                        Toast
+                            .makeText(
+                                this@MainActivity,
+                                "Could not open document",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        return@launch
+                    }
+                    if (!mainViewModel.switchConferenceByCode(code)) {
+                        Timber.e("Unknown conference for document deep link: $code")
+                        Toast
+                            .makeText(
+                                this@MainActivity,
+                                "Could not open document",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        return@launch
+                    }
+                }
+                controller.navigateTo(destination)
 
-            analytics.logEvent(
-                "open_deep_link",
-                Bundle().apply {
-                    putString("uri", uri.toString())
-                },
-            )
-        } catch (ex: Exception) {
-            Timber.e(ex, "Could not navigate to deep link: $uri")
+                analytics.logEvent(
+                    "open_deep_link",
+                    Bundle().apply {
+                        putString("uri", uri.toString())
+                    },
+                )
+            } catch (ex: Exception) {
+                Timber.e(ex, "Could not navigate to deep link: $uri")
+                Toast
+                    .makeText(this@MainActivity, "Could not open link", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 
-    private fun getDestination(uri: Uri): Navigation? {
-        return when (uri.lastPathSegment) {
-            "document" -> {
-                val id = uri.getQueryParameter("id")?.toLongOrNull() ?: return null
-                Navigation.Document(id)
-            }
-
-            else -> {
-                val conference = uri.getQueryParameter("c") ?: return null
-                val event = uri.getQueryParameter("e") ?: return null
-                val (content, session) =
-                    if (event.contains(":")) {
-                        event.split(":")
-                    } else {
-                        listOf(event, "")
-                    }
-                Navigation.Event(conference, content, session)
-            }
-        }
+    internal companion object {
+        fun getDestination(uri: Uri): Navigation? =
+            DeepLinkParser.parse(
+                pathSegment = uri.lastPathSegment,
+                conference = uri.getQueryParameter("c"),
+                event = uri.getQueryParameter("e"),
+                documentId = uri.getQueryParameter("id"),
+            )
     }
 
     fun openLink(url: String) {

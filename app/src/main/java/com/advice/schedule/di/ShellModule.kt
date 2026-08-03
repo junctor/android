@@ -12,6 +12,7 @@ import com.advice.data.SharedPreferencesBookmarkDataSource
 import com.advice.data.sources.BookmarkDataSourceQualifiers
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.schedule.navigation.NavigationManager
+import com.advice.schedule.offline.OfflineQueueConnectivityMonitor
 import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -57,8 +58,18 @@ val shellModule =
 
         single { NavigationManager() }
 
+        single {
+            OfflineQueueConnectivityMonitor(
+                androidContext(),
+                get(named(APPLICATION_SCOPE)),
+                get(),
+                get(),
+            )
+        }
+
         viewModel {
             MainViewModel(
+                get(),
                 get(),
                 get(),
                 get(),

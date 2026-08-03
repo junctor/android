@@ -12,14 +12,14 @@ const val PRODUCTS_VERSION_CODE = "products_version_code"
 fun productsModule(versionCode: Int) =
     module {
         single { ProductsRepository(get(), get()) }
-        single<ProductCart> { ProductCart() }
         single(named(PRODUCTS_VERSION_CODE)) { versionCode }
         viewModel {
             ProductsViewModel(
                 get(),
                 get(),
-                get(),
+                ProductCart(),
                 get(named(PRODUCTS_VERSION_CODE)),
+                get(),
             )
         }
     }
