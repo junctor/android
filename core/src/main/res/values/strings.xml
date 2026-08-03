@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Notifications -->
-    <string name="notification_text">Starting soon in %1$s.</string>
-</resources>
