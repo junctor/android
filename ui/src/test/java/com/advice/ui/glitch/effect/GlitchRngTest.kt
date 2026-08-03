@@ -1,4 +1,4 @@
-package com.advice.glitch.effect
+package com.advice.ui.glitch.effect
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

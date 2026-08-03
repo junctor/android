@@ -1,4 +1,4 @@
-package com.advice.glitch.effect
+package com.advice.ui.glitch.effect
 
 import kotlin.math.max
 import kotlin.math.roundToInt

@@ -28,8 +28,6 @@ import com.advice.core.local.Conference
 import com.advice.core.local.Menu
 import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
-import com.advice.core.ui.HomeState
-import com.advice.glitch.ui.SoundButton
 import com.advice.ui.components.EmptyMessage
 import com.advice.ui.components.Image
 import com.advice.ui.components.Label
@@ -41,6 +39,7 @@ import com.advice.ui.components.home.ConferenceView
 import com.advice.ui.components.home.CountdownView
 import com.advice.ui.components.home.HomeCard
 import com.advice.ui.preview.PreviewLightDark
+import com.advice.ui.states.HomeState
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.topRoundedCornerShape
 
@@ -52,6 +51,7 @@ fun HomeScreen(
     onDismissNews: (NewsArticle) -> Unit,
     onRetry: () -> Unit = {},
     countdownContent: @Composable () -> Unit = {},
+    easterEgg: (@Composable () -> Unit)? = null,
 ) {
     Scaffold(
         topBar = { ConferenceSelector(state as? HomeState.Loaded, onConferenceClick) },
@@ -63,6 +63,7 @@ fun HomeScreen(
             onDismissNews,
             onRetry,
             countdownContent,
+            easterEgg,
             modifier =
                 Modifier
                     .padding(contentPadding),
@@ -77,6 +78,7 @@ private fun HomeScreenContent(
     onDismissNews: (NewsArticle) -> Unit,
     onRetry: () -> Unit,
     countdownContent: @Composable () -> Unit,
+    easterEgg: (@Composable () -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -91,7 +93,7 @@ private fun HomeScreenContent(
             }
 
             is HomeState.Loaded -> {
-                HomeScreen(state, onNavigationClick, onDismissNews, countdownContent)
+                HomeScreen(state, onNavigationClick, onDismissNews, countdownContent, easterEgg)
             }
 
             HomeState.Loading -> {
@@ -110,6 +112,7 @@ private fun HomeScreen(
     onNavigationClick: (MenuItem) -> Unit,
     onDismissNews: (NewsArticle) -> Unit,
     countdownContent: @Composable () -> Unit,
+    easterEgg: (@Composable () -> Unit)?,
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         ConferenceView(state.conference)
@@ -171,12 +174,12 @@ private fun HomeScreen(
             // Required spacer to push content above the bottom bar
             Spacer(Modifier.height(84.dp))
 
-            if (state.menu.items.isNotEmpty() && state.hasChicken) {
+            if (state.menu.items.isNotEmpty() && easterEgg != null) {
                 Box(
                     Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    SoundButton()
+                    easterEgg()
                 }
 
                 Spacer(Modifier.height(84.dp))
@@ -246,6 +249,7 @@ private fun HomeScreenViewPreview() {
             countdownContent = {
                 CountdownView(System.currentTimeMillis() / 1000L)
             },
+            easterEgg = null,
         )
     }
 }

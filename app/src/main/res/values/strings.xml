@@ -8,6 +8,9 @@
 
     <!-- General -->
 
+    <!-- DEF CON 33 easter egg -->
+    <string name="cd_rubber_chicken">Play rubber chicken sound</string>
+
     <!-- Main Nav -->
 
     <!-- Time -->

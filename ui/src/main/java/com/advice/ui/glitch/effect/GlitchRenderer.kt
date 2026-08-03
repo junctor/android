@@ -1,4 +1,4 @@
-package com.advice.glitch.effect
+package com.advice.ui.glitch.effect
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

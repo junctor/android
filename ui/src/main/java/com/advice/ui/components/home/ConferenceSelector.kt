@@ -37,8 +37,8 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Conference
-import com.advice.core.ui.HomeState
 import com.advice.ui.R
+import com.advice.ui.states.HomeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

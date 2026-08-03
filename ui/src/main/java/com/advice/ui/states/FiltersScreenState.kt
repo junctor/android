@@ -1,4 +1,4 @@
-package com.advice.core.ui
+package com.advice.ui.states
 
 import com.advice.core.local.TagType
 

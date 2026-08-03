@@ -1,4 +1,4 @@
-package com.advice.glitch.ui
+package com.advice.ui.glitch
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -16,8 +16,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.advice.core.storage.UserPreferencesStore
-import com.advice.glitch.R
+import com.advice.data.storage.UserPreferencesStore
+import com.advice.ui.R
 
 @Composable
 fun GlitchLogo(

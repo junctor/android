@@ -2,7 +2,7 @@ package com.advice.ui.utils
 
 import android.content.Context
 import coil.ImageLoader
-import com.advice.core.network.Network
+import com.advice.data.network.Network
 import java.util.concurrent.ConcurrentHashMap
 
 private val imageLoaders = ConcurrentHashMap<String, ImageLoader>()

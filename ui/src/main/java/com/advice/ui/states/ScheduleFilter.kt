@@ -1,4 +1,4 @@
-package com.advice.core.ui
+package com.advice.ui.states
 
 sealed class ScheduleFilter {
     data object Default : ScheduleFilter()

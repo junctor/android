@@ -17,7 +17,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.advice.glitch.ui.GlitchLogo
+import com.advice.ui.glitch.GlitchLogo
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.roundedCornerShape
 import com.advice.ui.utils.getImageLoader

@@ -1,4 +1,4 @@
-package com.advice.glitch.ui
+package com.advice.ui.glitch
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -22,9 +22,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.advice.glitch.effect.GlitchFrame
-import com.advice.glitch.effect.GlitchRenderer
-import com.advice.glitch.effect.GlitchRng
+import com.advice.ui.glitch.effect.GlitchFrame
+import com.advice.ui.glitch.effect.GlitchRenderer
+import com.advice.ui.glitch.effect.GlitchRng
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.time.Duration.Companion.milliseconds

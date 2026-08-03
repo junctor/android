@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Event
 import com.advice.core.local.Tag
-import com.advice.core.ui.ScheduleFilter
 import com.advice.ui.R
 import com.advice.ui.components.BackButton
 import com.advice.ui.components.DayHeader
@@ -47,6 +46,7 @@ import com.advice.ui.components.toScheduleEventUi
 import com.advice.ui.preview.FakeEventProvider
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.rememberDaySelectorScrollState
+import com.advice.ui.states.ScheduleFilter
 import com.advice.ui.states.ScheduleScreenState
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.theme.topRoundedCornerShape

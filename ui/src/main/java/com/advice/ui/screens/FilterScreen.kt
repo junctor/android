@@ -18,12 +18,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
-import com.advice.core.ui.FiltersScreenState
 import com.advice.ui.R
 import com.advice.ui.components.Category
 import com.advice.ui.components.SectionHeader
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.preview.TagTypeProvider
+import com.advice.ui.states.FiltersScreenState
 import com.advice.ui.theme.ScheduleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,4 +1,4 @@
-package com.advice.glitch.effect
+package com.advice.ui.glitch.effect
 
 /**
  * Parameters for a single glitch frame / burst.

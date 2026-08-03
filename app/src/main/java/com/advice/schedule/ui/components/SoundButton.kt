@@ -1,4 +1,4 @@
-package com.advice.glitch.ui
+package com.advice.schedule.ui.components
 
 import android.content.Context
 import android.media.MediaPlayer
@@ -15,13 +15,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.advice.glitch.R
+import com.shortstack.hackertracker.R
 import java.util.Random
 
+/** DEF CON 33 easter egg: rubber-chicken sound board shown on the Home menu. */
 @Composable
 fun SoundButton() {
     val context = LocalContext.current
-    // val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
     Image(
         painter = painterResource(id = R.drawable.chicken),
@@ -31,7 +31,6 @@ fun SoundButton() {
                 .clip(RoundedCornerShape(50f))
                 .semantics { role = Role.Button }
                 .clickable {
-                    // todo: maybe don't - setVolume(audioManager)
                     playRandomChickenNoise(context)
                 },
     )
@@ -53,6 +52,6 @@ private fun playRandomChickenNoise(context: Context) {
 
 @PreviewLightDark
 @Composable
-fun SoundButtonPreview() {
+private fun SoundButtonPreview() {
     SoundButton()
 }

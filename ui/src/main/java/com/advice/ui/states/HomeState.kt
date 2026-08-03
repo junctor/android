@@ -1,4 +1,4 @@
-package com.advice.core.ui
+package com.advice.ui.states
 
 import com.advice.core.local.Conference
 import com.advice.core.local.Menu
@@ -13,7 +13,7 @@ sealed class HomeState {
         val menu: Menu,
         val news: NewsArticle?,
         val isUpdateAvailable: Boolean = false,
-        val hasChicken: Boolean = false,
+        val hasEasterEgg: Boolean = false,
     ) : HomeState()
 
     data class Error(
