@@ -1,6 +1,5 @@
 package com.advice.core.audience
 
-import com.shortstack.core.BuildConfig
 import timber.log.Timber
 
 interface AudiencePolicy {
@@ -28,7 +27,7 @@ class FailOpenAudiencePolicy : AudiencePolicy {
             }
 
         val decision = lowerAge >= minAge
-        if (BuildConfig.DEBUG && !decision) {
+        if (!decision) {
             Timber.d(
                 "FailOpenAudiencePolicy.canView: Blocked item: title=%s, minAge=%d, status=%s, lowerAge=%d",
                 label,

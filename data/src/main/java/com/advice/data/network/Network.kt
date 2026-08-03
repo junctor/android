@@ -1,4 +1,4 @@
-package com.advice.core.network
+package com.advice.data.network
 
 import okhttp3.CipherSuite
 import okhttp3.ConnectionSpec

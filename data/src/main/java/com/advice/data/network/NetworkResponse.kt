@@ -1,4 +1,4 @@
-package com.advice.core.network
+package com.advice.data.network
 
 sealed class NetworkResponse {
     data object Success : NetworkResponse()

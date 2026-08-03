@@ -26,9 +26,6 @@ android {
         sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
         targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
     }
-    buildFeatures {
-        buildConfig true
-    }
 }
 
 dependencies {
@@ -38,10 +35,6 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.core)
     api(libs.timber)
-
-    implementation(libs.gson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

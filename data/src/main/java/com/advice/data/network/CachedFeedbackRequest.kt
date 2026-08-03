@@ -1,4 +1,4 @@
-package com.advice.core.network
+package com.advice.data.network
 
 import com.advice.core.local.feedback.FeedbackForm
 

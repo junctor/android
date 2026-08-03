@@ -5,8 +5,6 @@ import com.advice.core.local.Conference
 import com.advice.core.local.LocationSchedule
 import com.advice.core.local.ScheduleDayFormat
 import com.advice.core.local.Session
-import com.advice.core.storage.UserPreferencesStore
-import com.shortstack.core.BuildConfig
 import timber.log.Timber
 import java.time.Instant
 import java.time.ZoneId
@@ -15,6 +13,9 @@ import java.util.Locale
 import java.util.TimeZone
 
 object TimeUtil {
+    private const val KEY_PREFERENCES = "preferences"
+    private const val FORCE_TIME_ZONE_KEY = "force_time_zone"
+
     private val formatterCache = HashMap<String, DateTimeFormatter>()
     private val zoneIdCache = HashMap<Pair<Boolean, String>, ZoneId?>()
 
@@ -29,8 +30,8 @@ object TimeUtil {
     ): ZoneId? {
         val forceTimeZone =
             context
-                .getSharedPreferences(UserPreferencesStore.KEY_PREFERENCES, Context.MODE_PRIVATE)
-                .getBoolean(UserPreferencesStore.FORCE_TIME_ZONE_KEY, true)
+                .getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
+                .getBoolean(FORCE_TIME_ZONE_KEY, true)
         return getZoneId(forceTimeZone, timezone)
     }
 
@@ -45,11 +46,6 @@ object TimeUtil {
                 } catch (_: Exception) {
                     Timber.e("Error getting zone id for \"$timeZone\".")
                 }
-            }
-
-            // forcing to Paris
-            if (BuildConfig.DEBUG) {
-                return@getOrPut ZoneId.of("Europe/Paris")
             }
 
             ZoneId.of(TimeZone.getDefault().id)

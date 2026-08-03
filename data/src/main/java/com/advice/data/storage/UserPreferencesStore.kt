@@ -1,4 +1,4 @@
-package com.advice.core.storage
+package com.advice.data.storage
 
 import android.content.Context
 import android.content.SharedPreferences

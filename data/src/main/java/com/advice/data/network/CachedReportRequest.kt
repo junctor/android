@@ -1,4 +1,4 @@
-package com.advice.core.network
+package com.advice.data.network
 
 /**
  * Cached report submission payload.

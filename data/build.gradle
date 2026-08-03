@@ -30,7 +30,13 @@ android {
 dependencies {
     implementation project(':core')
 
+    implementation(libs.androidx.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.coroutines.core)
+
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
