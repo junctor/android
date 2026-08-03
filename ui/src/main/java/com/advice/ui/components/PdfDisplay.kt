@@ -99,6 +99,7 @@ import timber.log.Timber
 import java.io.Closeable
 import java.io.File
 import kotlin.math.ceil
+import kotlin.math.floor
 
 /** Zoom above fit where tile LODs are worth loading. */
 private const val TILE_ZOOM_THRESHOLD = 1.05f
@@ -713,10 +714,10 @@ private fun PdfPageTiles(
                 }.sortedBy { it.key.lod }
         for ((key, bmp) in ordered) {
             val region = tileContentRect(key.tx, key.ty, contentSize, key.lod)
-            val left = kotlin.math.floor(region.left).toInt()
-            val top = kotlin.math.floor(region.top).toInt()
-            val right = kotlin.math.ceil(region.left + region.width).toInt()
-            val bottom = kotlin.math.ceil(region.top + region.height).toInt()
+            val left = floor(region.left).toInt()
+            val top = floor(region.top).toInt()
+            val right = ceil(region.left + region.width).toInt()
+            val bottom = ceil(region.top + region.height).toInt()
             Image(
                 bitmap = bmp.asImageBitmap(),
                 contentDescription = null,
