@@ -10,7 +10,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.annotation.RequiresApi
 import com.advice.core.local.wifi.WirelessNetwork
-import com.advice.core.network.Network
+import com.advice.data.network.Network
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request
@@ -313,8 +313,9 @@ class WirelessConnectionManager(
                     throw IOException(message)
                 }
 
+                val body = response.body ?: throw IOException("Empty response body for $urlString")
                 // Buffer the body so the response (and connection) can be closed before returning.
-                ByteArrayInputStream(response.body.bytes())
+                ByteArrayInputStream(body.bytes())
             }
         }
 }

@@ -3,9 +3,9 @@ package com.advice.feedback.presentation.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.advice.core.network.NetworkResponse
 import com.advice.core.utils.ToastData
 import com.advice.core.utils.ToastManager
+import com.advice.data.network.NetworkResponse
 import com.advice.data.session.UserSession
 import com.advice.feedback.network.ReportSubmissionRepository
 import com.advice.feedback.network.models.ReportObjectType

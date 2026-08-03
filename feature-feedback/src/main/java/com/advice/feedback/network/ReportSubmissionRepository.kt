@@ -1,14 +1,14 @@
 package com.advice.feedback.network
 
 import com.advice.core.local.Conference
-import com.advice.core.network.CachedReportRequest
-import com.advice.core.network.Network
-import com.advice.core.network.NetworkResponse
-import com.advice.core.storage.OfflineQueueStore
-import com.advice.core.storage.UserPreferencesStore
+import com.advice.data.network.CachedReportRequest
+import com.advice.data.network.Network
+import com.advice.data.network.NetworkResponse
+import com.advice.data.storage.UserPreferencesStore
 import com.advice.feedback.BuildConfig
 import com.advice.feedback.network.models.ReportObjectType
 import com.advice.feedback.network.models.ReportRequest
+import com.advice.feedback.storage.OfflineQueueStore
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers

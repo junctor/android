@@ -1,9 +1,9 @@
 package com.advice.feedback.network
 
 import com.advice.core.local.feedback.FeedbackForm
-import com.advice.core.network.CachedFeedbackRequest
-import com.advice.core.storage.OfflineQueueStore
-import com.advice.core.storage.UserPreferencesStore
+import com.advice.data.network.CachedFeedbackRequest
+import com.advice.data.storage.UserPreferencesStore
+import com.advice.feedback.storage.OfflineQueueStore
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

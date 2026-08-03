@@ -1,0 +1,104 @@
+package com.advice.merch.ui.preview
+
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.advice.core.local.StockStatus
+import com.advice.core.local.Tag
+import com.advice.core.local.TagType
+import com.advice.core.local.products.Product
+import com.advice.core.local.products.ProductMedia
+import com.advice.core.local.products.ProductSelection
+import com.advice.core.local.products.ProductVariant
+import com.advice.merch.presentation.state.ProductsState
+import com.advice.merch.ui.components.DismissibleInformation
+import com.advice.merch.utils.toStringData
+
+class ProductsProvider : PreviewParameterProvider<ProductsState> {
+    override val values: Sequence<ProductsState>
+        get() {
+            val options =
+                listOf(
+                    ProductVariant(1, "S", emptyList(), 35_00, StockStatus.IN_STOCK, code = "S"),
+                    ProductVariant(2, "4XL", emptyList(), 40_00, StockStatus.LOW_STOCK, code = "4XL"),
+                    ProductVariant(3, "5XL", emptyList(), 45_00, StockStatus.OUT_OF_STOCK, code = "5XL"),
+                )
+            val tag = Tag(1L, "Clothing", "T-Shirts", "#FF066", -1)
+            val product =
+                Product(
+                    id = -1L,
+                    code = "07",
+                    sortOrder = -1,
+                    label = "DC30 Homecoming Men's T-Shirt",
+                    baseCost = 35_00,
+                    variants = options,
+                    media =
+                        listOf(
+                            ProductMedia(
+                                url =
+                                    "https://firebasestorage.googleapis.com/v0/b/" +
+                                        "hackertest-5a202.appspot.com/o/" +
+                                        "DEFCON30%2Fm_pride_tee.jpeg?alt=media",
+                            ),
+                            ProductMedia(
+                                url =
+                                    "https://firebasestorage.googleapis.com/v0/b/" +
+                                        "hackertest-5a202.appspot.com/o/" +
+                                        "DEFCON30%2Fm_pride_tee.jpeg?alt=media",
+                            ),
+                        ),
+                    tags = listOf(tag),
+                )
+
+            val elements =
+                listOf(
+                    product.copy(),
+                    product.copy(variants = listOf(options.first())),
+                    product.copy(variants = listOf(options.last())),
+                )
+
+            val cart =
+                listOf(
+                    ProductSelection(product, options.first(), 1),
+                    ProductSelection(product, options.last(), 1),
+                )
+
+            return listOf(
+                ProductsState(
+                    groups = mapOf(tag to elements),
+                    productVariantTagTypes =
+                        listOf(
+                            TagType(
+                                id = -100L,
+                                label = "Size",
+                                category = "merch-variant",
+                                isBrowsable = true,
+                                sortOrder = 0,
+                                tags =
+                                    listOf(
+                                        Tag(1L, "S", "", "#FF0066", 0),
+                                        Tag(2L, "M", "", "#FF0066", 1),
+                                        Tag(3L, "L", "", "#FF0066", 2),
+                                        Tag(4L, "1X", "", "#FF0066", 3),
+                                    ),
+                            ),
+                        ),
+                    informationList =
+                        listOf(
+                            DismissibleInformation(
+                                key = "general",
+                                text = "Important Information",
+                                document = 1,
+                            ),
+                            DismissibleInformation(
+                                key = "merch",
+                                text = "Merchandise Acknowledgement",
+                                document = null,
+                            ),
+                        ),
+                    merchMandatoryAcknowledgement = "All sales are **CASH ONLY**. Prices include Nevada State Sales Tax.",
+                    merchTaxStatement = "Prices include Nevada State Sales Tax.",
+                    cart = cart,
+                    data = cart.toStringData(conference = 133, versionCode = 42),
+                ),
+            ).asSequence()
+        }
+}

@@ -3,13 +3,13 @@ package com.advice.locations.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.LocationRow
-import com.advice.core.ui.LocationsScreenState
-import com.advice.locations.data.repositories.LocationRepository
+import com.advice.locations.data.repositories.LocationsRepository
+import com.advice.locations.presentation.state.LocationsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class LocationsViewModel(
-    private val repository: LocationRepository,
+    private val repository: LocationsRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(LocationsScreenState(emptyList()))
     val state = _state

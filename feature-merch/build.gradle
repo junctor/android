@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.advice.products'
+    namespace 'com.advice.merch'
     compileSdk = libs.versions.compileSdk.get() as Integer
 
     defaultConfig {
@@ -35,7 +35,6 @@ dependencies {
     implementation project(":core")
     implementation project(":ui")
     implementation project(':data')
-    implementation project(':feature-glitch')
 
     def composeBom = platform(libs.androidx.compose.bom)
     implementation composeBom
