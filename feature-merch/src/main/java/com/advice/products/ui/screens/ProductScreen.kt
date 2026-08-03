@@ -188,7 +188,7 @@ fun Product(
                 FooterButton(selection, product, onAddClicked, quantity)
             }
 
-            if (taxStatement != null) {
+            if (!taxStatement.isNullOrBlank()) {
                 LegalLabel(text = taxStatement)
             }
 

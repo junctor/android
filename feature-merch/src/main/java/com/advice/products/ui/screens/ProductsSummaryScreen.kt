@@ -138,7 +138,7 @@ private fun ProductsSummaryContent(
                 )
             }
         }
-        if (taxStatement != null) {
+        if (!taxStatement.isNullOrBlank()) {
             LegalLabel(text = taxStatement)
         }
     }

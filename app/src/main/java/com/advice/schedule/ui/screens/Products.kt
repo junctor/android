@@ -51,6 +51,9 @@ fun Products(
         onTagClicked = {
             viewModel.onTagClicked(it)
         },
+        onClearFilters = {
+            viewModel.clearFilters()
+        },
         onDismiss = {
             viewModel.dismiss(it)
         },

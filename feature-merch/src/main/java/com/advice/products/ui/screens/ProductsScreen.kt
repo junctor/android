@@ -8,12 +8,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -55,10 +59,20 @@ fun ProductsScreen(
     onLearnMore: () -> Unit,
     onDismiss: (DismissibleInformation) -> Unit,
     onTagClicked: (Tag) -> Unit,
+    onClearFilters: () -> Unit,
     onBackPressed: () -> Unit,
     onRetry: () -> Unit = {},
 ) {
     var showing by remember { mutableStateOf(false) }
+    val selectedFilterCount =
+        remember(state) {
+            (state as? ProductsScreenState.Success)
+                ?.data
+                ?.productVariantTagTypes
+                ?.flatMap { it.tags }
+                ?.count { it.isSelected }
+                ?: 0
+        }
 
     Scaffold(
         topBar = {
@@ -70,23 +84,51 @@ fun ProductsScreen(
                     BackButton(onBackPressed)
                 },
                 actions = {
-                    if (state is ProductsScreenState.Success && state.data.merchDocument != null) {
-                        IconButton(
-                            onClick = onLearnMore,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = "Learn More",
-                            )
+                    if (state is ProductsScreenState.Success) {
+                        if (state.data.merchDocument != null) {
+                            IconButton(
+                                onClick = onLearnMore,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Info,
+                                    contentDescription = "Learn More",
+                                )
+                            }
                         }
-                    }
-                    IconButton(onClick = {
-                        showing = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Filter",
-                        )
+                        if (state.data.productVariantTagTypes.any { it.tags.isNotEmpty() }) {
+                            IconButton(onClick = { showing = true }) {
+                                BadgedBox(
+                                    badge = {
+                                        if (selectedFilterCount > 0) {
+                                            Badge(
+                                                containerColor = MaterialTheme.colorScheme.primary,
+                                            ) {
+                                                Text(
+                                                    text = "$selectedFilterCount",
+                                                    color = MaterialTheme.colorScheme.onPrimary,
+                                                )
+                                            }
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.FilterList,
+                                        contentDescription =
+                                            if (selectedFilterCount > 0) {
+                                                "Filter, $selectedFilterCount applied"
+                                            } else {
+                                                "Filter"
+                                            },
+                                        tint =
+                                            if (selectedFilterCount > 0) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                LocalContentColor.current
+                                            },
+                                    )
+                                }
+                            }
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(),
@@ -131,20 +173,21 @@ fun ProductsScreen(
                                         .fillMaxWidth(),
                             )
                         }
-
-                        if (showing) {
-                            ProductFilterBottomSheet(
-                                tagTypes = state.data.productVariantTagTypes,
-                                onDismiss = {
-                                    showing = false
-                                },
-                                onClick = { it ->
-                                    onTagClicked(it)
-                                },
-                            )
-                        }
                     }
                 }
+            }
+
+            val filterTagTypes =
+                (state as? ProductsScreenState.Success)?.data?.productVariantTagTypes.orEmpty()
+            if (showing && filterTagTypes.isNotEmpty()) {
+                ProductFilterBottomSheet(
+                    tagTypes = filterTagTypes,
+                    onDismiss = {
+                        showing = false
+                    },
+                    onClick = onTagClicked,
+                    onClear = onClearFilters,
+                )
             }
         }
     }
@@ -179,14 +222,14 @@ fun ProductsScreenContent(
             item(key = group.key.id) {
                 SectionHeader(group.key.label)
             }
-            group.value.windowed(2, 2, partialWindows = true).forEachIndexed { index, products ->
-                item(key = "${group.key.id}_$index") {
+            group.value.windowed(2, 2, partialWindows = true).forEach { products ->
+                item(key = products.joinToString(separator = "_") { it.id.toString() }) {
                     ProductsRow(products, onProductClicked)
                 }
             }
         }
 
-        if (taxStatement != null) {
+        if (!taxStatement.isNullOrBlank()) {
             item {
                 LegalLabel(text = taxStatement)
             }
@@ -225,6 +268,7 @@ private fun ProductsScreenPreview(
             onLearnMore = {},
             onDismiss = {},
             onTagClicked = {},
+            onClearFilters = {},
             onBackPressed = {},
         )
     }
@@ -242,6 +286,7 @@ private fun ProductsScreenLoadingPreview() {
             onLearnMore = {},
             onDismiss = {},
             onTagClicked = {},
+            onClearFilters = {},
             onBackPressed = {},
         )
     }
@@ -259,6 +304,7 @@ private fun ProductsScreenError() {
             onLearnMore = {},
             onDismiss = {},
             onTagClicked = {},
+            onClearFilters = {},
             onBackPressed = {},
         )
     }

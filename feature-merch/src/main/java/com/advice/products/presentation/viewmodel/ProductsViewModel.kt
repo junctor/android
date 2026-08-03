@@ -10,6 +10,7 @@ import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.storage.MerchCartStore
 import com.advice.products.data.repositories.ProductsRepository
+import com.advice.products.di.PRODUCTS_VERSION_CODE
 import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.DismissibleInformation
@@ -21,15 +22,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 import timber.log.Timber
 
-class ProductsViewModel(
-    private val versionCode: Int,
-) : ViewModel(),
+class ProductsViewModel :
+    ViewModel(),
     KoinComponent {
     private val repository by inject<ProductsRepository>()
     private val merchCartStore by inject<MerchCartStore>()
     private val cart by inject<ProductCart>()
+    private val versionCode: Int by inject(named(PRODUCTS_VERSION_CODE))
 
     private val _state = MutableStateFlow<ProductsScreenState>(ProductsScreenState.Loading)
     val state: Flow<ProductsScreenState> = _state
@@ -79,6 +81,9 @@ class ProductsViewModel(
                             merchMandatoryAcknowledgement =
                                 it.merchInformation?.merchMandatoryAcknowledgement
                             merchTaxStatement = it.merchInformation?.merchTaxStatement
+                            if (products.isNotEmpty()) {
+                                updateState()
+                            }
                         }
                 }
                 launch {
@@ -88,22 +93,26 @@ class ProductsViewModel(
                             if (hasLoadError) return@collect
                             products.clear()
                             products.addAll(it.sortedByDescending { product -> product.inStock })
+                            syncSizeFiltersFromProducts()
                             updateSummary()
                         }
                 }
-                launch {
-                    repository.variants
-                        .catch { emitError("variants", it) }
-                        .collect {
-                            if (hasLoadError) return@collect
-                            productVariantTags.clear()
-                            productVariantTags.addAll(it)
-                            if (products.isNotEmpty()) {
-                                updateSummary()
-                            }
-                        }
-                }
             }
+    }
+
+    /**
+     * Size chips are derived from recognized [com.advice.core.local.products.ProductSizeCode]
+     * values on variant codes (DEF CON catalogs leave merch-variant tag_ids empty).
+     */
+    private fun syncSizeFiltersFromProducts() {
+        val selected =
+            productVariantTags
+                .flatMap { it.tags }
+                .filter { it.isSelected }
+                .map { it.label }
+                .toSet()
+        productVariantTags.clear()
+        sizeFilterTagType(products, selected)?.let { productVariantTags.add(it) }
     }
 
     private fun emitError(
@@ -176,26 +185,31 @@ class ProductsViewModel(
     }
 
     fun onTagClicked(tag: Tag) {
-        viewModelScope.launch {
-            val tagTypes =
-                productVariantTags.map { type ->
-                    val tags =
-                        type.tags.map { productTag ->
-                            if (productTag.id == tag.id) {
-                                productTag.copy(isSelected = !productTag.isSelected)
-                            } else {
-                                productTag
-                            }
+        val tagTypes =
+            productVariantTags.map { type ->
+                val tags =
+                    type.tags.map { productTag ->
+                        if (productTag.id == tag.id) {
+                            productTag.copy(isSelected = !productTag.isSelected)
+                        } else {
+                            productTag
                         }
-                    type.copy(tags = tags)
-                }
-            productVariantTags.clear()
-            productVariantTags.addAll(tagTypes)
+                    }
+                type.copy(tags = tags)
+            }
+        productVariantTags.clear()
+        productVariantTags.addAll(tagTypes)
+        updateState(productVariantTags = tagTypes)
+    }
 
-            updateState(
-                productVariantTags = tagTypes,
-            )
-        }
+    fun clearFilters() {
+        val tagTypes =
+            productVariantTags.map { type ->
+                type.copy(tags = type.tags.map { it.copy(isSelected = false) })
+            }
+        productVariantTags.clear()
+        productVariantTags.addAll(tagTypes)
+        updateState(productVariantTags = tagTypes)
     }
 
     /**
@@ -239,14 +253,14 @@ class ProductsViewModel(
                 data = cart.toStringData(conference = conference, versionCode = versionCode),
             )
 
-        _state.tryEmit(ProductsScreenState.Success(state))
+        _state.value = ProductsScreenState.Success(state)
     }
 
     private fun getInformationList(): MutableList<DismissibleInformation> {
         val list = mutableListOf<DismissibleInformation>()
         // Legal information about sales being cash only and include Nevada State Sales Tax
         val text = merchMandatoryAcknowledgement
-        if (!merchCartStore.hasSeenMerchInformation("mandatory_acknowledgement") && text != null) {
+        if (!merchCartStore.hasSeenMerchInformation("mandatory_acknowledgement") && !text.isNullOrBlank()) {
             list.add(
                 DismissibleInformation(
                     key = "mandatory_acknowledgement",

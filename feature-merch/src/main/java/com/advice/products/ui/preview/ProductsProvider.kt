@@ -17,9 +17,9 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
         get() {
             val options =
                 listOf(
-                    ProductVariant(1, "S", emptyList(), 35_00, StockStatus.IN_STOCK),
-                    ProductVariant(2, "4XL", emptyList(), 40_00, StockStatus.LOW_STOCK),
-                    ProductVariant(3, "5XL", emptyList(), 45_00, StockStatus.OUT_OF_STOCK),
+                    ProductVariant(1, "S", emptyList(), 35_00, StockStatus.IN_STOCK, code = "S"),
+                    ProductVariant(2, "4XL", emptyList(), 40_00, StockStatus.LOW_STOCK, code = "4XL"),
+                    ProductVariant(3, "5XL", emptyList(), 45_00, StockStatus.OUT_OF_STOCK, code = "5XL"),
                 )
             val tag = Tag(1L, "Clothing", "T-Shirts", "#FF066", -1)
             val product =
@@ -67,16 +67,18 @@ class ProductsProvider : PreviewParameterProvider<ProductsState> {
                     productVariantTagTypes =
                         listOf(
                             TagType(
-                                1L,
-                                "Variants",
-                                "Size",
-                                true,
-                                -1,
-                                listOf(
-                                    Tag(1L, "Clothing", "T-Shirts", "#FF066", -1),
-                                    Tag(2L, "Clothing", "Pants", "#FF066", -1),
-                                    Tag(3L, "Clothing", "Shoes", "#FF066", -1),
-                                ),
+                                id = -100L,
+                                label = "Size",
+                                category = "merch-variant",
+                                isBrowsable = true,
+                                sortOrder = 0,
+                                tags =
+                                    listOf(
+                                        Tag(1L, "S", "", "#FF0066", 0),
+                                        Tag(2L, "M", "", "#FF0066", 1),
+                                        Tag(3L, "L", "", "#FF0066", 2),
+                                        Tag(4L, "1X", "", "#FF0066", 3),
+                                    ),
                             ),
                         ),
                     informationList =

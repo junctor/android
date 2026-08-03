@@ -44,6 +44,7 @@ fun FirebaseProductVariant.toMerchOption(): ProductVariant? =
             tags = tagIds,
             price = price,
             stockStatus = StockStatus.fromString(stockStatus) ?: StockStatus.IN_STOCK,
+            code = code,
         )
     } catch (ex: Exception) {
         Timber.e("Could not map data to MerchOption: ${ex.message}")
