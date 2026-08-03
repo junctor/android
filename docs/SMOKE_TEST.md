@@ -1,6 +1,6 @@
 # Maintainer smoke test
 
-Manual and automated checklist for verifying the Hacker Tracker Android app against live Firebase data. This mirrors the maintainer workflow: walk every home-menu screen, switch conferences and confirm data swaps, and when possible verify the merch cart QR payload.
+Manual and automated checklist for verifying the Hacker Tracker Android app against live Firebase data. This mirrors the maintainer workflow: walk every home-menu screen, switch conferences and confirm data swaps, verify the merch cart QR payload when cart is enabled, and confirm carts stay isolated per conference.
 
 ## Conferences (pinned)
 
@@ -16,7 +16,8 @@ Resolve in the Home conference selector by name/code (case-insensitive). Firebas
 | ------ | --------------- |
 | DC34 | name/code contains `DC34`, `DEFCON34`, or `DEF CON 34` |
 | DC33 | name/code contains `DC33`, `DEFCON33`, or `DEF CON 33` |
-| TEST | name/code contains `TEST`, and is not DC34/DC33 |
+| DC32 | name/code contains `DC32`, `DEFCON32`, or `DEF CON 32` |
+| TEST | name/code contains `TEST`, and is not DC34/DC33/DC32 |
 
 ## Prerequisites
 
@@ -103,12 +104,21 @@ Validation:
 - Payload on the QR node content description `QR Code: {payload}` parses as compact order (`parseCompactOrderData`)
 - That payload round-trips through production `generateQRCode` + ZXing decode (same encoder the Image uses)
 - Version is `1`; platform is `A` + digits (Android `versionCode`)
-- Cart lines match: after add, a single `{variantId}:1`; after increasing qty, same variant with `:2`
+- Cart lines match: after add, a single `{variantId}:1`; after increasing qty, same variant with `:2`; after decreasing qty, back to `:1`
 - **Remove all cart lines** → QR node is gone; empty copy (“Nothing in your list”) is shown
+- Out-of-stock catalog refreshes that omit OOS lines from the QR / subtotal are covered by unit tests (`ProductsCartLogicTest`), not live Firebase smoke
 
 Pattern: `^1:\d+:A\d+:(\d+:\d+)(;\d+:\d+)*$` (see [ht-qrcode](https://github.com/junctor/ht-qrcode/)).
 
 If no pinned conference supports cart, mark **N/A**.
+
+### Cart isolation (cross-conference)
+
+DC32 and DC33 both have usable merch + cart paths:
+
+- [ ] Add an item on **DC32** and note the QR `conferenceId`
+- [ ] Switch to **DC33** and open merch
+- [ ] DC33’s summary shows empty cart **or** a QR whose `conferenceId` is not DC32’s
 
 ## Instrumentation
 
@@ -145,7 +155,8 @@ Locators use **accessibility** and visible text only (no `testTag`s):
 | `ConferenceChromeSmokeTest` | A on DC34 (selector + bottom bar present) |
 | `HomeMenuWalkSmokeTest` | B on DC34 (menu rows listed; full walk is manual) |
 | `ConferenceSwitchSmokeTest` | C DC34 → DC33 → TEST |
-| `MerchQrSmokeTest` | D: decode QR, compact order ↔ cart, clear cart removes QR |
+| `MerchQrSmokeTest` | D: decode QR, qty ± regenerates payload, clear cart removes QR (prefers DC33/DC32) |
+| `MerchCartIsolationSmokeTest` | C/D: seed cart on DC32, assert DC33 does not show DC32’s QR |
 
 ## Accessibility
 
@@ -158,5 +169,6 @@ TalkBack / label / role checklist and static inventory: [ACCESSIBILITY.md](ACCES
 | A Chrome | DC34 | | |
 | B Menu walk | DC34 | | |
 | D Cart QR | | | |
+| D Cart isolation | A → B | | |
 | C Switch | DC33 | | |
 | C Switch | TEST | | |

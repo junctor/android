@@ -106,7 +106,7 @@ internal fun Home(
                 FilterScreen(state = filtersScreenState, onClick = {
                     filtersViewModel.toggle(it)
                 }, onClear = {
-                    filtersViewModel.clearBookmarks()
+                    filtersViewModel.clearFilters()
                 })
             },
             mainPanel = {

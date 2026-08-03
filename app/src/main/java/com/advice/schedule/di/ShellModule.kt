@@ -9,6 +9,7 @@ import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.utils.ToastManager
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.SharedPreferencesBookmarkDataSource
+import com.advice.data.sources.BookmarkDataSourceQualifiers
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.schedule.navigation.NavigationManager
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -54,8 +55,12 @@ val shellModule =
 
         single { NavigationManager() }
 
-        single<BookmarkedElementDataSource>(named("tags")) { InMemoryBookmarkedDataSourceImpl() }
-        single<BookmarkedElementDataSource>(named("events")) {
+        // Filter tag selections (in-memory). Cleared by "Clear filters".
+        single<BookmarkedElementDataSource>(named(BookmarkDataSourceQualifiers.FILTER_SELECTIONS)) {
+            InMemoryBookmarkedDataSourceImpl()
+        }
+        // Persisted session/content favorites. Must not be cleared with filters.
+        single<BookmarkedElementDataSource>(named(BookmarkDataSourceQualifiers.EVENT_BOOKMARKS)) {
             SharedPreferencesBookmarkDataSource(
                 androidContext(),
             )

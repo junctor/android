@@ -77,6 +77,31 @@ class MerchCartStoreTest {
         assertEquals(selections, pruned)
     }
 
+    @Test
+    fun pruneSelectionsToCatalog_keepsInStockAndOutOfStock_dropsMissing() {
+        val products =
+            listOf(
+                product(id = 1, variantIds = listOf(10L), stockStatus = StockStatus.IN_STOCK),
+                product(id = 2, variantIds = listOf(20L), stockStatus = StockStatus.OUT_OF_STOCK),
+            )
+        val selections =
+            listOf(
+                ProductVariantSelection(1, 10, 1),
+                ProductVariantSelection(2, 20, 1),
+                ProductVariantSelection(3, 30, 1),
+            )
+
+        val pruned = MerchCartStore.pruneSelectionsToCatalog(selections, products)
+
+        assertEquals(
+            listOf(
+                ProductVariantSelection(1, 10, 1),
+                ProductVariantSelection(2, 20, 1),
+            ),
+            pruned,
+        )
+    }
+
     private fun product(
         id: Long,
         variantIds: List<Long>,

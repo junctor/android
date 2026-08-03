@@ -101,6 +101,16 @@ class QRCodeUtilsKtTest {
         assertNull(listOf(outOfStock).toStringData(conference = 123, versionCode = 1))
     }
 
+    @Test
+    fun `ProductSelection multi-line omits only out of stock variants`() {
+        val a = productSelection(StockStatus.IN_STOCK, productId = 1, variantId = 100)
+        val b = productSelection(StockStatus.OUT_OF_STOCK, productId = 2, variantId = 200)
+        val c = productSelection(StockStatus.IN_STOCK, productId = 3, variantId = 300)
+        val data = listOf(a, b, c).toStringData(conference = 55, versionCode = 9)
+
+        assertEquals("1:55:A9:100:1;300:1", data)
+    }
+
     private fun productSelection(
         stockStatus: StockStatus,
         productId: Long = 1,

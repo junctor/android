@@ -12,10 +12,11 @@ import kotlinx.coroutines.flow.shareIn
 
 class FiltersRepository(
     tagsRepository: TagsRepository,
-    private val bookmarksDataSource: BookmarkedElementDataSource,
+    /** In-memory filter/tag selections — not persisted event bookmarks. */
+    private val filterSelectionsDataSource: BookmarkedElementDataSource,
 ) {
     val state =
-        combine(tagsRepository.tags, bookmarksDataSource.get()) { types, bookmarks ->
+        combine(tagsRepository.tags, filterSelectionsDataSource.get()) { types, bookmarks ->
             val filters = types.filter { it.isBrowsable && it.category == "content" }
             val isBookmarkSelected =
                 bookmarks
@@ -32,10 +33,15 @@ class FiltersRepository(
         )
 
     suspend fun toggle(tag: Tag) {
-        bookmarksDataSource.bookmark(tag, !tag.isSelected)
+        filterSelectionsDataSource.bookmark(tag, !tag.isSelected)
     }
 
-    suspend fun clear() {
-        bookmarksDataSource.clear()
+    /**
+     * Clears schedule filter selections only. Must use the filter-selections store
+     * ([com.advice.data.sources.BookmarkDataSourceQualifiers.FILTER_SELECTIONS]);
+     * must not clear persisted event bookmarks.
+     */
+    suspend fun clearFilters() {
+        filterSelectionsDataSource.clear()
     }
 }

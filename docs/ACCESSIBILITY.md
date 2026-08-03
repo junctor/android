@@ -54,14 +54,14 @@ Remediated in the accessibility audit pass unless noted. Re-scan when adding UI.
 
 | Finding | Location | Fix |
 | ------- | -------- | --- |
-| Custom 32.dp icon button | merch `IconButton.kt` | Material `IconButton`, 48.dp |
-| Custom qty buttons; delete said decrease | `QuantityAdjuster.kt` | Material buttons; remove CD when qty=1 |
+| Custom 32.dp icon button | `feature-merch/.../IconButton.kt` | Material `IconButton`, 48.dp |
+| Custom qty buttons; delete said decrease | `feature-merch/.../QuantityAdjuster.kt` | Material buttons; remove CD when qty=1 |
 | Day chips visual selection only | `DaySelectorView.kt` | `Role.Tab` + `selected` |
 | Filter category visual selection only | `Category.kt` | `Role.Checkbox` + `selected` |
 | Row + Switch dual toggles | `SwitchPreference`, `PromoSwitch` | `toggleable` + `onCheckedChange = null` |
 | Row + RadioButton dual focus | `SelectOneItem`, `VariantRow` | Row click + `onClick = null` on radio |
 | Checkbox not merged with label | `MultiSelectItem.kt` | `toggleable` row |
-| Gesture panels without a11y actions | `OverlappingPanelsView.kt` | Custom actions + gutter CD |
+| Gesture panels without a11y actions | `app/.../OverlappingPanelsView.kt` | Custom actions + gutter CD |
 | Menu icon CD = resource key | `MenuIcon.kt` | Decorative `null` (parent labels) |
 
 ### P2 — Weak / noisy labels (mostly fixed)
@@ -69,7 +69,7 @@ Remediated in the accessibility audit pass unless noted. Re-scan when adding UI.
 | Finding | Location | Notes |
 | ------- | -------- | ----- |
 | Generic logo/image/info | orgs, merch, cards, gallery | Decorative `null` or indexed gallery CD |
-| QR CD dumps full payload | `QRCodeImage.kt` | Intentionally kept `QR Code: {payload}` for smoke decode |
+| QR CD dumps full payload | `feature-merch/.../QRCodeImage.kt` | Intentionally kept `QR Code: {payload}` for smoke decode |
 | Easter-egg chicken CD | `RubberButton.kt` | Play rubber chicken sound |
 | Pinch/zoom gestures | `ZoomableGestures.kt` | Buttons already labeled on PDF/maps |
 | Hardcoded English a11y strings | some chrome locators | Prefer `stringResource` when touching; smoke locators stay stable |
@@ -79,7 +79,7 @@ Remediated in the accessibility audit pass unless noted. Re-scan when adding UI.
 | Pattern | Location |
 | ------- | -------- |
 | `mergeDescendants` + `Role.Button` + label | `ui/.../ReportLink.kt` |
-| Chrome / menu / product smoke locators | `Home.kt`, `HomeScreen.kt`, `ProductSquare.kt`, conference selector |
+| Chrome / menu / product smoke locators | `app/.../Home.kt`, `ui/.../HomeScreen.kt`, `feature-merch/.../ProductSquare.kt`, `ui/.../ConferenceSelector.kt` |
 | PDF zoom CD on buttons, icons null | `ui/.../PdfDisplay.kt` |
 | Shared `Image` requires non-null CD | `ui/.../Image.kt` |
 

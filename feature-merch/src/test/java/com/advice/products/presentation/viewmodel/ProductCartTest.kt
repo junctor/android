@@ -51,4 +51,28 @@ class ProductCartTest {
 
         assertTrue(cart.getSelections().isEmpty())
     }
+
+    @Test
+    fun add_appendsDifferentProducts() {
+        val cart = ProductCart()
+        cart.add(ProductVariantSelection(id = 1, variant = 10, quantity = 1))
+        cart.add(ProductVariantSelection(id = 2, variant = 20, quantity = 2))
+
+        assertEquals(
+            listOf(
+                ProductVariantSelection(1, 10, 1),
+                ProductVariantSelection(2, 20, 2),
+            ),
+            cart.getSelections(),
+        )
+    }
+
+    @Test
+    fun setQuantity_missingIdIsNoOp() {
+        val cart = ProductCart()
+        cart.add(ProductVariantSelection(id = 1, variant = 10, quantity = 2))
+        cart.setQuantity(id = 99, quantity = 5, variant = 10)
+
+        assertEquals(listOf(ProductVariantSelection(1, 10, 2)), cart.getSelections())
+    }
 }

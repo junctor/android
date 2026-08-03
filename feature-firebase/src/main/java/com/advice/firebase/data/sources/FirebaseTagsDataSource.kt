@@ -26,7 +26,8 @@ import kotlinx.coroutines.flow.stateIn
 class FirebaseTagsDataSource(
     private val userSession: UserSession,
     private val firestore: FirebaseFirestore,
-    private val bookmarkedEventsDataSource: BookmarkedElementDataSource,
+    /** Filter/tag selections store — not persisted event bookmarks. */
+    private val filterSelectionsDataSource: BookmarkedElementDataSource,
     private val applicationScope: CoroutineScope,
 ) : TagsDataSource {
     private val tagTypes: StateFlow<List<TagType>> =
@@ -52,7 +53,7 @@ class FirebaseTagsDataSource(
             )
 
     override fun get(): Flow<List<TagType>> =
-        combine(tagTypes, bookmarkedEventsDataSource.get()) { tags, bookmarks ->
+        combine(tagTypes, filterSelectionsDataSource.get()) { tags, bookmarks ->
             val selectedIds =
                 bookmarks
                     .filterIsInstance<Bookmark.TagBookmark>()

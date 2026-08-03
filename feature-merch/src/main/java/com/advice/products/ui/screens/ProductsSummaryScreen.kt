@@ -31,11 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.advice.core.local.StockStatus
 import com.advice.core.local.products.ProductSelection
 import com.advice.glitch.ui.GlitchLogo
 import com.advice.products.R
 import com.advice.products.presentation.state.ProductsState
+import com.advice.products.presentation.viewmodel.cartSubtotalCents
 import com.advice.products.ui.components.EditableProduct
 import com.advice.products.ui.components.LegalLabel
 import com.advice.products.ui.components.PriceLabel
@@ -170,7 +170,7 @@ private fun ProductsSummaryContent(
             ) {
                 Text("Subtotal")
                 PriceLabel(
-                    text = getSubtotal(list).toCurrency(showCents = true),
+                    text = cartSubtotalCents(list).toCurrency(showCents = true),
                 )
             }
         }
@@ -179,13 +179,6 @@ private fun ProductsSummaryContent(
         }
     }
 }
-
-private fun getSubtotal(list: List<ProductSelection>): Long =
-    list
-        .filter { it.variant.stockStatus != StockStatus.OUT_OF_STOCK }
-        .sumOf { element ->
-            element.cost
-        }
 
 @PreviewLightDark
 @Composable

@@ -42,7 +42,7 @@ class MerchQrSmokeTest {
 
     @Test
     fun cart_qr_is_valid_compact_order_and_clears_when_empty() {
-        val conferences = listOf("DC33", "DC34", "TEST")
+        val conferences = listOf("DC33", "DC32", "DC34", "TEST")
         val attempts = mutableListOf<String>()
         var sawMerchMenu = false
         var sawProducts = false
@@ -223,12 +223,33 @@ class MerchQrSmokeTest {
         // Payload from the QR semantics (same string encoded into the bitmap).
         val payload = readQrContentDescription()
         assertDecodableCompactQr(payload)
-        val order = parseCompactOrderData(payload)
+        var order = parseCompactOrderData(payload)
         assertTrue("Platform must be Android versionCode", order.platform.matches(Regex("A\\d+")))
-        assertEquals("Cart quantity after add", 1, order.totalQuantity)
-        assertEquals(1, order.items.size)
+        if (order.items.size != 1) {
+            emptyCartOnSummary()
+            composeRule.pressSystemBack()
+            return "cart had ${order.items.size} lines after add (cleared leftover cart)"
+        }
         val variantId = order.items.single().variantId
         val conferenceId = order.conferenceId
+
+        // Persisted carts may already contain this variant; normalize to qty 1.
+        var guard = 0
+        while (order.totalQuantity > 1 && guard++ < 20) {
+            composeRule
+                .onAllNodesWithContentDescription("Decrease quantity", useUnmergedTree = true)
+                .onFirst()
+                .performClick()
+            composeRule.safeWaitForIdle()
+            composeRule.waitUntil(SHORT_TIMEOUT_MS) {
+                runCatching {
+                    parseCompactOrderData(readQrContentDescription()).totalQuantity < order.totalQuantity
+                }.getOrDefault(false)
+            }
+            order = parseCompactOrderData(readQrContentDescription())
+        }
+        assertEquals("Cart quantity after normalize", 1, order.totalQuantity)
+        assertEquals(listOf(variantId to 1), order.items.map { it.variantId to it.quantity })
 
         // Quantity change must rewrite the QR to match cart content.
         composeRule
@@ -246,6 +267,22 @@ class MerchQrSmokeTest {
         assertEquals(conferenceId, afterIncrease.conferenceId)
         assertEquals(listOf(variantId to 2), afterIncrease.items.map { it.variantId to it.quantity })
 
+        // Decreasing quantity must rewrite the QR back to qty 1.
+        composeRule
+            .onAllNodesWithContentDescription("Decrease quantity", useUnmergedTree = true)
+            .onFirst()
+            .performClick()
+        composeRule.safeWaitForIdle()
+        composeRule.waitUntil(SHORT_TIMEOUT_MS) {
+            runCatching {
+                parseCompactOrderData(readQrContentDescription()).totalQuantity == 1
+            }.getOrDefault(false)
+        }
+        val afterDecrease = parseCompactOrderData(readQrContentDescription())
+        assertDecodableCompactQr(readQrContentDescription())
+        assertEquals(conferenceId, afterDecrease.conferenceId)
+        assertEquals(listOf(variantId to 1), afterDecrease.items.map { it.variantId to it.quantity })
+
         // Emptying the cart must remove the QR.
         composeRule
             .onAllNodesWithContentDescription("Remove from cart", useUnmergedTree = true)
@@ -259,6 +296,35 @@ class MerchQrSmokeTest {
             .assertIsDisplayed()
 
         return null
+    }
+
+    private fun emptyCartOnSummary() {
+        var guard = 0
+        while (guard++ < 20) {
+            val removed =
+                runCatching {
+                    composeRule
+                        .onAllNodesWithContentDescription("Remove from cart", useUnmergedTree = true)
+                        .onFirst()
+                        .performClick()
+                    true
+                }.getOrDefault(false)
+            if (removed) {
+                composeRule.safeWaitForIdle()
+                continue
+            }
+            val decreased =
+                runCatching {
+                    composeRule
+                        .onAllNodesWithContentDescription("Decrease quantity", useUnmergedTree = true)
+                        .onFirst()
+                        .performClick()
+                    true
+                }.getOrDefault(false)
+            if (!decreased) break
+            composeRule.safeWaitForIdle()
+        }
+        runCatching { composeRule.waitUntil(SHORT_TIMEOUT_MS) { !qrPresent() } }
     }
 
     private fun readQrContentDescription(): String {

@@ -17,7 +17,7 @@ import org.junit.Test
 
 class FiltersRepositoryStateTest {
     private val tagsRepository = mockk<TagsRepository>()
-    private val bookmarksDataSource = mockk<BookmarkedElementDataSource>()
+    private val filterSelectionsDataSource = mockk<BookmarkedElementDataSource>()
 
     private val browsableContent =
         TagType(
@@ -51,9 +51,9 @@ class FiltersRepositoryStateTest {
     fun `state filters to browsable content category types only`() =
         runTest {
             stubTags(listOf(browsableContent, nonBrowsableContent, merch))
-            every { bookmarksDataSource.get() } returns flowOf(emptyList())
+            every { filterSelectionsDataSource.get() } returns flowOf(emptyList())
 
-            val subject = FiltersRepository(tagsRepository, bookmarksDataSource)
+            val subject = FiltersRepository(tagsRepository, filterSelectionsDataSource)
             val state = awaitState(subject) as FiltersScreenState.Success
 
             assertEquals(listOf(browsableContent), state.filters)
@@ -64,10 +64,10 @@ class FiltersRepositoryStateTest {
     fun `bookmark selected from TagBookmark`() =
         runTest {
             stubTags(listOf(browsableContent))
-            every { bookmarksDataSource.get() } returns
+            every { filterSelectionsDataSource.get() } returns
                 flowOf(listOf(Bookmark.TagBookmark(Tag.bookmark.id.toString(), value = true)))
 
-            val subject = FiltersRepository(tagsRepository, bookmarksDataSource)
+            val subject = FiltersRepository(tagsRepository, filterSelectionsDataSource)
             val state = awaitState(subject) as FiltersScreenState.Success
 
             assertTrue(state.isBookmarkSelected)

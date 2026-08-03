@@ -7,6 +7,11 @@ import com.advice.core.local.Tag
 import com.advice.data.sources.BookmarkedElementDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * Process-lifetime bookmark map. Used for
+ * [com.advice.data.sources.BookmarkDataSourceQualifiers.FILTER_SELECTIONS]
+ * (schedule filter tags); not for persisted event favorites.
+ */
 class InMemoryBookmarkedDataSourceImpl : BookmarkedElementDataSource {
     private val flow = MutableStateFlow<List<Bookmark>>(emptyList())
 

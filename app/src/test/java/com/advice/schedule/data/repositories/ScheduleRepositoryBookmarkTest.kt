@@ -16,7 +16,7 @@ class ScheduleRepositoryBookmarkTest {
     private val contentRepository = mockk<ContentRepository>(relaxed = true)
     private val tagsRepository = mockk<TagsRepository>(relaxed = true)
     private val contentBookmarkUseCase = mockk<ContentBookmarkUseCase>(relaxed = true)
-    private val bookmarksDataSource = mockk<BookmarkedElementDataSource>(relaxed = true)
+    private val filterSelectionsDataSource = mockk<BookmarkedElementDataSource>(relaxed = true)
 
     private lateinit var subject: ScheduleRepository
 
@@ -29,7 +29,7 @@ class ScheduleRepositoryBookmarkTest {
                 contentRepository,
                 tagsRepository,
                 contentBookmarkUseCase,
-                bookmarksDataSource,
+                filterSelectionsDataSource,
             )
     }
 

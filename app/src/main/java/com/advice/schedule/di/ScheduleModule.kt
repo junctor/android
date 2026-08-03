@@ -1,5 +1,6 @@
 package com.advice.schedule.di
 
+import com.advice.data.sources.BookmarkDataSourceQualifiers
 import com.advice.schedule.data.repositories.ContentRepository
 import com.advice.schedule.data.repositories.FAQRepository
 import com.advice.schedule.data.repositories.FiltersRepository
@@ -33,12 +34,24 @@ val scheduleModule =
     module {
         single { ContentRepository(get(), get(), get(), get()) }
         single { ContentBookmarkUseCase(get(), get()) }
-        single { ScheduleRepository(get(), get(), get(), get(named("tags"))) }
+        single {
+            ScheduleRepository(
+                get(),
+                get(),
+                get(),
+                get(named(BookmarkDataSourceQualifiers.FILTER_SELECTIONS)),
+            )
+        }
         single { NewsRepository(get()) }
         single { HomeRepository(get(), get(), get(), get(), get(), get(), get(), get()) }
         single { SpeakersRepository(get()) }
         single { SpeakerRepository(get(), get()) }
-        single { FiltersRepository(get(), get(named("tags"))) }
+        single {
+            FiltersRepository(
+                get(),
+                get(named(BookmarkDataSourceQualifiers.FILTER_SELECTIONS)),
+            )
+        }
         single { FAQRepository(get()) }
         single { MapRepository(get()) }
         single { InformationRepository(get(), get(), get(), get()) }

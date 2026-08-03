@@ -138,6 +138,12 @@ internal fun matchesPinnedConference(
                 text.contains("DEF CON 33") ||
                 text.contains("DEFCON 33")
 
+        "DC32" ->
+            text.contains("DC32") ||
+                text.contains("DEFCON32") ||
+                text.contains("DEF CON 32") ||
+                text.contains("DEFCON 32")
+
         "TEST" ->
             (
                 text.contains("TEST") ||
@@ -146,10 +152,13 @@ internal fun matchesPinnedConference(
             ) &&
                 !text.contains("DC34") &&
                 !text.contains("DC33") &&
+                !text.contains("DC32") &&
                 !text.contains("DEFCON34") &&
                 !text.contains("DEFCON33") &&
+                !text.contains("DEFCON32") &&
                 !text.contains("DEF CON 34") &&
-                !text.contains("DEF CON 33")
+                !text.contains("DEF CON 33") &&
+                !text.contains("DEF CON 32")
 
         else -> text.contains(target.uppercase())
     }

@@ -26,7 +26,7 @@ class ScheduleRepositoryFilterTest {
     private val contentRepository = mockk<ContentRepository>()
     private val tagsRepository = mockk<TagsRepository>()
     private val contentBookmarkUseCase = mockk<ContentBookmarkUseCase>(relaxed = true)
-    private val bookmarksDataSource = mockk<BookmarkedElementDataSource>()
+    private val filterSelectionsDataSource = mockk<BookmarkedElementDataSource>()
 
     private val locationA = Location(1, "Track A", "A")
     private val locationB = Location(2, "Track B", "B")
@@ -45,7 +45,7 @@ class ScheduleRepositoryFilterTest {
                 contentRepository,
                 tagsRepository,
                 contentBookmarkUseCase,
-                bookmarksDataSource,
+                filterSelectionsDataSource,
             )
     }
 
@@ -258,7 +258,7 @@ class ScheduleRepositoryFilterTest {
     }
 
     private fun stubBookmarks(bookmarks: List<Bookmark>) {
-        every { bookmarksDataSource.get() } returns flowOf(bookmarks)
+        every { filterSelectionsDataSource.get() } returns flowOf(bookmarks)
     }
 
     private fun content(

@@ -3,6 +3,7 @@ package com.advice.schedule.di
 import com.advice.core.audience.AudiencePolicy
 import com.advice.core.audience.FailOpenAudiencePolicy
 import com.advice.data.session.UserSession
+import com.advice.data.sources.BookmarkDataSourceQualifiers
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.ContentDataSource
 import com.advice.data.sources.DocumentsDataSource
@@ -95,13 +96,18 @@ val firebaseDataModule =
                 get(),
                 get<LocationsDataSource>(),
                 get(),
-                get(named("events")),
+                get(named(BookmarkDataSourceQualifiers.EVENT_BOOKMARKS)),
                 get(),
                 get(named(APPLICATION_SCOPE)),
             )
         }
         single<TagsDataSource> {
-            FirebaseTagsDataSource(get(), get(), get(named("tags")), get(named(APPLICATION_SCOPE)))
+            FirebaseTagsDataSource(
+                get(),
+                get(),
+                get(named(BookmarkDataSourceQualifiers.FILTER_SELECTIONS)),
+                get(named(APPLICATION_SCOPE)),
+            )
         }
         single<FAQDataSource> {
             FirebaseFAQDataSource(get(), get(), get(named(APPLICATION_SCOPE)))

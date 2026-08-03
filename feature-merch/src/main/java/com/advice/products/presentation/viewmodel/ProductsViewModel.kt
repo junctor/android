@@ -6,7 +6,6 @@ import com.advice.core.local.Conference
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
 import com.advice.core.local.products.Product
-import com.advice.core.local.products.ProductSelection
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.storage.MerchCartStore
 import com.advice.products.data.repositories.ProductsRepository
@@ -14,7 +13,6 @@ import com.advice.products.di.PRODUCTS_VERSION_CODE
 import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.DismissibleInformation
-import com.advice.products.utils.toStringData
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -229,13 +227,7 @@ class ProductsViewModel :
 
         val filteredProducts: List<Product> = getFilteredProducts(products, filter)
 
-        val cart =
-            selections.mapNotNull { selection ->
-                val product = products.find { it.id == selection.id } ?: return@mapNotNull null
-                val variant =
-                    product.variants.find { it.id == selection.variant } ?: return@mapNotNull null
-                return@mapNotNull ProductSelection(product, variant, selection.quantity)
-            }
+        val cart = resolveCartSelections(products, selections)
 
         if (hasLoadError) return
 
@@ -243,31 +235,19 @@ class ProductsViewModel :
             ProductsState(
                 groups = groupProducts(filteredProducts),
                 productVariantTagTypes = productVariantTags,
-                informationList = getInformationList(),
+                informationList =
+                    mandatoryAcknowledgementInfo(
+                        text = merchMandatoryAcknowledgement,
+                        hasSeen = merchCartStore.hasSeenMerchInformation(MANDATORY_ACKNOWLEDGEMENT_KEY),
+                    ),
                 merchDocument = merchDocument,
                 merchMandatoryAcknowledgement = merchMandatoryAcknowledgement,
                 merchTaxStatement = merchTaxStatement,
                 canAdd = canAdd,
                 cart = cart,
-                data = cart.toStringData(conference = conference, versionCode = versionCode),
+                data = cartQrPayload(cart, conference, versionCode),
             )
 
         _state.value = ProductsScreenState.Success(state)
-    }
-
-    private fun getInformationList(): MutableList<DismissibleInformation> {
-        val list = mutableListOf<DismissibleInformation>()
-        // Legal information about sales being cash only and include Nevada State Sales Tax
-        val text = merchMandatoryAcknowledgement
-        if (!merchCartStore.hasSeenMerchInformation("mandatory_acknowledgement") && !text.isNullOrBlank()) {
-            list.add(
-                DismissibleInformation(
-                    key = "mandatory_acknowledgement",
-                    text = text,
-                    document = null,
-                ),
-            )
-        }
-        return list
     }
 }

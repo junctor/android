@@ -31,9 +31,9 @@ class FiltersViewModel :
         }
     }
 
-    fun clearBookmarks() {
+    fun clearFilters() {
         viewModelScope.launch {
-            repository.clear()
+            repository.clearFilters()
         }
     }
 }

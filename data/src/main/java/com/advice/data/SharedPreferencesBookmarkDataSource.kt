@@ -14,6 +14,11 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+/**
+ * Disk-backed bookmarks for sessions and content
+ * ([com.advice.data.sources.BookmarkDataSourceQualifiers.EVENT_BOOKMARKS]).
+ * Not used for filter selections.
+ */
 class SharedPreferencesBookmarkDataSource(
     context: Context,
 ) : BookmarkedElementDataSource {

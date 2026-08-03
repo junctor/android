@@ -6,6 +6,12 @@ import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Storage for bookmarked elements. Two independent instances are registered in DI
+ * (see [BookmarkDataSourceQualifiers]): filter selections vs event/session bookmarks.
+ *
+ * [clear] empties **this** instance only — never assume it clears both stores.
+ */
 interface BookmarkedElementDataSource {
     fun get(): Flow<List<Bookmark>>
 
@@ -30,5 +36,6 @@ interface BookmarkedElementDataSource {
 
     suspend fun isBookmarked(tag: Tag): Boolean
 
+    /** Clears all entries in this store instance. */
     suspend fun clear()
 }

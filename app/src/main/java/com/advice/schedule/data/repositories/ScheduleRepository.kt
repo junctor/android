@@ -28,13 +28,14 @@ class ScheduleRepository(
     private val contentRepository: ContentRepository,
     private val tagsRepository: TagsRepository,
     private val contentBookmarkUseCase: ContentBookmarkUseCase,
-    private val bookmarksDataSource: BookmarkedElementDataSource,
+    /** Filter selections (incl. bookmark chip); not persisted event favorites. */
+    private val filterSelectionsDataSource: BookmarkedElementDataSource,
 ) {
     fun getSchedule(filter: ScheduleFilter): Flow<ScheduleResult> {
         return combine(
             contentRepository.content,
             tagsRepository.tags,
-            bookmarksDataSource.get(),
+            filterSelectionsDataSource.get(),
         ) { content, tags, bookmarks ->
             if (content.content.isEmpty()) {
                 return@combine ScheduleResult.Loading
