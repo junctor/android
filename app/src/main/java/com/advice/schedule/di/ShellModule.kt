@@ -1,24 +1,20 @@
 package com.advice.schedule.di
 
 import androidx.work.WorkManager
-import com.advice.analytics.core.AnalyticsProvider
-import com.advice.core.storage.ContentSyncStore
-import com.advice.core.storage.MerchCartStore
-import com.advice.core.storage.OfflineQueueStore
-import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.utils.ToastManager
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
 import com.advice.data.SharedPreferencesBookmarkDataSource
+import com.advice.data.di.APPLICATION_SCOPE
 import com.advice.data.sources.BookmarkDataSourceQualifiers
 import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.data.storage.ContentSyncStore
+import com.advice.data.storage.UserPreferencesStore
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.offline.OfflineQueueConnectivityMonitor
-import com.advice.schedule.ui.viewmodels.MainViewModel
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.advice.schedule.presentation.viewmodel.MainViewModel
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
-import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -39,20 +35,15 @@ val shellModule =
         }
 
         single { UserPreferencesStore(androidContext()) }
-        single { MerchCartStore(androidContext(), get()) }
         single { ContentSyncStore(androidContext()) }
-        single { OfflineQueueStore(androidContext(), get()) }
 
         single {
             GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
         }
 
         single { FirebaseCrashlytics.getInstance() }
-        single { FirebaseAnalytics.getInstance(androidContext()) }
 
         single { WorkManager.getInstance(androidContext()) }
-
-        single { AnalyticsProvider(get(), BuildConfig.VERSION_CODE) }
 
         single { ToastManager() }
 

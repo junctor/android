@@ -2,7 +2,7 @@ package com.advice.schedule
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.advice.core.storage.UserPreferencesStore
+import com.advice.data.storage.UserPreferencesStore
 import com.advice.schedule.di.appModules
 import com.advice.schedule.telemetry.TelemetryCollection
 import com.google.firebase.FirebaseApp

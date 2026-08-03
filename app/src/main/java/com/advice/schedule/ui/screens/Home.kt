@@ -21,24 +21,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.advice.core.ui.FiltersScreenState
-import com.advice.core.ui.HomeState
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.toNavigation
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
+import com.advice.schedule.presentation.viewmodel.MainViewModel
+import com.advice.schedule.presentation.viewmodel.MainViewState
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.schedule.ui.components.DismissibleBottomAppBar
 import com.advice.schedule.ui.components.DragAnchors
 import com.advice.schedule.ui.components.OverlappingPanelsView
-import com.advice.schedule.ui.viewmodels.MainViewModel
-import com.advice.schedule.ui.viewmodels.MainViewState
+import com.advice.schedule.ui.components.SoundButton
 import com.advice.ui.components.home.CountdownView
 import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreen
+import com.advice.ui.states.FiltersScreenState
+import com.advice.ui.states.HomeState
 import com.advice.ui.states.ScheduleScreenState
 import org.koin.androidx.compose.koinViewModel
 
@@ -103,6 +104,12 @@ internal fun Home(
                     countdownContent = {
                         HomeCountdown(homeViewModel)
                     },
+                    easterEgg =
+                        if ((homeState as? HomeState.Loaded)?.hasEasterEgg == true) {
+                            { SoundButton() }
+                        } else {
+                            null
+                        },
                 )
             },
             rightPanel = {

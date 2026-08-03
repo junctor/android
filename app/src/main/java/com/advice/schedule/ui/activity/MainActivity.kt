@@ -32,9 +32,9 @@ import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.navigation.SetRoutes
 import com.advice.schedule.navigation.navigateTo
+import com.advice.schedule.presentation.viewmodel.MainViewModel
+import com.advice.schedule.presentation.viewmodel.MainViewState
 import com.advice.schedule.ui.components.EmergencyBanner
-import com.advice.schedule.ui.viewmodels.MainViewModel
-import com.advice.schedule.ui.viewmodels.MainViewState
 import com.advice.ui.components.notifications.NotificationsPopup
 import com.advice.ui.components.notifications.PopupContainer
 import com.advice.ui.theme.ScheduleTheme

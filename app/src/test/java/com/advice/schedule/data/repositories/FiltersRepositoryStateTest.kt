@@ -4,8 +4,8 @@ import com.advice.core.local.Bookmark
 import com.advice.core.local.FlowResult
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
-import com.advice.core.ui.FiltersScreenState
 import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.ui.states.FiltersScreenState
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

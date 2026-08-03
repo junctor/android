@@ -7,9 +7,9 @@ import com.advice.core.local.FlowResult
 import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
-import com.advice.core.ui.ScheduleFilter
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.schedule.domain.ContentBookmarkUseCase
+import com.advice.ui.states.ScheduleFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 

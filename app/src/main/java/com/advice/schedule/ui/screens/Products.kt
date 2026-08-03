@@ -2,20 +2,14 @@ package com.advice.schedule.ui.screens
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
-import com.advice.products.presentation.state.ProductsScreenState
-import com.advice.products.presentation.viewmodel.ProductsViewModel
-import com.advice.products.ui.screens.ProductScreen
-import com.advice.products.ui.screens.ProductsScreen
-import com.advice.products.ui.screens.ProductsSummaryScreen
+import com.advice.merch.presentation.viewmodel.ProductsViewModel
+import com.advice.merch.ui.screens.ProductRoute
+import com.advice.merch.ui.screens.ProductsRoute
+import com.advice.merch.ui.screens.ProductsSummaryRoute
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
-import com.advice.ui.components.ProgressSpinner
-import com.advice.ui.screens.ErrorScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -24,39 +18,13 @@ fun Products(
     navController: NavHostController,
     label: String,
 ) {
-    val viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context)
-    val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value
-
-    ProductsScreen(
+    ProductsRoute(
+        viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context),
         label = label,
-        state = state,
-        onSummaryClicked = {
-            navController.navigateTo(Navigation.ProductsSummary)
-        },
-        onProductClicked = {
-            navController.navigateTo(Navigation.Product(it.id))
-        },
-        onBackPressed = {
-            navController.onBackPressed()
-        },
-        onRetry = {
-            viewModel.retry()
-        },
-        onLearnMore = {
-            val merchDocument = (state as? ProductsScreenState.Success)?.data?.merchDocument
-            if (merchDocument != null) {
-                navController.navigateTo(Navigation.Document(merchDocument))
-            }
-        },
-        onTagClicked = {
-            viewModel.onTagClicked(it)
-        },
-        onClearFilters = {
-            viewModel.clearFilters()
-        },
-        onDismiss = {
-            viewModel.dismiss(it)
-        },
+        onSummaryClicked = { navController.navigateTo(Navigation.ProductsSummary) },
+        onProductClicked = { navController.navigateTo(Navigation.Product(it.id)) },
+        onLearnMore = { navController.navigateTo(Navigation.Document(it)) },
+        onBackPressed = { navController.onBackPressed() },
     )
 }
 
@@ -66,44 +34,11 @@ fun Product(
     navController: NavHostController,
     id: Long?,
 ) {
-    val viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context)
-    when (val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value) {
-        ProductsScreenState.Loading -> {
-            ProgressSpinner()
-        }
-
-        ProductsScreenState.Error -> {
-            ErrorScreen(
-                message = "Could not load merch",
-                onRetry = { viewModel.retry() },
-                onBackPress = { navController.onBackPressed() },
-            )
-        }
-
-        is ProductsScreenState.Success -> {
-            val product = state.data.products.find { it.id == id }
-            if (product == null) {
-                ErrorScreen(
-                    message = "Product not found",
-                ) {
-                    navController.onBackPressed()
-                }
-                return
-            }
-            ProductScreen(
-                product = product,
-                taxStatement = state.data.merchTaxStatement,
-                canAdd = state.data.canAdd,
-                onAddClicked = {
-                    viewModel.addToCart(it)
-                    navController.onBackPressed()
-                },
-                onBackPressed = {
-                    navController.onBackPressed()
-                },
-            )
-        }
-    }
+    ProductRoute(
+        viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context),
+        id = id,
+        onBackPressed = { navController.onBackPressed() },
+    )
 }
 
 @Composable
@@ -111,47 +46,8 @@ fun ProductsSummary(
     context: AppCompatActivity,
     navController: NavHostController,
 ) {
-    val viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context)
-
-    // Storing the previous brightness for when we exit the Summary screen
-    val attributes = context.window.attributes
-    val previousBrightness = attributes.screenBrightness
-
-    when (val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value) {
-        ProductsScreenState.Loading -> {
-            ProgressSpinner()
-        }
-
-        ProductsScreenState.Error -> {
-            ErrorScreen(
-                message = "Could not load merch",
-                onRetry = { viewModel.retry() },
-                onBackPress = { navController.onBackPressed() },
-            )
-        }
-
-        is ProductsScreenState.Success -> {
-            // Setting screen brightness to max when viewing Summary with QR Code
-            LaunchedEffect(Unit) {
-                attributes.screenBrightness = 1.0f
-                context.window.attributes = attributes
-            }
-
-            // Resetting screen brightness to previous brightness on exit
-            DisposableEffect(Unit) {
-                onDispose {
-                    attributes.screenBrightness = previousBrightness
-                    context.window.attributes = attributes
-                }
-            }
-
-            ProductsSummaryScreen(
-                state = state.data,
-                onQuantityChanged = { id, quantity, variant ->
-                    viewModel.setQuantity(id, quantity, variant)
-                },
-                onBackPressed = { navController.onBackPressed() },
-            )
-        }
-    }
+    ProductsSummaryRoute(
+        viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context),
+        onBackPressed = { navController.onBackPressed() },
+    )
 }

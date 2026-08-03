@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.viewmodels
+package com.advice.schedule.presentation.viewmodel
 
 import android.app.Activity
 import android.os.Bundle
@@ -10,10 +10,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.FlowResult
-import com.advice.core.storage.UserPreferencesStore
 import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
+import com.advice.data.storage.UserPreferencesStore
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.feedback.network.FeedbackSubmissionRepository
 import com.advice.feedback.network.ReportSubmissionRepository

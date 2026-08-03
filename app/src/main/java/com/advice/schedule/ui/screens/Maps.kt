@@ -3,9 +3,9 @@ package com.advice.schedule.ui.screens
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
+import com.advice.maps.presentation.viewmodel.MapsViewModel
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.onBackPressed
-import com.advice.schedule.presentation.viewmodel.MapsViewModel
 import com.advice.ui.states.MapsScreenState
 
 @Composable

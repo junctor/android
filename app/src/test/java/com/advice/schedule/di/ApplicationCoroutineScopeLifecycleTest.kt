@@ -2,6 +2,7 @@ package com.advice.schedule.di
 
 import com.advice.core.local.Conference
 import com.advice.core.local.FlowResult
+import com.advice.data.di.APPLICATION_SCOPE
 import com.advice.data.session.UserSession
 import com.advice.data.sources.MapsDataSource
 import com.advice.retrofit.datasource.RetrofitMapsDataSource

@@ -8,11 +8,13 @@ import com.advice.core.local.MenuItem
 import com.advice.core.local.NewsArticle
 import com.advice.core.local.wifi.EapSubject
 import com.advice.core.local.wifi.WirelessNetwork
-import com.advice.core.storage.UserPreferencesStore
-import com.advice.core.ui.HomeState
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.FeedbackDataSource
+import com.advice.data.storage.UserPreferencesStore
+import com.advice.menu.data.repositories.MenuRepository
+import com.advice.news.data.repositories.NewsRepository
+import com.advice.ui.states.HomeState
 import com.advice.wifi.data.repositories.WifiNetworkRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -164,7 +166,7 @@ class HomeRepositoryMenuTest {
 
             val state = subject().contents.first() as HomeState.Loaded
 
-            assertTrue(state.hasChicken)
+            assertTrue(state.hasEasterEgg)
         }
 
     @Test
@@ -180,7 +182,7 @@ class HomeRepositoryMenuTest {
 
             val state = subject().contents.first() as HomeState.Loaded
 
-            assertFalse(state.hasChicken)
+            assertFalse(state.hasEasterEgg)
         }
 
     private fun subject() =

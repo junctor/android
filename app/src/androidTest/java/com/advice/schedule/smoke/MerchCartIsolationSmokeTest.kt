@@ -16,7 +16,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.advice.products.utils.parseCompactOrderData
+import com.advice.merch.utils.parseCompactOrderData
 import com.advice.schedule.ui.activity.MainActivity
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue

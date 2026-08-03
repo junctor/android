@@ -3,11 +3,11 @@ package com.advice.schedule.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Event
-import com.advice.core.storage.UserPreferencesStore
-import com.advice.core.ui.ScheduleFilter
 import com.advice.core.utils.TimeUtil
+import com.advice.data.storage.UserPreferencesStore
 import com.advice.schedule.data.repositories.ScheduleRepository
 import com.advice.schedule.data.repositories.ScheduleResult
+import com.advice.ui.states.ScheduleFilter
 import com.advice.ui.states.ScheduleScreenState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

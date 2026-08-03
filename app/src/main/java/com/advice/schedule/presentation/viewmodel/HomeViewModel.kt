@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.Conference
 import com.advice.core.local.NewsArticle
-import com.advice.core.ui.HomeState
-import com.advice.core.utils.NotificationHelper
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.play.AppManager
+import com.advice.reminder.NotificationHelper
 import com.advice.schedule.data.repositories.HomeRepository
+import com.advice.ui.states.HomeState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

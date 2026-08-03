@@ -1,8 +1,8 @@
 package com.advice.schedule.smoke
 
 import android.graphics.Bitmap
-import com.advice.products.utils.generateQRCode
-import com.advice.products.utils.parseCompactOrderData
+import com.advice.merch.utils.generateQRCode
+import com.advice.merch.utils.parseCompactOrderData
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.RGBLuminanceSource

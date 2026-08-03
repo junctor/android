@@ -24,6 +24,10 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          # Persist dependency caches across runs so cold CI hits Maven less often.
+          # Only main writes the cache; PRs reuse it read-only.
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Write google-services.json
         env:
@@ -43,14 +47,16 @@ jobs:
             echo "REPORT_URL=$REPORT_URL" >> local.properties
           fi
 
+      # Keep the daemon across steps (setup-gradle stops it at job end) so later
+      # steps reuse the already-resolved classpath instead of re-hitting Maven.
       - name: ktlint
-        run: ./gradlew ktlintCheck --no-daemon
+        run: ./gradlew ktlintCheck
 
       - name: Unit tests
-        run: ./gradlew test --no-daemon
+        run: ./gradlew test
 
       - name: Lint (app)
-        run: ./gradlew :app:lintDebug --no-daemon
+        run: ./gradlew :app:lintDebug
 
       - name: Assemble debug
-        run: ./gradlew :app:assembleDebug --no-daemon
+        run: ./gradlew :app:assembleDebug

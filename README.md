@@ -19,9 +19,9 @@ Compose screen → ViewModel → repository → :data interface
   → Firebase / Retrofit implementation → :core model → Flow → UI
 ```
 
-- **`:core`** — shared domain models, utilities, and typed local storage. No project dependencies.
-- **`:data`** — backend-neutral data-source interfaces, `UserSession`, and local bookmark implementations. Depends on `:core`.
-- **`:ui`** — shared Compose screens and components used across features. Depends on `:core` and `:feature-glitch`.
+- **`:core`** — shared domain models and pure utilities. No project dependencies.
+- **`:data`** — backend-neutral data-source interfaces, `UserSession`, local bookmark/prefs stores, and shared network client. Depends on `:core`.
+- **`:ui`** — shared Compose screens and components used across features (including glitch visual effects). Depends on `:core` and `:data`.
 - **`:app`** — composition root: DI aggregation, navigation, schedule/shell repositories and ViewModels, and screen wiring. Depends on every module.
 
 User-facing feature modules typically own their repository, ViewModel, UI, and Koin module. Navigation graphs and Firebase/Retrofit bindings stay in `:app`.
@@ -31,65 +31,87 @@ User-facing feature modules typically own their repository, ViewModel, UI, and K
 ```text
 :core
 ├── :data
-├── :feature-glitch ──→ :ui
-├── :feature-play
-├── :feature-analytics
-├── :feature-reminder          (:core + :data)
-├── :feature-retrofit          (:core + :data)
+├── :ui
+├── :infra-play
+├── :infra-analytics
+├── :infra-reminder          (:core + :data)
+├── :infra-retrofit          (:core + :data)
 │
-:feature-firebase              (:core + :data + :feature-play)
+:infra-firebase              (:core + :data + :infra-play)
 │
 :data + :ui
 ├── :feature-locations
-├── :feature-merch             (+ :feature-glitch)
+├── :feature-merch
 ├── :feature-documents
 ├── :feature-feedback
 ├── :feature-organizations
 ├── :feature-wifi
+├── :feature-maps
+├── :feature-news
+├── :feature-faq
+├── :feature-speakers
+├── :feature-settings
+├── :feature-search
+├── :feature-menu
 │
 :app → all of the above
 ```
+
+### Module taxonomy
+
+- **Foundation:** `:core`, `:data`, `:ui`
+- **Infra (`infra-*`):** firebase, retrofit, play, analytics, reminder — Gradle module names are `infra-*`; Kotlin packages stay `com.advice.firebase`, `com.advice.retrofit`, `com.advice.play`, `com.advice.analytics`, `com.advice.reminder`
+- **Product features (`feature-*`):** locations, merch, documents, feedback, organizations, wifi, maps, news, faq, speakers, settings, search, menu
+- **Composition root:** `:app`
+- **Known debt:** `applicationId` / some namespaces remain `com.shortstack.*` (not migrating in this epic). Merch is the exception: Kotlin package/namespace is `com.advice.merch` while catalog domain types stay `com.advice.core.local.products`.
 
 ### Foundation
 
 | Module | Role |
 |--------|------|
-| `core` | Domain models (`Conference`, `Event`, `Speaker`, …), shared state types, OkHttp client, notifications, typed stores (`MerchCartStore`, `UserPreferencesStore`, `ContentSyncStore`, `OfflineQueueStore`) |
-| `data` | Data-source contracts (`ContentDataSource`, `LocationsDataSource`, …), `UserSession`, plus local bookmark stores |
-| `ui` | Reusable Compose screens/components (schedule, home cards, maps chrome, settings, filters, privacy policy) and shared UI state types |
+| `core` | Domain models (`Conference`, `Event`, `Speaker`, …), audience policy, pure utilities (`TimeUtil`, `ToastManager`), preference catalog |
+| `data` | Data-source contracts, `UserSession`, bookmark stores, OkHttp `Network` client, prefs stores (`UserPreferencesStore`, `ContentSyncStore`), offline queue DTOs |
+| `ui` | Reusable Compose screens/components (schedule, home cards, maps chrome, settings, filters, privacy policy), glitch visual effects, and shared UI state types |
 
-### Infrastructure (`feature-*`)
+### Infrastructure (`infra-*`)
 
 | Module | Role |
 |--------|------|
-| `feature-firebase` | Primary backend: Firestore data sources, DTO → core mapping, anonymous auth / conference session |
-| `feature-retrofit` | HTTP maps download/cache (`MapsDataSource`) |
-| `feature-analytics` | Analytics events and Remote Config flags |
-| `feature-play` | In-app updates and Play Age Signals |
-| `feature-reminder` | WorkManager-based event/feedback reminder notifications |
-| `feature-glitch` | Visual/easter-egg effects consumed by `:ui` and `:feature-merch` |
+| `infra-firebase` | Primary backend: Firestore data sources, DTO → core mapping, anonymous auth / conference session |
+| `infra-retrofit` | HTTP maps download/cache (`MapsDataSource`) |
+| `infra-analytics` | Analytics events and Remote Config flags |
+| `infra-play` | In-app updates and Play Age Signals |
+| `infra-reminder` | WorkManager-based event/feedback reminder notifications (`NotificationHelper`) |
 
-### User-facing features
+### Product features (`feature-*`)
 
 | Module | Role |
 |--------|------|
 | `feature-locations` | Location tree browser (repo, ViewModel, screen, Koin module) |
-| `feature-merch` | Merch catalog, per-conference cart, and order-summary QR |
+| `feature-merch` | Merch catalog (`com.advice.merch`), per-conference cart (`MerchCartStore`), and order-summary QR |
 | `feature-documents` | Conference document list/detail (repo, ViewModel, screen) |
-| `feature-feedback` | Feedback form UI, HTTP feedback submission, and content reporting |
+| `feature-feedback` | Feedback form UI, HTTP feedback/report submission, and offline queue |
 | `feature-wifi` | Wi-Fi join helpers and screen (repo, ViewModel, Koin module) |
 | `feature-organizations` | Org list/detail (repo, ViewModels, screens, Koin module) |
+| `feature-maps` | Conference maps (repo, ViewModel, Koin module) |
+| `feature-news` | News feed (repo, ViewModel, Koin module) |
+| `feature-faq` | FAQ list (repo, ViewModel, Koin module) |
+| `feature-speakers` | Speakers list/detail (repos, ViewModels, Koin module). The singular/plural repository pair (`SpeakerRepository` detail vs `SpeakersRepository` list) is intentional |
+| `feature-settings` | Settings + privacy policy wiring (repo, ViewModel, Koin module) |
+| `feature-search` | Cross-content search screen/repo |
+| `feature-menu` | Nested conference menus |
 
 ### Composition root (`app`)
 
 `App` initializes Firebase, Timber, and Koin via `appModules()`. That list aggregates:
 
-- **App modules** — `shellModule` (prefs/cart/bookmarks/analytics shell), `firebaseDataModule` (`:data` interfaces → Firebase/Retrofit), `scheduleModule` / `settingsModule` (schedule-shell repos and ViewModels), `playModule`
-- **Feature modules** — `locationsModule`, `productsModule`, `organizationsModule`, `wifiModule`, `feedbackModule`, `documentsModule`, `reminderModule`
+- **App modules** — `shellModule` (scope/prefs/bookmarks/nav shell) and `scheduleModule` (schedule-shell repos and ViewModels)
+- **Infra modules** — `firebaseDataModule` (`:data` interfaces → Firebase), `retrofitModule` (`MapsDataSource`), `analyticsModule`, `playModule`, `reminderModule` — each owned by its `infra-*` module
+- **Feature modules** — `locationsModule`, `merchModule`, `organizationsModule`, `wifiModule`, `feedbackModule`, `documentsModule`, `mapsModule`, `newsModule`, `faqModule`, `speakersModule`, `searchModule`, `menuModule`, `settingsModule`
 
 `MainActivity` owns the root `NavHost`; route wrappers in `:app` collect ViewModel state and pass it into `:ui` or feature screens. Feature modules do not register their own navigation graphs.
 
-Schedule, search, home, news, FAQ, maps, speakers, and filters remain in `:app` (not extracted as feature modules).
+Home, schedule, filters, and content/event remain in `:app` (not extracted as feature modules).
 
 ## Requirements
 

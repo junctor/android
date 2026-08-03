@@ -3,8 +3,8 @@ package com.advice.schedule.data.repositories
 import com.advice.core.local.Bookmark
 import com.advice.core.local.FlowResult
 import com.advice.core.local.Tag
-import com.advice.core.ui.FiltersScreenState
 import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.ui.states.FiltersScreenState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine

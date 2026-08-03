@@ -70,7 +70,6 @@ Remediated in the accessibility audit pass unless noted. Re-scan when adding UI.
 | ------- | -------- | ----- |
 | Generic logo/image/info | orgs, merch, cards, gallery | Decorative `null` or indexed gallery CD |
 | QR CD dumps full payload | `feature-merch/.../QRCodeImage.kt` | Intentionally kept `QR Code: {payload}` for smoke decode |
-| Easter-egg chicken CD | `RubberButton.kt` | Play rubber chicken sound |
 | Pinch/zoom gestures | `ZoomableGestures.kt` | Buttons already labeled on PDF/maps |
 | Hardcoded English a11y strings | some chrome locators | Prefer `stringResource` when touching; smoke locators stay stable |
 

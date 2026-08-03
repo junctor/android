@@ -1,4 +1,4 @@
-package com.advice.schedule.ui.viewmodels
+package com.advice.schedule.presentation.viewmodel
 
 import com.advice.core.local.Document
 import com.advice.schedule.ui.components.DragAnchors

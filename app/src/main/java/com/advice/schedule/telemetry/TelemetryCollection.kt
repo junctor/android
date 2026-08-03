@@ -1,7 +1,7 @@
 package com.advice.schedule.telemetry
 
 import android.content.Context
-import com.advice.core.storage.UserPreferencesStore
+import com.advice.data.storage.UserPreferencesStore
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.shortstack.hackertracker.BuildConfig

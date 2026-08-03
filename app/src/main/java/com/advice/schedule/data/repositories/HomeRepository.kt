@@ -9,11 +9,13 @@ import com.advice.core.local.NewsArticle
 import com.advice.core.local.feedback.FeedbackForm
 import com.advice.core.local.wifi.WirelessNetwork
 import com.advice.core.local.withGeneralFeedback
-import com.advice.core.storage.UserPreferencesStore
-import com.advice.core.ui.HomeState
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.sources.FeedbackDataSource
+import com.advice.data.storage.UserPreferencesStore
+import com.advice.menu.data.repositories.MenuRepository
+import com.advice.news.data.repositories.NewsRepository
+import com.advice.ui.states.HomeState
 import com.advice.wifi.data.repositories.WifiNetworkRepository
 import kotlinx.coroutines.flow.combine
 
@@ -59,7 +61,7 @@ class HomeRepository(
                 conference = conference,
                 menu = getMenu(menu, conference, wifi, forms),
                 news = latest,
-                hasChicken = hasChicken(conference),
+                hasEasterEgg = hasChicken(conference),
             )
         }
 

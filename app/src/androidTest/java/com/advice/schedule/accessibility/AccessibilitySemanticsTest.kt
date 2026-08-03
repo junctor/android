@@ -2,11 +2,14 @@ package com.advice.schedule.accessibility
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.advice.products.ui.components.QuantityAdjuster
+import com.advice.merch.ui.components.QuantityAdjuster
 import com.advice.ui.components.BookmarkButton
 import com.advice.ui.components.SearchBar
 import com.advice.ui.theme.ScheduleTheme
@@ -25,20 +28,17 @@ class AccessibilitySemanticsTest {
 
     @Test
     fun bookmarkButton_announcesAddAndRemove() {
+        var isBookmarked by mutableStateOf(false)
         composeRule.setContent {
             ScheduleTheme {
                 Column {
-                    BookmarkButton(isBookmarked = false, onCheckChange = {})
+                    BookmarkButton(isBookmarked = isBookmarked, onCheckChange = {})
                 }
             }
         }
         composeRule.onNodeWithContentDescription("Add bookmark").assertIsDisplayed()
 
-        composeRule.setContent {
-            ScheduleTheme {
-                BookmarkButton(isBookmarked = true, onCheckChange = {})
-            }
-        }
+        isBookmarked = true
         composeRule.onNodeWithContentDescription("Remove bookmark").assertIsDisplayed()
     }
 
@@ -54,10 +54,11 @@ class AccessibilitySemanticsTest {
 
     @Test
     fun quantityAdjuster_announcesIncreaseDecreaseAndRemove() {
+        var quantity by mutableStateOf(2)
         composeRule.setContent {
             ScheduleTheme {
                 QuantityAdjuster(
-                    quantity = 2,
+                    quantity = quantity,
                     onQuantityChanged = {},
                     canDelete = true,
                 )
@@ -66,15 +67,7 @@ class AccessibilitySemanticsTest {
         composeRule.onNodeWithContentDescription("Increase quantity").assertIsDisplayed()
         composeRule.onNodeWithContentDescription("Decrease quantity").assertIsDisplayed()
 
-        composeRule.setContent {
-            ScheduleTheme {
-                QuantityAdjuster(
-                    quantity = 1,
-                    onQuantityChanged = {},
-                    canDelete = true,
-                )
-            }
-        }
+        quantity = 1
         composeRule.onNodeWithContentDescription("Remove from cart").assertIsDisplayed()
         composeRule.onNodeWithContentDescription("Increase quantity").assertIsDisplayed()
     }

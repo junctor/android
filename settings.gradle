@@ -2,6 +2,11 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
+        // Prefer Google's Maven Central mirror to avoid CI 429s from shared runner IPs.
+        maven {
+            name = "GoogleMavenCentral"
+            url = "https://maven-central.storage-download.googleapis.com/maven2/"
+        }
         mavenCentral()
     }
 }
@@ -12,6 +17,11 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
+        // Prefer Google's Maven Central mirror to avoid CI 429s from shared runner IPs.
+        maven {
+            name = "GoogleMavenCentral"
+            url = "https://maven-central.storage-download.googleapis.com/maven2/"
+        }
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
@@ -21,15 +31,21 @@ include ':app'
 include ':ui'
 include ':core'
 include ':data'
-include ':feature-firebase'
-include ':feature-glitch'
+include ':infra-firebase'
 include ':feature-merch'
 include ':feature-locations'
-include ':feature-reminder'
-include ':feature-retrofit'
+include ':infra-reminder'
+include ':infra-retrofit'
 include ':feature-wifi'
 include ':feature-organizations'
 include ':feature-documents'
-include ':feature-analytics'
-include ':feature-play'
+include ':infra-analytics'
+include ':infra-play'
 include ':feature-feedback'
+include ':feature-maps'
+include ':feature-news'
+include ':feature-faq'
+include ':feature-speakers'
+include ':feature-settings'
+include ':feature-search'
+include ':feature-menu'

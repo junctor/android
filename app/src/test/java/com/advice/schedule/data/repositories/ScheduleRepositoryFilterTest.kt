@@ -8,9 +8,9 @@ import com.advice.core.local.Location
 import com.advice.core.local.Session
 import com.advice.core.local.Tag
 import com.advice.core.local.TagType
-import com.advice.core.ui.ScheduleFilter
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.schedule.domain.ContentBookmarkUseCase
+import com.advice.ui.states.ScheduleFilter
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

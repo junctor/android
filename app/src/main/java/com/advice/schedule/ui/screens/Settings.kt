@@ -13,8 +13,8 @@ import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
-import com.advice.schedule.presentation.viewmodel.SettingsViewModel
 import com.advice.schedule.ui.activity.MainActivity
+import com.advice.settings.presentation.viewmodel.SettingsViewModel
 import com.advice.ui.screens.SettingScreen
 
 @Composable

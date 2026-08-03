@@ -3,8 +3,8 @@ package com.advice.schedule.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.local.Tag
-import com.advice.core.ui.FiltersScreenState
 import com.advice.schedule.data.repositories.FiltersRepository
+import com.advice.ui.states.FiltersScreenState
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import timber.log.Timber

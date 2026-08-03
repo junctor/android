@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import com.advice.core.local.FlowResult
+import com.advice.news.presentation.viewmodel.NewsViewModel
 import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.onBackPressed
-import com.advice.schedule.presentation.viewmodel.NewsViewModel
 import com.advice.ui.screens.NewsScreen
 
 @Composable
