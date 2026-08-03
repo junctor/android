@@ -86,12 +86,19 @@ class QRCodeUtilsKtTest {
     }
 
     @Test
-    fun `ProductSelection any out of stock returns null`() {
-        val inStock = productSelection(StockStatus.IN_STOCK)
-        val outOfStock = productSelection(StockStatus.OUT_OF_STOCK, productId = 2, variantId = 2)
-        assertNull(
-            listOf(inStock, outOfStock).toStringData(conference = 123, versionCode = 1),
-        )
+    fun `ProductSelection out of stock lines are omitted from QR`() {
+        val inStock = productSelection(StockStatus.IN_STOCK, productId = 1, variantId = 456)
+        val outOfStock = productSelection(StockStatus.OUT_OF_STOCK, productId = 2, variantId = 789)
+        val data =
+            listOf(inStock, outOfStock).toStringData(conference = 123, versionCode = 42)
+
+        assertEquals("1:123:A42:456:1", data)
+    }
+
+    @Test
+    fun `ProductSelection all out of stock returns null`() {
+        val outOfStock = productSelection(StockStatus.OUT_OF_STOCK)
+        assertNull(listOf(outOfStock).toStringData(conference = 123, versionCode = 1))
     }
 
     private fun productSelection(

@@ -155,13 +155,12 @@ class ProductsViewModel :
         var selections = cart.getSelections()
         val conferenceId = conference
         if (conferenceId != null && products.isNotEmpty()) {
-            val pruned = MerchCartStore.pruneSelectionsToCatalog(selections, products)
+            val pruned = merchCartStore.pruneToCatalog(conferenceId, products, selections)
             if (pruned != selections) {
                 cart.clear()
                 pruned.forEach { cart.add(it) }
                 selections = pruned
             }
-            merchCartStore.setSelectedProducts(conferenceId, selections)
         } else {
             saveProductSelection(selections)
         }

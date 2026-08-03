@@ -64,9 +64,23 @@ class MerchCartStoreTest {
         assertTrue(MerchCartStore.pruneSelectionsToCatalog(selections, emptyList()).isEmpty())
     }
 
+    @Test
+    fun pruneSelectionsToCatalog_keepsOutOfStockVariants() {
+        val products =
+            listOf(
+                product(id = 1, variantIds = listOf(10L), stockStatus = StockStatus.OUT_OF_STOCK),
+            )
+        val selections = listOf(ProductVariantSelection(1, 10, 2))
+
+        val pruned = MerchCartStore.pruneSelectionsToCatalog(selections, products)
+
+        assertEquals(selections, pruned)
+    }
+
     private fun product(
         id: Long,
         variantIds: List<Long>,
+        stockStatus: StockStatus = StockStatus.IN_STOCK,
     ): Product =
         Product(
             id = id,
@@ -81,7 +95,7 @@ class MerchCartStoreTest {
                         label = "V$variantId",
                         tags = emptyList(),
                         price = 1000,
-                        stockStatus = StockStatus.IN_STOCK,
+                        stockStatus = stockStatus,
                     )
                 },
             media = emptyList(),

@@ -45,18 +45,16 @@ class MerchCartStore(
     }
 
     /**
-     * Drops selections whose product or variant no longer exists in [products], and rewrites
-     * prefs when the pruned list differs from what was stored.
+     * Drops selections whose product or variant no longer exists in [products], persists the
+     * pruned list, and returns it. Out-of-stock items are kept; only missing catalog IDs are removed.
      */
     fun pruneToCatalog(
         conferenceId: Long,
         products: List<Product>,
+        selections: List<ProductVariantSelection>,
     ): List<ProductVariantSelection> {
-        val current = getSelectedProducts(conferenceId)
-        val pruned = pruneSelectionsToCatalog(current, products)
-        if (pruned != current) {
-            setSelectedProducts(conferenceId, pruned)
-        }
+        val pruned = pruneSelectionsToCatalog(selections, products)
+        setSelectedProducts(conferenceId, pruned)
         return pruned
     }
 

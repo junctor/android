@@ -36,16 +36,13 @@ fun List<ProductSelection>.toStringData(
             return null
         }
 
-        // if the product is out of stock, we can't generate a QR code
-        if (any { it.variant.stockStatus == StockStatus.OUT_OF_STOCK }) {
-            Timber.e("summary contains a product that is out of stock, can't generate QR code.")
-            find { it.variant.stockStatus == StockStatus.OUT_OF_STOCK }?.let {
-                Timber.e("Product: ${it.label} is out of stock")
-            }
+        // Out-of-stock lines stay in the list UI but are omitted from the QR payload
+        val available = filter { it.variant.stockStatus != StockStatus.OUT_OF_STOCK }
+        if (available.isEmpty()) {
             return null
         }
 
-        val products = map { ProductVariantSelection(it.id, it.variant.id, it.quantity) }
+        val products = available.map { ProductVariantSelection(it.id, it.variant.id, it.quantity) }
 
         return products.toStringData(conference, versionCode)
     } catch (ex: Exception) {

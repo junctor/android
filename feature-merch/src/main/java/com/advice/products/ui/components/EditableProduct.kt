@@ -1,6 +1,7 @@
 package com.advice.products.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,11 +23,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,21 +43,29 @@ import com.advice.products.utils.toCurrency
 import com.advice.ui.components.Image
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.ScheduleTheme
-import com.advice.ui.theme.roundedCornerShape
 
 @Composable
 internal fun EditableProduct(
     product: ProductSelection,
     onQuantityChanged: (Int) -> Unit,
+    onOutOfStockClick: (() -> Unit)? = null,
 ) {
     val height = 128.dp
+    val outOfStock = product.variant.stockStatus == StockStatus.OUT_OF_STOCK
+    val textDecoration = if (outOfStock) TextDecoration.LineThrough else TextDecoration.None
 
     Box {
-        val inStock = product.variant.stockStatus != StockStatus.OUT_OF_STOCK
         Row(
             Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            //  .alpha(if (inStock) 1.0f else 0.5f)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .alpha(if (outOfStock) 0.7f else 1.0f)
+                .then(
+                    if (outOfStock && onOutOfStockClick != null) {
+                        Modifier.clickable(onClick = onOutOfStockClick)
+                    } else {
+                        Modifier
+                    },
+                ),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Image
@@ -68,6 +82,17 @@ internal fun EditableProduct(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit,
                 )
+                if (outOfStock) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.cd_out_of_stock),
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .size(48.dp),
+                    )
+                }
             }
 
             Column(
@@ -81,18 +106,19 @@ internal fun EditableProduct(
                             .weight(1.0f),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        // label
                         Text(
                             text = product.label,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
                             lineHeight = 15.sp,
+                            textDecoration = textDecoration,
                         )
                         val variant = product.variant
                         Text(
                             text = variant.label,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
+                            textDecoration = textDecoration,
                         )
                     }
 
@@ -104,66 +130,46 @@ internal fun EditableProduct(
                         PriceLabel(
                             text = product.cost.toCurrency(showCents = true),
                         )
-                        // Stock status
                         if (product.variant.stockStatus == StockStatus.LOW_STOCK) {
                             Spacer(Modifier.height(4.dp))
                             LowStockLabel()
+                        }
+                        if (outOfStock) {
+                            Spacer(Modifier.height(4.dp))
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(R.string.cd_out_of_stock),
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(20.dp),
+                            )
                         }
                     }
                 }
                 Spacer(Modifier.weight(1f))
 
-                if (product.variant.stockStatus == StockStatus.OUT_OF_STOCK) {
-                    Row(
-                        modifier =
-                            Modifier
-                                .background(
-                                    MaterialTheme.colorScheme.errorContainer,
-                                    shape = roundedCornerShape,
-                                ).height(32.dp)
-                                .padding(horizontal = 8.dp, vertical = 0.dp)
-                                .align(Alignment.End),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Text(
-                            text = "Out of Stock",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 12.sp,
-                        )
-
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_delete),
-                            contentDescription = "Delete",
-                            tint = iconButtonForegroundColor,
-                            modifier =
-                                Modifier
-                                    .size(14.dp),
-                        )
-                    }
-                } else {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (!outOfStock) {
                         QuantityAdjuster(
                             quantity = product.quantity,
                             onQuantityChanged = onQuantityChanged,
                             canDelete = false,
-                            enabled = inStock,
+                            enabled = true,
                             modifier = Modifier.height(32.dp),
                         )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        IconButton(
-                            icon = painterResource(id = R.drawable.ic_delete),
-                            onClick = {
-                                onQuantityChanged(0)
-                            },
-                            backgroundColor = MaterialTheme.colorScheme.errorContainer,
-                            contentDescription = "Remove from cart",
-                        )
                     }
+
+                    Spacer(Modifier.weight(1f))
+
+                    IconButton(
+                        icon = painterResource(id = R.drawable.ic_delete),
+                        onClick = {
+                            onQuantityChanged(0)
+                        },
+                        backgroundColor = MaterialTheme.colorScheme.errorContainer,
+                        contentDescription = stringResource(R.string.cd_remove_from_cart),
+                    )
                 }
             }
         }
