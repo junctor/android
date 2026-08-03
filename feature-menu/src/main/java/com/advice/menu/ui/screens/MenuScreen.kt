@@ -1,0 +1,88 @@
+package com.advice.menu.ui.screens
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
+import com.advice.core.local.Menu
+import com.advice.core.local.MenuItem
+import com.advice.ui.components.BackButton
+import com.advice.ui.components.MenuIcon
+import com.advice.ui.components.ProgressSpinner
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuScreen(
+    label: String,
+    menu: Menu?,
+    onBackPressed: () -> Unit,
+    onNavigationClick: (MenuItem) -> Unit,
+) {
+    Scaffold(topBar = {
+        CenterAlignedTopAppBar(title = { Text(label) }, navigationIcon = {
+            BackButton(onBackPressed)
+        })
+    }) {
+        Box(Modifier.padding(it)) {
+            when (menu) {
+                null -> {
+                    ProgressSpinner()
+                }
+                else -> {
+                    Column(
+                        Modifier
+                            .padding(16.dp)
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        menu.items.forEach { menuItem ->
+                            Surface(
+                                border =
+                                    BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.onSurface.copy(0.15f),
+                                    ),
+                                shape = RoundedCornerShape(12.dp),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 0.dp, vertical = 4.dp),
+                            ) {
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .semantics { contentDescription = "Home menu: ${menuItem.label}" }
+                                        .clickable { onNavigationClick(menuItem) }
+                                        .padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                ) {
+                                    MenuIcon(menuItem.icon)
+                                    Text(menuItem.label)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
