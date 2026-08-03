@@ -8,8 +8,6 @@ import com.advice.schedule.data.repositories.FAQRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 sealed class FAQScreenState {
     object Loading : FAQScreenState()
@@ -23,11 +21,9 @@ sealed class FAQScreenState {
     ) : FAQScreenState()
 }
 
-class FAQViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val repository by inject<FAQRepository>()
-
+class FAQViewModel(
+    private val repository: FAQRepository,
+) : ViewModel() {
     private val _state = MutableStateFlow<FAQScreenState>(FAQScreenState.Loading)
     val state: Flow<FAQScreenState> = _state
 

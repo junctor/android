@@ -8,5 +8,5 @@ import org.koin.dsl.module
 val locationsModule =
     module {
         single { LocationRepository(get()) }
-        viewModel { LocationsViewModel() }
+        viewModel { LocationsViewModel(get()) }
     }

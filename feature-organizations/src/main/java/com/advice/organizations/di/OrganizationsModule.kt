@@ -9,6 +9,6 @@ import org.koin.dsl.module
 val organizationsModule =
     module {
         single { OrganizationsRepository(get()) }
-        viewModel { OrganizationsViewModel() }
-        viewModel { OrganizationViewModel() }
+        viewModel { OrganizationsViewModel(get()) }
+        viewModel { OrganizationViewModel(get()) }
     }

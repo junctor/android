@@ -10,7 +10,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,17 +37,15 @@ import com.advice.ui.components.notifications.NotificationsPopup
 import com.advice.ui.components.notifications.PopupContainer
 import com.advice.ui.theme.ScheduleTheme
 import com.advice.ui.utils.ClearEdgeToEdgeProtectionsEffect
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import android.graphics.Color as AndroidColor
 
-class MainActivity :
-    AppCompatActivity(),
-    KoinComponent {
-    private val navigation by inject<NavigationManager>()
-    private val analytics by inject<AnalyticsProvider>()
-    private val mainViewModel: MainViewModel by viewModels()
+class MainActivity : AppCompatActivity() {
+    private val navigation: NavigationManager by inject()
+    private val analytics: AnalyticsProvider by inject()
+    private val mainViewModel: MainViewModel by viewModel()
 
     /**
      * Bridge for deep links handled outside composition ([onNewIntent]).

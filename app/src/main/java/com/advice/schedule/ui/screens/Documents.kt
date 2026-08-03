@@ -3,7 +3,6 @@ package com.advice.schedule.ui.screens
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.documents.presentation.viewmodel.DocumentsScreenState
 import com.advice.documents.presentation.viewmodel.DocumentsViewModel
@@ -13,6 +12,7 @@ import com.advice.schedule.extensions.navGraphViewModel
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun Document(
@@ -20,7 +20,7 @@ internal fun Document(
     id: Long? = null,
 ) {
     val viewModel = navController.navGraphViewModel<DocumentsViewModel>()
-    val reportViewModel = viewModel<ReportViewModel>()
+    val reportViewModel = koinViewModel<ReportViewModel>()
     val state = viewModel.state.collectAsState(initial = DocumentsScreenState.Loading).value
 
     LaunchedEffect(id) {

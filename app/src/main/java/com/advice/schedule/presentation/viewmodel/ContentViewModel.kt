@@ -9,15 +9,11 @@ import com.advice.ui.states.ContentScreenState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class ContentViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val repository by inject<ContentRepository>()
-    private val contentBookmarkUseCase by inject<ContentBookmarkUseCase>()
-
+class ContentViewModel(
+    private val repository: ContentRepository,
+    private val contentBookmarkUseCase: ContentBookmarkUseCase,
+) : ViewModel() {
     private val _state = MutableStateFlow<ContentScreenState>(ContentScreenState.Loading)
     val state: Flow<ContentScreenState> = _state
 

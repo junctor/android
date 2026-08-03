@@ -10,16 +10,12 @@ import com.advice.ui.states.EventScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 
-class EventViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val repository by inject<ScheduleRepository>()
-    private val contentRepository by inject<ContentRepository>()
-
+class EventViewModel(
+    private val repository: ScheduleRepository,
+    private val contentRepository: ContentRepository,
+) : ViewModel() {
     private val _state = MutableStateFlow<EventScreenState>(EventScreenState.Loading)
     val state: StateFlow<EventScreenState> = _state
 

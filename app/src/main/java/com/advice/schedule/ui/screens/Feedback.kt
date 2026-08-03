@@ -3,7 +3,6 @@ package com.advice.schedule.ui.screens
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.advice.feedback.presentation.viewmodel.FeedbackViewModel
 import com.advice.feedback.ui.screens.FeedbackFormScreen
@@ -11,6 +10,7 @@ import com.advice.feedback.ui.screens.FeedbackState
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Feedback(
@@ -18,7 +18,7 @@ fun Feedback(
     id: Long,
     content: Long?,
 ) {
-    val viewModel = viewModel<FeedbackViewModel>()
+    val viewModel = koinViewModel<FeedbackViewModel>()
     LaunchedEffect("$id/$content") {
         viewModel.fetchFeedbackForm(id)
     }

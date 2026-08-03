@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.ui.ScheduleFilter
 import com.advice.locations.presentation.viewmodel.LocationsViewModel
@@ -17,11 +16,12 @@ import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun Locations(navController: NavHostController) {
     val viewModel = navController.navGraphViewModel<LocationsViewModel>()
-    val conferenceViewModel = viewModel<ConferenceViewModel>()
+    val conferenceViewModel = koinViewModel<ConferenceViewModel>()
     val state = viewModel.state.collectAsState(initial = null).value ?: return
     val conference = conferenceViewModel.conference.collectAsState(initial = null).value ?: return
     com.advice.locations.ui.screens.LocationsScreen(
@@ -46,7 +46,7 @@ fun Location(
     id: Long?,
     label: String?,
 ) {
-    val viewModel = viewModel<ScheduleViewModel>(context)
+    val viewModel = koinViewModel<ScheduleViewModel>(viewModelStoreOwner = context)
     val state =
         remember {
             viewModel.getState(ScheduleFilter.Location(id))

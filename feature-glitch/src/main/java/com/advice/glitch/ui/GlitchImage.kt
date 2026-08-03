@@ -27,6 +27,7 @@ import com.advice.glitch.effect.GlitchRenderer
 import com.advice.glitch.effect.GlitchRng
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Reusable glitch-effect image. Burst animation (chromatic aberration, horizontal
@@ -74,7 +75,7 @@ fun GlitchImage(
             return@LaunchedEffect
         }
         while (isActive) {
-            delay(rng.nextIdleDelayMs())
+            delay(rng.nextIdleDelayMs().milliseconds)
             if (!isActive) break
             frame =
                 rng.nextBurstFrame(
@@ -83,7 +84,7 @@ fun GlitchImage(
                     intensity = intensity,
                     enableScanlines = enableScanlines,
                 )
-            delay(rng.nextBurstDurationMs())
+            delay(rng.nextBurstDurationMs().milliseconds)
             frame = GlitchFrame.IDLE
         }
     }

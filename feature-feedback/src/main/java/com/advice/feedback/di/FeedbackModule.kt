@@ -5,6 +5,7 @@ import com.advice.feedback.network.FeedbackSubmissionRepository
 import com.advice.feedback.network.ReportSubmissionRepository
 import com.advice.feedback.presentation.viewmodel.FeedbackViewModel
 import com.advice.feedback.presentation.viewmodel.ReportViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -13,6 +14,6 @@ fun feedbackModule(versionName: String) =
         single { FeedbackFormRepository(get()) }
         single { FeedbackSubmissionRepository(versionName, get(), get()) }
         single { ReportSubmissionRepository(versionName, get(), get()) }
-        viewModel { FeedbackViewModel() }
-        viewModel { ReportViewModel() }
+        viewModel { FeedbackViewModel(get(), get(), get()) }
+        viewModel { ReportViewModel(androidContext(), get(), get(), get()) }
     }

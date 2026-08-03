@@ -11,18 +11,14 @@ import com.advice.feedback.network.ReportSubmissionRepository
 import com.advice.feedback.network.models.ReportObjectType
 import com.advice.ui.R
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 
-class ReportViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val context by inject<Context>()
-    private val reportRepository by inject<ReportSubmissionRepository>()
-    private val userSession by inject<UserSession>()
-    private val toastManager by inject<ToastManager>()
-
+class ReportViewModel(
+    private val context: Context,
+    private val reportRepository: ReportSubmissionRepository,
+    private val userSession: UserSession,
+    private val toastManager: ToastManager,
+) : ViewModel() {
     fun submit(
         message: String,
         objectType: ReportObjectType,

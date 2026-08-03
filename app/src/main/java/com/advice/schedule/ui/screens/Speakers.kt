@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.feedback.network.models.ReportObjectType
 import com.advice.feedback.presentation.viewmodel.ReportViewModel
@@ -17,6 +16,7 @@ import com.advice.schedule.presentation.viewmodel.SpeakersViewModel
 import com.advice.ui.screens.SpeakerScreen
 import com.advice.ui.screens.SpeakersScreen
 import com.advice.ui.states.SpeakerState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun Speakers(
@@ -45,7 +45,7 @@ fun Speaker(
     onLinkClicked: (String) -> Unit,
 ) {
     val viewModel = navController.navGraphViewModel<SpeakerViewModel>()
-    val reportViewModel = viewModel<ReportViewModel>()
+    val reportViewModel = koinViewModel<ReportViewModel>()
     val speakerDetails by viewModel.speakerDetails.collectAsState(SpeakerState.Loading)
 
     LaunchedEffect(id) {

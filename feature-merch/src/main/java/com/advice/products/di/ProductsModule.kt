@@ -14,5 +14,12 @@ fun productsModule(versionCode: Int) =
         single { ProductsRepository(get(), get()) }
         single<ProductCart> { ProductCart() }
         single(named(PRODUCTS_VERSION_CODE)) { versionCode }
-        viewModel { ProductsViewModel() }
+        viewModel {
+            ProductsViewModel(
+                get(),
+                get(),
+                get(),
+                get(named(PRODUCTS_VERSION_CODE)),
+            )
+        }
     }

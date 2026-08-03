@@ -12,16 +12,12 @@ import com.advice.feedback.ui.screens.FeedbackState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class FeedbackViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val formRepository by inject<FeedbackFormRepository>()
-    private val submissionRepository by inject<FeedbackSubmissionRepository>()
-    private val toastManager by inject<ToastManager>()
-
+class FeedbackViewModel(
+    private val formRepository: FeedbackFormRepository,
+    private val submissionRepository: FeedbackSubmissionRepository,
+    private val toastManager: ToastManager,
+) : ViewModel() {
     private val _state = MutableStateFlow<FeedbackState>(FeedbackState.Loading)
     val state: Flow<FeedbackState> = _state
 

@@ -17,19 +17,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.milliseconds
 
-class HomeViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val repository by inject<HomeRepository>()
-    private val analytics by inject<AnalyticsProvider>()
-    private val appManager by inject<AppManager>()
-    private val notificationHelper by inject<NotificationHelper>()
-    private val documentRepository by inject<DocumentsRepository>()
-
+class HomeViewModel(
+    private val repository: HomeRepository,
+    private val analytics: AnalyticsProvider,
+    private val appManager: AppManager,
+    private val notificationHelper: NotificationHelper,
+    private val documentRepository: DocumentsRepository,
+) : ViewModel() {
     private val state = MutableStateFlow<HomeState>(HomeState.Loading)
     private val countdown = MutableStateFlow(0L)
 

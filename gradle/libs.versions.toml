@@ -74,6 +74,7 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
+koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-config = { module = "com.google.firebase:firebase-config" }

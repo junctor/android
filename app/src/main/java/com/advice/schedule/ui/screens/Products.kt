@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.viewmodel.ProductsViewModel
@@ -17,6 +16,7 @@ import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.ui.components.ProgressSpinner
 import com.advice.ui.screens.ErrorScreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Products(
@@ -24,7 +24,7 @@ fun Products(
     navController: NavHostController,
     label: String,
 ) {
-    val viewModel = viewModel<ProductsViewModel>(context)
+    val viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context)
     val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value
 
     ProductsScreen(
@@ -66,7 +66,7 @@ fun Product(
     navController: NavHostController,
     id: Long?,
 ) {
-    val viewModel = viewModel<ProductsViewModel>(context)
+    val viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context)
     when (val state = viewModel.state.collectAsState(ProductsScreenState.Loading).value) {
         ProductsScreenState.Loading -> {
             ProgressSpinner()
@@ -111,7 +111,7 @@ fun ProductsSummary(
     context: AppCompatActivity,
     navController: NavHostController,
 ) {
-    val viewModel = viewModel<ProductsViewModel>(context)
+    val viewModel = koinViewModel<ProductsViewModel>(viewModelStoreOwner = context)
 
     // Storing the previous brightness for when we exit the Summary screen
     val attributes = context.window.attributes

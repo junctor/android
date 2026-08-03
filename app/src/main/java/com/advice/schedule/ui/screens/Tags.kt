@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.ui.ScheduleFilter
 import com.advice.schedule.navigation.Navigation
@@ -14,6 +13,7 @@ import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Tag(
@@ -22,7 +22,7 @@ fun Tag(
     id: Long?,
     label: String?,
 ) {
-    val viewModel = viewModel<ScheduleViewModel>(context)
+    val viewModel = koinViewModel<ScheduleViewModel>(viewModelStoreOwner = context)
     val state =
         remember {
             viewModel.getState(ScheduleFilter.Tag(id, label))
@@ -57,7 +57,7 @@ fun Tags(
     ids: List<Long>?,
     label: String?,
 ) {
-    val viewModel = viewModel<ScheduleViewModel>(context)
+    val viewModel = koinViewModel<ScheduleViewModel>(viewModelStoreOwner = context)
     val state =
         remember {
             viewModel.getState(ScheduleFilter.Tags(ids))

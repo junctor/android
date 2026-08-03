@@ -11,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.local.Content
 import com.advice.core.local.Session
@@ -29,6 +28,7 @@ import com.advice.ui.screens.ContentScreen
 import com.advice.ui.screens.ErrorScreen
 import com.advice.ui.states.ContentScreenState
 import com.advice.ui.states.EventScreenState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Contents(
@@ -36,7 +36,7 @@ fun Contents(
     navController: NavHostController,
     label: String?,
 ) {
-    val viewModel = viewModel<ContentViewModel>(context)
+    val viewModel = koinViewModel<ContentViewModel>(viewModelStoreOwner = context)
     val state = viewModel.state.collectAsState(initial = ContentScreenState.Loading).value
 
     ContentListScreen(
@@ -63,8 +63,8 @@ fun Event(
     id: String?,
     session: String?,
 ) {
-    val viewModel = viewModel<EventViewModel>(context)
-    val reportViewModel = viewModel<ReportViewModel>(context)
+    val viewModel = koinViewModel<EventViewModel>(viewModelStoreOwner = context)
+    val reportViewModel = koinViewModel<ReportViewModel>(viewModelStoreOwner = context)
     LaunchedEffect("$conference/$id") {
         viewModel.getEvent(
             conference,

@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.android.material)
 
     implementation(libs.koin)
+    implementation(libs.koin.androidx.workmanager)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

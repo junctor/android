@@ -7,15 +7,11 @@ import com.advice.core.ui.FiltersScreenState
 import com.advice.schedule.data.repositories.FiltersRepository
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 
-class FiltersViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val repository by inject<FiltersRepository>()
-
+class FiltersViewModel(
+    private val repository: FiltersRepository,
+) : ViewModel() {
     val state =
         flow {
             emit(FiltersScreenState.Loading)

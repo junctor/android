@@ -9,6 +9,7 @@ import com.google.firebase.FirebaseApp
 import com.shortstack.hackertracker.BuildConfig
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
@@ -22,6 +23,7 @@ class App : Application() {
 
         startKoin {
             androidContext(this@App)
+            workManagerFactory()
             modules(appModules())
         }
 

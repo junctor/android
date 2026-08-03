@@ -16,12 +16,14 @@ import com.advice.schedule.data.repositories.SpeakersRepository
 import com.advice.schedule.data.repositories.TagsRepository
 import com.advice.schedule.domain.ContentBookmarkUseCase
 import com.advice.schedule.presentation.viewmodel.ConferenceViewModel
+import com.advice.schedule.presentation.viewmodel.ContentViewModel
 import com.advice.schedule.presentation.viewmodel.EventViewModel
 import com.advice.schedule.presentation.viewmodel.FAQViewModel
 import com.advice.schedule.presentation.viewmodel.FiltersViewModel
 import com.advice.schedule.presentation.viewmodel.HomeViewModel
-import com.advice.schedule.presentation.viewmodel.InformationViewModel
 import com.advice.schedule.presentation.viewmodel.MapsViewModel
+import com.advice.schedule.presentation.viewmodel.MenuViewModel
+import com.advice.schedule.presentation.viewmodel.NewsViewModel
 import com.advice.schedule.presentation.viewmodel.ScheduleViewModel
 import com.advice.schedule.presentation.viewmodel.SearchViewModel
 import com.advice.schedule.presentation.viewmodel.SpeakerViewModel
@@ -59,15 +61,17 @@ val scheduleModule =
         single { SearchRepository(get(), get(), get(), get(), get(), get(), get()) }
         single { MenuRepository(get(), get()) }
 
-        viewModel { HomeViewModel() }
-        viewModel { ScheduleViewModel() }
-        viewModel { EventViewModel() }
-        viewModel { SpeakerViewModel() }
-        viewModel { SpeakersViewModel() }
-        viewModel { MapsViewModel() }
-        viewModel { InformationViewModel() }
-        viewModel { FAQViewModel() }
-        viewModel { FiltersViewModel() }
-        viewModel { ConferenceViewModel() }
-        viewModel { SearchViewModel() }
+        viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
+        viewModel { ScheduleViewModel(get(), get()) }
+        viewModel { EventViewModel(get(), get()) }
+        viewModel { ContentViewModel(get(), get()) }
+        viewModel { SpeakerViewModel(get()) }
+        viewModel { SpeakersViewModel(get()) }
+        viewModel { MapsViewModel(get()) }
+        viewModel { FAQViewModel(get()) }
+        viewModel { FiltersViewModel(get()) }
+        viewModel { ConferenceViewModel(get()) }
+        viewModel { SearchViewModel(get()) }
+        viewModel { NewsViewModel(get()) }
+        viewModel { MenuViewModel(get()) }
     }

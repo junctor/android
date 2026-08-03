@@ -4,14 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.schedule.data.repositories.SearchRepository
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class SearchViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val searchRepository: SearchRepository by inject()
-
+class SearchViewModel(
+    private val searchRepository: SearchRepository,
+) : ViewModel() {
     val conference = searchRepository.conference
     val state = searchRepository.state
 

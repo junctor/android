@@ -13,12 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.ui.activity.MainActivity
 import com.advice.wifi.presentation.viewmodel.WifiViewModel
 import com.advice.wifi.ui.screens.WifiScreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun Wifi(
@@ -27,7 +27,7 @@ internal fun Wifi(
 ) {
     val context = LocalContext.current
 
-    val viewModel = viewModel<WifiViewModel>()
+    val viewModel = koinViewModel<WifiViewModel>()
     LaunchedEffect(id) {
         viewModel.get(id)
     }

@@ -11,15 +11,11 @@ import com.advice.ui.screens.SettingsScreenViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class SettingsViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val repository by inject<SettingsRepository>()
-    private val analytics by inject<AnalyticsProvider>()
-
+class SettingsViewModel(
+    private val repository: SettingsRepository,
+    private val analytics: AnalyticsProvider,
+) : ViewModel() {
     private val _state =
         MutableStateFlow(
             SettingsScreenViewState(),

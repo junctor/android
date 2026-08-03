@@ -9,7 +9,6 @@ import com.advice.core.local.products.Product
 import com.advice.core.local.products.ProductVariantSelection
 import com.advice.core.storage.MerchCartStore
 import com.advice.products.data.repositories.ProductsRepository
-import com.advice.products.di.PRODUCTS_VERSION_CODE
 import com.advice.products.presentation.state.ProductsScreenState
 import com.advice.products.presentation.state.ProductsState
 import com.advice.products.ui.components.DismissibleInformation
@@ -18,19 +17,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.qualifier.named
 import timber.log.Timber
 
-class ProductsViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val repository by inject<ProductsRepository>()
-    private val merchCartStore by inject<MerchCartStore>()
-    private val cart by inject<ProductCart>()
-    private val versionCode: Int by inject(named(PRODUCTS_VERSION_CODE))
-
+class ProductsViewModel(
+    private val repository: ProductsRepository,
+    private val merchCartStore: MerchCartStore,
+    private val cart: ProductCart,
+    private val versionCode: Int,
+) : ViewModel() {
     private val _state = MutableStateFlow<ProductsScreenState>(ProductsScreenState.Loading)
     val state: Flow<ProductsScreenState> = _state
 

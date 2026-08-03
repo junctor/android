@@ -26,23 +26,19 @@ import com.shortstack.hackertracker.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 
-class MainViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val userSession by inject<UserSession>()
-    private val appManager by inject<AppManager>()
-    private val analytics by inject<AnalyticsProvider>()
-    private val preferences by inject<UserPreferencesStore>()
-    private val offlineQueue by inject<OfflineQueueStore>()
-    private val documentRepository by inject<DocumentsRepository>()
-    private val feedbackRepository by inject<FeedbackSubmissionRepository>()
-    private val reportRepository by inject<ReportSubmissionRepository>()
-    private val toastManager by inject<ToastManager>()
-
+class MainViewModel(
+    private val userSession: UserSession,
+    private val appManager: AppManager,
+    private val analytics: AnalyticsProvider,
+    private val preferences: UserPreferencesStore,
+    private val offlineQueue: OfflineQueueStore,
+    private val documentRepository: DocumentsRepository,
+    private val feedbackRepository: FeedbackSubmissionRepository,
+    private val reportRepository: ReportSubmissionRepository,
+    private val toastManager: ToastManager,
+) : ViewModel() {
     private val _state = MutableStateFlow(MainViewState())
     val state: Flow<MainViewState> = _state
 

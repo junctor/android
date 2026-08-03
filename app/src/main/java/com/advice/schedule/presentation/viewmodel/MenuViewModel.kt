@@ -8,8 +8,6 @@ import com.advice.schedule.data.repositories.MenuRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 sealed class MenuScreenState {
     object Loading : MenuScreenState()
@@ -21,11 +19,9 @@ sealed class MenuScreenState {
     ) : MenuScreenState()
 }
 
-class MenuViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val menuRepository by inject<MenuRepository>()
-
+class MenuViewModel(
+    private val menuRepository: MenuRepository,
+) : ViewModel() {
     private val _state = MutableStateFlow<MenuScreenState>(MenuScreenState.Loading)
     val state: Flow<MenuScreenState> = _state
 

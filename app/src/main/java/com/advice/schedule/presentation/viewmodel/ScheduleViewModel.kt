@@ -12,15 +12,11 @@ import com.advice.ui.states.ScheduleScreenState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class ScheduleViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val storage by inject<UserPreferencesStore>()
-    private val repository by inject<ScheduleRepository>()
-
+class ScheduleViewModel(
+    private val storage: UserPreferencesStore,
+    private val repository: ScheduleRepository,
+) : ViewModel() {
     fun getState(filter: ScheduleFilter = ScheduleFilter.Default): Flow<ScheduleScreenState> =
         combine(
             repository.getSchedule(filter),

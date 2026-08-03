@@ -11,15 +11,11 @@ import com.advice.wifi.data.repositories.WifiNetworkRepository
 import com.advice.wifi.ui.screens.WiFiScreenViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class WifiViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val manager by inject<WirelessConnectionManager>()
-    private val repository by inject<WifiNetworkRepository>()
-
+class WifiViewModel(
+    private val manager: WirelessConnectionManager,
+    private val repository: WifiNetworkRepository,
+) : ViewModel() {
     private val _state = MutableStateFlow<WiFiScreenViewState>(WiFiScreenViewState.Loading)
     val state = _state
 

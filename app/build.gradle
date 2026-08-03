@@ -80,6 +80,7 @@ dependencies {
 
     implementation(libs.koin)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.workmanager)
     implementation(libs.kotlinx.coroutines.core)
 
     implementation platform(libs.firebase.bom)

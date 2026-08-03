@@ -7,14 +7,10 @@ import com.advice.core.ui.LocationsScreenState
 import com.advice.locations.data.repositories.LocationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class LocationsViewModel :
-    ViewModel(),
-    KoinComponent {
-    private val repository by inject<LocationRepository>()
-
+class LocationsViewModel(
+    private val repository: LocationRepository,
+) : ViewModel() {
     private val _state = MutableStateFlow(LocationsScreenState(emptyList()))
     val state = _state
 

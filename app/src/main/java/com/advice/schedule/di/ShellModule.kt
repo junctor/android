@@ -12,6 +12,7 @@ import com.advice.data.SharedPreferencesBookmarkDataSource
 import com.advice.data.sources.BookmarkDataSourceQualifiers
 import com.advice.data.sources.BookmarkedElementDataSource
 import com.advice.schedule.navigation.NavigationManager
+import com.advice.schedule.ui.viewmodels.MainViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.FieldNamingPolicy
@@ -23,6 +24,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.onClose
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -54,6 +56,20 @@ val shellModule =
         single { ToastManager() }
 
         single { NavigationManager() }
+
+        viewModel {
+            MainViewModel(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+            )
+        }
 
         // Filter tag selections (in-memory). Cleared by "Clear filters".
         single<BookmarkedElementDataSource>(named(BookmarkDataSourceQualifiers.FILTER_SELECTIONS)) {

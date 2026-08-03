@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.feedback.network.models.ReportObjectType
 import com.advice.feedback.presentation.viewmodel.ReportViewModel
@@ -16,6 +15,7 @@ import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.navigateTo
 import com.advice.schedule.navigation.onBackPressed
 import com.advice.schedule.ui.activity.MainActivity
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun Organizations(
@@ -44,7 +44,7 @@ internal fun Organization(
 ) {
     val context = LocalContext.current
     val viewModel = navController.navGraphViewModel<OrganizationViewModel>()
-    val reportViewModel = viewModel<ReportViewModel>()
+    val reportViewModel = koinViewModel<ReportViewModel>()
 
     LaunchedEffect(id) {
         viewModel.getOrganization(id)

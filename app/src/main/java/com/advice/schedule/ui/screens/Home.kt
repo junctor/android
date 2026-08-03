@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.advice.core.ui.FiltersScreenState
 import com.advice.core.ui.HomeState
@@ -41,6 +40,7 @@ import com.advice.ui.screens.FilterScreen
 import com.advice.ui.screens.HomeScreen
 import com.advice.ui.screens.ScheduleScreen
 import com.advice.ui.states.ScheduleScreenState
+import org.koin.androidx.compose.koinViewModel
 
 /** Matches Material3 bottom app bar height so panel content clears [DismissibleBottomAppBar]. */
 private val BottomNavContentClearance = 80.dp
@@ -50,12 +50,12 @@ internal fun Home(
     context: AppCompatActivity,
     navController: NavHostController,
 ) {
-    val mainViewModel = viewModel<MainViewModel>()
+    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = context)
     val viewState by mainViewModel.state.collectAsState(MainViewState())
 
-    val homeViewModel = viewModel<HomeViewModel>(context)
-    val filtersViewModel = viewModel<FiltersViewModel>(context)
-    val scheduleViewModel = viewModel<ScheduleViewModel>(context)
+    val homeViewModel = koinViewModel<HomeViewModel>(viewModelStoreOwner = context)
+    val filtersViewModel = koinViewModel<FiltersViewModel>(viewModelStoreOwner = context)
+    val scheduleViewModel = koinViewModel<ScheduleViewModel>(viewModelStoreOwner = context)
 
     val scheduleScreenState =
         remember {

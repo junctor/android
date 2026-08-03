@@ -18,5 +18,5 @@ val wifiModule =
                 androidContext().getSystemService(WIFI_SERVICE) as WifiManager,
             )
         }
-        viewModel { WifiViewModel() }
+        viewModel { WifiViewModel(get(), get()) }
     }
