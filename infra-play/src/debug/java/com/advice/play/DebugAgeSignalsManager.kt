@@ -10,9 +10,9 @@ import com.google.android.play.agesignals.testing.FakeAgeSignalsManager
 
 /**
  * Supervised 13–17 persona for on-device DEBUG testing.
- * Change [debugPersona] / [debugAccessStatus] to try a different Age Signals response.
+ * Change [debugPersona] / [DEBUG_ACCESS_STATUS] to try a different Age Signals response.
  */
-private const val debugAccessStatus: Int = AgeSignalsStatus.SHARED
+private const val DEBUG_ACCESS_STATUS: Int = AgeSignalsStatus.SHARED
 
 private val debugPersona: AgeSignalsResult =
     AgeSignalsResult
@@ -28,7 +28,7 @@ fun createAgeSignalsManager(context: Context): AgeSignalsManager =
         setNextAgeSignalsAccessResult(
             AgeSignalsAccessResult
                 .builder()
-                .setAgeSignalsStatus(debugAccessStatus)
+                .setAgeSignalsStatus(DEBUG_ACCESS_STATUS)
                 .build(),
         )
         setNextAgeSignalsResult(debugPersona)
