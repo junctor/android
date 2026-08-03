@@ -321,8 +321,7 @@ private fun ScheduleScreenPreview(
 
 @PreviewLightDark
 @Composable
-private fun ScheduleScreenEmptyPreview(
-) {
+private fun ScheduleScreenEmptyPreview() {
     ScheduleTheme {
         val state =
             ScheduleScreenState.Success(

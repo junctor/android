@@ -209,4 +209,3 @@ sealed class Navigation {
                 .replace("+", "%20")
     }
 }
-
