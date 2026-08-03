@@ -1,24 +1,23 @@
 package com.advice.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.advice.glitch.ui.GlitchLogo
-import com.advice.ui.R
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.theme.roundedCornerShape
 import com.advice.ui.utils.getImageLoader
@@ -30,12 +29,19 @@ fun Image(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
 ) {
+    val context = LocalContext.current
     val request =
-        ImageRequest
-            .Builder(LocalContext.current)
-            .data(model)
-            .crossfade(enable = true)
-            .build()
+        remember(model) {
+            ImageRequest
+                .Builder(context)
+                .data(model)
+                .memoryCacheKey(model)
+                .diskCacheKey(model)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .crossfade(enable = true)
+                .build()
+        }
 
     Image(request, contentDescription, modifier, contentScale)
 }
@@ -47,6 +53,10 @@ fun Image(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
 ) {
+    val context = LocalContext.current
+    val isPreview = LocalInspectionMode.current
+    val imageLoader = remember(isPreview) { context.getImageLoader(isPreview) }
+
     Box(
         modifier =
             modifier
@@ -55,17 +65,13 @@ fun Image(
     ) {
         SubcomposeAsyncImage(
             model = request,
-            imageLoader = LocalContext.current.getImageLoader(LocalInspectionMode.current),
+            imageLoader = imageLoader,
             contentDescription = contentDescription,
             contentScale = contentScale,
             modifier = Modifier.fillMaxSize(),
             loading = {
-                Image(
-                    painter = painterResource(id = R.drawable.logo_clean),
-                    contentDescription = contentDescription,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize(),
-                )
+                // Keep the black card background while decoding; avoid flashing the HT logo
+                // on LazyColumn recycle when the bitmap is already in memory cache.
             },
             error = {
                 GlitchLogo(
