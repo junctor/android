@@ -1,5 +1,6 @@
 package com.advice.schedule.di
 
+import android.os.storage.StorageManager
 import com.advice.core.audience.AudiencePolicy
 import com.advice.core.audience.FailOpenAudiencePolicy
 import com.advice.data.session.UserSession
@@ -32,7 +33,11 @@ import com.advice.firebase.data.sources.FirebaseSpeakersDataSource
 import com.advice.firebase.data.sources.FirebaseTagsDataSource
 import com.advice.firebase.data.sources.FirebaseWifiNetworksDataSource
 import com.advice.firebase.session.FirebaseUserSession
+import com.advice.retrofit.datasource.DefaultMapFileDownloader
 import com.advice.retrofit.datasource.RetrofitMapsDataSource
+import com.advice.schedule.data.CrashlyticsMapsTelemetry
+import com.advice.schedule.data.StorageManagerSpaceAllocator
+import com.advice.schedule.data.mapsCacheRoot
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -112,9 +117,14 @@ val firebaseDataModule =
             FirebaseLocationsDataSource(get(), get(), get(named(APPLICATION_SCOPE)))
         }
         single(createdAtStart = true) {
+            val context = androidContext().applicationContext
+            val storageManager = context.getSystemService(StorageManager::class.java)
+            val cacheRoot = mapsCacheRoot(context, get())
             RetrofitMapsDataSource(
                 get(),
-                androidContext().applicationContext.getExternalFilesDir(null),
+                cacheRoot,
+                downloader = DefaultMapFileDownloader(StorageManagerSpaceAllocator(storageManager)),
+                telemetry = CrashlyticsMapsTelemetry(cacheRoot, storageManager, get()),
             )
         } withOptions {
             bind<MapsDataSource>()

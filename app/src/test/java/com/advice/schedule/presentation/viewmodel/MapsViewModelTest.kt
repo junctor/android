@@ -56,6 +56,22 @@ class MapsViewModelTest {
         }
 
     @Test
+    fun `configured maps with no downloaded files emits download error`() =
+        runTest {
+            val viewModel = createViewModel()
+            val conference =
+                conference(1, "Alpha").copy(
+                    maps = listOf(ConferenceMap("Floor 1", "f1.pdf", "https://example.com/f1.pdf")),
+                )
+            mapsFlow.emit(FlowResult.Success(Maps(conference, emptyList())))
+            advanceUntilIdle()
+
+            val state = viewModel.state.first { it !is MapsScreenState.Loading }
+            assertTrue(state is MapsScreenState.Error)
+            assertEquals("Unable to download maps for Alpha", (state as MapsScreenState.Error).message)
+        }
+
+    @Test
     fun `preserves selected map across refresh for same conference`() =
         runTest {
             val viewModel = createViewModel()

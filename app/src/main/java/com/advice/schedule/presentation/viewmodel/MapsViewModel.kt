@@ -48,8 +48,16 @@ class MapsViewModel(
                         }
 
                         if (maps.maps.isEmpty()) {
-                            _state.value =
-                                MapsScreenState.Error("No maps for ${maps.conference.name}")
+                            // The conference document lists the configured maps; an empty
+                            // download result despite configured maps means fetching failed.
+                            val message =
+                                if (maps.conference.maps.isEmpty()) {
+                                    "No maps for ${maps.conference.name}"
+                                } else {
+                                    "Unable to download maps for ${maps.conference.name}"
+                                }
+                            Timber.e("Maps: %s (configured=%d)", message, maps.conference.maps.size)
+                            _state.value = MapsScreenState.Error(message)
                         } else {
                             val selected =
                                 selectedMapName
