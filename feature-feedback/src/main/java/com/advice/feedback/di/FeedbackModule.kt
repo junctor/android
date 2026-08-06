@@ -17,5 +17,5 @@ fun feedbackModule(versionName: String) =
         single { FeedbackSubmissionRepository(versionName, get(), get()) }
         single { ReportSubmissionRepository(versionName, get(), get()) }
         viewModel { FeedbackViewModel(get(), get(), get()) }
-        viewModel { ReportViewModel(androidContext(), get(), get(), get()) }
+        viewModel { ReportViewModel(get(), get(), get()) }
     }

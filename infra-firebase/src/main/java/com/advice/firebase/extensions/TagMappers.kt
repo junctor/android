@@ -16,7 +16,7 @@ fun FirebaseTag.toTag(): Tag? =
             sortOrder,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Tag: ${ex.message}")
+        Timber.e(ex, "Could not map data to Tag")
         null
     }
 
@@ -31,6 +31,6 @@ fun FirebaseTagType.toTagType(): TagType? =
             tags.mapNotNull { it.toTag() },
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to TagType: ${ex.message}")
+        Timber.e(ex, "Could not map data to TagType")
         null
     }

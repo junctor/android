@@ -1,6 +1,7 @@
 package com.advice.firebase.extensions
 
 import com.advice.core.local.Conference
+import com.advice.firebase.telemetry.firestoreTelemetry
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
@@ -9,10 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-
-var documentReads = 0
-var documentCacheReads = 0
-var listenersCount = 0
 
 internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference>): Flow<T> {
     val path = this.toString()
@@ -45,7 +42,7 @@ internal fun <T> Flow<T>.closeOnConferenceChange(conferenceFlow: Flow<Conference
 }
 
 fun logSnapshotClosure(path: String) {
-    Timber.d("Snapshot listener for path: $path closed. $listenersCount active listeners.")
+    Timber.d("Snapshot listener for path: $path closed. ${firestoreTelemetry.activeListeners} active listeners.")
 }
 
 internal fun logFailure(
@@ -65,13 +62,14 @@ internal fun logSnapshot(
     value: QuerySnapshot,
 ) {
     Timber.d("Snapshot received for path: $path, ${value.size()} documents, isFromCache: ${value.metadata.isFromCache}")
-    if (!value.metadata.isFromCache) {
-        documentReads += value.size()
-        Timber.e("$listenersCount active snapshot listeners, document reads: $documentReads(+${value.size()}) path: $path")
+    val fromCache = value.metadata.isFromCache
+    val total = firestoreTelemetry.onDocumentReads(value.size(), fromCache)
+    val listeners = firestoreTelemetry.activeListeners
+    if (!fromCache) {
+        Timber.e("$listeners active snapshot listeners, document reads: $total(+${value.size()}) path: $path")
     } else {
-        documentCacheReads += value.size()
         Timber.i(
-            "CACHE: $listenersCount active snapshot listeners, document reads: $documentCacheReads(+0) path: $path (From Cache: ${value.size()})",
+            "CACHE: $listeners active snapshot listeners, document reads: $total(+0) path: $path (From Cache: ${value.size()})",
         )
     }
 }

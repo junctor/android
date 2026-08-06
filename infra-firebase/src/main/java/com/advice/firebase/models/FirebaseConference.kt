@@ -68,7 +68,7 @@ data class FirebaseConference(
     @get:PropertyName("kickoff_tsz")
     @set:PropertyName("kickoff_tsz")
     var kickoffTsz: String = "",
-    @Deprecated("")
+    @Deprecated("Legacy field; no longer read by the app.")
     @get:PropertyName("link")
     @set:PropertyName("link")
     var link: String = "",

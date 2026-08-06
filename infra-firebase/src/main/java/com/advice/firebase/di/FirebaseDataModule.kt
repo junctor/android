@@ -32,6 +32,7 @@ import com.advice.firebase.data.sources.FirebaseSpeakersDataSource
 import com.advice.firebase.data.sources.FirebaseTagsDataSource
 import com.advice.firebase.data.sources.FirebaseWifiNetworksDataSource
 import com.advice.firebase.session.FirebaseUserSession
+import com.advice.firebase.telemetry.firestoreTelemetry
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -63,6 +64,9 @@ val firebaseDataModule =
         }
         single { FirebaseAuth.getInstance() }
         single { FirebaseStorage.getInstance() }
+
+        // Same instance the snapshot flow helpers record into.
+        single { firestoreTelemetry }
 
         single<UserSession> {
             FirebaseUserSession(

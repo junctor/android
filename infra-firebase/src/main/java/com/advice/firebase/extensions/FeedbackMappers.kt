@@ -18,7 +18,7 @@ fun FirebaseFeedbackForm.toFeedbackForm(): FeedbackForm? =
             endpoint = submissionUrl,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to FeedbackForm: ${ex.message}")
+        Timber.e(ex, "Could not map data to FeedbackForm")
         null
     }
 
@@ -46,6 +46,6 @@ fun FirebaseFeedbackItem.toFeedbackItem(): FeedbackItem? =
             type = type,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to FeedbackItem: ${ex.message}")
+        Timber.e(ex, "Could not map data to FeedbackItem")
         null
     }

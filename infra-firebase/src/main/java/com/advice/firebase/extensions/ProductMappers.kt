@@ -32,7 +32,7 @@ fun FirebaseProduct.toMerch(tagTypes: List<TagType>): Product? =
             tags = productTags.ifEmpty { defaultTags },
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Merch: ${ex.message}")
+        Timber.e(ex, "Could not map data to Merch")
         null
     }
 
@@ -47,7 +47,7 @@ fun FirebaseProductVariant.toMerchOption(): ProductVariant? =
             code = code,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to MerchOption: ${ex.message}")
+        Timber.e(ex, "Could not map data to MerchOption")
         null
     }
 
@@ -57,6 +57,6 @@ fun FirebaseProductMedia.toProductMedia(): ProductMedia? =
             url = url,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to ProductMedia: ${ex.message}")
+        Timber.e(ex, "Could not map data to ProductMedia")
         null
     }

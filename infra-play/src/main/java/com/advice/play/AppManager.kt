@@ -8,6 +8,7 @@ import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.coroutines.suspendCancellableCoroutine
+import timber.log.Timber
 
 class AppManager(
     context: Context,
@@ -29,9 +30,11 @@ class AppManager(
                             it.resumeWith(Result.success(false))
                         }
                     }
-            } catch (_: SecurityException) {
+            } catch (ex: SecurityException) {
+                Timber.e(ex, "Could not check for app update availability")
                 it.resumeWith(Result.success(false))
-            } catch (_: Exception) {
+            } catch (ex: Exception) {
+                Timber.e(ex, "Could not check for app update availability")
                 it.resumeWith(Result.success(false))
             }
         }
@@ -54,8 +57,9 @@ class AppManager(
                     )
                 }
             }
-        } catch (_: Exception) {
-            // ignore
+        } catch (ex: Exception) {
+            // Update prompt is best-effort; never block app start on Play failures.
+            Timber.e(ex, "Could not start app update flow")
         }
     }
 }

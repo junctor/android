@@ -25,6 +25,7 @@ import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material3.RichText
 import com.halilibo.richtext.ui.string.RichTextStringStyle
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 @Composable
@@ -73,7 +74,8 @@ fun ColumnScope.AnchoredMarkdown(
                 } else {
                     try {
                         uriHandler.openUri(url)
-                    } catch (_: Exception) {
+                    } catch (ex: Exception) {
+                        Timber.e(ex, "Could not open link: $url")
                     }
                 }
             }
@@ -140,8 +142,9 @@ private fun safeMarkdownLinkHandler(uriHandler: UriHandler): (String) -> Unit =
         if (!url.startsWith("#")) {
             try {
                 uriHandler.openUri(url)
-            } catch (_: Exception) {
+            } catch (ex: Exception) {
                 // Match MainActivity.openLink: never crash on unopenable URIs.
+                Timber.e(ex, "Could not open link: $url")
             }
         }
     }

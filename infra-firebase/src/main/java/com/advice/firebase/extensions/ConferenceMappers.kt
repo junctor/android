@@ -41,7 +41,7 @@ fun FirebaseConference.toConference(): Conference? =
                 ),
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Conference: ${ex.message}")
+        Timber.e(ex, "Could not map data to Conference")
         null
     }
 
@@ -60,6 +60,6 @@ fun FirebaseMap.toMap(): ConferenceMap? =
             url,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Map: ${ex.message}")
+        Timber.e(ex, "Could not map data to Map")
         null
     }

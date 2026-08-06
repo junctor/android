@@ -13,14 +13,12 @@ fun <T> QuerySnapshot.toObjectsOrEmpty(clazz: Class<T>): List<T> {
                 result.add(d.toObject(clazz))
             } catch (ex: Exception) {
                 val path = (this.query as CollectionReference).path + "/${d.id}"
-                val message = "Could not map $path to object: ${ex.message}"
-                ex.printStackTrace()
-                Timber.e(message)
+                Timber.e(ex, "Could not map $path to object")
             }
         }
         result
     } catch (ex: Exception) {
-        Timber.e("Could not map data to objects: ${ex.message}")
+        Timber.e(ex, "Could not map data to objects")
         return emptyList()
     }
 }
@@ -29,7 +27,7 @@ fun <T> DocumentSnapshot.toObjectOrNull(clazz: Class<T>): T? {
     return try {
         toObject(clazz)
     } catch (ex: Exception) {
-        Timber.e("Could not map data to object: ${ex.message}")
+        Timber.e(ex, "Could not map data to object")
         return null
     }
 }

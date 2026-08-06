@@ -23,7 +23,7 @@ fun FirebaseSpeaker.toSpeaker(): Speaker? =
             roles = emptyList(),
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Speaker: ${ex.message}")
+        Timber.e(ex, "Could not map data to Speaker")
         null
     }
 
@@ -31,7 +31,7 @@ fun FirebaseAffiliation.toAffiliation(): Affiliation? =
     try {
         Affiliation(organization, title)
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Affiliation: ${ex.message}")
+        Timber.e(ex, "Could not map data to Affiliation")
         null
     }
 
@@ -42,6 +42,6 @@ fun FirebaseSpeakerLink.toLink(): Link? =
             url,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Link: ${ex.message}")
+        Timber.e(ex, "Could not map data to Link")
         null
     }

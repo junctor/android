@@ -23,7 +23,7 @@ fun FirebaseOrganization.toOrganization(): Organization? =
             tagIds,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Organization: ${ex.message}")
+        Timber.e(ex, "Could not map data to Organization")
         null
     }
 
@@ -33,7 +33,7 @@ fun FirebaseOrganizationLocation.toLocation(): OrganizationLocation? =
             locationId,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to OrganizationLocation: ${ex.message}")
+        Timber.e(ex, "Could not map data to OrganizationLocation")
         null
     }
 
@@ -45,7 +45,7 @@ fun FirebaseLink.toLink(): OrganizationLink? =
             url,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Link: ${ex.message}")
+        Timber.e(ex, "Could not map data to Link")
         null
     }
 
@@ -56,6 +56,6 @@ fun FirebaseMedia.toMedia(): OrganizationMedia? =
             url,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Media: ${ex.message}")
+        Timber.e(ex, "Could not map data to Media")
         null
     }

@@ -4,6 +4,7 @@ import okhttp3.CipherSuite
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
+import timber.log.Timber
 import java.security.KeyStore
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
@@ -49,8 +50,9 @@ object Network {
                 .sslSocketFactory(sslSocketFactory, trustManager)
                 .connectionSpecs(listOf(connectionSpec))
                 .build()
-        } catch (_: Throwable) {
+        } catch (ex: Throwable) {
             // Fallback to a basic client if custom TLS configuration fails (e.g. in a JVM preview environment)
+            Timber.e(ex, "Could not configure TLS; falling back to default OkHttpClient")
             OkHttpClient()
         }
     }

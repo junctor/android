@@ -3,6 +3,7 @@ package com.advice.ui.utils
 import android.content.Context
 import coil.ImageLoader
 import com.advice.data.network.Network
+import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 
 private val imageLoaders = ConcurrentHashMap<String, ImageLoader>()
@@ -23,8 +24,9 @@ private fun createImageLoader(
     if (!isPreviewMode) {
         try {
             applyNetworkClient(builder)
-        } catch (_: Throwable) {
+        } catch (ex: Throwable) {
             // Fallback to default if custom client fails
+            Timber.e(ex, "Could not apply network client to image loader")
         }
     }
     return builder.build()

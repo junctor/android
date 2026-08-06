@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -21,12 +22,16 @@ import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.advice.analytics.core.AnalyticsProvider
+import com.advice.core.utils.ToastManager
+import com.advice.data.session.UserSession
 import com.advice.schedule.navigation.DeepLinkParser
 import com.advice.schedule.navigation.Navigation
 import com.advice.schedule.navigation.NavigationManager
@@ -48,6 +53,8 @@ import android.graphics.Color as AndroidColor
 class MainActivity : AppCompatActivity() {
     private val navigation: NavigationManager by inject()
     private val analytics: AnalyticsProvider by inject()
+    private val userSession: UserSession by inject()
+    private val toastManager: ToastManager by inject()
     private val mainViewModel: MainViewModel by viewModel()
 
     /**
@@ -89,7 +96,16 @@ class MainActivity : AppCompatActivity() {
         hideSystemNavigationBars()
 
         pendingDeepLink = intent.data
-        mainViewModel.onAppStart(this, appUpdateLauncher)
+        val firstStart =
+            mainViewModel.onAppStart(
+                is24HourFormat = DateFormat.is24HourFormat(this),
+                appUpdateLauncher = appUpdateLauncher,
+            )
+        if (firstStart) {
+            // Play Age Signals 0.0.4 requires an Activity for the sharing-access prompt.
+            userSession.resolveAudienceContext(this)
+        }
+        collectToasts()
 
         setContent {
             ClearEdgeToEdgeProtectionsEffect()
@@ -149,6 +165,25 @@ class MainActivity : AppCompatActivity() {
                                 mainViewModel.dismissPermissionDialog()
                             },
                         )
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Shows [ToastManager] messages pushed by ViewModels. Lives on the Activity so the
+     * toast always uses the current (non-destroyed) Activity context.
+     */
+    private fun collectToasts() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                toastManager.messages.collect { toast ->
+                    if (toast != null) {
+                        Toast
+                            .makeText(this@MainActivity, toast.resolve(this@MainActivity), toast.duration)
+                            .show()
+                        toastManager.clear()
                     }
                 }
             }

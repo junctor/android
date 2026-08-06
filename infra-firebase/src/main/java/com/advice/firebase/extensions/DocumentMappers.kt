@@ -14,7 +14,7 @@ fun FirebaseDocument.toDocument(): Document? =
             bodyText,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Document: ${ex.message}")
+        Timber.e(ex, "Could not map data to Document")
         null
     }
 
@@ -27,6 +27,6 @@ fun FirebaseArticle.toArticle(): NewsArticle? =
             updatedAt?.toDate()?.toInstant(),
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Article: ${ex.message}")
+        Timber.e(ex, "Could not map data to Article")
         null
     }

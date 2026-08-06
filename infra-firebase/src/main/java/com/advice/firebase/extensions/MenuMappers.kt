@@ -17,7 +17,7 @@ fun FirebaseMenu.toMenu(): Menu? =
                 .mapNotNull { it.toMenuItem() },
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Menu: ${ex.message}")
+        Timber.e(ex, "Could not map data to Menu")
         null
     }
 
@@ -105,6 +105,6 @@ fun FirebaseMenuItem.toMenuItem(): MenuItem? =
             else -> error("Unknown menu item function: $titleText, $function")
         }
     } catch (ex: Exception) {
-        Timber.e("Could not map data to MenuItem: ${ex.message}")
+        Timber.e(ex, "Could not map data to MenuItem")
         null
     }

@@ -1,6 +1,7 @@
 package com.advice.firebase.extensions
 
 import com.advice.core.local.FlowResult
+import com.advice.firebase.telemetry.firestoreTelemetry
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.channels.awaitClose
@@ -14,7 +15,7 @@ fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
     return callbackFlow {
         // Emit loading state
         trySend(SnapshotResult.Loading)
-        listenersCount++
+        firestoreTelemetry.onListenerOpened()
         // Create a listener
         val listenerRegistration =
             addSnapshotListener { value, error ->
@@ -30,7 +31,7 @@ fun CollectionReference.snapshotFlow(): Flow<SnapshotResult> {
                 }
             }
         awaitClose {
-            listenersCount--
+            firestoreTelemetry.onListenerClosed()
             logSnapshotClosure(path)
             listenerRegistration.remove()
         }

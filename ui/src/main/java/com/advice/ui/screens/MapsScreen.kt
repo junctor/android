@@ -35,8 +35,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.advice.core.local.MapFile
-import com.advice.ui.components.PdfDisplay
 import com.advice.ui.components.ProgressSpinner
+import com.advice.ui.components.pdf.PdfDisplay
 import com.advice.ui.preview.PreviewLightDark
 import com.advice.ui.states.MapsScreenState
 import com.advice.ui.theme.ScheduleTheme

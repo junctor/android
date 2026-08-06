@@ -98,7 +98,7 @@ fun FirebaseContent.toContents(
             relatedContentIds = relatedContentIds ?: emptyList(),
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Content: ${ex.message}")
+        Timber.e(ex, "Could not map data to Content")
         return null
     }
 }

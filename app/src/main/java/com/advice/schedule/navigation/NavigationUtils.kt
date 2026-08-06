@@ -19,8 +19,9 @@ fun NavController.navigateTo(navigation: Navigation?) {
             android.widget.Toast
                 .makeText(context, "Could not open screen", android.widget.Toast.LENGTH_SHORT)
                 .show()
-        } catch (_: Exception) {
+        } catch (ex: Exception) {
             // Context may be unavailable during teardown.
+            Timber.e(ex, "Could not show navigation error toast")
         }
     }
 }

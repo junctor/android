@@ -274,9 +274,6 @@ class WirelessConnectionManager(
             val certificateCollection = certFactory.generateCertificates(inputStream)
 
             Timber.d("Certificate collection: ${certificateCollection.size}")
-            for (certificate in certificateCollection) {
-                Timber.d("Certificate: $certificate")
-            }
 
             return@withContext certificateCollection.first() as X509Certificate
         }

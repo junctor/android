@@ -63,7 +63,15 @@ User-facing feature modules typically own their repository, ViewModel, UI, and K
 - **Infra (`infra-*`):** firebase, retrofit, play, analytics, reminder — Gradle module names are `infra-*`; Kotlin packages stay `com.advice.firebase`, `com.advice.retrofit`, `com.advice.play`, `com.advice.analytics`, `com.advice.reminder`
 - **Product features (`feature-*`):** locations, merch, documents, feedback, organizations, wifi, maps, news, faq, speakers, settings, search, menu
 - **Composition root:** `:app`
-- **Known debt:** `applicationId` / some namespaces remain `com.shortstack.*` (not migrating in this epic). Merch is the exception: Kotlin package/namespace is `com.advice.merch` while catalog domain types stay `com.advice.core.local.products`.
+
+### Known debt
+
+Identified and deliberately deferred; each needs its own scoped effort:
+
+- **Namespace migration** — `applicationId` / some namespaces remain `com.shortstack.*` (not migrating in this epic). Merch is the exception: Kotlin package/namespace is `com.advice.merch` while catalog domain types stay `com.advice.core.local.products`.
+- **Eager application-scope flows** — eight `SharingStarted.Eagerly` sites (`ContentRepository`, `FiltersRepository`, `FirebaseContentDataSource`, `FirebaseTagsDataSource`, `FirebaseNewsDataSource`, `FirebaseLocationsDataSource`, `FirebaseFeedbackDataSource`, `RetrofitMapsDataSource`) start Firestore listeners at process launch. Converting to `WhileSubscribed` needs a per-flow audit of background dependents (reminder sync, offline cache warming) first.
+- **Mutable domain models** — `var isSelected` / `isBookmarked` / `isVisible` / `isExpanded` on `Conference`, `Tag`, `Type`, `Event`, `Location` in `:core` leak UI state into the domain layer; converting to `val` + `copy()` touches ~30 files.
+- **Test gaps** — remaining untested surface is small: the trivial pass-through ViewModels (`ConferenceViewModel`, `SpeakersViewModel`, `SearchViewModel`) and the `Bundle`-building `MainViewModel` analytics methods (`onLinkOpen`, `onPause`, `onDestinationChanged`, `onPermissionRequest`), which would need Robolectric to cover on the JVM.
 
 ### Foundation
 

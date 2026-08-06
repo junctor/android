@@ -25,7 +25,7 @@ fun enableNetwork(
 
     val existing = wifiManager.existingWirelessConfig(wirelessNetwork.ssid)
     if (existing != null) {
-        Timber.e("Wifi config already exists for ${wirelessNetwork.ssid}")
+        Timber.e("Wifi config already exists for the target network")
     }
 
     val currentConfig = existing ?: WifiConfiguration()

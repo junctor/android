@@ -1,8 +1,6 @@
 package com.advice.schedule.presentation.viewmodel
 
-import android.app.Activity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.lifecycle.ViewModel
@@ -10,16 +8,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.advice.analytics.core.AnalyticsProvider
 import com.advice.core.local.FlowResult
-import com.advice.core.utils.ToastManager
 import com.advice.data.session.UserSession
 import com.advice.data.sources.ConferencesDataSource
 import com.advice.data.storage.UserPreferencesStore
 import com.advice.documents.data.repositories.DocumentsRepository
 import com.advice.feedback.network.FeedbackSubmissionRepository
 import com.advice.feedback.network.ReportSubmissionRepository
-import com.advice.firebase.extensions.documentCacheReads
-import com.advice.firebase.extensions.documentReads
-import com.advice.firebase.extensions.listenersCount
+import com.advice.firebase.telemetry.FirestoreTelemetry
 import com.advice.play.AppManager
 import com.advice.schedule.offline.OfflineQueueConnectivityMonitor
 import com.advice.schedule.ui.components.DragAnchors
@@ -38,9 +33,9 @@ class MainViewModel(
     private val documentRepository: DocumentsRepository,
     private val feedbackRepository: FeedbackSubmissionRepository,
     private val reportRepository: ReportSubmissionRepository,
-    private val toastManager: ToastManager,
     private val conferencesDataSource: ConferencesDataSource,
     private val offlineQueueConnectivityMonitor: OfflineQueueConnectivityMonitor,
+    private val firestoreTelemetry: FirestoreTelemetry,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MainViewState())
     val state: Flow<MainViewState> = _state
@@ -136,40 +131,26 @@ class MainViewModel(
 
     private var hasStarted = false
 
+    /**
+     * One-time app start work. Returns true on the first call so the Activity can run
+     * its own Activity-bound first-start work (e.g. Age Signals resolution) once per
+     * process rather than on every recreation.
+     */
     fun onAppStart(
-        activity: Activity,
+        is24HourFormat: Boolean,
         appUpdateLauncher: ActivityResultLauncher<IntentSenderRequest>,
-    ) {
-        if (hasStarted) return
+    ): Boolean {
+        if (hasStarted) return false
         hasStarted = true
-
-        // Play Age Signals 0.0.4 requires an Activity for the sharing-access prompt.
-        userSession.resolveAudienceContext(activity)
 
         // Only showing the prompt once per version.
         if (preferences.updateVersion != BuildConfig.VERSION_CODE) {
             appManager.checkForUpdate(appUpdateLauncher)
         }
-        val format =
-            if (android.text.format.DateFormat
-                    .is24HourFormat(activity)
-            ) {
-                "24h"
-            } else {
-                "12h"
-            }
-        analytics.setUserProperty("time_format", format)
+        analytics.setUserProperty("time_format", if (is24HourFormat) "24h" else "12h")
 
         offlineQueueConnectivityMonitor.start()
-
-        viewModelScope.launch {
-            toastManager.messages.collect {
-                if (it != null) {
-                    Toast.makeText(activity, it.text, it.duration).show()
-                    toastManager.clear()
-                }
-            }
-        }
+        return true
     }
 
     fun onLinkOpen(url: String) {
@@ -183,19 +164,15 @@ class MainViewModel(
     }
 
     fun onPause() {
-        with(analytics) {
-            logEvent(
-                "session_document_read",
-                Bundle().apply {
-                    putInt("total_document_reads", documentReads)
-                    putInt("total_document_cache_reads", documentCacheReads)
-                    putInt("total_listeners_count", listenersCount)
-                },
-            )
-            documentReads = 0
-            documentCacheReads = 0
-            listenersCount = 0
-        }
+        val counts = firestoreTelemetry.snapshotAndReset()
+        analytics.logEvent(
+            "session_document_read",
+            Bundle().apply {
+                putInt("total_document_reads", counts.documentReads)
+                putInt("total_document_cache_reads", counts.documentCacheReads)
+                putInt("total_listeners_count", counts.listenersCount)
+            },
+        )
     }
 
     fun onPermissionRequest() {

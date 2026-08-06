@@ -74,7 +74,7 @@ private fun DismissibleBottomAppBarPreview() {
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { }) {
                     Icon(
                         painterResource(
                             id = com.advice.ui.R.drawable.baseline_event_note_24,
@@ -82,7 +82,7 @@ private fun DismissibleBottomAppBarPreview() {
                         contentDescription = "schedule",
                     )
                 }
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { }) {
                     Icon(
                         painterResource(
                             id = com.advice.ui.R.drawable.baseline_map_24,

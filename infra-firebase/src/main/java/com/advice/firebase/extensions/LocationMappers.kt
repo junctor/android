@@ -25,7 +25,7 @@ fun FirebaseLocation.toLocation(children: List<Location> = emptyList()): Locatio
             children,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to Location: ${ex.message}")
+        Timber.e(ex, "Could not map data to Location")
         null
     }
 
@@ -44,6 +44,6 @@ fun FirebaseLocationSchedule.toSchedule(): LocationSchedule? =
             status,
         )
     } catch (ex: Exception) {
-        Timber.e("Could not map data to LocationSchedule: ${ex.message}")
+        Timber.e(ex, "Could not map data to LocationSchedule")
         null
     }

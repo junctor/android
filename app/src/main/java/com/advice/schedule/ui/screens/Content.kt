@@ -64,7 +64,8 @@ fun Event(
     session: String?,
 ) {
     val viewModel = koinViewModel<EventViewModel>(viewModelStoreOwner = context)
-    val reportViewModel = koinViewModel<ReportViewModel>(viewModelStoreOwner = context)
+    // Stateless submit VM: default (screen) scope, matching Documents/Speakers/Organizations.
+    val reportViewModel = koinViewModel<ReportViewModel>()
     LaunchedEffect("$conference/$id") {
         viewModel.getEvent(
             conference,

@@ -1,6 +1,5 @@
 package com.advice.feedback.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.advice.core.utils.ToastData
@@ -14,7 +13,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ReportViewModel(
-    private val context: Context,
     private val reportRepository: ReportSubmissionRepository,
     private val userSession: UserSession,
     private val toastManager: ToastManager,
@@ -29,7 +27,7 @@ class ReportViewModel(
             if (conference == null) {
                 Timber.e("Cannot submit report: no current conference")
                 toastManager.push(
-                    ToastData(context.getString(R.string.report_error)),
+                    ToastData(resId = R.string.report_error),
                 )
                 return@launch
             }
@@ -44,13 +42,13 @@ class ReportViewModel(
             ) {
                 NetworkResponse.Success -> {
                     toastManager.push(
-                        ToastData(context.getString(R.string.report_success)),
+                        ToastData(resId = R.string.report_success),
                     )
                 }
 
                 is NetworkResponse.Error -> {
                     toastManager.push(
-                        ToastData(context.getString(R.string.report_error)),
+                        ToastData(resId = R.string.report_error),
                     )
                 }
             }
