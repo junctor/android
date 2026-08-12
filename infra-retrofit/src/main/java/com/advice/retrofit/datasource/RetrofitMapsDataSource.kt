@@ -33,6 +33,7 @@ import okhttp3.Request
 import timber.log.Timber
 import java.io.Closeable
 import java.io.File
+import java.io.FileDescriptor
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -47,11 +48,37 @@ fun interface MapFileDownloader {
     )
 }
 
+/**
+ * Requests [bytes] of disk space for [fd] before a download is written. Production wires this
+ * to [android.os.storage.StorageManager.allocateBytes], which can evict other apps' cached
+ * files to satisfy the request and throws [IOException] when the space cannot be guaranteed —
+ * unlike a plain write, which fails opaquely partway through.
+ */
+fun interface MapFileSpaceAllocator {
+    @Throws(IOException::class)
+    fun allocate(
+        fd: FileDescriptor,
+        bytes: Long,
+    )
+}
+
+/**
+ * Sink for map download failures. Production wires this to Crashlytics; Timber logging alone
+ * is invisible in release builds because no tree is planted there.
+ */
+fun interface MapsTelemetry {
+    fun report(
+        message: String,
+        error: Throwable?,
+    )
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class RetrofitMapsDataSource(
     userSession: UserSession,
-    private val filesDir: File?,
-    private val downloader: MapFileDownloader = DefaultMapFileDownloader,
+    private val filesDir: File,
+    private val downloader: MapFileDownloader = DefaultMapFileDownloader(),
+    private val telemetry: MapsTelemetry = MapsTelemetry { _, _ -> },
     private val sharingScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
 ) : MapsDataSource,
     Closeable {
@@ -159,6 +186,13 @@ class RetrofitMapsDataSource(
             mark.elapsedNow(),
         )
 
+        if (completed.isEmpty()) {
+            telemetry.report(
+                "Maps: all ${entries.size} map downloads failed for conference=${conference.id} (${conference.name})",
+                null,
+            )
+        }
+
         // Final emission covers the case where every download failed (empty list).
         emit(FlowResult.Success(Maps(conference, snapshot())))
     }
@@ -181,6 +215,7 @@ class RetrofitMapsDataSource(
                 updates.send(MapFile(entry.map.name, entry.file))
             } else {
                 Timber.e("Maps: download produced invalid file name=%s", entry.map.name)
+                telemetry.report("Maps: download produced invalid/empty file name=${entry.map.name}", null)
                 entry.file.delete()
             }
         } catch (ex: CancellationException) {
@@ -188,14 +223,12 @@ class RetrofitMapsDataSource(
             throw ex
         } catch (ex: Exception) {
             Timber.e(ex, "Could not download map: ${entry.map.name}")
+            telemetry.report("Could not download map: ${entry.map.name}", ex)
             entry.file.delete()
         }
     }
 
-    private fun conferenceCacheDir(conferenceId: Long): File {
-        val root = filesDir ?: File(".")
-        return File(root, "maps/$conferenceId").also { it.mkdirs() }
-    }
+    private fun conferenceCacheDir(conferenceId: Long): File = File(filesDir, "maps/$conferenceId").also { it.mkdirs() }
 
     override fun get(): Flow<FlowResult<Maps>> = mapsFlow
 
@@ -225,23 +258,9 @@ class RetrofitMapsDataSource(
     }
 }
 
-internal object DefaultMapFileDownloader : MapFileDownloader {
-    /**
-     * Dedicated client for map PDFs. Avoids [Network.client]'s TLS 1.3-only restricted
-     * suite, which is poorly suited to CDN downloads and can stall or time out.
-     */
-    private val client: OkHttpClient by lazy {
-        OkHttpClient
-            .Builder()
-            .connectTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
-            .callTimeout(3, TimeUnit.MINUTES)
-            .retryOnConnectionFailure(true)
-            .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS, ConnectionSpec.CLEARTEXT))
-            .build()
-    }
-
+class DefaultMapFileDownloader(
+    private val allocator: MapFileSpaceAllocator = MapFileSpaceAllocator { _, _ -> },
+) : MapFileDownloader {
     override suspend fun download(
         url: String,
         destination: File,
@@ -267,9 +286,18 @@ internal object DefaultMapFileDownloader : MapFileDownloader {
                 }
                 val body = response.body ?: throw IOException("Empty response body for $url")
                 val contentLength = body.contentLength()
-                body.byteStream().buffered().use { input ->
-                    temp.outputStream().buffered().use { output ->
-                        input.copyTo(output)
+                temp.outputStream().use { fileOutput ->
+                    // Reserve the space up front so a full disk fails loudly here (with a
+                    // clear IOException) instead of via a truncated write, and so the OS
+                    // can evict other apps' cached files to make room.
+                    allocator.allocate(
+                        fileOutput.fd,
+                        if (contentLength > 0) contentLength else DEFAULT_ALLOCATION_BYTES,
+                    )
+                    body.byteStream().buffered().use { input ->
+                        fileOutput.buffered().use { output ->
+                            input.copyTo(output)
+                        }
                     }
                 }
                 Timber.d(
@@ -292,6 +320,27 @@ internal object DefaultMapFileDownloader : MapFileDownloader {
         } catch (ex: Exception) {
             temp.delete()
             throw ex
+        }
+    }
+
+    companion object {
+        /** Space to reserve when the server does not report a Content-Length. */
+        private const val DEFAULT_ALLOCATION_BYTES = 8L * 1024 * 1024
+
+        /**
+         * Dedicated client for map PDFs. Avoids [Network.client]'s TLS 1.3-only restricted
+         * suite, which is poorly suited to CDN downloads and can stall or time out.
+         */
+        private val client: OkHttpClient by lazy {
+            OkHttpClient
+                .Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .callTimeout(3, TimeUnit.MINUTES)
+                .retryOnConnectionFailure(true)
+                .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS, ConnectionSpec.CLEARTEXT))
+                .build()
         }
     }
 }

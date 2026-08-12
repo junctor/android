@@ -13,7 +13,6 @@ import com.advice.news.di.newsModule
 import com.advice.organizations.di.organizationsModule
 import com.advice.play.di.playModule
 import com.advice.reminder.di.reminderModule
-import com.advice.retrofit.di.retrofitModule
 import com.advice.search.di.searchModule
 import com.advice.settings.di.settingsModule
 import com.advice.speakers.di.speakersModule
@@ -26,7 +25,6 @@ fun appModules(): List<Module> =
         shellModule,
         analyticsModule(BuildConfig.VERSION_CODE),
         firebaseDataModule,
-        retrofitModule,
         reminderModule,
         scheduleModule,
         settingsModule("${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"),

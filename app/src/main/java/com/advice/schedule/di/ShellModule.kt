@@ -1,5 +1,6 @@
 package com.advice.schedule.di
 
+import android.os.storage.StorageManager
 import androidx.work.WorkManager
 import com.advice.core.utils.ToastManager
 import com.advice.data.InMemoryBookmarkedDataSourceImpl
@@ -7,8 +8,14 @@ import com.advice.data.SharedPreferencesBookmarkDataSource
 import com.advice.data.di.APPLICATION_SCOPE
 import com.advice.data.sources.BookmarkDataSourceQualifiers
 import com.advice.data.sources.BookmarkedElementDataSource
+import com.advice.data.sources.MapsDataSource
 import com.advice.data.storage.ContentSyncStore
 import com.advice.data.storage.UserPreferencesStore
+import com.advice.retrofit.datasource.DefaultMapFileDownloader
+import com.advice.retrofit.datasource.RetrofitMapsDataSource
+import com.advice.schedule.data.CrashlyticsMapsTelemetry
+import com.advice.schedule.data.StorageManagerSpaceAllocator
+import com.advice.schedule.data.mapsCacheRoot
 import com.advice.schedule.navigation.NavigationManager
 import com.advice.schedule.offline.OfflineQueueConnectivityMonitor
 import com.advice.schedule.presentation.viewmodel.MainViewModel
@@ -20,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.onClose
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.withOptions
@@ -42,6 +50,21 @@ val shellModule =
         }
 
         single { FirebaseCrashlytics.getInstance() }
+
+        single(createdAtStart = true) {
+            val context = androidContext().applicationContext
+            val storageManager = context.getSystemService(StorageManager::class.java)
+            val cacheRoot = mapsCacheRoot(context, get())
+            RetrofitMapsDataSource(
+                get(),
+                cacheRoot,
+                downloader = DefaultMapFileDownloader(StorageManagerSpaceAllocator(storageManager)),
+                telemetry = CrashlyticsMapsTelemetry(cacheRoot, storageManager, get()),
+            )
+        } withOptions {
+            bind<MapsDataSource>()
+            onClose { it?.close() }
+        }
 
         single { WorkManager.getInstance(androidContext()) }
 

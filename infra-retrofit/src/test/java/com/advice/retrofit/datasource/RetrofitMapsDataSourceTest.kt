@@ -191,6 +191,52 @@ class RetrofitMapsDataSourceTest {
         }
 
     @Test
+    fun `download failures are reported to telemetry`() =
+        runTest {
+            val conference =
+                conference(
+                    id = 4,
+                    maps =
+                        listOf(
+                            ConferenceMap(
+                                name = "Only",
+                                filename = "only.pdf",
+                                url = "https://example.com/only.pdf",
+                            ),
+                        ),
+                )
+            val conferenceFlow =
+                MutableStateFlow<FlowResult<Conference>>(FlowResult.Success(conference))
+            val reports = mutableListOf<Pair<String, Throwable?>>()
+            val mapsScope = childMapsScope()
+            val subject =
+                createSubject(
+                    conferenceFlow,
+                    mapsScope = mapsScope,
+                    telemetry = { message, error -> reports += message to error },
+                ) { _, _ ->
+                    throw IOException("disk full")
+                }
+
+            val emissions = mutableListOf<FlowResult<Maps>>()
+            val collectJob =
+                launch {
+                    subject.get().collect { emissions += it }
+                }
+            advanceUntilIdle()
+
+            // Per-download failure with the underlying exception, plus the all-failed summary.
+            assertTrue(reports.any { it.first.contains("Only") && it.second is IOException })
+            assertTrue(reports.any { it.first.contains("all 1 map downloads failed") })
+
+            val success = emissions.filterIsInstance<FlowResult.Success<Maps>>().last()
+            assertTrue(success.value.maps.isEmpty())
+
+            collectJob.cancel()
+            mapsScope.cancel()
+        }
+
+    @Test
     fun `cache files are scoped by conference id`() {
         val root = tempDir()
         val a =
@@ -220,6 +266,7 @@ class RetrofitMapsDataSourceTest {
         conferenceFlow: MutableStateFlow<FlowResult<Conference>>,
         filesDir: File = tempDir(),
         mapsScope: CoroutineScope,
+        telemetry: MapsTelemetry = MapsTelemetry { _, _ -> },
         downloader: MapFileDownloader,
     ): RetrofitMapsDataSource {
         val userSession = mockk<UserSession>()
@@ -228,6 +275,7 @@ class RetrofitMapsDataSourceTest {
             userSession = userSession,
             filesDir = filesDir,
             downloader = downloader,
+            telemetry = telemetry,
             sharingScope = mapsScope,
         )
     }
